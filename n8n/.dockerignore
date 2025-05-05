@@ -1,0 +1,11 @@
+# Ignore version control files
+.git
+.gitignore
+
+# Ignore Node.js dependencies if they were accidentally installed here
+# (n8n data should be in the volume, not the build context)
+node_modules
+
+# Ignore local Docker files if any
+Dockerfile
+.dockerignore 
