@@ -1,15 +1,15 @@
 # Use an official n8n image as a parent image
-# Keep fixed version for stability
-FROM n8nio/n8n:latest
+FROM n8nio/n8n:1.41.0 # Keep fixed version
 
 # Set timezone environment variable
 ENV TZ=Asia/Shanghai
 
-# Metadata indicating the exposed port
-EXPOSE 5678
+# --- BEGIN ENVIRONMENT AND PERMISSION FIX ---
+# Set the PATH globally FIRST, ensuring node and n8n are findable
+# This should be inherited by the 'node' user later
+ENV PATH /usr/local/bin:$PATH
 
-# --- BEGIN SIMPLE PERMISSION FIX ---
-# Switch to root temporarily
+# Switch to root temporarily for permissions
 USER root
 
 # Ensure the target directory exists and set ownership
@@ -17,15 +17,17 @@ RUN mkdir -p /home/node/.n8n && \
     chown -R node:node /home/node/.n8n && \
     echo "Permissions set for /home/node/.n8n by root."
 
-# Switch back to the non-root 'node' user for subsequent commands
-# The base image's default entrypoint/cmd should run as this user
+# Switch back to the non-root 'node' user.
+# This user should now inherit the PATH set above.
 USER node
-# --- END SIMPLE PERMISSION FIX ---
+# --- END ENVIRONMENT AND PERMISSION FIX ---
 
-# We are removing the custom ENTRYPOINT and relying on the base image's
-# default entrypoint/command handling after the USER node switch.
-# We still keep CMD to ensure 'n8n' is the intended command if needed.
-CMD ["n8n", "start"]
+# Metadata indicating the exposed port (can be placed earlier, but fine here)
+EXPOSE 5678
+
+# Rely on the base image's entrypoint/cmd handling, or this simple CMD
+# Now that USER node has the correct PATH, this should work.
+CMD ["n8n"]
 
 # Keep Healthcheck commented out for now
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
