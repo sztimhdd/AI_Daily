@@ -1,5 +1,5 @@
 # Use an official n8n image as a parent image
-FROM n8nio/n8n:latest
+FROM n8nio/n8n:1.41.0
 
 # Set timezone environment variable (example: Asia/Shanghai)
 # You can override this in Railway environment variables for flexibility
