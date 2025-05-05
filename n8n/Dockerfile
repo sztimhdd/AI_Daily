@@ -1,5 +1,5 @@
 # Use an official n8n image as a parent image
-FROM n8nio/n8n:1.41.0 # Keep fixed version
+FROM n8nio/n8n:1.63.4
 
 # Set timezone environment variable
 ENV TZ=Asia/Shanghai
