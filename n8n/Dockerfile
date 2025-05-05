@@ -18,8 +18,8 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # We will stay as root here, as the entrypoint script itself
 # handles switching to the 'node' user before executing n8n.
 
-# Set the entrypoint to our script
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Set the entrypoint to our script using the absolute path
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # The default command from the base n8n image will be passed to our entrypoint script
 # Typically something like "n8n" or similar to start the main process
