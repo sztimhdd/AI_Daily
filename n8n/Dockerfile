@@ -1,6 +1,6 @@
 # Use an official n8n image as a parent image
 # Keep fixed version for stability
-FROM n8nio/n8n:1.41.0
+FROM n8nio/n8n:latest
 
 # Set timezone environment variable
 ENV TZ=Asia/Shanghai
@@ -25,7 +25,7 @@ USER node
 # We are removing the custom ENTRYPOINT and relying on the base image's
 # default entrypoint/command handling after the USER node switch.
 # We still keep CMD to ensure 'n8n' is the intended command if needed.
-CMD ["n8n"]
+CMD ["n8n", "start"]
 
 # Keep Healthcheck commented out for now
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
