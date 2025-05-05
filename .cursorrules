@@ -1,0 +1,27 @@
+Always respond in 中文
+My system is Windows, use "WSL" to switch to WSL environment before you execute any command in Agent mode.
+# Cursor Rules for n8n + Notion Automation Project
+
+## Project Goal
+- Automate workflows and data synchronization between n8n and Notion.
+
+## Core Technologies
+- Primary: n8n, Notion API
+- Secondary: JavaScript/TypeScript (for n8n Code nodes), JSON, APIs, Docker (for n8n deployment)
+
+## Key Components
+- n8n Workflows: Design, implementation, and maintenance.
+- Notion Databases/Pages: Interaction via Notion API (creating, updating, querying).
+- Potential Python Scripts: If external scripts interact with n8n/Notion.
+
+## Configuration & Secrets
+- Notion API Key/Integration Token: Manage securely, preferably via environment variables (e.g., `NOTION_API_KEY`). Do not commit secrets.
+
+## Deployment
+- Target deployment platform: Railway (for n8n instance). Configure Volumes and Environment Variables correctly.
+
+## Commands
+# - Use WSL for terminal commands if interacting outside the n8n container (uncomment if needed).
+
+## Language
+- Respond in 中文. 

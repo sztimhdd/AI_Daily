@@ -8,21 +8,27 @@ ENV TZ=Asia/Shanghai
 # Metadata indicating the exposed port
 EXPOSE 5678
 
-# --- BEGIN PERMISSION FIX ---
-# Switch to root user temporarily to change ownership
-USER root
+# --- BEGIN RUNTIME PERMISSION FIX ---
+# Copy the entrypoint script into the image
+COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-# Ensure the target directory exists and set ownership to the node user (UID 1000) and group (GID 1000)
-# The official n8n image creates a 'node' user with UID/GID 1000
-RUN mkdir -p /home/node/.n8n && \
-    chown -R 1000:1000 /home/node/.n8n
+# Ensure the script is executable (though we already did chmod locally)
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Switch back to the non-root 'node' user before n8n starts
-USER node
-# --- END PERMISSION FIX ---
+# Set the entrypoint to our script
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# The default command from the base n8n image will be passed to our entrypoint script
+# Typically something like "n8n" or similar to start the main process
+# We removed the USER directives, the script handles switching if needed.
+# Base image likely starts as root or uses an entrypoint that drops privs;
+# our script handles the common case of starting as root and needing to chown/su.
+# --- END RUNTIME PERMISSION FIX ---
+
 
 # Optional: Add a healthcheck (adjust timing as needed)
+# Healthcheck should run after the entrypoint starts the main process
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://localhost:5678/healthz || exit 1
 
-# The base image already sets the correct user and entrypoint (which runs as 'node') 
+# Base image CMD will be executed by our ENTRYPOINT 
