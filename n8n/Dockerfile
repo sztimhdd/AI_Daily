@@ -12,17 +12,17 @@ EXPOSE 5678
 # Copy the entrypoint script into the image
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-# Ensure the script is executable (though we already did chmod locally)
+# Switch to root temporarily to make the script executable
+USER root
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# We will stay as root here, as the entrypoint script itself
+# handles switching to the 'node' user before executing n8n.
 
 # Set the entrypoint to our script
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 # The default command from the base n8n image will be passed to our entrypoint script
 # Typically something like "n8n" or similar to start the main process
-# We removed the USER directives, the script handles switching if needed.
-# Base image likely starts as root or uses an entrypoint that drops privs;
-# our script handles the common case of starting as root and needing to chown/su.
 # --- END RUNTIME PERMISSION FIX ---
 
 
