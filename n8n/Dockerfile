@@ -1,39 +1,31 @@
-  # Use an official n8n image as a parent image
-FROM n8nio/n8n:1.41.0
+# Use an official n8n image as a parent image
+FROM n8nio/n8n:1.41.0 # Keep fixed version
 
-# Set timezone environment variable (example: Asia/Shanghai)
-# You can override this in Railway environment variables for flexibility
+# Set timezone environment variable
 ENV TZ=Asia/Shanghai
 
 # Metadata indicating the exposed port
 EXPOSE 5678
 
-# --- BEGIN SIMPLIFIED PERMISSION FIX & TEST ---
+# --- BEGIN SIMPLE PERMISSION FIX ---
 # Switch to root temporarily
 USER root
 
-# Ensure the target directory exists and set ownership, then echo confirmation
+# Ensure the target directory exists and set ownership
 RUN mkdir -p /home/node/.n8n && \
     chown -R node:node /home/node/.n8n && \
     echo "Permissions set for /home/node/.n8n by root."
 
 # Switch back to the non-root 'node' user for subsequent commands
+# The base image's default entrypoint/cmd should run as this user
 USER node
+# --- END SIMPLE PERMISSION FIX ---
 
-# *** DIAGNOSTIC STEP 1: Try getting n8n help output ***
-# Let's see if the n8n executable can even run and print help info.
-# If this works, the n8n binary itself is likely okay.
-CMD ["n8n", "--help"]
-
-# *** DIAGNOSTIC STEP 2: If step 1 works, try running n8n normally ***
-# Comment out the CMD above and uncomment this one to try starting n8n.
-# CMD ["n8n"]
-# --- END SIMPLIFIED PERMISSION FIX & TEST ---
+# We are removing the custom ENTRYPOINT and relying on the base image's
+# default entrypoint/command handling after the USER node switch.
+# We still keep CMD to ensure 'n8n' is the intended command if needed.
+CMD ["n8n"]
 
 # Keep Healthcheck commented out for now
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-#  CMD wget --quiet --tries=1 --spider http://localhost:5678/healthz || exit 1
-
-# Base image CMD will be executed by our ENTRYPOINT
-# Explicitly define the command to pass to the entrypoint script
-CMD ["n8n"] 
+#  CMD wget --quiet --tries=1 --spider http://localhost:5678/healthz || exit 1 
