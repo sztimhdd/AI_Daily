@@ -4,31 +4,23 @@ FROM n8nio/n8n:1.63.4
 # Set timezone environment variable
 ENV TZ=Asia/Shanghai
 
-# --- BEGIN ENVIRONMENT AND PERMISSION FIX ---
-# Set the PATH globally FIRST, ensuring node and n8n are findable
-# This should be inherited by the 'node' user later
-ENV PATH /usr/local/bin:$PATH
+# Set PATH to ensure n8n binary is accessible
+ENV PATH /usr/local/bin:/home/node/.n8n:$PATH
 
-# Switch to root temporarily for permissions
+# Switch to root temporarily to fix permissions
 USER root
 
-# Ensure the target directory exists and set ownership
+# Ensure the n8n configuration directory exists and has correct permissions
 RUN mkdir -p /home/node/.n8n && \
     chown -R node:node /home/node/.n8n && \
+    chmod 700 /home/node/.n8n && \
     echo "Permissions set for /home/node/.n8n by root."
 
-# Switch back to the non-root 'node' user.
-# This user should now inherit the PATH set above.
+# Switch back to the non-root 'node' user
 USER node
-# --- END ENVIRONMENT AND PERMISSION FIX ---
 
-# Metadata indicating the exposed port (can be placed earlier, but fine here)
+# Expose the default n8n port
 EXPOSE 5678
 
-# Rely on the base image's entrypoint/cmd handling, or this simple CMD
-# Now that USER node has the correct PATH, this should work.
-CMD ["n8n"]
-
-# Keep Healthcheck commented out for now
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-#  CMD wget --quiet --tries=1 --spider http://localhost:5678/healthz || exit 1 
+# Explicitly run n8n with the 'start' command
+CMD ["n8n", "start"]
