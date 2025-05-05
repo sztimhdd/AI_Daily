@@ -31,4 +31,6 @@ ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 #  CMD wget --quiet --tries=1 --spider http://localhost:5678/healthz || exit 1
 
-# Base image CMD will be executed by our ENTRYPOINT 
+# Base image CMD will be executed by our ENTRYPOINT
+# Explicitly define the command to pass to the entrypoint script
+CMD ["n8n"] 
