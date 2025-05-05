@@ -31,8 +31,9 @@ if [ "$(id -u)" = '0' ]; then
    else
       # Fallback to using su (less ideal for signal handling)
       echo "Using 'su' (fallback) to switch user and execute..."
-      # Execute the command ($@) as the target user using su
-      exec su -s /bin/sh -c 'exec "$@"' "$DEFAULT_USER" -- "$@"
+      # Try executing n8n using its assumed full path
+      # We pass any additional arguments ($2, $3...) after the command
+      exec su -s /bin/sh -c 'exec /usr/local/bin/n8n "$@"' "$DEFAULT_USER" -- "$@"
    fi
 else
    # If already running as non-root (e.g., 'node'), just execute the command directly
