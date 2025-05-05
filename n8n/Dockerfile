@@ -1,4 +1,4 @@
-# Use an official n8n image as a parent image
+  # Use an official n8n image as a parent image
 FROM n8nio/n8n:1.41.0
 
 # Set timezone environment variable (example: Asia/Shanghai)
@@ -12,10 +12,10 @@ EXPOSE 5678
 # Switch to root temporarily
 USER root
 
-# Ensure the target directory exists and set ownership
+# Ensure the target directory exists and set ownership, then echo confirmation
 RUN mkdir -p /home/node/.n8n && \
-    chown -R node:node /home/node/.n8n
-echo "Permissions set for /home/node/.n8n by root." # Add log confirmation
+    chown -R node:node /home/node/.n8n && \
+    echo "Permissions set for /home/node/.n8n by root."
 
 # Switch back to the non-root 'node' user for subsequent commands
 USER node
