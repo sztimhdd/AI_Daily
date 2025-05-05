@@ -8,26 +8,29 @@ ENV TZ=Asia/Shanghai
 # Metadata indicating the exposed port
 EXPOSE 5678
 
-# --- BEGIN RUNTIME PERMISSION FIX ---
-# Copy the entrypoint script into the image
-COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-# Switch to root temporarily to make the script executable
+# --- BEGIN SIMPLIFIED PERMISSION FIX & TEST ---
+# Switch to root temporarily
 USER root
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-# We will stay as root here, as the entrypoint script itself
-# handles switching to the 'node' user before executing n8n.
 
-# Set the entrypoint to our script using the absolute path
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# Ensure the target directory exists and set ownership
+RUN mkdir -p /home/node/.n8n && \
+    chown -R node:node /home/node/.n8n
+echo "Permissions set for /home/node/.n8n by root." # Add log confirmation
 
-# The default command from the base n8n image will be passed to our entrypoint script
-# Typically something like "n8n" or similar to start the main process
-# --- END RUNTIME PERMISSION FIX ---
+# Switch back to the non-root 'node' user for subsequent commands
+USER node
 
+# *** DIAGNOSTIC STEP 1: Try getting n8n help output ***
+# Let's see if the n8n executable can even run and print help info.
+# If this works, the n8n binary itself is likely okay.
+CMD ["n8n", "--help"]
 
-# Optional: Add a healthcheck (adjust timing as needed)
-# Healthcheck should run after the entrypoint starts the main process
+# *** DIAGNOSTIC STEP 2: If step 1 works, try running n8n normally ***
+# Comment out the CMD above and uncomment this one to try starting n8n.
+# CMD ["n8n"]
+# --- END SIMPLIFIED PERMISSION FIX & TEST ---
+
+# Keep Healthcheck commented out for now
 # HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 #  CMD wget --quiet --tries=1 --spider http://localhost:5678/healthz || exit 1
 
