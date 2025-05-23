@@ -1,6 +1,6 @@
 # AI News and Prompt Tips Generator with n8n and AI Agents
 
-![n8n Logo](https://n8n.io/press-kit/n8n-logotype-light.png)  
+![Title Banner](https://github.com/sztimhdd/AI_Daily/blob/3190a6ea560521561cf3391b0891793516513c4a/n8n/title_banner.jpg)  
 *Automate AI news and prompt tips for your LinkedIn followers and colleagues.*
 
 ---
@@ -218,46 +218,6 @@ This workflow is flexible! Here’s how you can tweak it:
 
 **Pro Tip**: Use n8n’s [community nodes](https://n8n.io/integrations/) to extend functionality with additional services.
 
-### Language Support
-The workflow is designed to handle prompts in different languages and generate reports in English or Chinese. The flowchart below depicts the English/Chinese workflow branches and design:
-
-```mermaid
-graph TD
-    Start[Start]
-    FetchNews[Fetch News in English]
-    SelectPrompt[Select Prompt]
-    CheckLang{Prompt in English?}
-    TranslatePrompt[Translate Prompt to English]
-    ProcessNews[Process News with AI]
-    ProcessPrompt[Process Prompt with AI]
-    Integrate[Integrate with AI]
-    GenerateReport[Generate Report in English]
-    TargetLang{Target Language?}
-    TranslateReport[Translate Report to Chinese]
-    OutputEnglish[Output English Report]
-    OutputChinese[Output Chinese Report]
-    End[End]
-    Start --> FetchNews
-    Start --> SelectPrompt
-    SelectPrompt --> CheckLang
-    CheckLang -->|Yes| ProcessPrompt
-    CheckLang -->|No| TranslatePrompt
-    TranslatePrompt --> ProcessPrompt
-    FetchNews --> ProcessNews
-    ProcessNews --> Integrate
-    ProcessPrompt --> Integrate
-    Integrate --> GenerateReport
-    GenerateReport --> TargetLang
-    TargetLang -->|English| OutputEnglish
-    TargetLang -->|Chinese| TranslateReport
-    TranslateReport --> OutputChinese
-    OutputEnglish --> End
-    OutputChinese --> End
-```
-
-- **Prompt Handling**: Prompts in Chinese are translated to English for processing.
-- **Report Output**: The final report can be kept in English or translated to Chinese based on your audience's preference.
-
 ---
 
 ## Troubleshooting
@@ -305,3 +265,273 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### Final Notes
 
 Thank you for checking out this project! I hope it helps you automate your AI content creation and inspires you to explore the power of n8n and AI Agents. If you have any questions or just want to chat about AI, feel free to connect with me on LinkedIn or drop a comment below. Happy automating! 🤖✨
+
+---
+
+# 使用n8n和AI智能体生成AI新闻和提示技巧
+
+![n8n Logo](https://n8n.io/press-kit/n8n-logotype-light.png)  
+*为您的LinkedIn粉丝和同事自动生成AI新闻和提示技巧。*
+
+---
+
+## 目录
+
+1. [简介](#简介)
+2. [先决条件](#先决条件)
+3. [安装](#安装)
+4. [配置](#配置)
+5. [使用](#使用)
+6. [工作原理](#工作原理)
+7. [自定义](#自定义)
+8. [故障排除](#故障排除)
+9. [贡献](#贡献)
+10. [许可证](#许可证)
+
+---
+
+## 简介
+
+本项目使用[n8n](https://n8n.io/)（一个强大的工作流自动化工具）结合AI智能体，自动生成每日AI新闻摘要和实用的提示技巧。工作流旨在帮助您与LinkedIn粉丝和对AI感兴趣的同事分享相关的AI更新和有用的AI提示。
+
+### 工作流功能：
+- 从精选的RSS源获取最新的AI新闻。
+- 从预建库中随机选择高质量的AI提示。
+- 使用AI智能体过滤、翻译和调整内容以适应您的受众。
+- 生成格式化的Markdown“AI日报”，可直接分享。
+
+此工作流非常适合为内部团队或公众自动化内容创建，节省时间，同时保持社区对最新AI见解的关注。
+
+### 工作流概览
+下图展示了工作流的整体数据流，说明了数据如何被获取、处理、集成和保存：
+
+```mermaid
+graph TD
+    Start[开始]
+    Start --> FetchRSS[获取RSS源]
+    Start --> SelectPrompt[选择提示]
+    FetchRSS --> FilterNews[使用AI智能体过滤新闻]
+    SelectPrompt --> ProcessPrompt[使用AI智能体处理提示]
+    FilterNews --> Integrate[使用AI智能体集成]
+    ProcessPrompt --> Integrate
+    Integrate --> Draft[草稿报告]
+    Draft --> Save[保存到Notion]
+    Save --> End[结束]
+```
+
+---
+
+## 先决条件
+
+在开始之前，请确保您具备以下条件：
+
+- **n8n已安装**：您可以使用[云版本](https://n8n.io/pricing/)或[自托管](https://docs.n8n.io/hosting/)。自托管请参考[官方安装指南](https://docs.n8n.io/hosting/installation/)。
+- **API密钥**：
+  - 用于内容生成的AI模型API访问权限（例如[OpenAI](https://openai.com/)、[Gemini](https://ai.google.dev/)）。
+  - （可选）如果需要多语言支持，需访问翻译API。
+- **RSS源**：AI相关的RSS源列表（工作流中提供或可自定义）。
+- **提示库**：包含AI提示的JSON文件（可使用提供的示例或自行构建）。
+
+**注意**：如果您是n8n新手，请查看[入门指南](https://docs.n8n.io/getting-started/)以快速了解。
+
+---
+
+## 安装
+
+### 步骤1：克隆仓库
+首先，将此仓库克隆到本地机器：
+
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+```
+
+### 步骤2：将工作流导入n8n
+1. 打开您的n8n实例。
+2. 转到**工作流**选项卡。
+3. 点击**从文件导入**，选择克隆仓库中的`workflow.json`文件。
+4. 工作流将出现在您的n8n仪表板中。
+
+**提示**：如果使用云版本，您还可以通过提供GitHub原始文件链接来通过URL导入工作流。
+
+---
+
+## 配置
+
+要使工作流正常运行，您需要配置以下组件：
+
+### 1. AI模型API
+- **节点**：`AI智能体`（用于内容过滤和生成）。
+- **设置**：
+  - 转到`AI智能体`节点。
+  - 选择您的AI提供商（例如OpenAI、Gemini）。
+  - 在凭据部分输入您的API密钥。
+  - 如有需要，调整模型设置（例如温度、最大令牌数）。
+
+**示例**：
+```json
+{
+  "model": "gpt-4",
+  "temperature": 0.7,
+  "max_tokens": 150
+}
+```
+
+### 2. RSS源
+- **节点**：`RSS读取`（从RSS源获取新闻）。
+- **设置**：
+  - 打开`RSS读取`节点。
+  - 将默认的RSS源URL替换为您首选的AI新闻源。
+  - 确保节点设置为获取过去24小时的文章。
+
+**示例RSS源**：
+- [AWS机器学习](https://aws.amazon.com/blogs/machine-learning/feed)
+- [arXiv.org cs.ML](http://arxiv.org/rss/cs.LG)
+
+### 3. 提示库
+- **节点**：`HTTP请求`（获取提示库JSON）。
+- **设置**：
+  - 将您的`prompt_guides.json`上传到公共URL（例如GitHub、Google Drive）。
+  - 更新`HTTP请求`节点，指向您的JSON文件URL。
+  - 确保JSON格式与示例匹配：
+    ```json
+    [
+      {
+        "usage": "生成项目简报。",
+        "template": "为新AI项目创建简报..."
+      },
+      ...
+    ]
+    ```
+
+### 4. 输出设置
+- **节点**：`Notion`或`WeChat`（可选，用于保存或分享输出）。
+- **设置**：
+  - 使用您的Notion API密钥和数据库ID配置`Notion`节点以保存日报。
+  - （可选）设置`WeChat`节点以直接发布（需要WeChat API访问权限）。
+
+**专业提示**：如果不使用Notion或WeChat，您可以将这些节点替换为`Email`或`Slack`节点，将报告发送给您的团队。
+
+---
+
+## 使用
+
+### 运行工作流
+1. **手动触发**：在n8n中点击**执行工作流**按钮手动运行。
+2. **定时触发**：设置`Cron`节点以每天在特定时间运行工作流（例如每天上午10点）。
+
+### 预期输出
+- 格式化为Markdown的“AI日报”，包含：
+  - 3篇精选AI新闻摘要及链接。
+  - 1个AI提示技巧及使用说明。
+- 报告保存到Notion（或您选择的输出）并可直接分享。
+
+**示例输出**：
+```markdown
+# AI日报 - 2025年5月23日
+
+## 今日AI新闻Top 3
+1. **AWS推出新ML服务** - AWS发布了一项新服务... [阅读更多](https://aws.amazon.com/blogs/...)
+2. **NLP领域突破** - arXiv研究人员发表... [阅读更多](http://arxiv.org/...)
+3. **AI在金融中的应用** - 新研究显示AI对... [阅读更多](https://example.com/...)
+
+## 每日提示技巧
+**用途**：用一句话生成项目简报。  
+**模板**：“为关注...的新AI项目创建简报”
+```
+
+---
+
+## 工作原理
+
+工作流依赖多个AI智能体协作生成最终报告。下面的时序图展示了这些智能体如何交互：
+
+```mermaid
+sequenceDiagram
+    participant CE as 内容编辑智能体
+    participant PM as 提示大师智能体
+    participant IE as 整合编辑智能体
+    par
+        CE->>IE: 发送过滤后的新闻
+        and
+        PM->>IE: 发送处理后的提示
+    end
+    IE->>Output: 生成草稿报告
+```
+
+- **内容编辑智能体**：过滤和摘要RSS源中的新闻。
+- **提示大师智能体**：处理和优化选定的提示。
+- **整合编辑智能体**：将新闻和提示组合成一份连贯的报告。
+
+这些智能体并行工作，处理各自的输入，然后传递给整合编辑智能体，确保工作流高效运行。
+
+---
+
+## 自定义
+
+此工作流非常灵活！以下是您可以调整的方式：
+
+### 1. 更改新闻源
+- 将`RSS读取`节点中的RSS源替换为您首选的源。
+- 通过复制节点并合并输出以添加更多源。
+
+### 2. 修改提示库
+- 更新`prompt_guides.json`文件以包含您自己的提示。
+- 调整`代码`节点以不同方式过滤或选择提示（例如按类别）。
+
+### 3. 适应不同受众
+- 通过编辑`AI智能体`节点中的提示来更改语言或语气。
+- 对于多语言支持，使用翻译API添加翻译步骤。
+
+### 4. 集成其他工具
+- 将`Notion`节点替换为`Google Docs`、`Slack`或n8n支持的任何其他集成。
+- 在工作流成功运行时添加通知（例如电子邮件警报）。
+
+**专业提示**：使用n8n的[社区节点](https://n8n.io/integrations/)以扩展功能。
+
+---
+
+## 故障排除
+
+以下是一些常见问题及其解决方法：
+
+### 1. API速率限制
+- **问题**：您的AI API提供商限制了请求数量。
+- **解决方法**：在API调用之间添加`等待`节点或升级您的API计划。
+
+### 2. RSS源错误
+- **问题**：RSS源无法加载或未返回数据。
+- **解决方法**：检查源URL并确保其有效。使用`测试步骤`功能进行调试。
+
+### 3. 认证问题
+- **问题**：API密钥无效或已过期。
+- **解决方法**：在n8n设置中仔细检查您的凭据，并根据需要更新密钥。
+
+### 4. 输出格式问题
+- **问题**：Markdown输出看起来杂乱。
+- **解决方法**：调整`AI智能体`节点中的提示以强制更好的格式。
+
+**需要帮助？** 请访问[n8n社区论坛](https://community.n8n.io/)寻求支持或在此仓库中打开一个issue。
+
+---
+
+## 贡献
+
+我希望这个项目能在您的输入下不断成长！以下是您可以帮助的方式：
+
+- **建议改进**：通过issue提出您的想法或反馈。
+- **报告错误**：如果发现问题，请提交错误报告。
+- **提交拉取请求**：欢迎fork仓库并提交您的改进。
+
+参与时请遵守[Contributor Covenant行为准则](https://www.contributor-covenant.org/)。
+
+---
+
+## 许可证
+
+本项目采用MIT许可证。详情请见[LICENSE](LICENSE)文件。
+
+---
+
+### 结语
+
+感谢您查看此项目！希望它能帮助您自动化AI内容创建，并激励您探索n8n和AI智能体的强大功能。如果您有任何问题或想聊聊AI，请随时在LinkedIn上与我联系或在下方留言。祝您自动化愉快！🤖✨
