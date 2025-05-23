@@ -1,0 +1,1171 @@
+{
+  "name": "AI Daily",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "id": "381df06e-1072-4085-b9e9-f1e602e3fe30",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        264,
+        1820
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17-thinking",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        2520
+      ],
+      "id": "35c87f39-514d-48e3-86a9-c7a0ff7fca1c",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        552,
+        2125
+      ],
+      "id": "d51dc287-1e17-45be-88dc-c897209b37d3",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an experienced enterprise learning expert and content creator, specializing in crafting engaging and informative posts for professional platforms like LinkedIn and Viva Engage.\n\nYour primary task is to generate a daily post focused on the latest Artificial Intelligence news and a practical LLM prompt template. This post is for your audiences at a Canadian Financial Institution (a Crown Corporation).\n\n**Audience:** Your audiences are interested in AI developments relevant to AI breakthroughs, AI for government, AI for the financial sector, and the Canadian context, and are users of Microsoft Copilot.\n\n**Input Data:**\n1.  **Latest AI News list:** I will provide a list of recent AI news items. Each item will include a title and a link. The list will be formatted as follows:\n    ```\n{{ $json.data[2].output }}\n\n    ```\n\n2. **Prompt Usage Description:** and **Prompt Template:** `{{ $json.data[0].output }}`\n\n**Content Requirements for the Daily Post:**\n\n1.  **Introduction:** Briefly greet your audiences and introduce the day's AI insights.\n2.  **Top 3 AI News Section:**\n        * For each selected news item, provide a concise summary in professional and accurate English and its source link.\n3.  **Microsoft Copilot Prompt Sharing Section:**\n    * Introduce the section as a way to help colleagues leverage Microsoft Copilot more effectively.\n    * Share the \"Prompt Usage Description.\"\n    * Share the \"Prompt Template.\", surround it with a markdown code block.\n    * You might add a brief encouraging sentence about trying out the prompt.\n    * Wrap the Prompt body with \"---------------PROMPT----------------\" and \"------------END OF PROMPT------------\"\n4.  **Conclusion (Optional but Recommended):** A brief closing remark or call to discussion.\n\n**Style and Tone:**\n\n* **Tone:** Professional, informative, yet engaging and approachable. Should be suitable for internal communication on platforms like Viva Engage and professional sharing on LinkedIn.\n* **Wording:** Clear, concise, and impactful. Avoid overly technical jargon where possible, or explain it briefly.\n* **Emojis:** Use emojis thoughtfully and sparingly to enhance readability, break up text, and add a touch of personality (e.g., 📰 for news, 💡 for prompts, 🇨🇦 for Canadian context if appropriate). Do not overuse.\n* **Length:** Keep the entire post under ** 1500 character **.\n* **Links & URLS:** Don't use Markdown link or url, keep the original URL as plain text.\n\n**Output Format:**\n\n* **Format:** Provide ONLY the entire post in **Markdown format**, keep your response under ** 2000 character ** in total, do NOT add any other response or wording. \n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        992,
+        2300
+      ],
+      "id": "8b4bf56a-b77c-4c16-bae0-714b2803b827",
+      "name": "Daily Post Editor Agent"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        772,
+        2125
+      ],
+      "id": "c7b5acd6-8300-4a88-8035-d62acee43a8f",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input string from the previous node\nconst item = $input.first();\n\n// Check if the output property exists and is a string\nif (!item.json || !item.json.output || typeof item.json.output !== 'string') {\n  return {\n    json: { \n      error: \"Input is missing or not a string\",\n      cleaned_post_text: \"\" \n    }\n  };\n}\n\nconst rawTextFromAI = item.json.output;\n\n// Step 1: Replace escaped newlines with actual newlines\n// This handles the case where the AI output contains literal '\\n' character sequences\nlet processedText = rawTextFromAI.replace(/\\\\n/g, '\\n');\n\n// Step 2: Replace all newlines with spaces\n// This removes all actual line breaks from the text\nprocessedText = processedText.replace(/\\n/g, '<br>');\n\n// Step 3: Clean up multiple spaces that might have been created\n// This ensures we don't have excessive spaces where newlines were removed\nprocessedText = processedText.replace(/\\s{2,}/g, ' ');\n\n// Step 4: Trim leading and trailing whitespace\nprocessedText = processedText.trim();\n\n// Return the cleaned text along with some metadata\nreturn {\n  json: { \n    original_length: rawTextFromAI.length,\n    cleaned_length: processedText.length,\n    newlines_removed: (rawTextFromAI.match(/\\\\n/g) || []).length + (rawTextFromAI.match(/\\n/g) || []).length,\n    cleaned_post_text: processedText \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1368,
+        2300
+      ],
+      "id": "b27674fa-fe7f-4052-8867-11b24c467bbf",
+      "name": "LLM \\n remover"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input string from the previous node\nconst item = $input.first();\n\n// Check if the output property exists and is a string\nif (!item.json || !item.json.output || typeof item.json.output !== 'string') {\n  return {\n    json: { \n      error: \"Input is missing or not a string\",\n      cleaned_post_text: \"\" \n    }\n  };\n}\n\nconst rawTextFromAI = item.json.output;\n\n// Step 1: Replace escaped newlines with actual newlines\n// This handles the case where the AI output contains literal '\\n' character sequences\nlet processedText = rawTextFromAI.replace(/\\\\n/g, '\\n');\n\n// Step 2: Replace all newlines with spaces\n// This removes all actual line breaks from the text\nprocessedText = processedText.replace(/\\n/g, '<br>');\n\n// Step 3: Clean up multiple spaces that might have been created\n// This ensures we don't have excessive spaces where newlines were removed\nprocessedText = processedText.replace(/\\s{2,}/g, ' ');\n\n// Step 4: Trim leading and trailing whitespace\nprocessedText = processedText.trim();\n\n// Return the cleaned text along with some metadata\nreturn {\n  json: { \n    original_length: rawTextFromAI.length,\n    cleaned_length: processedText.length,\n    newlines_removed: (rawTextFromAI.match(/\\\\n/g) || []).length + (rawTextFromAI.match(/\\n/g) || []).length,\n    cleaned_post_text: processedText \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1368,
+        1900
+      ],
+      "id": "8fabe807-7ecd-404d-8b90-a395cd1a7a67",
+      "name": "LLM \\n remover1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17-thinking",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        2020
+      ],
+      "id": "f4b09bce-1ef9-4fdf-ad90-9ba6fb8b374d",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=**角色设定**\n\n您是一位经验丰富的企业学习专家和内容创建者，专注于为微信、钉钉等专业平台创作吸引人且信息丰富的帖子。\n\n**任务**\n\n您的主要任务是通过翻译、改写和综合内容，创建一份中文版的“每日 AI 快报”。这份快报将关注最新的人工智能新闻和实用的大型语言模型 (LLM) 提示模板。\n\n**目标受众**\n\n中国的 AI 爱好者、企业中的 IT 专业人士以及咨询行业的从业者。\n\n**输入数据**\n\n- **最新 AI 新闻列表**：您将获得 3 条最近的 AI 新闻，每条新闻包括标题和链接如下：\n{{ $json.data[1].output }}\n\n- **每日提示模板及使用方法**：\n`{{ $json.data[0].output }}`\n\n**帖子内容要求**\n\n- **引言**：简短问候读者，并概述当天的 AI 见解。\n- **Top 3 AI 新闻**：\n  - 为每条新闻提供简洁的摘要，并以纯文本 URL 形式包含其来源链接。\n- **LLM 提示分享**：\n  - 以中文介绍此部分，帮助读者更有效地使用大型语言模型。\n  - 分享翻译成中文的“提示使用说明”。\n  - 分享翻译成中文的“提示模板”，并用 Markdown 代码块（```）包裹。\n  - （可选）添加一个简短的鼓励性语句，建议读者尝试该提示。\n- **结尾（可选但推荐）**：一个简短的结束语或讨论邀请。\n\n**风格和语气**\n\n- **语气**：专业、信息丰富，但又吸引人且易于亲近——适合微信、钉钉等内部沟通平台，以及 LinkedIn 等专业分享平台。\n- **措辞**：清晰、简洁、有影响力。避免使用过于技术性的行话，或者在必要时提供简短的解释。\n- **表情符号**：适度且有目的地使用表情符号，以提高可读性、分割文本并增加个性（例如，📰 表示新闻，💡 表示提示）。避免过度使用。\n- **长度**：整个帖子控制在 2000 字符以内。\n- **链接和 URL**：不要使用 Markdown 超链接；将 URL 以纯文本形式呈现。\n\n**输出格式**\n\n- **格式**：以标准 Markdown 格式交付完整的帖子，以便我可以使用其他 Markdown 渲染器进行改进。\n- **字数**：总响应必须控制在 2000 字符以内，仅包含帖子本身，无额外评论或文字。",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1000,
+        1800
+      ],
+      "id": "68a9205a-994c-45fa-b5b5-1047995c52b0",
+      "name": "中文编辑Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -880,
+        2440
+      ],
+      "id": "9ca785c8-e9f8-4a01-b074-6389581a5cab",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        -680,
+        2520
+      ],
+      "id": "2175f263-51ed-4368-bb99-82a1c18d1c43",
+      "name": "RSS Read",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1500,
+        2200
+      ],
+      "id": "fa1c2689-5dff-4fdc-a70f-762c515d778a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "1eb4efb0-f009-808c-89af-f1f5c96a5eb3",
+          "mode": "list",
+          "cachedResultName": "AI Daily",
+          "cachedResultUrl": "https://www.notion.so/1eb4efb0f009808c89aff1f5c96a5eb3"
+        },
+        "title": "=老兵AI日报 {{$now.format('yyyy-MM-dd')}}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "range": "={{$now.format('yyyy-MM-dd')}}",
+              "includeTime": false
+            },
+            {
+              "key": "Post Title|title",
+              "title": "=老兵AI日报 {{$now.format('yyyy-MM-dd')}}"
+            }
+          ]
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $json.paragraph1Text }}"
+            },
+            {
+              "textContent": "={{ $json.paragraph2Text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1808,
+        2000
+      ],
+      "id": "8cf26bbd-94cf-4064-9e3f-ef71dff65e9f",
+      "name": "中文Notion数据库",
+      "credentials": {
+        "notionApi": {
+          "id": "gcLtqRP4mJ5YVwCB",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "1eb4efb0-f009-808c-89af-f1f5c96a5eb3",
+          "mode": "list",
+          "cachedResultName": "AI Daily",
+          "cachedResultUrl": "https://www.notion.so/1eb4efb0f009808c89aff1f5c96a5eb3"
+        },
+        "title": "=AI Daily News {{$now.format('yyyy-MM-dd')}}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "range": "={{$now.format('yyyy-MM-dd')}}",
+              "includeTime": false
+            },
+            {
+              "key": "Post Title|title",
+              "title": "=AI Daily Issue {{$now.format('yyyy-MM-dd')}}"
+            }
+          ]
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $json.paragraph1Text }}"
+            },
+            {
+              "textContent": "={{ $json.paragraph2Text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1808,
+        2200
+      ],
+      "id": "4c494425-c66e-40fa-a852-0a981493441a",
+      "name": "English Notion DB",
+      "credentials": {
+        "notionApi": {
+          "id": "gcLtqRP4mJ5YVwCB",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    \"json\": {\n      \"url\": \"https://gpt-rss.vercel.app/atom.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.jiqizhixin.com/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.qbitai.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://machinelearningmastery.com/blog/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.marktechpost.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://bair.berkeley.edu/blog/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://news.mit.edu/rss/topic/artificial-intelligence2\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.unite.ai/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://aws.amazon.com/blogs/machine-learning/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.microsoft.com/en-us/research/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://feeds.feedburner.com/nvidiablog\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.reddit.com/r/artificial/.rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://medium.com/feed/@karpathy\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://feeds.feedburner.com/blogspot/gJZg\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://becominghuman.ai/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://openai.com/news/rss.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.wired.com/feed/tag/ai/latest/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://huggingface.co/blog/feed.xml\"\n    }\n  }\n]\n;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1080,
+        2440
+      ],
+      "id": "6c35901b-9da7-4c8a-82cb-8a892f20a9c8",
+      "name": "Top 20 AI RSS Feeds"
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/refs/heads/main/prompt_guides.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1080,
+        1880
+      ],
+      "id": "d4639f4e-607a-4331-9554-72bc0c95fdbe",
+      "name": "Get Prompt Pool from Github"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Step 1: Extract the 'data' field from the input (it's a stringified JSON array)\nconst dataString = $input.first().json.data;\n\n// Step 2: Parse the stringified JSON into an actual array\nconst promptArray = JSON.parse(dataString);\n\n// Step 3: Randomly select one item from the array\nconst randomIndex = Math.floor(Math.random() * promptArray.length);\nconst selectedPrompt = promptArray[randomIndex];\n\n// Step 4: Return the selected prompt as a single item\nreturn [{\n  json: {\n    usage: selectedPrompt.usage,\n    template: selectedPrompt.template\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -860,
+        1760
+      ],
+      "id": "90ec4f14-0205-4195-886e-932ea77852c6",
+      "name": "Format Prompt & Usage",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=I'm a coporate learning advisor for enterprise AI adoption, and I'm writing a daily share post of useful prompt templates. \n\nI have the following Chinese prompt template\n\n````Prompt\n{{ $('Format Prompt & Usage').item.json.template }}\n````\n\nand its usage explanation here {{ $('Format Prompt & Usage').item.json.usage }}.\n\nRead the above prompt template and its usage description, understand how the prompt works, then rewrite both the prompt and its usage explanation, then translate into accurate and professional English.\n\n** Important Requirements **\n1. Clean up the format of the prompt template to ensure it does not contain excessive formatting such as \"\\n\" or other special formatting.\n2. Translate the prompt template and prompt usage into English markdown format so it can be used in English LLM tools;\n3. Replace the Chinese software/platform names into their western counterparties, such as \"Wechat\" --> \"WhastApp\", \"Xiaohongshu/Rednote\" --> \"Instagram\", etc.\n4. Replace all mention of LLM provider names, such as Claude, ChatGPT, or DeepSeek, to Microsoft Copilot.\n5. If you feel the orginal prompt template can be further improved by adding more detail or elements, feel free to augment it as you see fit.\n\nOnly provide the rewritten prompt template, and a brief prompt usage explanation in your response, no need for any other outputs or formality.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        176,
+        1600
+      ],
+      "id": "075c1436-0a7e-4586-a2f9-2ff762252969",
+      "name": "Prompt Translation/Rewrite Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "id": "bdef95ca-b107-456c-b397-c307dabfedad",
+      "name": "Google Gemini Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        1960
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e02169e1-3589-409e-9a7d-7a3fb92ad426",
+              "leftValue": "={{ $json.output.conclusion }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        1760
+      ],
+      "id": "411d432e-d3fe-46bd-9793-da4a27b1bc11",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -44,
+        1975
+      ],
+      "id": "58d38899-696a-4fad-8b99-8bbff5eef707",
+      "name": "Wait",
+      "webhookId": "4fc077dd-e50d-4727-8875-e895472ad717"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Evaluate the relevancy of the prompt provided to the following audience:\n\n**Audience:** Your audiences are employees of companies from all industries and sizes from small businesses to enterprises, looking to learn more about AI, especially how it's going to change the way they work, even though maybe the prompt cannot be directly used for their own work, they might still be able to learn how the prompt is constructed and maybe revise it to fit their own needs, so keep the gate wide instead of narrow on the context used in the prompt.\n\nHere is the prompt's usage description: {{ $json.usage }}\nHere is the prompt's actual prompting template:{{ $json.template }}\n\nFirst evaluate whether this is indeed a prompt template that works with LLM tools. \n\nIf it is, provide your answer whether the above content is considered relevant and potentially interests the target audience, in \"yes\" or \"no\" in the structured output JSON template provided below:\n\n{\n\t\"conclusion\": \"yes or no\",\n    \"rationale\": \"your reason why this prompt is considered irrelevant for our audiences\"\n}\n\n** ONLY OUTPUT THE JSON AS YOUR RESPONSE **",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -700,
+        1760
+      ],
+      "id": "7d77c205-073b-4060-882b-575311ec7089",
+      "name": "AI Prompt Filter",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "hhu@edc.ca, huhai.orion@gmail.com",
+        "subject": "=  AI Daily {{ $now.format('yyyy-MM-dd') }}",
+        "message": "=Your AI Daily drafts are ready, please check out Notion DB. <br>\n\n中文版： {{ $json.data[0].url }}\n<br>\nEnglish：{{ $json.data[2].url }}\n<br>\n\n<br>\n中文版稿件：{{ $json.data[1].paragraph1Text }}{{ $json.data[1].paragraph2Text }}\n<br>\n\n<br>\nEnglish Post Draft:{{ $json.data[3].paragraph1Text }}{{ $json.data[3].paragraph2Text }}\n<br>\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2546,
+        1950
+      ],
+      "id": "dd945e10-b8f1-4e31-93c3-de2d6b6e798f",
+      "name": "Gmail",
+      "webhookId": "5d771cd1-ca03-4b6a-b75b-709f47a2acd5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3j15fuCZX9Mc2uGP",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        2028,
+        2079
+      ],
+      "id": "a3deb078-a440-47b8-8491-0303f11487a0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $now.set({ hour: 22, minute: 00, second: 0 }).toFormat(\"yyyy-MM-dd'T'HH:mm:ss\") }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1300,
+        2885
+      ],
+      "id": "b10d6b9d-6bd0-4253-9c81-f7410331184d",
+      "name": "Wait1",
+      "webhookId": "6833b205-b792-484c-bead-1d10b7cc038e",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2248,
+        2100
+      ],
+      "id": "b6c00728-0235-43ad-9cdd-bfbfb261b267",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=您是一位专业的WeChat文章编辑助手。您的任务是将给定的内容编辑成符合WeChat API要求的格式，并使用允许的HTML标签使其看起来更美观。\n\nWeChat文章的\"content\"字段支持以下HTML标签：\n<p>：段落\n<strong>：加粗\n<em>：斜体\n请将给定的内容结构化，每个部分（如主题、服饰等）用一个<p>标签包裹，在每个部分的标题前使用<strong>来突出显示。例如：\n\n<p><strong>主题：</strong> 一个胖乎乎、可爱的小男孩，装扮成Q版风格的春节财神爷。</p>\n<p><strong>服饰：</strong> 他身穿传统、鲜艳的红色长袍，饰有丰富的金色滚边和吉祥图案。头戴一顶元宝形金帽子，帽顶散发着柔和的魔法光芒。</p>\n\n如果原始内容中有换行，请使用<br>标签来保留这些换行。例如：\n\n<p><strong>动作与道具：</strong> 他高兴地抱着满怀的超大金元宝和红包。他站在一朵小巧、<br>蓬松的金色祥云上，双臂张开，仿佛准备慷慨地分享他的宝藏。</p>\n\n请确保保留原始内容，不添加或删除任何文本，只在适当的地方添加HTML标签来格式化。仅使用上述列出的HTML标签，避免使用其他标签。\n\n最终输出应是一个单一的字符串，**不需要增加 \"```html\" 之类的格式标识符**, 我需要的是一段可以直接放入WeChat API调用的\"content\"字段中。\n\n以下是需要编辑的内容：\n{{ $json.data[1].paragraph1Text }}\n{{ $json.data[1].paragraph2Text }}\n\n请根据以上要求编辑内容，并输出格式化后的字符串。",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        2468,
+        2250
+      ],
+      "id": "576fb66b-8fc6-4745-b955-a9b550d059bd",
+      "name": "中文编辑Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-thinking-exp",
+        "options": {}
+      },
+      "id": "74f65449-3169-485e-914e-530c9ed8a22e",
+      "name": "Google Gemini Chat Model4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        2480
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input string from the previous node\nconst item = $input.first();\n\n// Check if the output property exists and is a string\nif (!item.json || !item.json.output || typeof item.json.output !== 'string') {\n  return {\n    json: { \n      error: \"Input is missing or not a string\",\n      cleaned_post_text: \"\" \n    }\n  };\n}\n\nconst rawTextFromAI = item.json.output;\n\n// Step 1: Replace escaped newlines with actual newlines\n// This handles the case where the AI output contains literal '\\n' character sequences\nlet processedText = rawTextFromAI.replace(/\\\\n/g, '\\n');\n\n// Step 2: Replace all newlines with spaces\n// This removes all actual line breaks from the text\nprocessedText = processedText.replace(/\\n/g, '<br>');\n\n// Step 3: Clean up multiple spaces that might have been created\n// This ensures we don't have excessive spaces where newlines were removed\nprocessedText = processedText.replace(/\\s{2,}/g, ' ');\n\nlet htmlContent = processedText;\n\n// Remove ```html from the beginning if present\nif (htmlContent.startsWith('```html')) {\n    htmlContent = htmlContent.substring(7);\n}\n\n// Remove ``` from the end if present\nif (htmlContent.endsWith('```')) {\n    htmlContent = htmlContent.substring(0, htmlContent.length - 3);\n}\n\n\n// Step 4: Trim leading and trailing whitespace\nprocessedText = htmlContent.trim();\n\n// Return the cleaned text along with some metadata\nreturn {\n  json: { \n    original_length: rawTextFromAI.length,\n    cleaned_length: processedText.length,\n    newlines_removed: (rawTextFromAI.match(/\\\\n/g) || []).length + (rawTextFromAI.match(/\\n/g) || []).length,\n    cleaned_post_text: processedText \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2844,
+        2250
+      ],
+      "id": "80378977-6a37-444a-9142-487fa67aea42",
+      "name": "LLM \\n remover2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const maxLength = 2000; // Notion's limit per rich_text object\nconst content = $input.first().json.cleaned_post_text; // Adjust this path based on your input data\n\n\n// Split content into lines and process\nconst lines = content.split('<br>').filter(line => line.trim().length > 0); // Split by <br> for line breaks\nlet paragraph1Content = [];\nlet paragraph2Content = [];\n\n// Split the content into two parts, ideally after the headlines section\nconst splitPoint = lines.findIndex(line => line.includes(\"Boost Your Prompting Skills:\")); // Split before the Copilot section\nif (splitPoint === -1) {\n  // If no logical split point is found, split roughly in the middle\n  const midPoint = Math.floor(lines.length / 2);\n  lines.forEach((line, index) => {\n    if (index < midPoint) {\n      paragraph1Content.push(line);\n    } else {\n      paragraph2Content.push(line);\n    }\n  });\n} else {\n  // Split at the logical point\n  lines.forEach((line, index) => {\n    if (index < splitPoint) {\n      paragraph1Content.push(line);\n    } else {\n      paragraph2Content.push(line);\n    }\n  });\n}\n\n// Join the lines with \\n and ensure the text doesn't exceed 2000 characters\nlet paragraph1Text = paragraph1Content.join('\\n').trim();\nlet paragraph2Text = paragraph2Content.join('\\n').trim();\n\n// Truncate if necessary to respect Notion's limit\nif (paragraph1Text.length > maxLength) {\n  paragraph1Text = paragraph1Text.substring(0, maxLength);\n}\nif (paragraph2Text.length > maxLength) {\n  paragraph2Text = paragraph2Text.substring(0, maxLength);\n}\n\nreturn [{\n  json: {\n    paragraph1Text: paragraph1Text,\n    paragraph2Text: paragraph2Text\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1588,
+        1900
+      ],
+      "id": "ca44c82b-fdc1-42a8-9dc1-a9eaa892cd9a",
+      "name": "Split-2000-char"
+    },
+    {
+      "parameters": {
+        "jsCode": "const maxLength = 2000; // Notion's limit per rich_text object\nconst content = $input.first().json.cleaned_post_text; // Adjust this path based on your input data\n\n\n// Split content into lines and process\nconst lines = content.split('<br>').filter(line => line.trim().length > 0); // Split by <br> for line breaks\nlet paragraph1Content = [];\nlet paragraph2Content = [];\n\n// Split the content into two parts, ideally after the headlines section\nconst splitPoint = lines.findIndex(line => line.includes(\"Boost Your Microsoft Copilot Skills:\")); // Split before the Copilot section\nif (splitPoint === -1) {\n  // If no logical split point is found, split roughly in the middle\n  const midPoint = Math.floor(lines.length / 2);\n  lines.forEach((line, index) => {\n    if (index < midPoint) {\n      paragraph1Content.push(line);\n    } else {\n      paragraph2Content.push(line);\n    }\n  });\n} else {\n  // Split at the logical point\n  lines.forEach((line, index) => {\n    if (index < splitPoint) {\n      paragraph1Content.push(line);\n    } else {\n      paragraph2Content.push(line);\n    }\n  });\n}\n\n// Join the lines with \\n and ensure the text doesn't exceed 2000 characters\nlet paragraph1Text = paragraph1Content.join('\\n').trim();\nlet paragraph2Text = paragraph2Content.join('\\n').trim();\n\n// Truncate if necessary to respect Notion's limit\nif (paragraph1Text.length > maxLength) {\n  paragraph1Text = paragraph1Text.substring(0, maxLength);\n}\nif (paragraph2Text.length > maxLength) {\n  paragraph2Text = paragraph2Text.substring(0, maxLength);\n}\n\nreturn [{\n  json: {\n    paragraph1Text: paragraph1Text,\n    paragraph2Text: paragraph2Text\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1588,
+        2300
+      ],
+      "id": "84f43d4d-7fe0-4034-b3c6-39b492660ab0",
+      "name": "Split-2000-char1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        2560
+      ],
+      "id": "769c4997-4eea-467f-bcf9-878259ba3fc8",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        2320
+      ],
+      "id": "1561c8d4-228f-41cc-aa26-0ca0039b450f",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=**角色设定**\n\n您是一位经验丰富的企业学习专家和内容创建者，专注于为微信、钉钉等专业平台创作吸引人且信息丰富的帖子。\n\n**目标受众**\n\n中国的 AI 爱好者、企业中的 IT 专业人士以及咨询行业的从业者。\n\n\n**任务**\n\n您的主要任务: \n- 从提供的列表中选择 3 条最相关的新闻，并翻译成中文。\n- 相关性标准：优先选择对读者职业发展、技能提升或行业创新有影响的新闻。\n- 为每条新闻提供简洁的摘要，并以纯文本 URL 形式包含其来源链接。\n\n\n**输入数据**\n\n- **最新 AI 新闻列表**：您将获得最近的 AI 新闻，每条新闻包括标题和链接如下：\n\n`{{ $json.enumerated }}`\n\n\n \n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -160,
+        2200
+      ],
+      "id": "a2b07100-a61d-4ee6-b572-f8ca65c2935d",
+      "name": "Chinese Selector"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Role Setting\n\nYou are an experienced corporate learning expert and content creator, specializing in crafting engaging and informative posts for professional platforms such as LinkedIn and Viva Engage.\n\nTarget Audience\n\nFinancial industry professional, Enterprise AI practioners, Government AI practioners\n\nTask\n\nYour main task:\n\nSelect the 3 most relevant news items from the provided list and translate them into Professional English.\n\nRelevance criteria: Prioritize news that impacts the readers' career development, skill enhancement, or industry innovation.\n\nProvide a concise summary for each news item and include its source link in plain text URL format.\n\nInput Data\n\nLatest AI News List: You will be provided with 100 recent AI news items, each including a title and link as follows:\n`{{ $json.enumerated }}`",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -160,
+        2420
+      ],
+      "id": "d61bb978-8ccf-4d97-a6ef-97213e54cf35",
+      "name": "English Selector"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"conclusion\": \"yes or no\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -540,
+        1960
+      ],
+      "id": "c3471df7-5c7f-4dd9-bcac-7ad1c878a3b3",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "title, link",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        2320
+      ],
+      "id": "d5d5a28d-3827-438e-a1b2-0e95815ccfcc",
+      "name": "聚合输出"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet enumeratedOutput = \"Enumerated articles:\\n\\n\";\n\nitems.forEach(item => {\n  const data = item.json.data || [];\n  data.forEach((entry, index) => {\n    const title = entry.title || \"No title\";\n    const link = entry.link || \"No link\";\n    enumeratedOutput += `${index + 1}. Title: ${title}\\n   Link: ${link}\\n\\n`;\n  });\n});\n\nreturn [{ json: { enumerated: enumeratedOutput } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        2320
+      ],
+      "id": "dfbdaf63-1798-4510-a232-8c763d47b269",
+      "name": "合并成一个Item"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Get current time and 48 hours ago in milliseconds\nconst now = new Date();\nconst twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);\n\n// Filter items where isoDate is within the last 24 hours\nreturn items.filter(item => {\n  const pubDate = new Date(item.json.isoDate);\n  return pubDate >= twentyFourHoursAgo && pubDate <= now;\n});"
+      },
+      "name": "24小时内新闻过滤",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        -460,
+        2600
+      ],
+      "typeVersion": 1,
+      "id": "e361eebb-710d-4509-b05c-0b9b458592f9",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Prompt Translation/Rewrite Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Daily Post Editor Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Post Editor Agent": {
+      "main": [
+        [
+          {
+            "node": "LLM \\n remover",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Daily Post Editor Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "中文编辑Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM \\n remover": {
+      "main": [
+        [
+          {
+            "node": "Split-2000-char1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM \\n remover1": {
+      "main": [
+        [
+          {
+            "node": "Split-2000-char",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "中文编辑Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "中文编辑Agent": {
+      "main": [
+        [
+          {
+            "node": "LLM \\n remover1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "聚合输出",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "24小时内新闻过滤",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Top 20 AI RSS Feeds",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Prompt Pool from Github",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top 20 AI RSS Feeds": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prompt Pool from Github": {
+      "main": [
+        [
+          {
+            "node": "Format Prompt & Usage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prompt & Usage": {
+      "main": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Translation/Rewrite Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Prompt Translation/Rewrite Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Prompt Pool from Github",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Prompt Filter": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "中文Notion数据库": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "English Notion DB": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        []
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "中文编辑Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "中文编辑Agent1": {
+      "main": [
+        [
+          {
+            "node": "LLM \\n remover2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM \\n remover2": {
+      "main": [
+        []
+      ]
+    },
+    "Split-2000-char": {
+      "main": [
+        [
+          {
+            "node": "中文Notion数据库",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split-2000-char1": {
+      "main": [
+        [
+          {
+            "node": "English Notion DB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "English Selector",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Chinese Selector",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chinese Selector": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "English Selector": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "聚合输出": {
+      "main": [
+        [
+          {
+            "node": "合并成一个Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合并成一个Item": {
+      "main": [
+        [
+          {
+            "node": "Chinese Selector",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "English Selector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "24小时内新闻过滤": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "320dd613-8a35-4aaf-abb7-8b131dddc7f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2391192a2670b66d2b5def6cb7b3ac93d6aacc3aeda7223983aaac3443537124"
+  },
+  "id": "nS4hYccS6IkryMZW",
+  "tags": []
+}
