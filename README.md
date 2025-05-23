@@ -6,7 +6,7 @@
 ---
 
 ## Table of Contents
-
+##[中文版](#简介) 
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Installation](#installation)
@@ -270,7 +270,7 @@ Thank you for checking out this project! I hope it helps you automate your AI co
 
 # 使用n8n和AI智能体生成AI新闻和提示技巧
 
-![n8n Logo](https://n8n.io/press-kit/n8n-logotype-light.png)  
+![Title Banner](https://github.com/sztimhdd/AI_Daily/blob/3190a6ea560521561cf3391b0891793516513c4a/n8n/title_banner.jpg)   
 *为您的LinkedIn粉丝和同事自动生成AI新闻和提示技巧。*
 
 ---
