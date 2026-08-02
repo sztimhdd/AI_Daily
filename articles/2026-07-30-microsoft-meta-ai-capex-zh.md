@@ -29,7 +29,7 @@ Microsoft 的 AI 投资开始赚钱了，而 Meta 还在烧钱。
 
 因为 Microsoft 和 Meta 虽然都在购买 GPU、建设数据中心、训练模型、开发 Agent，但它们实际上并不是在玩同一种商业游戏。
 
-![Microsoft 与 Meta 的 AI 资本支出回报路径对比](images/2026-07-30-microsoft-meta-ai-capex-hero.svg)
+![Microsoft 与 Meta 的 AI 资本支出回报路径对比](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/articles/images/2026-07-30-microsoft-meta-ai-capex-hero.svg)
 
 *图 1：同样投入 AI 基础设施，Microsoft 与 Meta 面对的是两套不同的商业回报系统。*
 
@@ -73,7 +73,7 @@ Satya Nadella 在电话会上给出了一个很值得注意的数据：
 
 而真正关键的一层，是收费接口。
 
-![Microsoft AI 商业栈](images/2026-07-30-microsoft-ai-commercial-stack.svg)
+![Microsoft AI 商业栈](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/articles/images/2026-07-30-microsoft-ai-commercial-stack.svg)
 
 *图 2：Microsoft 的优势不是资本开支更低，而是从芯片、Azure、Foundry、Agent 到 Copilot，多层都已有可收费接口。*
 
@@ -250,7 +250,7 @@ Meta 是否真的会向外部客户直接出售算力？
 
 这也是为什么 Meta 当前的资本压力显得特别大。
 
-![Meta AI 投资与未来变现路径](images/2026-07-30-meta-ai-investment-logic.svg)
+![Meta AI 投资与未来变现路径](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/articles/images/2026-07-30-meta-ai-investment-logic.svg)
 
 *图 3：Meta 的现实回报首先进入广告机器，而广告现金流又反过来为基础设施和尚未成熟的 Agent、API 等业务融资。*
 
@@ -346,7 +346,7 @@ Meta 的回报难以拆分，也不等于它不存在。
 
 这是两个完全不同的命题。
 
-![AI 资本竞赛的下一阶段](images/2026-07-30-ai-capex-next-phase.svg)
+![AI 资本竞赛的下一阶段](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/articles/images/2026-07-30-ai-capex-next-phase.svg)
 
 *图 4：基础设施只是中间环节。下一阶段真正拉开差距的是从 CapEx 到产品、定价和现金流的回路是否清晰、持久。*
 
