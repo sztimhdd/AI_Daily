@@ -45,6 +45,9 @@ Saved results live in `docs/verification/results/`:
   remote reread hash.
 - `2026-08-12-final-acceptance-audit.md` — final acceptance audit of
   the V1 evidence.
+- `2026-08-12-chatgpt-cover-uat.md` — real ChatGPT cover export UAT
+  attempt: no logged-in session on any reachable browser surface, item
+  not executed (optional, nonblocking).
 
 ## What the local checks prove
 
@@ -59,17 +62,20 @@ Saved results live in `docs/verification/results/`:
 
 ## External UAT status (needs network / accounts / humans)
 
-Three of five items are complete as of 2026-08-12. Remaining: the real
-ChatGPT cover export (optional — cover is optional in V1) and the human
-topic gate in a real desktop chat (required for V1 acceptance; desktop
-completion is not claimed).
+Three of five items are complete as of 2026-08-12. Item 4 (real
+ChatGPT cover export) is UNAVAILABLE / NONBLOCKING: no reachable
+logged-in ChatGPT Web session exists on any browser surface, so no
+generation, download, or adoption was attempted; the cover is optional
+in V1 and the published no-cover package is unchanged. Item 5, the
+human topic gate in a real desktop chat, remains PENDING (required for
+V1 acceptance; desktop completion is not claimed).
 
 | # | Item | How to verify | Status |
 |---|------|---------------|--------|
 | 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 1 |
 | 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote`, `publish-verified: remote-reread`, and `publish-sha256` in state.md | COMPLETE — [GitHub publication](results/2026-08-12-github-publication.md) |
 | 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 4 |
-| 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | pending |
+| 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | UNAVAILABLE / NONBLOCKING — [ChatGPT cover UAT](results/2026-08-12-chatgpt-cover-uat.md): no reachable logged-in ChatGPT Web session; not executed |
 | 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | pending |
 
 External UAT writes only into the run's own sandbox/root; it never
