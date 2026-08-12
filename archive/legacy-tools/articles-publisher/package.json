@@ -1,0 +1,17 @@
+{
+  "name": "articles",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "marked": "^17.0.3",
+    "playwright": "^1.58.2"
+  }
+}

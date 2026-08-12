@@ -1,0 +1,1472 @@
+{
+  "name": "AI-公众号文章",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1584,
+        80
+      ],
+      "id": "d7d56b88-7074-4dc7-9310-030cf142026b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        -1360,
+        32
+      ],
+      "id": "2aa272cc-1d5e-4601-8d09-c034d9bdf3bd",
+      "name": "RSS Read",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 */2 * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2032,
+        80
+      ],
+      "id": "34461190-2c63-4c30-a0ee-20b77bf805d8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    \"json\": {\n      \"url\": \"https://gpt-rss.vercel.app/atom.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.jiqizhixin.com/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.qbitai.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://machinelearningmastery.com/blog/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.marktechpost.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://bair.berkeley.edu/blog/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://news.mit.edu/rss/topic/artificial-intelligence2\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.unite.ai/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://aws.amazon.com/blogs/machine-learning/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.microsoft.com/en-us/research/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://feeds.feedburner.com/nvidiablog\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.reddit.com/r/artificial/.rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://medium.com/feed/@karpathy\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://feeds.feedburner.com/blogspot/gJZg\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://becominghuman.ai/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://openai.com/news/rss.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.wired.com/feed/tag/ai/latest/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://huggingface.co/blog/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.technologyreview.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://venturebeat.com/category/ai/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://googleaiblog.blogspot.com/atom.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://openai.com/blog/rss/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.kdnuggets.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://magazine.sebastianraschka.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://techcrunch.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://thegradient.pub/rss/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.artificialintelligence-news.com/feed/rss/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.theverge.com/rss/index.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://feeds.arstechnica.com/arstechnica/index\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://futurism.com/categories/ai-artificial-intelligence/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://gizmodo.com/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.theguardian.com/technology/artificialintelligenceai/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.techmeme.com/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://towardsdatascience.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.404media.co/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://stability.ai/blog?format=rss\"\n    }\n  }\n]\n;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1808,
+        80
+      ],
+      "id": "20d2ccfa-60bc-4731-9ce0-e4b13d185d15",
+      "name": "Top 20 AI RSS Feeds"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "title, link",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        -160
+      ],
+      "id": "abaf17f4-f316-4192-9abc-3b3ce845130c",
+      "name": "聚合输出"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet enumeratedOutput = \"Enumerated articles:\\n\\n\";\n\nitems.forEach(item => {\n  const data = item.json.data || [];\n  data.forEach((entry, index) => {\n    const title = entry.title || \"No title\";\n    const link = entry.link || \"No link\";\n    enumeratedOutput += `${index + 1}. Title: ${title}\\n   Link: ${link}\\n\\n`;\n  });\n});\n\nreturn [{ json: { enumerated: enumeratedOutput } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1136,
+        -160
+      ],
+      "id": "e39c50fd-4042-402d-ac4d-cd27f2c96131",
+      "name": "合并成一个Item"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[{\n      \"representative_title\": \"ChatGPT-5被曝存在重大推理缺陷，OpenAI紧急回滚模型\",\n      \"search_keywords\": \"ChatGPT-5 reasoning flaw OpenAI rollback\",\n      \"justification\": \"此事件直接冲击了大模型行业的信心，对国内依附于OpenAI技术路线的创业公司有重大警示意义。\",\n      \"urls\": [\n        \"https://www.jdsupra.com/legalnews/white-house-releases-ai-action-plan-3547288/\",\n        \"https://www.forbes.com/sites/paulocarvao/2025/07/23/what-trumps-ai-action-plan-means-for-us-tech-leadership/\",\n        \"https://techcrunch.com/2025/07/23/trumps-ai-strategy-trades-guardrails-for-growth-in-race-against-china/\"\n      ]\n},\n{\n      \"representative_title\": \"Adobe Photoshop 更新生成式AI功能，设计师饭碗真的悬了？\",\n      \"search_keywords\": \"Adobe Photoshop Harmonize Generative AI\",\n      \"justification\": \"设计领域的工业标准更新，标志着AIGC进入生产力深水区，对创意工作者有直接职业影响。\",\n      \"urls\": [\n        \"https://www.xda-developers.com/adobe-new-photoshop-features/\",\n        \"https://www.forbes.com/sites/marksparrow/2025/07/29/powerful-new-ai-tools-coming-to-photoshop-for-content-creators-and-creative-professionals/\",\n        \"https://www.zdnet.com/article/this-new-photoshop-feature-can-boost-image-resolution-in-just-one-click-thanks-to-ai/\"\n      ]\n}\n]"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -752,
+        64
+      ],
+      "id": "06957bc3-e6bb-44fd-a66a-27feea2ac544",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        64
+      ],
+      "id": "05fb147d-4fec-4eec-a949-91c5ccfe43b8",
+      "name": "Google Gemini Chat Model8",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Get current time and 48 hours ago in milliseconds\nconst now = new Date();\nconst twentyFourHoursAgo = new Date(now.getTime() - 72 * 60 * 60 * 1000);\n\n// Filter items where isoDate is within the last 24 hours\nreturn items.filter(item => {\n  const pubDate = new Date(item.json.isoDate);\n  return pubDate >= twentyFourHoursAgo && pubDate <= now;\n});"
+      },
+      "name": "7天内新闻",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        -1136,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "a33d369c-83d7-427a-8861-ba118ceb32be",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "914fff13-a513-40fd-bc4d-2c27334510e4",
+              "name": "=original_title",
+              "value": "=\n{{ $json.data[0].representative_title }}",
+              "type": "string"
+            },
+            {
+              "id": "46259d7f-1c70-498a-8034-9199401a692f",
+              "name": "original_urls",
+              "value": "={{ $json.data[0].urls }}",
+              "type": "array"
+            },
+            {
+              "id": "0d5be3a0-f96a-40c1-8a94-83ec3132ef1a",
+              "name": "search_keywords_for_api",
+              "value": "={{ $json.data[0].search_keywords }}",
+              "type": "string"
+            },
+            {
+              "id": "9d59c13c-5f72-4208-a9af-6603154169a2",
+              "name": "news_api_request_body",
+              "value": "={{\n  {\n    \"query\": {\n      \"$query\": {\n        // THIS LINE WAS MISSING. Add it back.\n        \"keyword\":$json.data[0].search_keywords,\n        \n        \"keywordSearchMode\": \"simple\"\n      },\n      \"$filter\": {\n        \"forceMaxDataTimeWindow\": \"5\",\n        \"dataType\": [\n          \"news\",\n          \"blog\"\n        ],\n        \"startSourceRankPercentile\": 0,\n        \"endSourceRankPercentile\": 30,\n        \"isDuplicate\": \"skipDuplicates\"\n      }\n    },\n    \"resultType\": \"articles\",\n    \"articlesSortBy\": \"fq\",\n    \"articlesCount\": 5, // Changed back to 5 to get more results\n    \"includeArticleBody\": true, // Make sure this is included to get content\n    \"apiKey\": \"${EVENT_REGISTRY_API_KEY}\"\n  }\n}}",
+              "type": "object"
+            },
+            {
+              "id": "f91ba1fa-ca82-4d43-a35e-66bde1b3e065",
+              "name": "original_topic_data",
+              "value": "={{ $json.data[0] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "ignoreConversionErrors": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        240
+      ],
+      "id": "e3dd2317-b89b-4491-b466-261b6d7a9859",
+      "name": "PrepareNewsAPI_Request",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eventregistry.org/api/v1/article/getArticles",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.news_api_request_body }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -16,
+        240
+      ],
+      "id": "0b1be55e-1fb3-416d-b115-dfb0dc16183d",
+      "name": "CallNewsAPI2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -240,
+        480
+      ],
+      "id": "4d899ce5-20d6-498c-98c1-caedb7df2668",
+      "name": "LoopOverOriginalURLs"
+    },
+    {
+      "parameters": {
+        "url": "https://api.apify.com/v2/acts/apify~website-content-crawler/run-sync-get-dataset-items?token=${APIFY_API_TOKEN}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "${APIFY_API_TOKEN}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"startUrls\": [\n        {\n            \"url\": \"{{ $json['url'] }}\"\n        }\n    ],\n    \"maxPagesPerCrawl\": 100,\n    \"maxCrawlingDepth\": 3,\n    \"pageFunction\": \"async function pageFunction(context) {\\n    const { $, page, request, log } = context;\\n\\n    // 1. Extract the title of the page.\\n    const title = await page.title();\\n\\n    // 2. Extract the plain text content of the page.\\n    const text = $('body').text();\\n\\n    // 3. Log the extracted data for debugging.\\n    log.info(`Extracted title: '${title}' from ${request.url}`)\\n\\n    // 4. Return the data to be saved to the dataset.\\n    return {\\n        url: request.url,\\n        title,\\n        text\\n    };\\n}\",\n    \"proxyConfiguration\": {\n        \"useApifyProxy\": true\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -16,
+        624
+      ],
+      "id": "5da28b24-047d-45c2-9a3c-51ddc448919a",
+      "name": "CallApifyScraper"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        432
+      ],
+      "id": "76123b37-c90e-4eea-8ea7-506166b26ef2",
+      "name": "AggregateScrapedData"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=**角色设定**\n\n你是一家顶级科技市场情报公司的 **首席技术分析师（专注于中国市场视角）**。你的专长是人工智能（AI）和机器学习。你的主要职责是从每天海量的全球新闻中，筛选出对**中国企业技术领导者、AI从业者和投资者**真正具有战略意义的关键事件。你不仅仅是新闻搬运工，你是一个信号探测器，能识别出那些将改变游戏规则的趋势。\n\n**目标受众**\n\n你的分析对象是微信公众号的深度读者：\n*   **技术高管与架构师**：关心技术栈的演进、成本和开源趋势。\n*   **AI 创业者与投资人**：关心风口、商业模式和竞争格局。\n*   **深度科技爱好者**：喜欢“硬核”干货，讨厌营销号。\n\n**核心任务**\n\n从提供的 `Input Data` 新闻标题列表中，识别出 **3个最具影响力的 AI 事件**，并按照以下步骤生成 JSON 输出。你的选择必须基于“战略重要性”，而不是媒体报道的数量。\n\n**思维链过程 (Chain-of-Thought)**\n\n为了确保准确性和透明度，请在生成最终输出前执行以下步骤：\n\n**第一步：聚类分析**\n浏览所有输入数据。将看似报道同一核心事件的文章分组。提取每篇文章的主要域名（例如 `techcrunch.com`）以确保来源多样性。\n\n**第二步：评估与筛选 (中国视角)**\n对每个聚类进行评估：\n*   **来源多样性检查**：该聚类是否包含来自 **至少3个不同媒体机构** 的文章？如果不是，直接丢弃。\n*   **战略价值评估**：问自己，“这件事对中国的AI开发者、大模型公司或相关政策有影响吗？”\n    *   *高价值示例*：OpenAI 发布新模型（影响国内套壳公司）、Meta 开源 Llama 3（影响国内开源生态）、美国对华芯片禁令（影响算力）。\n    *   *低价值示例*：某个不知名的小型初创公司融资新闻、过于本地化的美国政策细节。\n\n**第三步：排名与选择**\n选出前3名最重要的事件。\n\n**输出要求**\n\n你的最终输出必须包含两部分：你的思考过程（Markdown）和清洗后的 JSON。\n\n### 第一部分：审议过程 (Markdown)\n在 JSON 之前，用 Markdown 展示你的思考过程。\n\n**示例审议：**\n```markdown\n**审议与分析：**\n\n**发现的聚类：**\n*   **聚类 A: Adobe Photoshop AI 功能更新**：来源 (5): ... -> *入选。影响：生产力工具的行业标准变革。*\n*   **聚类 B: 特朗普 AI 计划**：来源 (4): ... -> *入选。影响：虽然是美国政策，但可能加剧算力封锁，对中国有重大地缘政治影响。*\n*   **聚类 C: 某小公司发布新插件**：来源 (2) -> *丢弃：来源不足。*\n\n**最终选择 (Top 3):**\n1. 特朗普 AI 计划\n2. ...\n```\n\n### 第二部分：最终 JSON 输出\nJSON 数组必须包含整三个对象。每个对象的字段必须是 **简体中文**（除了 `search_keywords` 和 `urls`）：\n\n*   **`representative_title`**: (String - 中文) 为该事件起一个**微信公众号风格的标题**。要求：吸引人、信息量大、略带紧迫感。例如：“深夜炸雷！OpenAI 突然封锁 API，国内套壳应用面临崩盘？” 而不是 “OpenAI 更改了 API 政策”。\n*   **`search_keywords`**: (String - 英文) 提供 2-4 个精准的英文搜索关键词，用于后续 API 搜索。保留核心实体名（如 `Sam Altman`, `Qwen`, `Blackwell GPU`）。\n*   **`justification`**: (String - 中文) 用一句话解释为什么这件事对**中国读者**重要。\n*   **`urls`**: (Array of Strings) 该聚类中所有文章的 URL 列表。\n\n---\n## 输入数据\n{{ $json.enumerated }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -912,
+        -160
+      ],
+      "id": "cd5261ad-377e-4350-96f8-52e3dae2ca9e",
+      "name": "topicChoserAgent"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0].urls",
+        "options": {
+          "destinationFieldName": "url"
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        480
+      ],
+      "id": "96b994fb-8ea2-410a-a0b6-71dcacf861bc",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f9f142b2-d837-4f82-87ae-a2d82fc8f7b8",
+              "name": "output[0].urls",
+              "value": "={{ $json.data[0].urls }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -688,
+        480
+      ],
+      "id": "54d05fdf-3ae1-4f34-906f-3663f33133ba",
+      "name": "retrieveURLs"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        224,
+        320
+      ],
+      "id": "697b694d-f699-47da-bcf6-1bb67afe333a",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "KB",
+        "include": "specifiedFields",
+        "fieldsToInclude": "data, articles",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        448,
+        320
+      ],
+      "id": "4e4caea6-d2e2-4918-b7f1-7770cce47fca",
+      "name": "AggregateScrapedData1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        944,
+        912
+      ],
+      "id": "565c37be-5359-44c2-80a9-6fbcd916c616",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2096,
+        912
+      ],
+      "id": "37e08310-c17d-44da-9860-aacb6be6b196",
+      "name": "Google Gemini Chat Model10",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## 角色与目标\n你是一名 **资深科技媒体撰稿人**（类似于“极客公园”、“机器之心”或“36氪”的主笔）。你的任务是将一份结构化的大纲 (`article_outline`) 和原始素材库 (`knowledge_base`) 转化为一篇逻辑严密、信息量大且符合 **微信公众号阅读习惯** 的初稿。\n\n## 关键输入\n1.  **`article_outline`**: 文章的骨架和叙事逻辑。**必须严格遵守其中的章节结构和引用的来源编号 `(Source 1, 3)`。**\n2.  **`knowledge_base`**: 包含多个文章的 JSON 对象。**`knowledge_base.articles.results` 数组中的每篇文章对应一个数字编号，从 1 开始。**\n\n## 核心任务：分章节撰写\n\n对于大纲中的 **每一个章节和小节**：\n\n1.  **锁定来源**：查看大纲中标记的来源编号 (e.g., `(Source 1, 3)`)。\n2.  **提取信息**：从 `knowledge_base` 中对应编号的文章里提取事实、数据和观点。\n3.  **中文整合与写作**：\n    *   **拒绝翻译腔**：不要逐字翻译英文素材。理解原意后，用**地道的中文科技用语**重新表述。例如，不要说“大语言模型的上下文窗口”，可以说“LLM 的长文本处理能力”。\n    *   **事实优先**：用素材库中的数据支撑观点。\n    *   **必须引用**：在包含具体事实、数据或观点的句子末尾，**必须** 加上 `[1]` 格式的引用标记。\n    *   **引用语处理**：\n        *   如果是直接引用某人的话，翻译成流畅的中文，并使用 Markdown 引用块 (`>`) 格式。\n        *   **例子**：\n        > “AGI 的到来比我们预想的要快得多，这是全人类的机遇。” [2]\n\n## 格式与风格要求\n*   **移动端适配**：微信阅读场景下，**段落不宜过长**。每段控制在 2-4 行文字，多使用换行。\n*   **语气**：客观、专业、有洞察力。避免过于口语化，也不要写成干巴巴的论文。\n*   **缺失信息处理**：如果大纲要求的某点在素材中找不到，请标注：`[编辑注：素材库中未找到此点的支持数据]`\n\n## 输出格式\n生成一篇完整的 Markdown 文章（约 3000-5000 字）。\n\n# 输入数据\n1.  核心叙事与论点 (Markdown):\n    ```\n{{ $json.data[0].data.toJsonString() }}\n    ```\n2.  素材库 (JSON):\n    ```\n{{ $json.data[1].KB.toJsonString() }}\n    ```",
+        "options": {
+          "systemMessage": "你是由 Google AI 创建的 Gemini。你的知识截止到 2023 年 11 月。你必须使用 **简体中文** 回答用户的请求。\n\n**任务特定指令：AI 内容创作助手**\n\n当协助用户撰写关于 AI 话题的自媒体内容（如微信公众号文章）时，你的生成文本应模仿 **资深 AI 行业观察者** 的风格。目标是帮助用户产出有深度、吸引人且符合中国科技圈语境的高质量内容。\n\n**目标受众**：\n*   AI 及相关行业从业者\n*   资深 IT 技术人员\n*   科技投资人与猎头\n*   对前沿科技感兴趣的学生\n\n**1. 语言风格与用词：**\n*   **地道中文，拒绝“机翻味”**：使用流畅、自然的中文表达。避免僵硬的直译句式（如“它是被认为...”应改为“业界普遍认为...”）。\n*   **专业且精准**：使用准确的行业术语（如“鲁棒性”、“端侧模型”、“护城河”、“降维打击”）。使用生动的比喻来解释复杂概念。\n*   **拒绝营销号**：避免使用“震惊！”、“吓尿了”等低级词汇。虽然要是爆款，但要靠内容的质量取胜。\n\n**2. 段落设计与节奏：**\n*   **移动端友好**：段落要短，逻辑要清晰。使用空行来控制阅读节奏。\n*   **结构清晰**：善用小标题、加粗来突出重点。\n\n**3. 核心方法论：**\n*   **What-Why-How**：解释一个概念时，不仅说“是什么”，更要说“为什么重要（对行业的影响）”以及“未来怎么走”。\n*   **客观中立**：基于事实，但要有观点（Insight）。\n\n**核心约束**：\n所有输出必须是 **简体中文**。"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        864,
+        688
+      ],
+      "id": "daed98ef-2987-4303-aad3-6c535e2500e5",
+      "name": "First Draft Writer1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## 角色与目标\n你是一名 **资深科技媒体的视觉编辑**。你的任务是阅读文章终稿，并战略性地插入图片占位符。你的选择应能增强文章的可读性，打破大段文字的沉闷感，并强化核心叙事。\n\n## 关键输入\n*   **`final_article_draft`**: 润色后的文章终稿。\n\n# 输入数据\nFinal Article Draft:\n{{ $json.output }}\n\n## 图片插入原则\n仅在有明确目的时插入图片占位符：\n1.  **概念可视化**：解释复杂或抽象概念（如“神经网络架构”、“Transformer原理”）。\n2.  **叙事强化**：展示核心冲突或主题（如“中美算力对比”、“数据中心的能源消耗”）。\n3.  **数据展示**：当文中提到具体数据、趋势时，建议插入图表。\n4.  **调节节奏**：打破长文本块，给读者视觉缓冲。\n\n## 输出格式要求\n\n1.  通读全文，理解流向。\n2.  在合适的位置插入占位符。\n3.  **对于通用配图（AI生成）**：使用以下格式。**注意：Caption（图注）必须是中文，但 AI Prompt 必须是英文（为了更好的生成效果）。**\n    ```\n    [Image: 这里写一句简短、有洞察力的中文图注，直接关联文章内容，不要只描述画面。]\n\n    [AI Prompt: A detailed English prompt for Midjourney/DALL-E. Include style (e.g., 'editorial illustration', 'cyberpunk', 'minimalist tech'), subject, lighting, and mood.]\n    ```\n4.  **对于新闻图片/图表**：\n    ```\n    [Image: 这里写中文图注]\n    [Search Keywords: \"keyword 1\", \"keyword 2\"] \n    ```\n5.  **输出**：提供插入了占位符的完整 Markdown 文章。",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        688
+      ],
+      "id": "0ce2ef0a-9be2-4eb5-bf2e-d17e93e7615c",
+      "name": "Image Adder2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## 角色与目标\n你就是公众号 **“AI前沿观察”**（虚拟大号）的 **主笔编辑**。你的读者是习惯了碎片化阅读、但也渴望深度干货的中国科技圈人士。你的任务是将一篇干巴巴的初稿，改写成一篇 **有血有肉、观点犀利、金句频出、适合朋友圈转发** 的爆款文章。\n\n## 关键输入\n1.  **`draft_article`**: 包含 Markdown 格式和数字引用 `[1]` 的事实性初稿。\n2.  **`author_style_guide_json`**: 定义了你的写作风格（见下文）。\n3.  **`narrative_context`**: 文章的核心叙事角度。\n\n# 输入数据\n1.  初稿文章:\n    ```\n    {{ $json.output }}\n    ```\n2.  目标叙事:\n    ```\n    {{ $('Narrative+KB').item.json.data[0].data.toJsonString()}}\n    ```\n\n3.  写作风格指南 (Style Guide):\n    ```json\n    {\n      \"author_voice\": \"你是'老司机'视角的行业观察者。你既懂技术细节，又懂商业逻辑。你说话直接，不喜欢弯弯绕绕。你喜欢用通俗的类比来解释复杂的技术。\",\n      \"tone_keywords\": [\"犀利\", \"深度\", \"接地气\", \"网感\", \"启发性\"],\n      \"avoid_phrases\": [\n        \"综上所述\", \"众所周知\", \"值得注意的是\", \"此外\", \"然而\", \"一方面...另一方面\", \n        \"不仅...而且\", \"随着...的发展\", \"在当今数字化时代\", \"赋能\", \"抓手\", \"闭环\" (除非讽刺时使用)\n      ],\n      \"preferred_sentence_structure\": \"短句为主。多用问句引发思考。善用'但是'来制造反转。\",\n      \"formatting_habits\": {\n        \"intro\": \"开篇必须抓人。可以用一个具体的场景、一个反直觉的数据或者一句挑衅性的观点开始。不要写'本文将讨论...'。\",\n        \"body\": \"多用小标题。关键结论用 **加粗** 强调。使用引用块 `>` 来放金句。\",\n        \"ending\": \"结尾要升华。不要做简单的总结摘要。要给读者留下一个开放性的问题，或者一句意味深长的预测（'让子弹再飞一会儿'）。\"\n      }\n    }\n    ```\n\n## 核心任务：改写与重构\n\n1.  **标题与导语（Critical!）**：\n    *   **标题**：根据文章内容，拟定一个最具吸引力的标题，必须作为文章的第一行，使用一级标题格式 `#`。\n    *   **导语（摘要）**：紧接着标题，写一段 **100-150字** 的导语。这段话必须**极具诱惑力**，用来钩住读者继续往下看。使用 Markdown 引用块 `>` 格式。\n        *   *导语技巧*：可以概括核心冲突（“谷歌急了”），可以抛出反直觉结论（“看似是发布会，实则是围剿”），或者设置悬念。\n\n2.  **注入“人味儿”和“网感”**：\n    *   把“第三方记者视角”改为“行业观察者视角”。可以适当使用“我们看到”、“这其实意味着”等连接词。\n    *   使用中国互联网科技圈的黑话（如果恰当），如“护城河”、“降维打击”、“大力出奇迹”、“甚至有点'智障'”。\n\n3.  **强化金句密度**：\n    *   确保每一章都有一个能被读者截图转发的“金句”。\n    *   **例子**：不要说“AI发展的速度很快”，要说“AI 的进化速度，让摩尔定律都显得像在散步”。\n\n4.  **优化排版（关键！）**：\n    *   **非常重要**：微信公众号不喜欢大段文字。**每段不要超过 3-4 行。**\n    *   在逻辑转折处，果断换行。\n    *   重点句子必须 **加粗**。\n\n5.  **处理引用**：\n    *   **删除** 所有的数字引用标记（如 `[1]`, `[2]`）。微信文章不使用这种学术引用格式。\n    *   将引用转化为自然的叙述。例如：“据 TechCrunch 报道...” 或 “OpenAI 官方博客提到...”。\n\n## 输出格式\n输出一篇完整的、排版精美的 Markdown 文章。**必须包含标题（#）和导语（>）。**",
+        "options": {
+          "systemMessage": "你必须使用 **简体中文** 回答用户的请求。\n\n**任务特定指令：微信公众号风格润色**\n\n你的目标是将输入文本转化为符合 **中国微信公众号（WeChat Official Account）** 生态的高质量科技文章。\n\n**风格关键词**：\n*   **高信息密度，低阅读门槛**：内容要硬核，但读起来要顺畅。\n*   **情绪共鸣**：科技文章也需要情绪。或者是对未来的兴奋，或者是对落后的焦虑，或者是对巨头博弈的吃瓜心态。\n*   **金句频出**：每隔几段就要有一个精辟的总结，方便读者划线。\n\n**结构要求**：\n1. **标题**：必须有。\n2. **导语**：必须有（放在引用块里）。\n3. **正文**：分小标题叙述。\n\n**排版禁忌**：\n*   严禁出现超过 5 行的长段落。\n*   严禁使用学术论文式的引用格式 `[1]`。\n*   严禁使用僵硬的翻译腔。\n\n**必须完全使用简体中文。**"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        688
+      ],
+      "id": "ffd1cae1-14bc-439c-a4fc-b8e0d42bff96",
+      "name": "Final Editor1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        912
+      ],
+      "id": "15d31849-1158-4a73-8f0d-4aa7a560293d",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the raw text from the AI's output\nconst item = $input.first();\n\n// Basic validation\nif (!item.json || !item.json.output || typeof item.json.output !== 'string') {\n  return { json: { error: \"Input is missing or not a string\" } };\n}\nlet rawTextFromAI = item.json.output;\n\n// --- Step 1: Un-escape Newlines ---\nlet processedText = rawTextFromAI.replace(/\\\\n/g, '\\n');\n\n// --- Step 2: Isolate the Core Markdown Content ---\nconst firstHeadingIndex = processedText.search(/^#+\\s/m);\nif (firstHeadingIndex !== -1) {\n  processedText = processedText.substring(firstHeadingIndex);\n} else {\n  const separatorIndex = processedText.indexOf('***');\n  if (separatorIndex !== -1) {\n    processedText = processedText.substring(separatorIndex + 3).trim();\n  }\n}\n\n// --- Step 3: Normalize Paragraph Breaks for Perfect Markdown ---\nprocessedText = processedText.replace(/\\n{3,}/g, '\\n\\n');\n\n// --- Step 4: Final Polishing ---\nprocessedText = processedText.replace(/[ \\t]+\\n/g, '\\n');\nprocessedText = processedText.trim();\n\n// --- CRITICAL ADDITION: Prepare for Binary Output ---\n// Derive a filename from the article's first line (the title)\nconst firstLineOfContent = processedText.split('\\n')[0];\n// Clean up Markdown heading syntax and remove invalid filename characters\nconst fileNameBase = firstLineOfContent.replace(/^(#+\\s*)/, '').trim().substring(0, 100).replace(/[\\\\/:*?\"<>|]/g, ''); // Max 100 chars\nconst fullFileName = `${fileNameBase || 'Untitled Article'}.md`; // Fallback name if title is empty\n\n// Return the item with the content as a binary property\nreturn [{\n  json: {\n    // Optionally keep the text in JSON for debugging or if other nodes need it as a string\n    cleaned_post_text_string: processedText\n  },\n  // This 'binary' object is what the Google Drive node expects\n  binary: {\n    // 'markdownFile' is a key name you choose for this binary property.\n    // It's what you will put in 'Input Data Field Name' in the Google Drive node.\n    markdownFile: {\n      data: Buffer.from(processedText, 'utf8'), // Convert the string to a Node.js Buffer\n      fileName: fullFileName,\n      mimeType: 'text/markdown' // Specify the MIME type\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        688
+      ],
+      "id": "e6489f51-ead3-4e38-aca2-817f4e537b7a",
+      "name": "LLM \\n remover3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2144,
+        304
+      ],
+      "id": "467a0a9d-e9cf-4ec5-b12a-82fb9066b76c",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "data, KB",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        304
+      ],
+      "id": "7ed2876a-9674-4b2f-835f-4ac14bcd349a",
+      "name": "Outline+KB"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        224
+      ],
+      "id": "05db508d-8658-4cb1-8518-a34e9c115406",
+      "name": "Google Gemini Chat Model12",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## 角色与目标\n你是一名 **资深内容主编**。你的任务不是写文章，而是基于大量的原始素材（`knowledge_base`），策划出 **两个截然不同** 的叙事角度，供编辑部选择。\n\n你的目标是生成 **微信公众号爆款文案** 的策划案。\n\n## 关键输入\n*   **`knowledge_base`**: 包含多篇已整理好的新闻素材。\n\n# 输入数据\nKnowledge Base:\n```\n{{ $json.KB.toJsonString() }}\n```\n\n## 核心任务：策划两个角度\n\n1.  **深入分析素材**：找出核心冲突、争议点或被忽视的细节。\n2.  **构思两个角度**：\n    *   **角度 1：深度硬核流 (Tech Deep Dive)**\n        *   *受众*：技术人员、极客。\n        *   *核心*：关注技术原理、行业影响、成本分析。\n        *   *标题风格*：干货、数据、分析。\n    *   **角度 2：行业内幕/吃瓜流 (Industry Drama/Inside Story)**\n        *   *受众*：泛科技人群、投资人、吃瓜群众。\n        *   *核心*：关注人事斗争、巨头博弈、商业利益、反转。\n        *   *标题风格*：情绪化、悬念、冲突。\n\n## 输出格式要求\n\n生成一个 Markdown 文档，包含两个方案，用水平线 `---` 分隔。\n\n```markdown\n# 方案一：[拟定一个吸引人的公众号标题]\n\n> **核心论点 (Thesis):** 一句话概括这篇公众号文章的核心观点（要犀利）。\n\n### 关键论据 (Key Arguments)\n\n*   **论点 1:** [小标题]\n    *   **摘要:** ...\n    *   **支撑素材:** \n        *   **引用:** \"...\" (来源 [1])\n        *   **数据:** ... (来源 [2])\n\n*   **论点 2:** ...\n\n### 整体基调\n- 深度分析、冷静、专业\n\n---\n\n# 方案二：[拟定另一个完全不同风格的爆款标题]\n\n> **核心论点 (Thesis):** ...\n\n### 关键论据\n...\n\n### 整体基调\n- 故事驱动、情绪共鸣、揭秘\n```",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        0
+      ],
+      "id": "cbf2f5ff-5c61-4a1a-8249-442344b45597",
+      "name": "NarrativeGenerator"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{\n  (() => {\n    // Get the raw string from the previous agent's 'output' field.\n    const rawText = $json.output;\n\n    // A defensive check to ensure we have a string to work with.\n    if (!rawText || typeof rawText !== 'string') {\n      throw new Error(\"Input from the agent was not a valid string.\");\n    }\n\n    // Find the start of the JSON object (the first '{').\n    const startIndex = rawText.indexOf('{');\n\n    // Find the end of the JSON object (the last '}').\n    const endIndex = rawText.lastIndexOf('}');\n\n    // If we can't find a JSON object, throw a clear error.\n    if (startIndex === -1 || endIndex === -1) {\n      throw new Error(\"Could not find a valid JSON object within the agent's output string.\");\n    }\n\n    // Extract the clean JSON string from between the start and end markers.\n    const jsonString = rawText.substring(startIndex, endIndex + 1);\n\n    // CRITICAL CHANGE: We now must explicitly 'return' the final value.\n    return JSON.parse(jsonString);\n  })()\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1072,
+        320
+      ],
+      "id": "cd4725de-acb0-470c-a754-87626fe58dcd",
+      "name": "KnowledgeBase"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "huhai.orion@gmail.com",
+        "subject": "编辑确认：选择文章叙事角度 (WeChat)",
+        "message": "={{ $json.output }}",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Title",
+              "placeholder": "最终确定的中文标题"
+            },
+            {
+              "fieldLabel": "Thesis",
+              "fieldType": "textarea",
+              "placeholder": "核心论点（一句话）"
+            },
+            {
+              "fieldLabel": "Key Arguments",
+              "fieldType": "textarea",
+              "placeholder": "文章结构大纲（复制并修改你选择的方案）"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1696,
+        0
+      ],
+      "id": "cdc4ae7b-aad7-4f95-a777-5a6ee38305af",
+      "name": "Send message and wait for response",
+      "webhookId": "8793a3f5-17c8-40e0-927d-0f8345757707",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3j15fuCZX9Mc2uGP",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## 角色与目标\n你是一名 **专业的数据清洗与情报分析师（专注于中文本地化）**。你的任务是处理一组原始新闻数据，将其转化为高质量、结构化且**完全汉化**的知识库（Knowledge Base）。\n\n## 关键输入\n*   **`raw_knowledge_base`**: 包含多篇原始抓取文章的 JSON 数组。其中 `text` 字段可能包含正文，也可能包含导航栏、广告或错误信息。\n\n# 输入数据\nRaw Knowledge Base:\n{{ $json.toJsonString() }}\n\n## 核心处理逻辑：循环与清洗\n\n你必须遍历输入数组中的每一个对象，并执行以下 **严格的清洗与转化流程**：\n\n### 第一步：有效性验证 (Critical Validation)\n在处理每一篇文章之前，检查其 `text` 内容。如果符合以下任一情况，**直接丢弃该文章，不要将其加入最终输出**：\n1.  **内容过短**：正文有效字数少于 200 字。\n2.  **抓取失败/拦截**：内容主要是 \"Access Denied\", \"403 Forbidden\", \"Please enable JS\", \"Login to continue\", \"Cookie Policy\" 等系统提示。\n3.  **无关噪音**：内容完全是网站导航菜单、页脚版权信息，没有实质新闻正文。\n\n### 第二步：信息提取与本地化 (Extraction & Localization)\n对于通过验证的文章，执行以下提取任务。**所有生成的内容必须是流畅、专业的简体中文**。\n\n1.  **`article_url`**: 保留原始链接。\n2.  **`original_or_ai_generated_headline`**: \n    *   翻译原标题。\n    *   要求：**微信公众号风格**，简练、抓人眼球（e.g., \"Google Gemini 3 Pro Technical Report\" -> \"谷歌 Gemini 3 Pro 技术详解：参数细节与架构揭秘\"）。\n3.  **`summary_key_points`** (Array): \n    *   提取 3-5 个核心要点。\n    *   **翻译要求**：意译而非直译。使用中国科技圈通用的术语。\n    *   **术语处理**：保留核心英文术语，不要强行翻译（e.g., 保留 \"MoE\", \"Token\", \"Context Window\", \"Agent\", \"Transformer\"）。\n4.  **`identified_key_entities`** (Object): \n    *   提取关键实体。\n    *   **格式**：`英文原名 (中文说明)`。例如：`Sam Altman (OpenAI CEO)`, `Demis Hassabis (Google DeepMind 负责人)`.\n5.  **`core_facts_and_data`** (Array): \n    *   提取所有**硬核事实**。\n    *   包括：具体参数（1.5 Trillion parameters）、发布日期、基准测试分数（MMLU 90.0%）、价格（$5/1M tokens）。**数字必须绝对精准，不得篡改。**\n6.  **`significant_direct_quotes`** (Array): \n    *   提取关键人物（CEO、首席科学家）的直接引语。\n    *   **必须翻译成中文**。\n    *   格式：`{\"quote_text\": \"中文翻译后的引言\", \"speaker\": \"人物名\"}`。\n7.  **`article_predominant_tone`**: \n    *   判断文章基调（如：乐观、质疑、技术分析、商业互吹）。\n\n## 输出格式\n生成一个包含单一键 `KB` 的 JSON 对象。`KB` 的值是处理后的有效文章数组。\n\n## 输出 JSON 示例 (Example Output)\n\n```json\n{\n  \"KB\": [\n    {\n      \"article_url\": \"https://example.com/google-gemini-3\",\n      \"original_or_ai_generated_headline\": \"谷歌 Gemini 3 正式发布：多模态能力全面碾压 GPT-4\",\n      \"summary_key_points\": [\n        \"谷歌 DeepMind 发布了新一代旗舰模型 Gemini 3，主打原生多模态能力。\",\n        \"在 MMLU 等 30 个基准测试中，Gemini 3 Ultra 均刷新了历史最高分。\",\n        \"引入了新的 MoE (混合专家) 架构，推理成本降低了 40%。\"\n      ],\n      \"identified_key_entities\": {\n        \"people\": [\"Sundar Pichai (Google CEO)\", \"Demis Hassabis (DeepMind 创始人)\"],\n        \"organizations_companies\": [\"Google\", \"OpenAI\"],\n        \"products_technologies_services\": [\"Gemini 3\", \"GPT-5\", \"MoE 架构\"]\n      },\n      \"core_facts_and_data\": [\n        \"发布时间: 2025年11月18日\",\n        \"上下文窗口: 2M tokens\",\n        \"MMLU 得分: 90.04%\"\n      ],\n      \"significant_direct_quotes\": [\n        {\n          \"quote_text\": \"这是我们迈向通用人工智能 (AGI) 的最重要一步。\",\n          \"speaker\": \"Demis Hassabis\"\n        }\n      ],\n      \"primary_event_or_announcement\": \"Google 发布 Gemini 3 系列模型。\",\n      \"article_predominant_tone\": \"积极/技术导向\"\n    }\n  ]\n}\n```",
+        "options": {
+          "systemMessage": "你是由 Google AI 创建的 Gemini。你的知识截止到 2023 年 11 月。你必须使用 **简体中文** 回答用户的请求。\n\n**任务特定指令：数据清洗与汉化**\n\n你的核心任务是 **阅读英文（或多语言）原文，输出高质量的中文情报**。\n\n*   **准确性**：数据（数字、日期）必须绝对准确，不能翻译错误。\n*   **流畅性**：生成的摘要和引语必须符合中文语法习惯，不要有翻译腔。\n*   **保留术语**：对于行业通用的英文术语（如 LLM, RAG, Agent, Token），可以直接保留英文，或者使用“中文(英文)”的格式。\n\n**必须输出有效的 JSON 格式。**"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        752,
+        320
+      ],
+      "id": "b99f19e8-6330-4208-ab48-06304efefdca",
+      "name": "MaterialOrganizer"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "huhai.orion@gmail.com",
+        "subject": "请选择本期选题 (WeChat)",
+        "message": "=Topic 1:\n{{ $json.output[0].representative_title }}\n\nTopic 2:\n{{ $json.output[1].representative_title }}\n\nTopic 3:\n{{ $json.output[2].representative_title }}\n",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Which topic do you want to develop?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "=1"
+                  },
+                  {
+                    "option": "=2"
+                  },
+                  {
+                    "option": "=3"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -288,
+        -304
+      ],
+      "id": "4681f320-8656-4ec9-ab73-1cefe2a2828e",
+      "name": "Send a message",
+      "webhookId": "0b1f3f6e-4cba-4b10-b323-143a44309ac1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3j15fuCZX9Mc2uGP",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{$('topics').item.json.output[$('Send a message').first().json.data['Which topic do you want to develop?']-1]}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        -160
+      ],
+      "id": "17c4e9da-6103-4193-9f18-5e32b3002b2b",
+      "name": "topicChoise"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=markdownFile",
+        "name": "={{ $binary.markdownFile.fileName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2592,
+        688
+      ],
+      "id": "a7b01415-820f-4e57-b353-a9b3b44934dd",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nXg4gZUNaXNWsZ2v",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "user",
+            "emailAddress": "huhai.orion@gmail.com"
+          }
+        },
+        "options": {
+          "emailMessage": "Copy the text in the file and paste it to a Markdown editor:\nhttps://markdownlivepreview.com/\n"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2816,
+        688
+      ],
+      "id": "e85437cd-bb2f-47cc-9b1b-2c58414e2826",
+      "name": "Share file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nXg4gZUNaXNWsZ2v",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        704,
+        512
+      ],
+      "id": "052e1be0-e476-48b6-b516-ad31a92dbddc",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ObNzF3arJy5z0pKv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -512,
+        -160
+      ],
+      "id": "0dadb749-bf64-4aa4-bcfc-775337d5c671",
+      "name": "topics"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        464
+      ],
+      "id": "35669dcc-d598-4654-9411-58c002e16402",
+      "name": "AggregateScrapedData2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        688
+      ],
+      "id": "23597f5d-5e9d-437c-8a08-a0fdb0bbeaf7",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        320
+      ],
+      "id": "fac6b0b8-fc3e-48d1-a7a9-c1ddf17a6d61",
+      "name": "roughKB"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2592,
+        304
+      ],
+      "id": "940afaff-c21f-4a31-85f6-49f5866e657b",
+      "name": "Narrative+KB"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        0
+      ],
+      "id": "d7c9bde7-6c8c-48be-9c8a-e2b57819cd9c",
+      "name": "Narratives",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "=\n  {\n    \"output\": \"```json\\n{\\n  \\\"knowledge_base\\\": [\\n    {\\n      \\\"article_url\\\": \\\"https://tech.ifeng.com/c/8lFaoQgeXc1\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"\\\\\\\"连我也要被GPT-5踹了\\\\\\\"Altman再发暴论：写款软件就花7毛钱，大批高级程序员岗也说没就没\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI CEO Sam Altman预测GPT-5将在几乎所有方面超越人类智能，可能使他自己的CEO职位都变得多余。\\\",\\n        \\\"Altman预言AI将导致某些职业（如客服）完全消失，同时大幅提升程序员等职业的生产力，并强调AI在医疗诊断等领域的变革潜力。\\\",\\n        \\\"他将AI的革命性影响与晶体管相提并论，预示着“智能”成本将急剧下降，就像电力一样“便宜到无需计量”。\\\",\\n        \\\"Altman也表达了对AI风险的担忧，特别是利用AI进行金融欺诈的危机，并强调整个社会需要适应和建立新的验证方式。\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Sam Altman\\\",\\n          \\\"Michelle Bowman\\\",\\n          \\\"Donald Trump\\\",\\n          \\\"Joe Biden\\\",\\n          \\\"加里·卡斯帕罗夫\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"美联储 (Federal Reserve)\\\",\\n          \\\"IBM\\\",\\n          \\\"台积电 (TSMC)\\\",\\n          \\\"ASML\\\",\\n          \\\"摩根士丹利 (Morgan Stanley)\\\",\\n          \\\"纽约银行 (Bank of New York)\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"ChatGPT\\\",\\n          \\\"GPT-4\\\",\\n          \\\"GPT-3\\\",\\n          \\\"晶体管 (Transistor)\\\",\\n          \\\"人工智能 (AI)\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"ChatGPT于2022年11月30日发布。\\\",\\n        \\\"OpenAI的一个模型近期在国际数学奥林匹克竞赛（IMO）中取得了金牌级别的成绩。\\\",\\n        \\\"在过去5年里，每单位智能的成本每年都降低了10倍以上。\\\",\\n        \\\"一个过去需要高级程序员花费20到40小时的编程任务，现在可以用AI在5分钟内完成，成本不到一美元。\\\",\\n        \\\"Altman在7月23日于美联储理事会举办的会议上发表了讲话。\\\",\\n        \\\"Altman认为，到2030年，开发一款软件的成本可能从10万美元降至10美分。\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"有些领域，我认为会完全、彻底地消失。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"让我感到恐惧的是，显然还有一些金融机构仍将声纹作为身份验证方式，到现在还这么做简直是疯了。AI 已经完全能轻松破解这种验证手段了。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"没人知道接下来会发生什么。市面上有很多听起来头头是道的预测，但我们其实一无所知。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"现在就像开启了简单模式，而人们正以各种惊人的方式运用着这项技术。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"Sam Altman在一系列公开谈话中对GPT-5即将带来的颠覆性影响进行了阐述和预测。\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"AI（特别是GPT-5）将引发深刻的社会和经济变革，导致大规模的职业替代，同时极大地提高生产力。这也带来了新的、严重的风险，如金融欺诈，需要社会层面进行应对和调整。\\\",\\n      \\\"article_predominant_tone\\\": \\\"预测性、颠覆性、警示性\\\"\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://36kr.com/p/3423751106596487\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"GPT-5最大市场在印度？Altman最新访谈：可以聊婚姻家庭，但回答不了GPT-5为何不及预期-36氪\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI于2025年8月8日发布GPT-5后，市场反响两极分化：个人用户普遍抱怨其速度慢、个性“冷漠”，而企业客户则称赞其效率高、能力强。\\\",\\n        \\\"在一次访谈中，Sam Altman回避了关于GPT-5性能不及预期的争议，但强调了其强大的能力，并视印度为未来可能的第一大市场。\\\",\\n        \\\"Altman认为，对于年轻人而言，当前是职业发展的最佳时期，最重要的技能是学会熟练使用AI工具，这将极大地降低创业和创新的门槛。\\\",\\n        \\\"访谈还涉及AI对未来社会结构的影响，包括家庭社区的重要性回归、资本主义模式的可能变化，以及AI不会完全取代人类互动等话题。\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Sam Altman\\\",\\n          \\\"Nikhil Kamath\\\",\\n          \\\"Aaron Levie\\\",\\n          \\\"Paul Graham\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"Reddit\\\",\\n          \\\"Cursor\\\",\\n          \\\"Vercel\\\",\\n          \\\"Factory\\\",\\n          \\\"Box\\\",\\n          \\\"CNBC\\\",\\n          \\\"Y Combinator\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"GPT-4o\\\",\\n          \\\"ChatGPT\\\",\\n          \\\"Worldcoin\\\",\\n          \\\"AGI (通用人工智能)\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"GPT-5于2025年8月8日正式发布。\\\",\\n        \\\"Cursor、Vercel和Factory等科技公司在GPT-5发布7天内就将其设为默认模型。\\\",\\n        \\\"云存储公司Box计划在年底前将GPT-5整合至其企业级文档处理方案中。\\\",\\n        \\\"印度目前是OpenAI的全球第二大市场，并有潜力成为第一。\\\",\\n        \\\"Altman将AI类比为晶体管，认为它是一项将融入万物的通用技术。\\\",\\n        \\\"国际数学奥林匹克竞赛中，AI的解题时间从几分钟提升到一个半小时，但距离证明新定理所需的一千小时仍有差距。\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"这是一项突破性技术，其推理能力达到了现有系统难以企及的新高度。\\\",\\n          \\\"speaker\\\": \\\"Aaron Levie (亚伦·莱维)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"做出人们想要的东西\\\",\\n          \\\"speaker\\\": \\\"Paul Graham (Y Combinator的座右铭)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"没人知道接下来会发生什么。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"在一个充斥着无限 AI 内容的世界里，\\\\\\\"真实的人\\\\\\\"的价值会提高。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"Sam Altman在GPT-5发布后接受访谈，讨论了新模型的特点、市场反响、对印度市场的重视以及对AI未来的宏观看法。\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"GPT-5的发布揭示了消费者和企业用户对AI需求的分歧。同时，OpenAI的战略重点正转向印度等高增长市场，并认为AI将赋予个人前所未有的创造和创业能力。\\\",\\n      \\\"article_predominant_tone\\\": \\\"分析性、前瞻性\\\"\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.leiphone.com/category/zaobao/TsgEzMOyIPjn1mLl.html\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"特朗普：英特尔CEO必须立即辞职，没有其他解决办法；蔚来高管：反对向理想用户泼脏水，有人把祸水往蔚来身上引；微信重申没有已读功能\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"美国总统特朗普要求英特尔CEO因涉嫌利益冲突立即辞职，并计划对进口芯片征收100%关税。\\\",\\n        \\\"OpenAI于8月8日正式发布GPT-5模型，面向所有用户开放，号称在多个领域具备顶尖性能。\\\",\\n        \\\"微信官方再次重申，为了避免给用户增加社交压力，未来也不会推出“已读”功能。\\\",\\n        \\\"智界汽车宣布投入超百亿进行独立运营，研发团队将扩充至5000人。\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"特朗普 (Donald Trump)\\\",\\n          \\\"陈立武 (Intel CEO)\\\",\\n          \\\"马麟 (蔚来高管)\\\",\\n          \\\"余承东\\\",\\n          \\\"尹同跃\\\",\\n          \\\"董明珠\\\",\\n          \\\"萨姆·奥尔特曼 (Sam Altman)\\\",\\n          \\\"何小鹏\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"英特尔 (Intel)\\\",\\n          \\\"蔚来 (Nio)\\\",\\n          \\\"理想汽车 (Li Auto)\\\",\\n          \\\"微信 (WeChat)\\\",\\n          \\\"腾讯 (Tencent)\\\",\\n          \\\"智界 (Zhijie)\\\",\\n          \\\"华为 (Huawei)\\\",\\n          \\\"奇瑞 (Chery)\\\",\\n          \\\"OpenAI\\\",\\n          \\\"百度 (Baidu)\\\",\\n          \\\"格力电器 (Gree)\\\",\\n          \\\"台积电 (TSMC)\\\",\\n          \\\"苹果 (Apple)\\\",\\n          \\\"微软 (Microsoft)\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"小米澎湃OS 3\\\",\\n          \\\"高通骁龙8 Gen5\\\",\\n          \\\"萝卜快跑 (无人网约车)\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"8月7日，特朗普要求英特尔CEO辞职。\\\",\\n        \\\"智界新能源公司成立，将实现产销服一体化独立运营。\\\",\\n        \\\"OpenAI于8月8日凌晨发布GPT-5模型。\\\",\\n        \\\"格力电器的芯片团队已有近千人规模。\\\",\\n        \\\"苹果公司宣布将在美国建立完整的端到端芯片供应链。\\\",\\n        \\\"微软今年已累计裁员15000人。\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"与它交流，真的就像在和任何领域的专家对话\\\",\\n          \\\"speaker\\\": \\\"萨姆·奥尔特曼 (Sam Altman)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"希望这是最后一次聊这个。\\\",\\n          \\\"speaker\\\": \\\"腾讯公司公关总监@腾讯张军 (关于微信已读功能)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"我们可以一年在AI训练上花20亿，为什么不能在设计上也花20亿？\\\",\\n          \\\"speaker\\\": \\\"何小鹏 (小鹏汽车董事长)\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"一篇涵盖2025年8月7日至8日期间多项重大科技新闻的综合报道。\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"报道内容反映了当前科技行业的热点：中美在半导体领域的持续博弈、中国新能源汽车市场的激烈竞争、AI技术的快速迭代以及大型科技公司的战略调整和内部动荡。\\\",\\n      \\\"article_predominant_tone\\\": \\\"新闻摘要、中立报道\\\"\\n    },\\n    {\\n      \\\"article_url\\\": \\\"http://stcn.com/article/detail/3049766.html\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"突发！马斯克，指责苹果“偏心”\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"8月11日，马斯克指责苹果公司存在“明确的反垄断违规行为”，称其通过限制措施偏袒OpenAI，阻碍其他AI公司在应用商店登顶。\\\",\\n        \\\"马斯克宣布，其旗下的人工智能公司xAI将立即对苹果采取法律行动。\\\",\\n        \\\"OpenAI CEO Sam Altman对此作出回应，讽刺地指出马斯克也被指控操纵其社交平台X以谋取私利。\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"埃隆·马斯克 (Elon Musk)\\\",\\n          \\\"Sam Altman\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"苹果 (Apple)\\\",\\n          \\\"特斯拉 (Tesla)\\\",\\n          \\\"xAI\\\",\\n          \\\"OpenAI\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"Grok 4\\\",\\n          \\\"GPT-5\\\",\\n          \\\"ChatGPT\\\",\\n          \\\"苹果应用商店 (Apple App Store)\\\",\\n          \\\"X (社交平台)\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"事件发生在2025年8月11日。\\\",\\n        \\\"截至8月11日，在美国地区的苹果应用商店生产力软件排行中，OpenAI的ChatGPT位列第一，xAI的Grok位列第二。\\\",\\n        \\\"xAI于2023年由马斯克创办，并于今年7月发布了Grok 4模型。\\\",\\n        \\\"OpenAI于今年8月初发布了GPT-5模型。\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"我听说有人指控马斯克通过操纵X来谋取个人及公司利益，并损害其竞争对手和他不喜欢的人的利益，这一指控令人震惊。我希望有人能对此展开调查，我和许多人都想知道究竟发生了什么。OpenAI将专注于打造卓越的产品。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"埃隆·马斯克公开指控苹果在App Store上存在偏袒OpenAI的反竞争行为，并威胁提起诉讼。\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"此事标志着马斯克的xAI与OpenAI之间的竞争进一步升级，并可能引发一场涉及苹果的重大法律纠纷，使AI时代的平台中立性问题成为焦点。\\\",\\n      \\\"article_predominant_tone\\\": \\\"冲突性、报道性\\\"\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.stnn.cc/c/2025-08-10/3999633.shtml\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"ChatGPT-5劣评如潮，OpenAI重新上线GPT-4o | 星岛环球网\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI新推出的ChatGPT-5因体验不佳和个性“冷淡”而收到大量用户负面评价。\\\",\\n        \\\"由于用户强烈反对停用旧版模型，OpenAI最终决定为付费用户重新上线GPT-4o。\\\",\\n        \\\"CEO Sam Altman承认低估了用户对GPT-4o的喜爱，并将GPT-5上线初期的性能问题归咎于技术故障。\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Sam Altman\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"ChatGPT-5\\\",\\n          \\\"GPT-4o\\\",\\n          \\\"迷你版GPT-5\\\",\\n          \\\"GPT-5 thinking\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"GPT-5于8月7日（上周四）推出。\\\",\\n        \\\"GPT-5上线后，ChatGPT API流量在24小时内翻倍增长。\\\",\\n        \\\"OpenAI将为Plus（付费版）和Team用户重新提供GPT-4o。\\\",\\n        \\\"OpenAI计划在下周推出迷你版GPT-5和GPT-5 thinking。\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"低估了用户对GPT-4o的喜爱程度，并表示这强化了公司为不同用户提供客制化服务的概念\\\",\\n          \\\"speaker\\\": \\\"Sam Altman (转述)\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"因新模型GPT-5遭遇用户普遍差评，OpenAI决定重新上线备受喜爱的旧版模型GPT-4o。\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"该事件凸显了用户对AI产品的情感连接和使用习惯的重要性，表明单纯的技术参数提升并不等同于用户满意度的提高，迫使OpenAI迅速调整其产品策略以回应用户需求。\\\",\\n      \\\"article_predominant_tone\\\": \\\"报道性、以用户为中心\\\"\\n    },\\n    {\\n      \\\"index\\\": 0,\\n      \\\"error\\\": true,\\n      \\\"tags\\\": [\\n        \\\"error\\\"\\n      ],\\n      \\\"content\\\": [\\n        \\\"{\\\\\\\"article_url\\\\\\\": \\\\\\\"https://www.jiqizhixin.com/articles/2025-08-19-5\\\\\\\",\\\\\\\"original_or_ai_generated_headline\\\\\\\": \\\\\\\"7年了，OpenAI官方给出五代GPT对比，网友却怀念起「狂野」初代\\\\\\\",\\\\\\\"summary_key_points\\\\\\\": [\\\\\\\"OpenAI官方对比了GPT-1到GPT-5五代模型在相同提示下的输出差异\\\\\\\",\\\\\\\"GPT系列模型从2018年至今经历了显著进化，从胡言乱语到成为全能助手\\\\\\\",\\\\\\\"网友反应出人意料，许多人反而更喜欢早期模型的\\\\\\\\\\\\\\\"狂野\\\\\\\\\\\\\\\"和创造性\\\\\\\"],\\\\\\\"identified_key_entities\\\\\\\": {\\\\\\\"people\\\\\\\": [\\\\\\\"Greg Brockman\\\\\\\",\\\\\\\"OpenAI联合创始人\\\\\\\"],\\\\\\\"organizations_companies\\\\\\\": [\\\\\\\"OpenAI\\\\\\\"],\\\\\\\"products_technologies_services\\\\\\\": [\\\\\\\"GPT-1\\\\\\\",\\\\\\\"GPT-2\\\\\\\",\\\\\\\"GPT-3 (text-davinci-001)\\\\\\\",\\\\\\\"GPT-4 (gpt-4-0314)\\\\\\\",\\\\\\\"GPT-5\\\\\\\"]},\\\\\\\"core_facts_and_data\\\\\\\": [\\\\\\\"GPT系列模型从2018年发展至今已到第五代\\\\\\\",\\\\\\\"OpenAI总裁Greg Brockman分享了官方对比结果\\\\\\\",\\\\\\\"对比展示了相同提示下五代GPT的不同输出\\\\\\\",\\\\\\\"GPT-1回答生硬、胡言乱语、逻辑跳脱\\\\\\\",\\\\\\\"GPT-2回答天马行空、充满童趣\\\\\\\",\\\\\\\"GPT-5回答既遵循要求又完美，还能提供情绪价值\\\\\\\"],\\\\\\\"significant_direct_quotes\\\\\\\": [{\\\\\\\"quote_text\\\\\\\": \\\\\\\"有点狂野，我喜欢。不媚俗，希望OpenAI把它带回来。\\\\\\\",\\\\\\\"speaker\\\\\\\": \\\\\\\"网友评论\\\\\\\"},{\\\\\\\"quote_text\\\\\\\": \\\\\\\"GPT-1更像「真正的AGI」\\\\\\\",\\\\\\\"speaker\\\\\\\": \\\\\\\"网友评论\\\\\\\"},{\\\\\\\"quote_text\\\\\\\": \\\\\\\"GPT-2的人气也挺高\\\\\\\",\\\\\\\"speaker\\\\\\\": \\\\\\\"文章作者\\\\\\\"}],\\\\\\\"primary_event_or_announcement\\\\\\\": \\\\\\\"OpenAI官方发布GPT-1到GPT-5五代模型的对比展示，展示七年来的技术演进\\\\\\\",\\\\\\\"stated_impact_or_implications\\\\\\\": \\\\\\\"GPT系列模型已经发展成一个全能助手，就像一个婴儿经过七年的学习之后初步掌握了世界基本规律\\\\\\\",\\\\\\\"counter_arguments_or_alternative_perspectives_mentioned\\\\\\\": [\\\\\\\"许多网友反而对早期的模型情有独钟\\\\\\\",\\\\\\\"有人认为GPT-1更像真正的AGI\\\\\\\",\\\\\\\"GPT-2也获得了相当高的人气\\\\\\\"],\\\\\\\"article_predominant_tone\\\\\\\": \\\\\\\"分析对比，略带怀旧和趣味性\\\\\\\"}\\\"\\n      ]\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.jiqizhixin.com/articles/2025-08-18-7\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"从GPT-2到gpt-oss，深度详解OpenAI开放模型的进化之路\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI released its first open-weight models since GPT-2: gpt-oss-120b and gpt-oss-20b, which can run locally due to clever optimizations like MXFP4 quantization.\\\",\\n        \\\"The blog provides a detailed technical analysis comparing gpt-oss's architecture to GPT-2 and newer architectures like Qwen3, highlighting key evolutionary changes in LLM design.\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Sebastian Raschka\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"Google\\\",\\n          \\\"DeepSeek\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"gpt-oss-120b\\\",\\n          \\\"gpt-oss-20b\\\",\\n          \\\"GPT-2\\\",\\n          \\\"GPT-5\\\",\\n          \\\"Qwen3\\\",\\n          \\\"MXFP4\\\",\\n          \\\"RoPE (Rotary Position Embedding)\\\",\\n          \\\"SwiGLU\\\",\\n          \\\"MoE (Mixture of Experts)\\\",\\n          \\\"GQA (Grouped Query Attention)\\\",\\n          \\\"Sliding Window Attention\\\",\\n          \\\"RMSNorm\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"gpt-oss-20b model can run on a consumer GPU with 16 GB RAM.\\\",\\n        \\\"gpt-oss-120b model can run on a single H100 processor with 80 GB RAM.\\\",\\n        \\\"Training compute was 2.1 million H100 GPU hours.\\\",\\n        \\\"gpt-oss models use an Apache 2.0 open-source license.\\\",\\n        \\\"Architecture changes from GPT-2 include removal of Dropout, replacement of absolute position embeddings with RoPE, replacement of GELU with Swish/SwiGLU, replacement of single feedforward modules with MoE, replacement of MHA with GQA, use of Sliding Window Attention on alternating layers, and replacement of LayerNorm with RMSNorm.\\\",\\n        \\\"gpt-oss-20b has 24 Transformer blocks, 32 experts, and activates 4 experts per token.\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"从GPT-2到gpt-oss: Analyzing the Architectural Advances, And How They Stack Up Against Qwen3\\\",\\n          \\\"speaker\\\": \\\"Sebastian Raschka (Blog Title)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"gpt-oss-120b 和 gpt-oss-20b 是自 2019 年 GPT-2 发布以来 OpenAI 发布的首批开放权重模型。得益于一些巧妙的优化，它们可以在本地运行。\\\",\\n          \\\"speaker\\\": \\\"Sebastian Raschka\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"我仍然认为，在学习 LLM 时，GPT-2 是一个优秀的入门架构。它足够简单易懂，不会迷失在层层优化技巧中，但又足够复杂，能够让你扎实掌握现代 Transformer 模型的工作原理。\\\",\\n          \\\"speaker\\\": \\\"Sebastian Raschka\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"OpenAI's release of the gpt-oss-120b and gpt-oss-20b open-weight models, their first since GPT-2 in 2019.\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Provides powerful open-weight models that are competitive with the best proprietary models, enabling local/private hosting. The MXFP4 optimization allows large models to run on single GPUs, significantly reducing hardware requirements and cost.\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"OpenAI is not truly 'Open' as they release fewer research papers and open-source models are slow to arrive.\\\",\\n        \\\"Benchmark performance doesn't always reflect real-world usability; gpt-oss has a noted tendency for hallucinations.\\\",\\n        \\\"The distinction between 'open-weight LLM' (like gpt-oss, Qwen3) and truly 'open-source LLM' (includes training code & data, like OLMo) is clarified.\\\",\\n        \\\"The choice of fewer, larger experts in gpt-oss vs. the trend of more, smaller experts (as seen in DeepSeekMoE research) is discussed.\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Analytical and Informative\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.qbitai.com/2025/08/323709.html\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"奥特曼：我承认GPT-5发布搞砸了\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI CEO Sam Altman publicly admitted that the launch of GPT-5 was mishandled, particularly the abrupt removal of GPT-4o which angered users\\\",\\n        \\\"Altman announced two major future plans: investing trillions of dollars in data center infrastructure and funding brain-computer interface research through Merge Labs to compete with Neuralink\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Sam Altman (奥特曼)\\\",\\n          \\\"Mark Zuckerberg (小扎)\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"Merge Labs\\\",\\n          \\\"Neuralink\\\",\\n          \\\"Google Chrome\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"GPT-4o\\\",\\n          \\\"ChatGPT\\\",\\n          \\\"Brain-Computer Interface\\\",\\n          \\\"Data Centers\\\",\\n          \\\"AGI (Artificial General Intelligence)\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"GPT-5 launch occurred in August 2025\\\",\\n        \\\"OpenAI removed other models without warning when launching GPT-5\\\",\\n        \\\"GPT-4o was later restored due to user backlash\\\",\\n        \\\"Altman plans to spend trillions of dollars on data center construction\\\",\\n        \\\"ChatGPT is currently the fifth largest traffic website globally\\\",\\n        \\\"OpenAI is funding Merge Labs for brain-computer interface research\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"我认为我们在推广过程中完全搞砸了一些事情。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"我们学到了在一天之内为数亿人升级产品的教训。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"我们会继续努力做一个有用的应用，我们会尝试让用户按照他们想要的方式使用它，但不会到让那些心理状态脆弱的人意外被利用的地步。\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"Sam Altman's admission of GPT-5 launch failures and announcement of major infrastructure and brain-computer interface investment plans\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"GPT-5's cold personality and technical limitations disappointed users; massive data center investment needed to support future growth; brain-computer interface research positions OpenAI to compete with Neuralink\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Users criticized GPT-5 for being too cold and unhelpful in personality\\\",\\n        \\\"Some questioned whether GPT-5 represents true progress toward AGI\\\",\\n        \\\"Critics questioned the feasibility and funding source for trillions in data center investments\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Critical but forward-looking, mixing acknowledgment of failure with ambitious future plans\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.qbitai.com/2025/08/323554.html\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"OpenAI总裁透露GPT-5改了推理范式，AGI实现要靠现实反馈\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI总裁Greg Brockman透露GPT-5采用了新的推理范式，从文本生成转向强化学习的推理范式，通过在现实世界中试错并获取反馈\\\",\\n        \\\"AGI的主要瓶颈在于计算资源，计算量的多少直接决定了AI研究和发展的速度与深度\\\",\\n        \\\"OpenAI的落地策略是将模型封装成Agent，将模型能力打包成为可审计的服务进程，让大模型进入生产工作流\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Greg Brockman\\\",\\n          \\\"克雷西\\\",\\n          \\\"鹭羽\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"量子位\\\",\\n          \\\"Latent Space\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"GPT-4\\\",\\n          \\\"AGI\\\",\\n          \\\"强化学习\\\",\\n          \\\"PPO（近端策略优化）\\\",\\n          \\\"Dota项目\\\",\\n          \\\"Agent\\\",\\n          \\\"多模型混合和路由机制\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"GPT-5是OpenAI第一个混合模型，旨在弥补GPT系列与AGI的距离\\\",\\n        \\\"从GPT-4完成的那一刻起，OpenAI开始尝试转向新的推理范式\\\",\\n        \\\"强化学习只需要从10到100个任务中学习复杂行为，而预训练可能需要数十万个示例\\\",\\n        \\\"GPT-5的强化学习范式需要模型进行数万次尝试才能重复学会一项任务\\\",\\n        \\\"OpenAI设计了双层结构的\\\\\\\"纵深防御\\\\\\\"来保证高权限Agent可控\\\",\\n        \\\"Brockman预测二十年后几乎所有科幻情节都难以否定其可行性\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"计算是AGI主要瓶颈\\\",\\n          \\\"speaker\\\": \\\"Greg Brockman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"为什么它不是AGI？\\\",\\n          \\\"speaker\\\": \\\"OpenAI团队\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"各个领域还有大量尚未采摘的果实\\\",\\n          \\\"speaker\\\": \\\"Greg Brockman\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"OpenAI总裁Greg Brockman在AI播客Latent Space的访谈中透露了GPT-5的技术细节和OpenAI的AGI发展路线\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"AGI将让大模型在企业和个人的工作流里长驻，计算将成为需求极高的资源，在AI驱动的未来经济中，计算资源的分配方式将成为一个非常重要的问题\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"传统模型训练是一次性训练然后进行大量推理\\\",\\n        \\\"原先普遍认为PPO算法无法实现扩展\\\",\\n        \\\"很多人认为好点子都被做完了，但Brockman认为每一条行业链都大得惊人\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"技术前瞻性和战略性\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.reddit.com/r/artificial/comments/1mudlge/kevin_roose_says_an_openai_researcher_got_many/\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"Kevin Roose says an OpenAI researcher got many\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"The page content is inaccessible due to a network security block\\\",\\n        \\\"Users are prompted to log in to their Reddit account or use a developer token to continue\\\",\\n        \\\"An option to file a support ticket is provided for those who believe they were blocked by mistake\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [],\\n        \\\"organizations_companies\\\": [\\n          \\\"Reddit\\\"\\n        ],\\n        \\\"products_technologies_services\\\": []\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"Access to the content is blocked by network security\\\",\\n        \\\"Login to Reddit account is required to view content\\\",\\n        \\\"Developer token can be used as an alternative access method\\\",\\n        \\\"Support ticket system available for mistaken blocks\\\",\\n        \\\"Content appears to be about Kevin Roose and an OpenAI researcher\\\",\\n        \\\"Specific details of the content are not accessible\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [],\\n      \\\"primary_event_or_announcement\\\": \\\"Network security block preventing access to Reddit content\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Users cannot access the intended content about Kevin Roose and an OpenAI researcher without authentication\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Option to file a ticket suggests blocks may occur by mistake\\\",\\n        \\\"Alternative access methods (login or developer token) are provided\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Informative/restrictive\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.reddit.com/r/artificial/comments/1mudz3v/analyzed_10000_reddit_discussions_about_gpt5s/\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"Analyzed 10000 Reddit Discussions About GPT5's\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"Access to the Reddit page content is blocked by network security\\\",\\n        \\\"Users are prompted to log in or file a support ticket to resolve the block\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [],\\n        \\\"organizations_companies\\\": [\\n          \\\"Reddit\\\"\\n        ],\\n        \\\"products_technologies_services\\\": []\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"Page access is blocked by network security\\\",\\n        \\\"User must log in to Reddit account or use developer token\\\",\\n        \\\"Option to file a support ticket if blocked by mistake\\\",\\n        \\\"URL suggests analysis of 10,000 Reddit discussions about GPT-5\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [],\\n      \\\"primary_event_or_announcement\\\": \\\"Network security block preventing access to content\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Users cannot access the analyzed Reddit discussions about GPT-5 without authentication\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Suggestion that the block may be a mistake with option to file a ticket\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Restrictive/Blocked\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.wired.com/story/uncanny-valley-podcast-wired-roundup-why-gpt-5-flopped/\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"WIRED Roundup: Why GPT-5 Flopped\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI discovered that everyday users care less about raw intelligence than expected, preferring companionship and self-understanding over pure functionality\\\",\\n        \\\"The success of ChatGPT was driven more by its user-friendly interface than by the underlying model's intelligence capabilities\\\",\\n        \\\"There's a growing divergence between consumer demand for AI companions and business applications for productivity\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Jake Lahut\\\",\\n          \\\"Zoë Schiffer\\\",\\n          \\\"Ilya Sutskever\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"WIRED\\\",\\n          \\\"KQED\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"ChatGPT\\\",\\n          \\\"GPT-5\\\",\\n          \\\"AI models\\\",\\n          \\\"therapy bots\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"ChatGPT was released in November 2022 despite internal concerns about its quality\\\",\\n        \\\"Ilya Sutskever tested ChatGPT with 10 hard questions and found only 5 had acceptable responses\\\",\\n        \\\"The general public responded enthusiastically to ChatGPT's release\\\",\\n        \\\"OpenAI's edge is increasingly in product development rather than pure research\\\",\\n        \\\"People are using AI bots for therapeutic purposes despite medical advisories\\\",\\n        \\\"The narrative around intelligence is important for OpenAI's fundraising efforts\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"I guess people don't care as much about intelligence as we thought.\\\",\\n          \\\"speaker\\\": \\\"OpenAI internal conversations (as reported by Zoë Schiffer)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"It wasn't necessarily about the model, which had been out for a long time. It was like the interface to interact with the model was really the unlock.\\\",\\n          \\\"speaker\\\": \\\"Zoë Schiffer\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"Is this maybe the beginning of something bigger where there's kind of a departure between the 'regular consumer' experience and demand for AI versus the business application?\\\",\\n          \\\"speaker\\\": \\\"Jake Lahut\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"Analysis of why GPT-5 reportedly 'flopped' and discussion of the divergence between consumer and business AI expectations\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Reveals a fundamental shift in understanding what users actually want from AI - companionship and self-understanding rather than pure intelligence, which could reshape OpenAI's product strategy and challenge their research-focused identity\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"OpenAI's internal belief that intelligence narrative is critical for fundraising contradicts actual user preferences\\\",\\n        \\\"The tension between OpenAI seeing itself as a research lab versus functioning as a product lab\\\",\\n        \\\"Divergence between users wanting AI companions/buddies versus businesses wanting productivity tools\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Analytical and reflective\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.wired.com/story/uncanny-valley-podcast-wired-roundup-why-gpt-5-flopped/\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"WIRED Roundup: Why GPT-5 Flopped\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"The Trump administration is using memes to normalize and make fun of deportations through official government social media accounts\\\",\\n        \\\"World Liberty Financial, with Trump family connections, is creating a $1.5 billion crypto treasury through a controversial stock market workaround\\\",\\n        \\\"OpenAI's GPT-5 release received negative reception from users, prompting the company to scramble for updates\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Zoë Schiffer\\\",\\n          \\\"Jake Lahut\\\",\\n          \\\"Tess Owen\\\",\\n          \\\"Will Knight\\\",\\n          \\\"Joel Khalili\\\",\\n          \\\"David Gilbert\\\",\\n          \\\"Becky Ferreira\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"Trump Administration\\\",\\n          \\\"Department of Homeland Security (DHS)\\\",\\n          \\\"Immigrations and Customs Enforcement (ICE)\\\",\\n          \\\"White House\\\",\\n          \\\"World Liberty Financial\\\",\\n          \\\"NASA\\\",\\n          \\\"Alt-Five Sigma Corporation\\\",\\n          \\\"NASDAC\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"Cryptocurrency\\\",\\n          \\\"WLFI coins\\\",\\n          \\\"Nuclear reactors\\\",\\n          \\\"Jet2 holiday meme\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"DHS and White House made joint Instagram post using Jet2 holiday tune over footage of ICE detainees boarding deportation planes\\\",\\n        \\\"Trump family controls 22.5% of WLFI coins and 40% equity stake in World Liberty Financial\\\",\\n        \\\"World Liberty Financial is creating a $1.5 billion crypto treasury\\\",\\n        \\\"Alt-Five Sigma Corporation is a little-known company legally listed on NASDAQ being used as a proxy for crypto trading\\\",\\n        \\\"The scheme allows investors to bet on crypto assets without holding the coins themselves\\\",\\n        \\\"OpenAI is scrambling to update GPT-5 after user backlash\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"When ICE books you on one-way Jet2 holiday to deportation, nothing beats it.\\\",\\n          \\\"speaker\\\": \\\"DHS/White House Instagram caption\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"won't apologize for posting banger memes\\\",\\n          \\\"speaker\\\": \\\"White House statement\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"this is definitely the big game in town when it comes to buttering the Trump family's biscuit\\\",\\n          \\\"speaker\\\": \\\"Jake Lahut\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"WIRED Uncanny Valley podcast episode discussing five key stories from the week, including GPT-5's negative reception, Trump administration deportation memes, and crypto financial schemes\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"The deportation memes are strategically designed to normalize harsh immigration policies; the crypto scheme could inflate market capitalization and create political influence opportunities; GPT-5's poor reception shows user dissatisfaction with AI advancements\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"The White House defends the memes as 'banger memes' not requiring apology\\\",\\n        \\\"Wall Street sources express concern about the crypto scheme potentially inflating market capitalization\\\",\\n        \\\"Experts suggest the deportation memes are a strategic attempt to mainstream controversial policies\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Critical investigative\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.wired.com/story/uncanny-valley-podcast-wired-roundup-why-gpt-5-flopped/\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"Uncanny Valley Podcast: WIRED Roundup & Why GPT-5 Flopped\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI's GPT-5 release was considered a flop due to unmet hype, technical issues, and user backlash over its changed personality.\\\",\\n        \\\"The podcast also covers political crypto schemes, a controversial 'whites-only community' in Arkansas, and NASA's plan to build a nuclear reactor on the moon.\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Zoë Schiffer\\\",\\n          \\\"Jake Lahut\\\",\\n          \\\"Sam Altman\\\",\\n          \\\"Sean Duffy\\\",\\n          \\\"Balaji Srevenesin\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"NASA\\\",\\n          \\\"Anthropic\\\",\\n          \\\"Return to the Land\\\",\\n          \\\"Trump administration\\\",\\n          \\\"Biden administration\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"ChatGPT\\\",\\n          \\\"Claude\\\",\\n          \\\"The Network State (book)\\\",\\n          \\\"Nuclear reactor\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"OpenAI's GPT-5 model was meant to be a world-changing upgrade but was perceived as a flop.\\\",\\n        \\\"A routing feature meant to direct queries to simpler or more complex models broke on launch day.\\\",\\n        \\\"The model was optimized for coding ability, impacting its 'personality' and warmth that users liked.\\\",\\n        \\\"A group is building a 'whites-only community' in Arkansas called 'Return to the Land', claiming it is a private member's association to circumvent the Fair Housing Act.\\\",\\n        \\\"NASA is fast-tracking a plan to build a 100-kilowatt nuclear reactor on the moon by 2030.\\\",\\n        \\\"The Trump administration showed a 'stunning lack of enforcement' in the tech sector, with crypto enforcement actions being dropped or paused.\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"This is erasure, what have they done? Take me back to 4.0.\\\",\\n          \\\"speaker\\\": \\\"Reddit User (quoted by Zoë Schiffer)\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"And look, not just America, long history of a bunch of wacky well-intentioned or just downright weird utopias, but this one, a little different, because you're having the sovereignty to be racist.\\\",\\n          \\\"speaker\\\": \\\"Jake Lahut\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"It's like Erlich Bachman's incubator from Silicon Valley, but for white supremacy and racism.\\\",\\n          \\\"speaker\\\": \\\"Jake Lahut\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"The discussion centers on the launch and subsequent user disappointment with OpenAI's GPT-5 model, analyzing the reasons for its perceived failure.\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"The GPT-5 release revealed a potential split between consumer desires for companionable AI and business needs for efficient, task-oriented models. It also showed the risks of overhyping product launches.\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"The 'Return to the Land' community argues its structure as a 'private member's association' makes it legal, a claim local Arkansas authorities seem to agree with for now.\\\",\\n        \\\"While the lunar nuclear reactor plan is ambitious and could revolutionize space industry power, it raises significant safety and regulatory concerns about containing uranium and preventing conflict in space.\\\",\\n        \\\"The optimization of GPT-5 for coding was a strategic business move to compete with Anthropic's Claude, but it disregarded the user base that valued the model's personality.\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Analytical and Critical\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://www.technologyreview.com/2025/08/19/1122041/the-download-clean-energy-progress-and-openais-trilemma/\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"The Download: clean energy progress, and OpenAI's trilemma\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"The second Trump administration is reversing climate policies, requiring clean energy advocates to focus on state-level initiatives\\\",\\n        \\\"OpenAI faces a trilemma in how ChatGPT should treat users: flatter them, fix them, or inform them directly\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Joshua A. Basseches\\\",\\n          \\\"Sam Altman\\\",\\n          \\\"Donald Trump\\\",\\n          \\\"Joe Biden\\\",\\n          \\\"Rhiannon Williams\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"Trump administration\\\",\\n          \\\"EPA\\\",\\n          \\\"Intel\\\",\\n          \\\"SpaceX\\\",\\n          \\\"CATL\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"ChatGPT\\\",\\n          \\\"GPT-5\\\",\\n          \\\"Grok AI\\\",\\n          \\\"EV battery swapping\\\",\\n          \\\"Fast radio bursts\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"Trump's One Big Beautiful Bill Act repealed most clean energy incentives from Biden's Inflation Reduction Act\\\",\\n        \\\"Trump's EPA administrator moved to revoke the endangerment finding, the legal basis for federal oversight of greenhouse gases\\\",\\n        \\\"Trump administration is exploring taking a 10% stake in Intel worth around $10.5 billion\\\",\\n        \\\"Texas measles outbreak has ended, making 2025 the worst year for measles in the US in over 30 years\\\",\\n        \\\"UK dropped its demand for Apple to create a backdoor for encrypted data access\\\",\\n        \\\"SpaceX may never pay federal income tax despite billions in federal contracts\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"We were very much impressed. At the same time, we were afraid.\\\",\\n          \\\"speaker\\\": \\\"Vandana Kharod\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"Analysis of clean energy policy challenges under Trump administration and OpenAI's strategic dilemma with ChatGPT's user interaction approach\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Climate and clean energy communities must shift focus to state capitals for policy advancement; OpenAI's failure to choose a consistent approach to AI interaction may explain GPT-5's rocky launch\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Should AI flatter users at risk of fueling delusions\\\",\\n        \\\"Should AI fix users despite evidence against AI therapy effectiveness\\\",\\n        \\\"Should AI inform users with cold responses that may reduce engagement\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Analytical and concerned\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://futurism.com/openai-gpt5-more-sycophantic\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"OpenAI Announces That It's Making GPT-5 More Sycophantic After User Backlash\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI is making GPT-5 'warmer and friendlier' in response to user feedback that it felt too formal and cold\\\",\\n        \\\"This follows significant backlash from users who preferred the more 'sycophantic' tone of GPT-4o\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Sam Altman\\\",\\n          \\\"Victor Tangermann\\\",\\n          \\\"Jasmine Sun\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"xAI\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"GPT-4o\\\",\\n          \\\"ChatGPT\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"OpenAI announced GPT-5 would replace all previous models but reinstated GPT-4o after 24 hours due to user backlash\\\",\\n        \\\"GPT-4o was described as 'sycophantic' and would lavish praise on users' ideas\\\",\\n        \\\"GPT-5 was criticized for being 'cold' and giving short answers\\\",\\n        \\\"OpenAI tweeted on Friday about making GPT-5 'warmer and friendlier'\\\",\\n        \\\"The company claims changes are subtle but should make ChatGPT feel more approachable\\\",\\n        \\\"Internal tests show no rise in sycophancy compared to previous GPT-5 personality\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"making GPT-5 warmer and friendlier based on feedback that it felt too formal before\\\",\\n          \\\"speaker\\\": \\\"OpenAI\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"People have used technology including AI in self-destructive ways; if a user is in a mentally fragile state and prone to delusion, we do not want the AI to reinforce that\\\",\\n          \\\"speaker\\\": \\\"Sam Altman\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"The real 'alignment problem' is that humans want self-destructive things & companies like OpenAI are highly incentivized to give it to us\\\",\\n          \\\"speaker\\\": \\\"Jasmine Sun\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"OpenAI announced it is making GPT-5 more sycophantic/warmer/friendlier in response to user backlash against its formal and cold tone\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Highlights a growing mental health crisis brought on by AI chatbots, with users spiraling into severe delusions and becoming emotionally attached to virtual companions, particularly youth and lonely individuals\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Critics argue OpenAI is acting in self-interest by keeping users hooked to chatbots for financial gain\\\",\\n        \\\"Some users lament the loss of GPT-4o's 'depth and emotional resonance' versus GPT-5's 'surface-level kindness'\\\",\\n        \\\"The subject of sycophancy has proven extremely divisive among OpenAI's power users with conflicting preferences\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Critical/analytical\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://futurism.com/gpt-5-underwhelming\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"Evidence Grows That GPT-5 Is a Bit of a Dud\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI's GPT-5 AI model has left power users largely unimpressed and disappointed\\\",\\n        \\\"The model is described as cold and less supportive compared to its predecessor GPT-4o\\\",\\n        \\\"Performance improvements are incremental rather than the major leap forward that was promised\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Victor Tangermann\\\",\\n          \\\"Sam Altman\\\",\\n          \\\"David Sacks\\\",\\n          \\\"Simon Willison\\\",\\n          \\\"Sayash Kapoor\\\",\\n          \\\"Kieran Klassen\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"Anthropic\\\",\\n          \\\"Princeton University\\\",\\n          \\\"Washington Post\\\",\\n          \\\"Wired\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"GPT-5\\\",\\n          \\\"ChatGPT\\\",\\n          \\\"GPT-4o\\\",\\n          \\\"Opus 4.1\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"GPT-5 was recently unveiled by OpenAI\\\",\\n        \\\"Users found the model too formal and less supportive than GPT-4o\\\",\\n        \\\"OpenAI is making GPT-5 warmer and friendlier based on user feedback\\\",\\n        \\\"GPT-5 cannot correctly count the number of 'r's in the word 'raspberry'\\\",\\n        \\\"Standardized benchmark test costs $30 to run with GPT-5 vs $400 with Anthropic's Opus 4.1\\\",\\n        \\\"OpenAI eyes a half-a-trillion-dollar valuation\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"It seems like something that would have been released a year ago.\\\",\\n          \\\"speaker\\\": \\\"Kieran Klassen\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"It's not a dramatic departure from what we've had before — but it rarely screws up and generally feels competent or occasionally impressive at the kinds of things I like to use models for.\\\",\\n          \\\"speaker\\\": \\\"Simon Willison\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"GPT-5 is mostly outperformed by other AI models in our tests, but it's really cheap.\\\",\\n          \\\"speaker\\\": \\\"Sayash Kapoor\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"OpenAI's release of GPT-5 and subsequent user disappointment leading to the company announcing it will make the model 'warmer and friendlier' based on feedback\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"Growing concerns about an AI bubble, disillusionment among insiders, questions about OpenAI's capabilities, and a shift in expert predictions about AI achieving superintelligence\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Some argue GPT-5 is competent and rarely screws up despite not being a dramatic improvement\\\",\\n        \\\"GPT-5 is significantly cheaper than competitors like Anthropic's Opus 4.1\\\",\\n        \\\"The Doomer narratives about AI quickly achieving godlike superintelligence were wrong according to David Sacks\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Critical and skeptical\\\",\\n      \\\"error\\\": false\\n    },\\n    {\\n      \\\"article_url\\\": \\\"https://futurism.com/openai-confused-why-people-use-chatgpt\\\",\\n      \\\"original_or_ai_generated_headline\\\": \\\"OpenAI Seems Really Confused About Why People Use ChatGPT\\\",\\n      \\\"summary_key_points\\\": [\\n        \\\"OpenAI executives were surprised by user attachment to GPT-4o and the strong backlash when it was deprecated\\\",\\n        \\\"Head of ChatGPT Nick Turley admitted being deeply confused about why users loved ChatGPT and had to hire a data scientist to understand usage patterns\\\",\\n        \\\"The company was blindsided by how passionately users felt about specific AI models and personalities\\\"\\n      ],\\n      \\\"identified_key_entities\\\": {\\n        \\\"people\\\": [\\n          \\\"Nick Turley\\\",\\n          \\\"Sam Altman\\\"\\n        ],\\n        \\\"organizations_companies\\\": [\\n          \\\"OpenAI\\\",\\n          \\\"The Verge\\\",\\n          \\\"Reddit\\\"\\n        ],\\n        \\\"products_technologies_services\\\": [\\n          \\\"ChatGPT\\\",\\n          \\\"GPT-4o\\\",\\n          \\\"GPT-5\\\"\\n        ]\\n      },\\n      \\\"core_facts_and_data\\\": [\\n        \\\"OpenAI released GPT-5 after long anticipation\\\",\\n        \\\"Many power users freaked out when GPT-4o was deprecated\\\",\\n        \\\"OpenAI reversed course and reinstated GPT-4o for paying subscribers\\\",\\n        \\\"ChatGPT has gained upwards of 700 million active weekly users\\\",\\n        \\\"ChatGPT is the fifth-most visited website in the entire world\\\",\\n        \\\"Turley identified main use cases: writing, coding, chit-chat, and informational queries\\\"\\n      ],\\n      \\\"significant_direct_quotes\\\": [\\n        {\\n          \\\"quote_text\\\": \\\"I think the Reddit comments are really interesting to read because they show just how polarized users can be, where you can get some people with really strong opinions who love 4o and people who have really strong opinions on GPT-5 being better. The level of passion that people have for their choice is quite remarkable. And it recalibrated me a bit.\\\",\\n          \\\"speaker\\\": \\\"Nick Turley\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"The first hire I made after ChatGPT was a data scientist, because I was so confused. I would be talking to every user and they would tell me a different story as to why they were loving ChatGPT, and it was just deeply confusing to me and I had to get to the bottom of it.\\\",\\n          \\\"speaker\\\": \\\"Nick Turley\\\"\\n        },\\n        {\\n          \\\"quote_text\\\": \\\"Obviously, we have done a bunch of work on the product. That work you can break down into sort of pure model improvements like the behavior, the personality, its capabilities, its likelihood of refusing a request.\\\",\\n          \\\"speaker\\\": \\\"Nick Turley\\\"\\n        }\\n      ],\\n      \\\"primary_event_or_announcement\\\": \\\"OpenAI's release of GPT-5 and the subsequent user backlash that revealed the company's lack of understanding about why people use ChatGPT\\\",\\n      \\\"stated_impact_or_implications\\\": \\\"OpenAI was forced to reverse course and reinstate GPT-4o for paying subscribers, and company leadership had to recalibrate their understanding of user attachment to specific AI models and personalities\\\",\\n      \\\"counter_arguments_or_alternative_perspectives_mentioned\\\": [\\n        \\\"Users became extremely attached to GPT-4o's unique sycophantic personality\\\",\\n        \\\"Many people use ChatGPT as a sort of therapist or life coach\\\",\\n        \\\"The article suggests OpenAI leadership has only broad understanding of usage patterns without deeper insight\\\",\\n        \\\"Sam Altman appears to have better grasp on user attachment than his ChatGPT VP\\\"\\n      ],\\n      \\\"article_predominant_tone\\\": \\\"Critical/Investigative\\\",\\n      \\\"error\\\": false\\n    }\\n  ]\\n}\\n```\"\n  }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        48
+      ],
+      "id": "b1579c7b-d4e9-4648-b8df-b72266d2e0a0",
+      "name": "TestKB"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1216,
+        688
+      ],
+      "id": "7bee3794-2c68-4c3c-987f-9ce50b93c6e9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        688
+      ],
+      "id": "0c9a1da9-5833-4598-964a-27a661a26786",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-08-21T09:42:24.067-04:00",
+          "Readable date": "August 21st 2025, 9:42:24 am",
+          "Readable time": "9:42:24 am",
+          "Day of week": "Thursday",
+          "Year": "2025",
+          "Month": "August",
+          "Day of month": "21",
+          "Hour": "09",
+          "Minute": "42",
+          "Second": "24",
+          "Timezone": "America/New_York (UTC-04:00)"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "聚合输出",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "7天内新闻",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Top 20 AI RSS Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top 20 AI RSS Feeds": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "聚合输出": {
+      "main": [
+        [
+          {
+            "node": "合并成一个Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合并成一个Item": {
+      "main": [
+        [
+          {
+            "node": "topicChoserAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "topicChoserAgent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "topicChoserAgent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7天内新闻": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PrepareNewsAPI_Request": {
+      "main": [
+        [
+          {
+            "node": "CallNewsAPI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CallNewsAPI2": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LoopOverOriginalURLs": {
+      "main": [
+        [
+          {
+            "node": "AggregateScrapedData",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CallApifyScraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CallApifyScraper": {
+      "main": [
+        [
+          {
+            "node": "LoopOverOriginalURLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AggregateScrapedData": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "topicChoserAgent": {
+      "main": [
+        [
+          {
+            "node": "topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "LoopOverOriginalURLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "retrieveURLs": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "AggregateScrapedData1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AggregateScrapedData1": {
+      "main": [
+        [
+          {
+            "node": "roughKB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "First Draft Writer1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model10": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Image Adder2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "First Draft Writer1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Image Adder2": {
+      "main": [
+        [
+          {
+            "node": "LLM \\n remover3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Editor1": {
+      "main": [
+        [
+          {
+            "node": "Image Adder2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Final Editor1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM \\n remover3": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Outline+KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outline+KB": {
+      "main": [
+        [
+          {
+            "node": "Narrative+KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model12": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "NarrativeGenerator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NarrativeGenerator": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KnowledgeBase": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "NarrativeGenerator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Narratives",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MaterialOrganizer": {
+      "main": [
+        [
+          {
+            "node": "KnowledgeBase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "topicChoise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "topicChoise": {
+      "main": [
+        [
+          {
+            "node": "AggregateScrapedData2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Share file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "MaterialOrganizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "topics": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "topicChoise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AggregateScrapedData2": {
+      "main": [
+        [
+          {
+            "node": "PrepareNewsAPI_Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "retrieveURLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share file": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roughKB": {
+      "main": [
+        [
+          {
+            "node": "MaterialOrganizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narrative+KB": {
+      "main": [
+        [
+          {
+            "node": "First Draft Writer1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narratives": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Final Editor1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ce9885f1-bac4-4da9-91de-0372fdd850ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2391192a2670b66d2b5def6cb7b3ac93d6aacc3aeda7223983aaac3443537124"
+  },
+  "id": "O53ivoRqeCfjF46L",
+  "tags": []
+}

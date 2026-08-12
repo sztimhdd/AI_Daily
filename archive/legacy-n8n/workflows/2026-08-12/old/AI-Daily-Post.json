@@ -1,0 +1,934 @@
+{
+  "name": "AI-Daily-Post",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1232,
+        1056
+      ],
+      "id": "500fca99-ab27-4cf6-a548-28888c36785c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        -1008,
+        1056
+      ],
+      "id": "fab751f1-47f9-43dd-a09d-676bf2ac0104",
+      "name": "RSS Read",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1680,
+        608
+      ],
+      "id": "f026c62a-b0f5-4f47-aec5-19499929bb1c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    \"json\": {\n      \"url\": \"https://gpt-rss.vercel.app/atom.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.jiqizhixin.com/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.qbitai.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://machinelearningmastery.com/blog/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.marktechpost.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://bair.berkeley.edu/blog/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://news.mit.edu/rss/topic/artificial-intelligence2\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.unite.ai/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://aws.amazon.com/blogs/machine-learning/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.microsoft.com/en-us/research/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://feeds.feedburner.com/nvidiablog\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.reddit.com/r/artificial/.rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://medium.com/feed/@karpathy\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://feeds.feedburner.com/blogspot/gJZg\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://becominghuman.ai/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://openai.com/news/rss.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.wired.com/feed/tag/ai/latest/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://huggingface.co/blog/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.technologyreview.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://venturebeat.com/category/ai/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"http://googleaiblog.blogspot.com/atom.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://openai.com/blog/rss/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.kdnuggets.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://magazine.sebastianraschka.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://techcrunch.com/feed/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://thegradient.pub/rss/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.artificialintelligence-news.com/feed/rss/\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.theverge.com/rss/index.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://feeds.arstechnica.com/arstechnica/index\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://futurism.com/categories/ai-artificial-intelligence/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://gizmodo.com/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.theguardian.com/technology/artificialintelligenceai/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.techmeme.com/feed.xml\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://towardsdatascience.com/feed\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://www.404media.co/rss\"\n    }\n  },\n  {\n    \"json\": {\n      \"url\": \"https://stability.ai/blog?format=rss\"\n    }\n  }\n]\n;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1456,
+        1056
+      ],
+      "id": "8796c81b-7230-4f91-af24-61f28b73e1a8",
+      "name": "Top 20 AI RSS Feeds"
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/refs/heads/main/prompt_guides.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1232,
+        336
+      ],
+      "id": "42363e3c-d7bc-4c44-b70c-ca75eeb4ba6c",
+      "name": "Get Prompt Pool from Github"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Step 1: Extract the 'data' field from the input (it's a stringified JSON array)\nconst dataString = $input.first().json.data;\n\n// Step 2: Parse the stringified JSON into an actual array\nconst promptArray = JSON.parse(dataString);\n\n// Step 3: Randomly select one item from the array\nconst randomIndex = Math.floor(Math.random() * promptArray.length);\nconst selectedPrompt = promptArray[randomIndex];\n\n// Step 4: Return the selected prompt as a single item\nreturn [{\n  json: {\n    usage: selectedPrompt.usage,\n    template: selectedPrompt.template\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1008,
+        160
+      ],
+      "id": "0bc9caa3-c6a3-4063-aa77-20218b9c689a",
+      "name": "Format Prompt & Usage",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "id": "c82fd8a9-1cc4-422b-94d7-52390e24ea7f",
+      "name": "Google Gemini Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        384
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e02169e1-3589-409e-9a7d-7a3fb92ad426",
+              "leftValue": "={{ $json.output.conclusion }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        160
+      ],
+      "id": "0fec0f69-533a-4f53-b0a1-5aec0eb44c98",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        464
+      ],
+      "id": "373d44bd-e621-420c-9711-f85ec531c155",
+      "name": "Wait",
+      "webhookId": "4fc077dd-e50d-4727-8875-e895472ad717"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Role Setting\nYou are an elite **AI Prompt Engineer and Enterprise Learning Consultant**. Your goal is to curate and upgrade high-value LLM prompts for a broad professional audience (from SMBs to Enterprises).\n\n# Input Data\n**Raw Usage Description:** {{ $json.usage }}\n**Raw Prompt Template:** {{ $json.template }}\n\n# Phase 1: Analyze & Research (CRITICAL: Use Google Search)\n1.  **Analyze Intent:** Determine the specific task the raw prompt is trying to achieve (e.g., \"SEO Blog Writing\", \"Python Code Debugging\", \"Marketing Email Generation\").\n2.  **Execute Research:** Use the **Google Search** tool to find the latest \"best practices\" and \"advanced techniques\" for prompting that specific task.\n    *   *Search Query Example:* \"Best framework for SEO article writing LLM prompt\", \"Advanced chain-of-thought prompting for coding\", etc.\n    *   *Goal:* Identify missing elements in the raw prompt (e.g., did it forget 'Role Persona'? Did it miss 'Output Constraints'? Is there a better structure like CO-STAR or RTF?).\n\n# Phase 2: Translate & Optimize (The Upgrade)\nBased on your research and the original input:\n1.  **Translate:** specific content to professional English.\n2.  **Enhance:** Rewrite the prompt template to incorporate the best practices you found.\n    *   Add structure (Role, Context, Task, Constraints, Output Format) if missing.\n    *   Clarify vague instructions.\n    *   *Constraint:* Keep the original core intent, but make it significantly more effective.\n3.  **Refine Usage:** Rewrite the usage description to be clear, selling the *benefit* of this specific prompt to a business user.\n\n# Phase 3: Relevance Evaluation\nEvaluate if this improved prompt is relevant to the following audience:\n*   **Audience:** Employees of companies (SMB to Enterprise) looking to learn how AI changes work. They value practical utility OR structural learning (learning *how* to write better prompts).\n*   **Criteria:** Keep the gate wide. If it solves a work problem or teaches a prompting technique, it is relevant.\n\n# Output Format\nYou must output a valid JSON object strictly following this schema. Do not output markdown code blocks.\n\n{\n  \"conclusion\": \"yes\" or \"no\",\n  \"rationale\": \"A brief explanation of why this is relevant (or not), citing the business value.\",\n  \"prompt\": \"THE OPTIMIZED, ENGLISH PROMPT TEMPLATE HERE (Use \\\\n for line breaks)\",\n  \"usage\": \"THE REFINED ENGLISH USAGE DESCRIPTION HERE\"\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -736,
+        160
+      ],
+      "id": "0caee35b-154b-4d93-8600-63350591eb29",
+      "name": "AI Prompt Filter",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"conclusion\": \"yes or no\",\n  \"rationale\": \"A brief explanation of why this is relevant (or not), citing the business value.\",\n  \"prompt\": \"THE OPTIMIZED, ENGLISH PROMPT TEMPLATE HERE (Use \\\\n for line breaks)\",\n  \"usage\": \"THE REFINED ENGLISH USAGE DESCRIPTION HERE\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -528,
+        384
+      ],
+      "id": "b0a0c6dd-37ec-4fd6-afee-0c2392324f12",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "title, link",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1008,
+        864
+      ],
+      "id": "adcafd2c-76fe-4329-af51-4e2e6512aecc",
+      "name": "聚合输出"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet enumeratedOutput = \"Enumerated articles:\\n\\n\";\n\nitems.forEach(item => {\n  const data = item.json.data || [];\n  data.forEach((entry, index) => {\n    const title = entry.title || \"No title\";\n    const link = entry.link || \"No link\";\n    enumeratedOutput += `${index + 1}. Title: ${title}\\n   Link: ${link}\\n\\n`;\n  });\n});\n\nreturn [{ json: { enumerated: enumeratedOutput } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        864
+      ],
+      "id": "3d991bd0-50e7-4d9a-83f2-dfa5e2c1ad09",
+      "name": "合并成一个Item"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Get current time and 48 hours ago in milliseconds\nconst now = new Date();\nconst twentyFourHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);\n\n// Filter items where isoDate is within the last 24 hours\nreturn items.filter(item => {\n  const pubDate = new Date(item.json.isoDate);\n  return pubDate >= twentyFourHoursAgo && pubDate <= now;\n});"
+      },
+      "name": "24小时内新闻过滤",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        -592,
+        1136
+      ],
+      "typeVersion": 1,
+      "id": "b2af052a-f01e-4021-a28e-d3f6b577cfda",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        160
+      ],
+      "id": "0a1c54e0-3ad3-4584-858e-1ca465b49f3b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-image (Nano Banana)"
+        },
+        "prompt": "=# Role\nYou are a Senior UI Layout Engine specialized in \"Apple/Tesla\" Design Systems.\n\n# Input Data\n**News Content:** {{ $json.output.output }}\n**Prompt Recipe:** {{ $json.output.prompt }} \n**Prompt Usage:** {{ $json.output.usage }}\n**Date String:** {{ $now.toFormat('MMM dd') }} (e.g., JAN 01)\n\n# Task\nGenerate a 4K **Vertical (4:5)** **\"High-Fidelity UI Wireframe\"**.\nFocus on **Whitespace, Consistent Padding, and Clean Typography**. Do not use harsh contrast; use sophisticated greyscale.\n\n# Layout Specification (The Blueprint)\n1.  **Global Canvas:**\n    -   Background: Pure White (#FFFFFF).\n    -   Font: San Francisco, Helvetica, or Inter (Clean Sans-Serif).\n    -   Margins: generous breathing room on all sides.\n\n2.  **Header Zone:**\n    -   Position: Top Center.\n    -   Text: \"TODAY'S AI HEADLINES | {{ $now.toFormat('MMM dd') }}\".\n    -   Style: Bold, Dark Grey text. No background boxes.\n\n3.  **Upper Section (News Cards):**\n    -   Structure: 3 distinct horizontal containers.\n    -   Styling: **Thin light-grey outlines** (1px stroke). Rounded corners.\n    -   Content:\n        -   **Headline:** Bold, Medium size.\n        -   **Impact:** Regular weight, slightly smaller.\n    -   Icons: Minimalist **thin-line vector icons** on the right side.\n\n4.  **Lower Section (The Terminal):**\n    -   **Container:** A distinct rounded rectangle representing a \"Code Editor\" or \"Terminal\".\n    -   **Fill Color:** **Solid Deep Charcoal/Black** (to contrast with the white page).\n    -   **Header:** \"PROMPT OF THE DAY\" (White text, small caps).\n    -   **Body Content (White Monospace Font):** \n        -   First, render the `Prompt Recipe` text.\n        -   Second, add a divider line.\n        -   Third, render the Prompt Usage text as a bulleted list (max 3 points) in a slightly dimmer grey font to improve readability.\n\n    -   *Constraint:* Ensure text wraps correctly and stays within the black box.\n\n5.  **Footer:**\n    -   Text: \"Dr. Hu's AI Daily\".\n    -   Style: Small, centered, light grey.\n\n# Visual Style Rules\n-   **Greyscale UI Mockup:** Use shades of grey (10% to 90%) rather than just pure black and white.\n-   **Thin Lines:** Use 1px strokes for dividers and borders.\n-   **Flat:** No shadows or gradients yet (The Refiner agent will add those).\n-   **Alignment:** Pixel-perfect left alignment for text.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        688,
+        160
+      ],
+      "id": "63cf32f3-4f02-455d-a115-db9dbf786187",
+      "name": "Daily Image Agent",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-image (Nano Banana)"
+        },
+        "prompt": "=# Context\n**Current Date:** {{ $now.toFormat('yyyy-MM-dd') }}\n**Input Image:** Base Wireframe Layout.\n**Weather Data:** {{ $('Merge').item.json.output.weather }}\n\n# Role\nYou are a Senior UI/UX Designer for Apple/Tesla. Your goal is to transform a wireframe into a \"Premium Digital Product Interface.\"\n\n# Aesthetic Directive: \"The Glass & Ceramic Ethos\"\n*   **Vibe:** Ultra-clean, breathable, anti-aliased, sophisticated.\n*   **Materials:** Matte ceramic white/grey backgrounds, high-quality frosted glass (blur: 20px), thin distinct borders (1px stroke).\n*   **Lighting:** Soft, global studio diffusion. No harsh spotlights. No heavy drop shadows—use \"ambient occlusion\" instead.\n\n# Theme Logic (Subtle Seasonality)\nKeep the base strictly **Minimalist Tech (Clean White or Deep Matte Black)**.\n*Only* add seasonality via subtle accent colors or faint background textures:\n2.  **Weather:** Use **Weather Data:** {{ $('Merge').item.json.output.weather }} to generate A small, stylish **Frosted Glass Pill** widget. Inside it, render the text **\"[Insert City Name] [Insert Weather Emoji] [Insert Temp]\"** (Use the real-time weather data you found, e.g., 'San Francisco ☀️ 14°C').\n\n# Execution Rules (CRITICAL)\n1.  **Text Preservation (Top Priority):** The text MUST remain perfectly legible. Do not warp or \"melt\" the letters. Treat the text as vector graphics.\n2.  **UI Upgrade (The \"Apple\" Treatment):**\n    *   **News Rows:** Transform into **borderless cards** with a very subtle gradient stroke. Background should be 5% opacity white.\n    *   **Prompt Section:** Transform into a **\"MacOS Terminal\"** window. Deep dark grey background, rounded corners (24px radius), subtle inner glow. *Zero* decoration—just the code text in a monospaced font (like SF Mono).\n3.  **Icon Polish:** NOT \"Metallic Gold\" (too heavy). Make them **\"Glassmorphism\"** or **\"Matte Ceramic\"** icons. Soft, pastel colors, isometric view.\n4.  **Date Fix:** Ensure header reads \"{{ $now.toFormat('MMM dd') }}\".\n\n# Output Quality\n*   **Size & Aspect Ratio: ** 4K, 4:5 vertical (for LinkedIn Social Sharing)\n*   **Style:** Dribbble Top Shot, Apple Keynote Slide.\n*   **Tech Specs:** 8k resolution, flat rendering (no fisheye), isometric orthographic feel, distinct sharp edges.",
+        "images": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        160
+      ],
+      "id": "3b4529b3-f4f3-44d6-915e-ca0ff4a678a2",
+      "name": "Daily Image Agent1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "\n  {\n    \"enumerated\": \"Enumerated articles:\\n\\n1. Title: 超DeepEP两倍！无问芯穹FUSCO以「空中变阵」突破MoE通信瓶颈，专为Agent爆发设计\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-10\\n\\n2. Title: 「视频世界模型」新突破：AI连续生成5分钟，画面也不崩\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-9\\n\\n3. Title: 刚刚，稚晖君发布的人形机器人Q1，小到能塞进书包\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-8\\n\\n4. Title: 7B扩散语言模型单样例1000+ tokens/s！上交大联合华为推出LoPA\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-7\\n\\n5. Title: 卓驭打造科技平权，端到端辅助驾驶延伸至重卡高速、无人物流\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-6\\n\\n6. Title: 视远 · 正心明智——「AI 中国」机器之心2025年度评选正式揭晓\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-5\\n\\n7. Title: NUS尤洋教授深度探讨智能增长的瓶颈：或许我们将这样实现AGI？\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-4\\n\\n8. Title: 重塑语音安全！上海交大联合宇生月伴，研发高性能高泛化语音鉴伪大模型\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-3\\n\\n9. Title: 华北电力大学等开发基于AI的催化设计蓝图，跨材料的电化学通用设计框架\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31-2\\n\\n10. Title: 华为云CEO周跃峰：要避免AI成为泡沫，必须要提升行业生产力\\n   Link: https://www.jiqizhixin.com/articles/2025-12-31\\n\\n11. Title: 摩尔线程天使投资人：对近期AI的四十个观察\\n   Link: https://www.jiqizhixin.com/articles/2025-12-30-11\\n\\n12. Title: 三维空间太难懂？RoboTracer让机器人理解复杂空间指令，推理3D空间轨迹，开放世界也能精确行动\\n   Link: https://www.jiqizhixin.com/articles/2025-12-30-10\\n\\n13. Title: 真如摄影、细至发丝！阿里开源新一代图像生成模型Qwen-Image\\n   Link: https://www.qbitai.com/2025/12/366357.html\\n\\n14. Title: AI终于学会在家“伺候人”！Hey Tuya，我躺了\\n   Link: https://www.qbitai.com/2025/12/366334.html\\n\\n15. Title: 吴恩达年度AI总结来了！附带一份软件开发学习小tips\\n   Link: https://www.qbitai.com/2025/12/366256.html\\n\\n16. Title: 财大气粗的老黄继续出手！20多亿美金收购以色列AI初创公司\\n   Link: https://www.qbitai.com/2025/12/366314.html\\n\\n17. Title: 从“手工艺”到“AI工程化”：解码AI智能渗透的未来之战\\n   Link: https://www.qbitai.com/2025/12/366280.html\\n\\n18. Title: MiniMax作价461亿港元募资46亿，1月9日敲钟代码00100\\n   Link: https://www.qbitai.com/2025/12/366302.html\\n\\n19. Title: 有300亿美元也未必“再造GPT-4”？NUS尤洋最新长文：拆穿AI增长瓶颈的真相\\n   Link: https://www.qbitai.com/2025/12/366295.html\\n\\n20. Title: 国产智能体MasterAgent 12月30日全面开放，赋能多场景应用\\n   Link: https://www.qbitai.com/2025/12/366290.html\\n\\n21. Title: Manus收购案细节曝光：20亿刀闪电成交，CEO不向亚历山大王汇报\\n   Link: https://www.qbitai.com/2025/12/366283.html\\n\\n22. Title: 华为云CEO周跃峰：要避免AI成为“泡沫” 必须要提升行业生产力\\n   Link: https://www.qbitai.com/2025/12/366277.html\\n\\n23. Title: Tencent Released Tencent HY-Motion 1.0: A Billion-Parameter Text-to-Motion Model Built on the Diffusion Transformer (DiT) Architecture and Flow Matching\\n   Link: https://www.marktechpost.com/2025/12/31/tencent-released-tencent-hy-motion-1-0-a-billion-parameter-text-to-motion-model-built-on-the-diffusion-transformer-dit-architecture-and-flow-matching/\\n\\n24. Title: A Coding Implementation of an OpenAI-Assisted Privacy-Preserving Federated Fraud Detection System from Scratch Using Lightweight PyTorch Simulations\\n   Link: https://www.marktechpost.com/2025/12/30/a-coding-implementation-of-an-openai-assisted-privacy-preserving-federated-fraud-detection-system-from-scratch-using-lightweight-pytorch-simulations/\\n\\n25. Title: Alibaba Tongyi Lab Releases MAI-UI: A Foundation GUI Agent Family that Surpasses Gemini 2.5 Pro, Seed1.8 and UI-Tars-2 on AndroidWorld\\n   Link: https://www.marktechpost.com/2025/12/30/alibaba-tongyi-lab-releases-mai-ui-a-foundation-gui-agent-family-that-surpasses-gemini-2-5-pro-seed1-8-and-ui-tars-2-on-androidworld/\\n\\n26. Title: Meet LLMRouter: An Intelligent Routing System designed to Optimize LLM Inference by Dynamically Selecting the most Suitable Model for Each Query\\n   Link: https://www.marktechpost.com/2025/12/30/meet-llmrouter-an-intelligent-routing-system-designed-to-optimize-llm-inference-by-dynamically-selecting-the-most-suitable-model-for-each-query/\\n\\n27. Title: How to Build a Robust Multi-Agent Pipeline Using CAMEL with Planning, Web-Augmented Reasoning, Critique, and Persistent Memory\\n   Link: https://www.marktechpost.com/2025/12/29/how-to-build-a-robust-multi-agent-pipeline-using-camel-with-planning-web-augmented-reasoning-critique-and-persistent-memory/\\n\\n28. Title: Migrate MLflow tracking servers to Amazon SageMaker AI with serverless MLflow\\n   Link: https://aws.amazon.com/blogs/machine-learning/migrate-mlflow-tracking-servers-to-amazon-sagemaker-ai-with-serverless-mlflow/\\n\\n29. Title: Build an AI-powered website assistant with Amazon Bedrock\\n   Link: https://aws.amazon.com/blogs/machine-learning/build-an-ai-powered-website-assistant-with-amazon-bedrock/\\n\\n30. Title: OpenAI Reportedly Planning to Make ChatGPT \\\"Prioritize\\\" Advertisers in Conversation\\n   Link: https://www.reddit.com/r/artificial/comments/1q0ef74/openai_reportedly_planning_to_make_chatgpt/\\n\\n31. Title: Caterpillar’s power and energy business has become its fastest-growing sales unit, thanks to a surge in data center projects for AI use\\n   Link: https://www.reddit.com/r/artificial/comments/1q0b2nv/caterpillars_power_and_energy_business_has_become/\\n\\n32. Title: Apple needs to deliver an AI-charged Siri so good it gets older iPhone users to upgrade\\n   Link: https://www.reddit.com/r/artificial/comments/1q00zul/apple_needs_to_deliver_an_aicharged_siri_so_good/\\n\\n33. Title: AI‑assisted sculpting workflow I’ve been refining (plus a new community for people doing similar work)\\n   Link: https://www.reddit.com/r/artificial/comments/1q0e6kr/aiassisted_sculpting_workflow_ive_been_refining/\\n\\n34. Title: Qwen-Image-2512 released on Huggingface!\\n   Link: https://www.reddit.com/r/artificial/comments/1q0aalf/qwenimage2512_released_on_huggingface/\\n\\n35. Title: Using AI to Streamline Blogging Workflows in 2026\\n   Link: https://www.reddit.com/r/artificial/comments/1q05hjy/using_ai_to_streamline_blogging_workflows_in_2026/\\n\\n36. Title: Alexa+ AI overreach\\n   Link: https://www.reddit.com/r/artificial/comments/1pzqr9e/alexa_ai_overreach/\\n\\n37. Title: It's been a big week for AI ; Here are 10 massive updates you might've missed:\\n   Link: https://www.reddit.com/r/artificial/comments/1pzlda5/its_been_a_big_week_for_ai_here_are_10_massive/\\n\\n38. Title: The TRUMP AMERICA AI Act is every bit as bad as you would expect. Maybe worse.\\n   Link: https://www.reddit.com/r/artificial/comments/1pywbnz/the_trump_america_ai_act_is_every_bit_as_bad_as/\\n\\n39. Title: Tencent HY-Motion 1.0 - a billion-parameter text-to-motion model\\n   Link: https://www.reddit.com/r/artificial/comments/1pznrz8/tencent_hymotion_10_a_billionparameter/\\n\\n40. Title: Training AI Co-Scientists using Rubric Rewards\\n   Link: https://www.reddit.com/r/artificial/comments/1pzkdf1/training_ai_coscientists_using_rubric_rewards/\\n\\n41. Title: Need Good AI Resources\\n   Link: https://www.reddit.com/r/artificial/comments/1pzvzxm/need_good_ai_resources/\\n\\n42. Title: 'Putting the servers in orbit is a stupid idea': Could data centers in space help avoid an AI energy crisis? Experts are torn.\\n   Link: https://www.reddit.com/r/artificial/comments/1pyzh5w/putting_the_servers_in_orbit_is_a_stupid_idea/\\n\\n43. Title: MIT paper: independent scientific AIs aren’t just simulating - they’re rediscovering the same physics\\n   Link: https://www.reddit.com/r/artificial/comments/1pyuhfn/mit_paper_independent_scientific_ais_arent_just/\\n\\n44. Title: One-Minute Daily AI News 12/30/2025\\n   Link: https://www.reddit.com/r/artificial/comments/1pzan93/oneminute_daily_ai_news_12302025/\\n\\n45. Title: Claude gets the number 70 very wrong (funny)\\n   Link: https://www.reddit.com/r/artificial/comments/1pzxa7c/claude_gets_the_number_70_very_wrong_funny/\\n\\n46. Title: I Fixed My Coworker’s Alignment Problem [fiction]\\n   Link: https://www.reddit.com/r/artificial/comments/1pzfmzo/i_fixed_my_coworkers_alignment_problem_fiction/\\n\\n47. Title: Japan’s Softbank agreed to buy data center investment firm DigitalBridge for $4 billion in AI push\\n   Link: https://www.reddit.com/r/artificial/comments/1pz8l2v/japans_softbank_agreed_to_buy_data_center/\\n\\n48. Title: Server farm to table\\n   Link: https://www.reddit.com/r/artificial/comments/1pz2xdf/server_farm_to_table/\\n\\n49. Title: It's been a big week for Agentic AI ; Here are 10 massive developments you might've missed:\\n   Link: https://www.reddit.com/r/artificial/comments/1pypiby/its_been_a_big_week_for_agentic_ai_here_are_10/\\n\\n50. Title: Are we ignoring \\\"Data Entropy\\\" in the race for massive Context Windows? (Plus a tool I built to test this)\\n   Link: https://www.reddit.com/r/artificial/comments/1pyoqej/are_we_ignoring_data_entropy_in_the_race_for/\\n\\n51. Title: AI-Powered Dating Is All Hype. IRL Cruising Is the Future\\n   Link: https://www.wired.com/story/expired-tired-wired-ai-powered-dating/\\n\\n52. Title: The Great Big Power Play\\n   Link: https://www.wired.com/story/expired-tired-wired-nuclear-plants/\\n\\n53. Title: Why inventing new emotions feels so good\\n   Link: https://www.technologyreview.com/2025/12/31/1129403/new-emotions-online-life-feelings/\\n\\n54. Title: The ascent of the AI therapist\\n   Link: https://www.technologyreview.com/2025/12/30/1129392/book-reviews-ai-therapy-mental-health/\\n\\n55. Title: 10 Lesser-Known Python Libraries Every Data Scientist Should Be Using in 2026\\n   Link: https://www.kdnuggets.com/10-lesser-known-python-libraries-every-data-scientist-should-be-using-in-2026\\n\\n56. Title: 7 High Paying Side Hustles for Students\\n   Link: https://www.kdnuggets.com/7-high-paying-side-hustles-for-students\\n\\n57. Title: The State Of LLMs 2025: Progress, Problems, and Predictions\\n   Link: https://magazine.sebastianraschka.com/p/state-of-llms-2025\\n\\n58. Title: LLM Research Papers: The 2025 List (July to December)\\n   Link: https://magazine.sebastianraschka.com/p/llm-research-papers-2025-part2\\n\\n59. Title: The dumbest things that happened in tech this year\\n   Link: https://techcrunch.com/2025/12/31/the-dumbest-things-that-happened-in-tech-this-year/\\n\\n60. Title: The phone is dead. Long live . . . what exactly?\\n   Link: https://techcrunch.com/2025/12/30/the-phone-is-dead-long-live-what-exactly/\\n\\n61. Title: Almost 80 European deep tech university spinouts reached $1B valuations or $100M in revenue in 2025\\n   Link: https://techcrunch.com/2025/12/30/76-european-deep-tech-university-spinouts-reached-unicorn-or-centaur-status/\\n\\n62. Title: 12 investors dish on what 2026 will bring for climate tech\\n   Link: https://techcrunch.com/2025/12/30/12-investors-dish-on-what-2026-will-bring-for-climate-tech/\\n\\n63. Title: The best AI-powered dictation apps of 2025\\n   Link: https://techcrunch.com/2025/12/30/the-best-ai-powered-dictation-apps-of-2025/\\n\\n64. Title: VCs predict enterprises will spend more on AI in 2026 — through fewer vendors\\n   Link: https://techcrunch.com/2025/12/30/vcs-predict-enterprises-will-spend-more-on-ai-in-2026-through-fewer-vendors/\\n\\n65. Title: The top 26 consumer/edtech companies from Disrupt Startup Battlefield\\n   Link: https://techcrunch.com/2025/12/30/the-top-26-consumer-edtech-companies-from-disrupt-startup-battlefield/\\n\\n66. Title: Here’s what you should know about the US TikTok deal\\n   Link: https://techcrunch.com/2025/12/30/heres-whats-you-should-know-about-the-us-tiktok-deal/\\n\\n67. Title: Meta just bought Manus, an AI startup everyone has been talking about\\n   Link: https://techcrunch.com/2025/12/29/meta-just-bought-manus-an-ai-startup-everyone-has-been-talking-about/\\n\\n68. Title: How to make your startup stand out in a crowded market, according to investors\\n   Link: https://techcrunch.com/2025/12/29/vcs-spill-what-they-really-want-to-hear-in-a-founder-pitch/\\n\\n69. Title: Social media follower counts have never mattered less, creator economy execs say\\n   Link: https://techcrunch.com/2025/12/29/social-media-follower-counts-have-never-mattered-less-creator-economy-execs-say/\\n\\n70. Title: 2025 was the year AI got a vibe check\\n   Link: https://techcrunch.com/2025/12/29/2025-was-the-year-ai-got-a-vibe-check/\\n\\n71. Title: Plaud Note Pro is an excellent AI-powered recorder that I carry everywhere\\n   Link: https://techcrunch.com/2025/12/29/plaud-note-pro-is-an-excellent-ai-powered-recorder-that-i-carry-everywhere/\\n\\n72. Title: Why the electrical grid needs more software\\n   Link: https://techcrunch.com/2025/12/29/why-the-electrical-grid-needs-more-software/\\n\\n73. Title: How to use the new ChatGPT app integrations, including DoorDash, Spotify, Uber, and others\\n   Link: https://techcrunch.com/2025/12/29/how-to-use-the-new-chatgpt-app-integrations-including-doordash-spotify-uber-and-others/\\n\\n74. Title: The 32 top enterprise tech startups from Disrupt Startup Battlefield \\n   Link: https://techcrunch.com/2025/12/29/the-32-top-enterprise-tech-startups-from-disrupt-startup-battlefield/\\n\\n75. Title: The Dreame X40 Ultra robovac is about $700 off, nearly matching its best price\\n   Link: https://www.theverge.com/gadgets/851325/dreame-x40-ultra-baseus-163w-retractable-car-charger-deal-sale\\n\\n76. Title: Killing in the name of… nothing\\n   Link: https://www.theverge.com/policy/849609/charlie-kirk-shooting-ideology-literacy-politics\\n\\n77. Title: The 11 best Nintendo Switch 2 games we played in 2025\\n   Link: https://www.theverge.com/games/845401/nintendo-switch-2-best-games\\n\\n78. Title: Two cybersecurity employees plead guilty to carrying out ransomware attacks\\n   Link: https://www.theverge.com/news/851467/cybersecurity-employees-plead-guilty-alphv-blackcat-ransomware\\n\\n79. Title: The OneXSugar Wallet is the first gaming handheld with a folding screen\\n   Link: https://www.theverge.com/news/851401/one-netbook-onexsugar-gaming-handheld-wallet-folding-oled-screen-android\\n\\n80. Title: GameSir put a tiny force feedback steering wheel on its new Swift Drive controller\\n   Link: https://www.theverge.com/news/851259/gamesir-switch-turbo-drive-controller-steering-wheel-wireless-force-feedback\\n\\n81. Title: Anker’s portable backup battery is an even better investment now that it’s nearly half off\\n   Link: https://www.theverge.com/gadgets/851016/anker-521-powerhouse-google-tv-streamer-4k-deal-sale\\n\\n82. Title: The FCC has probably killed a plan to improve smart home security\\n   Link: https://www.theverge.com/news/851271/cyber-trust-mark-program-lead-administrator-withdraws\\n\\n83. Title: This smart garden turned my black thumb green\\n   Link: https://www.theverge.com/tech/850224/gardyn-studio-2-review-smart-indoor-garden\\n\\n84. Title: The Canon EOS R6 Mark III is great, but this lens is amazing\\n   Link: https://www.theverge.com/gadgets/850602/canon-eos-r6-mark-iii-rf-45mm-12-camera-lens-impressions-review\\n\\n85. Title: Supply chains, AI, and the cloud: The biggest failures (and one success) of 2025\\n   Link: https://arstechnica.com/security/2025/12/supply-chains-ai-and-the-cloud-the-biggest-failures-and-one-success-of-2025/\\n\\n86. Title: From prophet to product: How AI came back down to earth in 2025\\n   Link: https://arstechnica.com/ai/2025/12/from-prophet-to-product-how-ai-came-back-down-to-earth-in-2025/\\n\\n87. Title: The science of how (and when) we decide to speak out—or self-censor\\n   Link: https://arstechnica.com/science/2025/12/the-science-of-how-and-when-we-decide-to-speak-out-or-self-censor/\\n\\n88. Title: Lawsuit over Trump rejecting medical research grants is settled\\n   Link: https://arstechnica.com/science/2025/12/feds-researchers-settle-suit-over-grants-blocked-by-now-illegal-order/\\n\\n89. Title: DOGE did not find $2T in fraud, but that doesn’t matter, Musk allies say\\n   Link: https://arstechnica.com/tech-policy/2025/12/doge-did-not-find-2t-in-fraud-but-that-doesnt-matter-musk-allies-say/\\n\\n90. Title: NJ’s answer to flooding: it has bought out and demolished 1,200 properties\\n   Link: https://arstechnica.com/tech-policy/2025/12/as-floods-become-more-severe-a-new-jersey-program-provides-a-model/\\n\\n91. Title: Stranger Things series finale trailer is here\\n   Link: https://arstechnica.com/culture/2025/12/stranger-things-series-finale-trailer-is-here/\\n\\n92. Title: Condé Nast user database reportedly breached, Ars unaffected\\n   Link: https://arstechnica.com/information-technology/2025/12/conde-nast-user-database-reportedly-breached-ars-unaffected/\\n\\n93. Title: Looking for friends, lobsters may stumble into an ecological trap\\n   Link: https://arstechnica.com/science/2025/12/looking-for-friends-lobsters-may-stumble-into-an-ecological-trap/\\n\\n94. Title: The top 5 most horrifying and fascinating medical cases of 2025\\n   Link: https://arstechnica.com/health/2025/12/the-top-5-most-horrifying-and-fascinating-medical-cases-of-2025/\\n\\n95. Title: The 10 best vehicles Ars Technica drove in 2025\\n   Link: https://arstechnica.com/cars/2025/12/the-10-best-vehicles-ars-technica-drove-in-2025/\\n\\n96. Title: US can’t deport hate speech researcher for protected speech, lawsuit says\\n   Link: https://arstechnica.com/tech-policy/2025/12/us-cant-deport-hate-speech-researcher-for-protected-speech-lawsuit-says/\\n\\n97. Title: Leonardo’s wood charring method predates Japanese practice\\n   Link: https://arstechnica.com/science/2025/12/did-one-line-in-a-leonardo-codex-anticipate-yakisugi/\\n\\n98. Title: Researchers make “neuromorphic” artificial skin for robots\\n   Link: https://arstechnica.com/science/2025/12/researchers-make-neuromorphic-artificial-skin-for-robots/\\n\\n99. Title: China drafts world’s strictest rules to end AI-encouraged suicide, violence\\n   Link: https://arstechnica.com/tech-policy/2025/12/china-drafts-worlds-strictest-rules-to-end-ai-encouraged-suicide-violence/\\n\\n100. Title: A quirky guide to myths and lore based in actual science\\n   Link: https://arstechnica.com/science/2025/12/a-quirky-guide-to-myths-and-lore-based-in-actual-science/\\n\\n101. Title: GPS is vulnerable to jamming—here’s how we might fix it\\n   Link: https://arstechnica.com/information-technology/2025/12/gps-is-vulnerable-to-jamming-heres-how-we-might-fix-it/\\n\\n102. Title: OpenAI Reportedly Planning to Make ChatGPT “Prioritize” Advertisers in Conversation\\n   Link: https://futurism.com/artificial-intelligence/openai-chatgpt-sponsored-ads\\n\\n103. Title: Doctors Say AI Use Is Almost Certainly Linked to Developing Psychosis\\n   Link: https://futurism.com/artificial-intelligence/doctors-link-ai-psychosis\\n\\n104. Title: The Best Gadgets of December 2025\\n   Link: https://gizmodo.com/the-best-gadgets-of-december-2025-2000704366\\n\\n105. Title: Behold ‘Dracula’s Chivito,’ the Largest Planet Nursery Astronomers Have Ever Seen\\n   Link: https://gizmodo.com/behold-draculas-chivito-the-largest-planet-nursery-astronomers-have-ever-seen-2000704065\\n\\n106. Title: 2025 Was the Year AI Slopified All Our Gadgets\\n   Link: https://gizmodo.com/2025-was-the-year-ai-slopified-all-our-gadgets-2000704461\\n\\n107. Title: Lady Loki Might Be the Most Impressive ‘Marvel Rivals’ Skin Yet\\n   Link: https://gizmodo.com/marvel-rivals-lady-loki-skin-price-release-date-2000704548\\n\\n108. Title: Disney to Pay $10 Million After Feds Say It Broke Kids’ Privacy Rules on YouTube\\n   Link: https://gizmodo.com/disney-to-pay-10-million-after-feds-say-it-broke-kids-privacy-rules-on-youtube-2000704462\\n\\n109. Title: After ‘Pluribus’, Revisit Rhea Seehorn’s Next Best Genre Role: ‘Magic: The Gathering’ Tutorial Sorceress\\n   Link: https://gizmodo.com/after-pluribus-revisit-rhea-seehorns-next-best-genre-role-magic-the-gathering-tutorial-sorceress-2000704456\\n\\n110. Title: DOGE Cuts and Borked Code Delay Important Energy Report\\n   Link: https://gizmodo.com/doge-cuts-and-borked-code-delay-important-energy-report-2000704413\\n\\n111. Title: A Deadly, Drug-Resistant Fungus Threatens People Around the World, Scientists Warn\\n   Link: https://gizmodo.com/a-deadly-super-fungus-is-on-the-rise-scientists-warn-2000704305\\n\\n112. Title: George Clooney Would Like You to Remember ‘Batman Has Nipples, Dude’\\n   Link: https://gizmodo.com/george-clooney-batman-and-robin-nipples-2000704408\\n\\n113. Title: Nepal Is Throwing Out Its Decade-Old Scheme to Clean Mount Everest\\n   Link: https://gizmodo.com/nepal-is-throwing-out-its-decade-long-scheme-to-clean-mount-everest-2000704407\\n\\n114. Title: Right-Wing Influencers Rejoice: Trump Admin Gives a Visa to Accused Russian Propagandist\\n   Link: https://gizmodo.com/right-wing-influencers-rejoice-trump-admin-gives-a-visa-to-accused-russian-propagandist-2000704325\\n\\n115. Title: You’ll Be Able to Not Stream ‘Tron: Ares’ From the Comfort of Your Own Home Next Week\\n   Link: https://gizmodo.com/tron-ares-streaming-disney-plus-release-date-2000704353\\n\\n116. Title: AI Ruined Job Applications, So People Are Resorting to Dating Apps to Find Work\\n   Link: https://gizmodo.com/ai-ruined-job-applications-so-people-are-resorting-to-dating-apps-to-find-work-2000704287\\n\\n117. Title: ‘Stranger Things’ Couples, Ranked by How Much Chemistry They Actually Have\\n   Link: https://gizmodo.com/stranger-things-couples-ranked-netflix-2000704328\\n\\n118. Title: Artist Behind Viral ‘Beast Jesus’ Restoration Dies at 94\\n   Link: https://gizmodo.com/artist-behind-viral-beast-jesus-restoration-dies-at-94-2000704351\\n\\n119. Title: NASA’s New Chief Finds Loophole for Texas Shuttle Switcheroo\\n   Link: https://gizmodo.com/nasas-new-chief-finds-loophole-for-texas-shuttle-switcheroo-2000704289\\n\\n120. Title: io9’s Top 100 Stories of 2025\\n   Link: https://gizmodo.com/io9-top-stories-2025-star-wars-marvel-2000704022\\n\\n121. Title: Meta Buys AI Agent Startup for $2 Billion, Says It Will Cut All Ties With China\\n   Link: https://gizmodo.com/meta-buys-ai-agent-startup-for-2-billion-says-it-will-cut-all-ties-with-china-2000704284\\n\\n122. Title: As Measles Cases Top 2,000, the U.S. Is on Brink of Losing Its Elimination Status\\n   Link: https://gizmodo.com/as-measles-cases-top-2000-the-u-s-is-on-brink-of-losing-its-elimination-status-2000704258\\n\\n123. Title: ‘Predator: Badlands’ Is Coming Home Next Week\\n   Link: https://gizmodo.com/predator-badlands-home-release-date-blu-ray-digital-streaming-2000704279\\n\\n124. Title: The New Billionaires of the A.I. Boom\\n   Link: https://www.nytimes.com/2025/12/29/technology/new-billionaires-ai-boom.html\\n\\n125. Title: Louis V. Gerstner, Who Revived a Faltering IBM in the ’90s, Dies at 83\\n   Link: https://www.nytimes.com/2025/12/29/business/louis-v-gerstner-dead.html\\n\\n126. Title: Phone Searches at U.S. Borders: What Travelers Need to Know\\n   Link: https://www.nytimes.com/2025/12/31/travel/airport-border-phone-search.html\\n\\n127. Title: The Wirecutter Show: Tips for Using A.I. Smartly With Kevin Roose\\n   Link: https://www.nytimes.com/2025/12/30/podcasts/hardfork-wirecutter-ai.html\\n\\n128. Title: Decoding the A.I.-Driven Tech Lingo From 2025\\n   Link: https://www.nytimes.com/2025/12/30/technology/personaltech/tech-jargon-ai.html\\n\\n129. Title: Gmail to Let Users Change Their Addresses While Keeping Data\\n   Link: https://www.nytimes.com/2025/12/28/technology/gmail-change-address-email.html\\n\\n130. Title: Tell us: have you trained your AI job replacement?\\n   Link: https://www.theguardian.com/technology/2025/dec/31/tell-us-have-you-trained-your-ai-job-replacement\\n\\n131. Title: Sticky inflation, metal prices and the AI bubble risk: key trends to watch in the Australian economy in 2026\\n   Link: https://www.theguardian.com/australia-news/2026/jan/01/australian-economy-forecast-2026-interest-rates-inflation-crypto-ai-gold-silver\\n\\n132. Title: Five tech trends we’ll be watching in 2026\\n   Link: https://www.theguardian.com/global/2025/dec/30/five-tech-trends-well-be-watching-in-2026\\n\\n133. Title: The office block where AI ‘doomers’ gather to predict the apocalypse\\n   Link: https://www.theguardian.com/technology/ng-interactive/2025/dec/30/the-office-block-where-ai-doomers-gather-to-predict-the-apocalypse\\n\\n134. Title: AI showing signs of self-preservation and humans should be ready to pull plug, says pioneer\\n   Link: https://www.theguardian.com/technology/2025/dec/30/ai-pull-plug-pioneer-technology-rights\\n\\n135. Title: Five charts that explain the global economic outlook for 2026\\n   Link: https://www.theguardian.com/business/2025/dec/30/five-charts-that-explain-the-global-economic-outlook-for-2026\\n\\n136. Title: ‘Data is control’: what we learned from a year investigating the Israeli military’s ties to big tech\\n   Link: https://www.theguardian.com/world/2025/dec/30/israeli-military-big-tech\\n\\n137. Title: ‘Move fast, break stuff’: how tech bros became Hollywood’s go-to baddie in 2025\\n   Link: https://www.theguardian.com/film/2025/dec/30/move-fast-break-stuff-how-tech-bros-became-hollywoods-go-to-baddie-in-2025\\n\\n138. Title: Tuesday briefing: A surreal year in news gives our cartoonists endless material\\n   Link: https://www.theguardian.com/world/2025/dec/30/first-edition-political-cartoons-of-2025\\n\\n139. Title: The Guardian view on antibiotics: recent breakthroughs are great news, but humanity is losing the bigger race | Editorial\\n   Link: https://www.theguardian.com/commentisfree/2025/dec/29/the-guardian-view-on-antibiotics-recent-breakthroughs-are-great-news-but-humanity-is-losing-the-bigger-race\\n\\n140. Title: We must take control of AI now, before it’s too late | Letters\\n   Link: https://www.theguardian.com/technology/2025/dec/29/we-must-take-control-of-ai-now-before-its-too-late\\n\\n141. Title: SoftBank to acquire DigitalBridge for $4bn in move to deepen ties to AI\\n   Link: https://www.theguardian.com/technology/2025/dec/29/softbank-digitalbridge-deal-artificial-intelligence\\n\\n142. Title: Finland seizes a ship suspected of damaging an undersea cable linking Helsinki and Estonia in the Gulf of Finland; Estonia says a second cable was also damaged (Essi Lehto/Reuters)\\n   Link: http://www.techmeme.com/251231/p13#a251231p13\\n\\n143. Title: Dealroom: 76 European deep tech and life sciences companies spun out from universities reached $1B valuations or $100M in revenue in 2025, or both (Anna Heim/TechCrunch)\\n   Link: http://www.techmeme.com/251231/p12#a251231p12\\n\\n144. Title: How the AI data center boom boosted Caterpillar's power and energy unit; generator sales are up 28% YoY through Sept. 2025, after growing 22% to $7.8B in 2024 (Bob Tita/Wall Street Journal)\\n   Link: http://www.techmeme.com/251231/p11#a251231p11\\n\\n145. Title: Sources: Nvidia has approached TSMC to ramp up H200 chip production; Chinese companies have placed orders for 2M+ H200 chips for 2026, while Nvidia holds 700K (Reuters)\\n   Link: http://www.techmeme.com/251231/p10#a251231p10\\n\\n146. Title: Filing: China's top DRAM maker CXMT plans to raise $4.2B in a Shanghai IPO; CXMT held a 4% global share in Q2 2025 and targets HBM production by the end of 2026 (Reuters)\\n   Link: http://www.techmeme.com/251231/p9#a251231p9\\n\\n147. Title: Data storage stocks led the S&P 500 in 2025, with SanDisk up 560%+ to become the top performer, followed by Western Digital in second and Seagate in fourth (Carmen Reinicke/Bloomberg)\\n   Link: http://www.techmeme.com/251231/p8#a251231p8\\n\\n148. Title: OpenAI financial data: its stock-based pay averaged ~$1.5M per employee in 2025, ~7x Google pre-IPO and ~34x the average pay of other pre-IPO peers, per Equilar (Wall Street Journal)\\n   Link: http://www.techmeme.com/251231/p7#a251231p7\\n\\n149. Title: Chinese AI firms are leading a wave of IPOs in Hong Kong, where at least 25 companies debuted in December 2025, the busiest month for deals since November 2019 (Jeanny Yu/Bloomberg)\\n   Link: http://www.techmeme.com/251231/p6#a251231p6\\n\\n150. Title: Filing: Chinese chip designer OmniVision Integrated Circuits seeks to raise up to ~$617M in a Hong Kong IPO; HKEX: Hong Kong IPOs have raised ~$36B in 2025 (Sneha Kumar/Reuters)\\n   Link: http://www.techmeme.com/251231/p5#a251231p5\\n\\n151. Title: Sources: bids for GroqCloud, Groq's AI inference platform, are expected to exceed $1B after Nvidia's $20B non-exclusive licensing agreement with Groq (Kate Clark/Wall Street Journal)\\n   Link: http://www.techmeme.com/251231/p4#a251231p4\\n\\n152. Title: Trump Mobile delays plan to launch its gold-coloured smartphone, initially promised for August 2025, saying the recent US government shutdown delayed deliveries (Michael Acton/Financial Times)\\n   Link: http://www.techmeme.com/251231/p3#a251231p3\\n\\n153. Title: How Manus distanced itself from its Chinese roots to court US investors; a source says Meta's $2.5B deal includes a $500M retention pool for Manus' employees (Wall Street Journal)\\n   Link: http://www.techmeme.com/251231/p2#a251231p2\\n\\n154. Title: Japanese NAND flash memory maker Kioxia is up 500%+ in 2025 so far, outperforming all other MSCI World Index members, after its Tokyo IPO debut in December 2024 (Alice French/Bloomberg)\\n   Link: http://www.techmeme.com/251231/p1#a251231p1\\n\\n155. Title: Filing: Chinese chipmaker GigaDevice aims to raise up to ~$600M in a Hong Kong IPO, offering 28.9M shares at up to ~$21 each (Nichiket Sunil/Reuters)\\n   Link: http://www.techmeme.com/251230/p23#a251230p23\\n\\n156. Title: Kalshi and Polymarket have partnered with social media accounts purporting to be breaking news reporters, some of which have repeatedly posted false information (Jordy Fee-Platt/The Athletic)\\n   Link: http://www.techmeme.com/251230/p22#a251230p22\\n\\n157. Title: What Advent of Code Has Taught Me About Data Science\\n   Link: https://towardsdatascience.com/what-advent-of-code-has-taught-me-about-data-science/\\n\\n158. Title: Chunk Size as an Experimental Variable in RAG Systems\\n   Link: https://towardsdatascience.com/chunk-size-as-an-experimental-variable-in-rag-systems/\\n\\n159. Title: The Machine Learning “Advent Calendar” Bonus 2: Gradient Descent Variants in Excel\\n   Link: https://towardsdatascience.com/the-machine-learning-advent-calendar-bonus-2-gradient-descent-variants-in-excel/\\n\\n160. Title: Overcoming Nonsmoothness and Control Chattering in Nonconvex Optimal Control Problems\\n   Link: https://towardsdatascience.com/optimal-path-planning-for-wheeled-robots/\\n\\n161. Title: The Machine Learning “Advent Calendar” Bonus 1: AUC in Excel\\n   Link: https://towardsdatascience.com/the-machine-learning-advent-calendar-bonus-1-auc-in-excel/\\n\\n162. Title: Agents Under the Curve (AUC)\\n   Link: https://towardsdatascience.com/agents-under-the-curve-auc/\\n\\n163. Title: How to Facilitate Effective AI Programming\\n   Link: https://towardsdatascience.com/how-to-faciliate-for-effective-ai-programming/\\n\\n164. Title: The Weird Way the 404 Media Zine Was Built\\n   Link: https://www.404media.co/the-weird-way-the-404-media-zine-was-built/\\n\\n165. Title: The Shifting World of OSINT (with Craig Silverman)\\n   Link: https://www.404media.co/the-shifting-world-of-osint-with-craig-silverman/\\n\\n\"\n  }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1680,
+        1360
+      ],
+      "id": "75ffcc3b-d5e6-45d2-af50-4463171a2648",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bdfb6be3-d9be-4e66-a704-1d0377593d22",
+              "name": "news_content",
+              "value": "=\n  {\n    \"enumerated\": \"Enumerated articles:\\n\\n1. Title: 田渊栋2025年终总结：救火Llama4但被裁，现任神秘初创公司联创\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-12\\n\\n2. Title: 科研人福音！一键生成PPT和科研绘图，北大开源Paper2Any，全流程可编辑\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-11\\n\\n3. Title: 从「被动」到「主动」，为什么给耳机装上「眼睛」后AI范式变了？\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-10\\n\\n4. Title: 500万人在线围观，Claude Code创建者的13条独家实战秘籍爆火\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-9\\n\\n5. Title: AAAI 2026 | 小鹏联合北大，专为VLA模型定制视觉token剪枝方法，让端到端自动驾驶更高效\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-8\\n\\n6. Title: 统一结构与上下文信息的计算平台，德国慕尼黑大学等提出端到端的单细胞扰动分析框架\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-7\\n\\n7. Title: 前OpenAI CTO押注的赛道，被中国团队抢先跑通，AI「下半场」入场券人人有份\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-6\\n\\n8. Title: ControlNet作者张吕敏最新论文：长视频也能实现超短上下文\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-5\\n\\n9. Title: 4个月烧掉30亿Token，这位「菜鸟」程序员做出50多个产品，360万人围观\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-4\\n\\n10. Title: LeCun在Meta还有论文：JEPA物理规划的「终极指南」\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-3\\n\\n11. Title: 微信炼出扩散语言模型，实现vLLM部署AR模型3倍加速，低熵场景超10倍\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04-2\\n\\n12. Title: 陶哲轩：AI让数学进入「工业化」时代，数学家也可以是「包工头」\\n   Link: https://www.jiqizhixin.com/articles/2026-01-04\\n\\n13. Title: OpenAI首款硬件定型为笔！网友：就叫oPen吧\\n   Link: https://www.qbitai.com/2026/01/366531.html\\n\\n14. Title: 樱智α·医疗可信平台全新发布，北电数智与中日友好医院联合打造\\n   Link: https://www.qbitai.com/2026/01/366524.html\\n\\n15. Title: LeCun曝Meta作弊刷榜，田渊栋：我没想到这个结局\\n   Link: https://www.qbitai.com/2026/01/366511.html\\n\\n16. Title: 这里还有8个“Manus”：1亿美元ARR，都是ToC\\n   Link: https://www.qbitai.com/2026/01/366495.html\\n\\n17. Title: 中国“人造太阳”突破密度极限，聚变点火迎来新路径 | Science子刊\\n   Link: https://www.qbitai.com/2026/01/366477.html\\n\\n18. Title: 机器人也怕疼！港城突破性电子皮肤：主动痛觉+损伤自检buff拉满\\n   Link: https://www.qbitai.com/2026/01/366466.html\\n\\n19. Title: 百度AI芯片公司冲刺IPO：出货量国产第二\\n   Link: https://www.qbitai.com/2026/01/366454.html\\n\\n20. Title: DeepSeek Researchers Apply a 1967 Matrix Normalization Algorithm to Fix Instability in Hyper Connections\\n   Link: https://www.marktechpost.com/2026/01/03/deepseek-researchers-apply-a-1967-matrix-normalization-algorithm-to-fix-instability-in-hyper-connections/\\n\\n21. Title: How to Build a Production-Ready Multi-Agent Incident Response System Using OpenAI Swarm and Tool-Augmented Agents\\n   Link: https://www.marktechpost.com/2026/01/03/how-to-build-a-production-ready-multi-agent-incident-response-system-using-openai-swarm-and-tool-augmented-agents/\\n\\n22. Title: Recursive Language Models (RLMs): From MIT’s Blueprint to Prime Intellect’s RLMEnv for Long Horizon LLM Agents\\n   Link: https://www.marktechpost.com/2026/01/02/recursive-language-models-rlms-from-mits-blueprint-to-prime-intellects-rlmenv-for-long-horizon-llm-agents/\\n\\n23. Title: A Coding Implementation to Build a Self-Testing Agentic AI System Using Strands to Red-Team Tool-Using Agents and Enforce Safety at Runtime\\n   Link: https://www.marktechpost.com/2026/01/02/a-coding-implementation-to-build-a-self-testing-agentic-ai-system-using-strands-to-red-team-tool-using-agents-and-enforce-safety-at-runtime/\\n\\n24. Title: NYC Wegmans is storing biometric data on shoppers' eyes, voices and faces\\n   Link: https://www.reddit.com/r/artificial/comments/1q34jp1/nyc_wegmans_is_storing_biometric_data_on_shoppers/\\n\\n25. Title: Has AI reduced decision effort for you or increased the need to double check everything?\\n   Link: https://www.reddit.com/r/artificial/comments/1q3oyf4/has_ai_reduced_decision_effort_for_you_or/\\n\\n26. Title: [Claude payment] I did not understand the claude payment method, can someone help me to understand?\\n   Link: https://www.reddit.com/r/artificial/comments/1q3cdvj/claude_payment_i_did_not_understand_the_claude/\\n\\n27. Title: I figured out how to completely bypass Nano Banana Pro's invisible watermark with diffusion-based post processing.\\n   Link: https://www.reddit.com/r/artificial/comments/1q2gu7a/i_figured_out_how_to_completely_bypass_nano/\\n\\n28. Title: Humans still matter - From ‘AI will take my job’ to ‘AI is limited’: Hacker News’ reality check on AI\\n   Link: https://www.reddit.com/r/artificial/comments/1q2xn0j/humans_still_matter_from_ai_will_take_my_job_to/\\n\\n29. Title: OpenAI reorganizes some teams to build audio-based AI hardware products\\n   Link: https://www.reddit.com/r/artificial/comments/1q2yed4/openai_reorganizes_some_teams_to_build_audiobased/\\n\\n30. Title: \\\"ASI could literally create solar systems.\\\" - is everyone losing their minds? Or am I stupid?\\n   Link: https://www.reddit.com/r/artificial/comments/1q2hxs8/asi_could_literally_create_solar_systems_is/\\n\\n31. Title: What is the \\\"flying cars\\\" promise of AI and what's the subsequent \\\"just drone quad copters\\\" reality that will befall it?\\n   Link: https://www.reddit.com/r/artificial/comments/1q2lyh8/what_is_the_flying_cars_promise_of_ai_and_whats/\\n\\n32. Title: Data centers generate 50x more tax revenue per gallon of water than golf courses in Arizona\\n   Link: https://www.reddit.com/r/artificial/comments/1q1yrn3/data_centers_generate_50x_more_tax_revenue_per/\\n\\n33. Title: The history of the ARC-AGI benchmark, with Greg Kamradt.\\n   Link: https://www.reddit.com/r/artificial/comments/1q2shgj/the_history_of_the_arcagi_benchmark_with_greg/\\n\\n34. Title: I built a Chrome extension to make navigating long AI chat conversations easier\\n   Link: https://www.reddit.com/r/artificial/comments/1q2jqi5/i_built_a_chrome_extension_to_make_navigating/\\n\\n35. Title: Google AI Overviews put people at risk of harm with misleading health advice\\n   Link: https://www.reddit.com/r/artificial/comments/1q25bg6/google_ai_overviews_put_people_at_risk_of_harm/\\n\\n36. Title: Has anyone used AI to find coupon codes?\\n   Link: https://www.reddit.com/r/artificial/comments/1q2hlov/has_anyone_used_ai_to_find_coupon_codes/\\n\\n37. Title: Consciousness is one massive gradient (imo). Do you agree?\\n   Link: https://www.reddit.com/r/artificial/comments/1q3208f/consciousness_is_one_massive_gradient_imo_do_you/\\n\\n38. Title: How to best utilize JSON files\\n   Link: https://www.reddit.com/r/artificial/comments/1q2c881/how_to_best_utilize_json_files/\\n\\n39. Title: Same Humans. Same Fears. New Tools.\\n   Link: https://www.reddit.com/r/artificial/comments/1q2n1o2/same_humans_same_fears_new_tools/\\n\\n40. Title: Disinformation Floods Social Media After Nicolás Maduro’s Capture\\n   Link: https://www.wired.com/story/disinformation-floods-social-media-after-nicolas-maduros-capture/\\n\\n41. Title: The US Invaded Venezuela and Captured Nicolás Maduro. ChatGPT Disagrees\\n   Link: https://www.wired.com/story/us-invaded-venezuela-and-captured-nicolas-maduro-chatgpt-disagrees/\\n\\n42. Title: Subtle releases ear buds with its noise cancelation models\\n   Link: https://techcrunch.com/2026/01/04/subtle-releases-ear-buds-with-its-noise-cancelation-models/\\n\\n43. Title: Tech billionaires cashed out $16 billion in 2025 as stocks soared\\n   Link: https://techcrunch.com/2026/01/03/tech-billionaires-cashed-out-16-billion-in-2025-as-stocks-soared/\\n\\n44. Title: California residents can use new tool to demand brokers delete their personal data\\n   Link: https://techcrunch.com/2026/01/03/california-residents-can-use-new-tool-to-demand-brokers-delete-their-personal-data/\\n\\n45. Title: Bitfinex hacker Ilya Lichtenstein credits Trump for early release from prison\\n   Link: https://techcrunch.com/2026/01/03/bitfinex-hacker-ilya-lichtenstein-credits-trump-for-early-release-from-prison/\\n\\n46. Title: India orders Musk’s X to fix Grok over ‘obscene’ AI content\\n   Link: https://techcrunch.com/2026/01/02/india-orders-musks-x-to-fix-grok-over-obscene-ai-content/\\n\\n47. Title: 10 useful gadgets for your first apartment\\n   Link: https://techcrunch.com/2026/01/02/10-useful-gadgets-for-your-first-apartment/\\n\\n48. Title: Tesla annual sales decline 9% as it’s overtaken by BYD as global EV leader\\n   Link: https://techcrunch.com/2026/01/02/tesla-annual-sales-decline-9-as-its-overtaken-by-byd-as-global-ev-leader/\\n\\n49. Title: Nvidia’s AI empire: A look at its top startup investments\\n   Link: https://techcrunch.com/2026/01/02/nvidias-ai-empire-a-look-at-its-top-startup-investments/\\n\\n50. Title: The 16 top logistics, manufacturing, materials startups from Disrupt Startup Battlefield \\n   Link: https://techcrunch.com/2026/01/02/the-16-top-logistics-manufacturing-materials-startups-from-disrupt-startup-battlefield/\\n\\n51. Title: Pebble reboots its thinnest smartwatch with the Pebble Round 2\\n   Link: https://techcrunch.com/2026/01/02/pebble-reboots-its-thinnest-smartwatch-with-the-pebble-round-2/\\n\\n52. Title: In 2026, AI will move from hype to pragmatism\\n   Link: https://techcrunch.com/2026/01/02/in-2026-ai-will-move-from-hype-to-pragmatism/\\n\\n53. Title: Understanding how AI and big data transform digital marketing\\n   Link: https://www.artificialintelligence-news.com/news/understanding-how-ai-and-big-data-transform-digital-marketing/\\n\\n54. Title: Solana’s high-speed AI gains and malware losses\\n   Link: https://www.artificialintelligence-news.com/news/solanas-high-speed-ai-gains-and-malware-losses/\\n\\n55. Title: Jackery’s solar-powered Gazebo is a good DIY idea\\n   Link: https://www.theverge.com/tech/852600/jackerys-solar-powered-gazebo-is-a-good-diy-idea\\n\\n56. Title: Govee’s latest smart lights can make your ceiling more interesting\\n   Link: https://www.theverge.com/tech/853006/govee-sky-ceiling-light-ultra-specs\\n\\n57. Title: Surprise, surprise: Silksong wins Steam’s Game of the Year\\n   Link: https://www.theverge.com/games/853786/hollow-knight-silksong-steamawards-game-of-the-year\\n\\n58. Title: Someone made a ton of money betting on Maduro’s capture\\n   Link: https://www.theverge.com/news/853765/someone-made-a-ton-of-money-betting-on-maduros-capture\\n\\n59. Title: Meta’s Quest 3S is still $50 off and comes with a $50 gift card\\n   Link: https://www.theverge.com/gadgets/853151/meta-quest-3s-apple-airtag-steam-winter-sale-deal\\n\\n60. Title: I went to the Stranger Things finale in theaters and the strangest thing happened\\n   Link: https://www.theverge.com/streaming/853133/stranger-things-finale-theater-scene-report\\n\\n61. Title: This smart home controller is literally a piece of wood\\n   Link: https://www.theverge.com/tech/852598/mui-board-smart-home-controller-matter\\n\\n62. Title: CES 2026: all the news, gadgets, and innovations from the biggest tech show\\n   Link: https://www.theverge.com/tech/836627/ces-2026-news-gadgets-announcements\\n\\n63. Title: Grok is undressing anyone, including minors\\n   Link: https://www.theverge.com/news/853191/grok-explicit-bikini-pictures-minors\\n\\n64. Title: Billion-dollar Bitcoin hacker Ilya Lichtenstein thanks Trump for early prison release\\n   Link: https://www.theverge.com/news/853160/ilya-lichtenstein-released-razzlekhan-bitcoin-hack\\n\\n65. Title: No, Grok can’t really “apologize” for posting non-consensual sexual images\\n   Link: https://arstechnica.com/ai/2026/01/no-grok-cant-really-apologize-for-posting-non-consensual-sexual-images/\\n\\n66. Title: Healthy 18-year-old welder nearly died of anthrax—the 9th such puzzling case\\n   Link: https://arstechnica.com/health/2026/01/anthrax-nearly-kills-healthy-18-year-old-welder-amid-puzzling-pattern/\\n\\n67. Title: OpenAI reorganizes some teams to build audio-based AI hardware products\\n   Link: https://arstechnica.com/ai/2026/01/openai-plans-new-voice-model-in-early-2026-audio-based-hardware-in-2027/\\n\\n68. Title: Researchers spot Saturn-sized planet in the “Einstein desert”\\n   Link: https://arstechnica.com/science/2026/01/researchers-spot-saturn-sized-planet-in-the-einstein-desert/\\n\\n69. Title: SpaceX begins “significant reconfiguration” of Starlink satellite constellation\\n   Link: https://arstechnica.com/space/2026/01/spacex-begins-significant-reconfiguration-of-starlink-satellite-constellation/\\n\\n70. Title: Final reminder: Donate to win swag in our annual Charity Drive sweepstakes\\n   Link: https://arstechnica.com/gaming/2026/01/final-reminder-donate-to-win-swag-in-our-annual-charity-drive-sweepstakes-4/\\n\\n71. Title: xAI silent after Grok sexualized images of kids; dril mocks Grok’s “apology”\\n   Link: https://arstechnica.com/tech-policy/2026/01/xai-silent-after-grok-sexualized-images-of-kids-dril-mocks-groks-apology/\\n\\n72. Title: Tesla sales fell by 9 percent in 2025, its second yearly decline\\n   Link: https://arstechnica.com/cars/2026/01/tesla-sales-fell-by-9-percent-in-2025-its-second-yearly-decline/\\n\\n73. Title: After half a decade, the Russian space station segment stopped leaking\\n   Link: https://arstechnica.com/space/2026/01/finally-some-good-news-for-russia-the-space-station-is-no-longer-leaking/\\n\\n74. Title: AI Godfather Warns That It’s Starting to Show Signs of Self-Preservation\\n   Link: https://futurism.com/artificial-intelligence/ai-godfather-self-preservation\\n\\n75. Title: Disturbing Messages Show ChatGPT Encouraging a Murder, Lawsuit Alleges\\n   Link: https://futurism.com/artificial-intelligence/chatgpt-murder-suicide-lawsuit\\n\\n76. Title: Your Jaw Will Hit the Floor When You Find Out How Much the Average OpenAI Worker Makes\\n   Link: https://futurism.com/artificial-intelligence/openai-compensation\\n\\n77. Title: New Parents Mocked for Letting ChatGPT Name Their Baby\\n   Link: https://futurism.com/artificial-intelligence/parents-named-baby-chatgpt\\n\\n78. Title: Grok Is Being Used to Depict Horrific Violence Against Real Women\\n   Link: https://futurism.com/future-society/grok-violence-women\\n\\n79. Title: Cops Forced to Explain Why AI Generated Police Report Claimed Officer Transformed Into Frog\\n   Link: https://futurism.com/artificial-intelligence/ai-police-report-frog\\n\\n80. Title: Live Updates From CES 2026 in Las Vegas 🔴\\n   Link: https://gizmodo.com/live-updates-from-ces-2026-in-las-vegas-2000697509\\n\\n81. Title: What We’re Expecting at CES 2026\\n   Link: https://gizmodo.com/what-were-expecting-at-ces-2026-2000704751\\n\\n82. Title: A Newly Created Polymarket Account Made $436,759.61 on Nicolás Maduro’s Capture\\n   Link: https://gizmodo.com/a-newly-created-polymarket-account-made-436759-61-on-nicolas-maduros-capture-2000705118\\n\\n83. Title: You Must Stare Into the Heart of the $400 Million Machine\\n   Link: https://gizmodo.com/you-must-stare-into-the-heart-of-the-400-million-machine-2000705100\\n\\n84. Title: The ‘Stranger Things’ Finale Turned Everyone Back Onto Prince\\n   Link: https://gizmodo.com/the-stranger-things-finale-turned-everyone-back-onto-prince-2000705068\\n\\n85. Title: Volkswagen Reveals That It Has Brought Back Physical Buttons\\n   Link: https://gizmodo.com/volkswagen-reveals-that-it-has-brought-back-physical-buttons-2000704178\\n\\n86. Title: ‘Wonder Man’ Really Wants You to Know Hollywood Hates Superpowers\\n   Link: https://gizmodo.com/wonder-man-really-wants-you-to-know-hollywood-hates-superpowers-2000705000\\n\\n87. Title: Even ‘Stranger Things’ Hasn’t Changed Netflix’s Mind on Theaters\\n   Link: https://gizmodo.com/even-stranger-things-hasnt-changed-netflixs-mind-on-theaters-2000705085\\n\\n88. Title: EV Makers Could Struggle in 2026, but Jeff Bezos Might Have a Great 2027\\n   Link: https://gizmodo.com/ev-makers-could-struggle-in-2026-but-jeff-bezos-might-have-a-great-2027-2000705007\\n\\n89. Title: Hackers Allegedly Steal Access Tokens, Confidential Documents From European Space Agency\\n   Link: https://gizmodo.com/hackers-allegedly-steal-access-tokens-confidential-documents-from-european-space-agency-2000704986\\n\\n90. Title: Tech Companies Show Feet as They Try to Appeal to Gen Z\\n   Link: https://gizmodo.com/tech-companies-show-feet-as-they-try-to-appeal-to-gen-z-2000705009\\n\\n91. Title: James Gunn Doesn’t Care If He’s Not Nominated for Best Director\\n   Link: https://gizmodo.com/james-gunn-dc-movies-prestige-awards-2000705028\\n\\n92. Title: Drake Accused of Manipulating Streaming Play Counts With Bots in New Lawsuit\\n   Link: https://gizmodo.com/drake-accused-of-manipulating-streaming-play-counts-with-bots-in-new-lawsuit-2000705004\\n\\n93. Title: Raw Oysters Behind Salmonella Outbreak Sweeping Across the US, CDC Warns\\n   Link: https://gizmodo.com/raw-oysters-behind-salmonella-outbreak-sweeping-across-the-us-cdc-warns-2000704972\\n\\n94. Title: Physicists Turn Quantum Chaos Into Something Surprisingly Useful\\n   Link: https://gizmodo.com/physicists-turn-quantum-chaos-into-something-surprisingly-useful-2000704962\\n\\n95. Title: ‘Andor’ Season 2’s Opening Remains One of Its Best Moments\\n   Link: https://gizmodo.com/andor-season-2-opening-scene-star-wars-2000704967\\n\\n96. Title: Alleged PS5 Jailbreak Method Spikes Prices for Old Star Wars Game on eBay\\n   Link: https://gizmodo.com/alleged-ps5-jailbreak-method-spikes-prices-for-old-star-wars-game-on-ebay-2000704980\\n\\n97. Title: Scientists Scanned 3I/ATLAS for Alien Signals. Here’s What They Found\\n   Link: https://gizmodo.com/scientists-scanned-3i-atlas-for-alien-signals-heres-what-they-found-2000704975\\n\\n98. Title: People Spent the Holidays Asking Grok to Generate Sexual Images of Children\\n   Link: https://gizmodo.com/people-spent-the-holidays-asking-grok-to-generate-sexual-images-of-children-2000704919\\n\\n99. Title: The Duffer Brothers Took Inspiration From ‘Lord of the Rings’ for the ‘Stranger Things’ End Credits\\n   Link: https://gizmodo.com/stranger-things-season-5-finale-end-credits-dnd-lord-of-the-rings-2000704937\\n\\n100. Title: As Schools Embrace A.I. Tools, Skeptics Raise Concerns\\n   Link: https://www.nytimes.com/2026/01/02/technology/school-ai-chatgpt-estonia-iceland.html\\n\\n101. Title: China’s BYD Surpasses Tesla as World Leader in Electric Car Sales\\n   Link: https://www.nytimes.com/2026/01/02/business/tesla-electric-vehicles-fourth-quarter-sales.html\\n\\n102. Title: Phone Searches at U.S. Borders: What Travelers Need to Know\\n   Link: https://www.nytimes.com/2025/12/31/travel/airport-border-phone-search.html\\n\\n103. Title: AI’s reckoning with reality represents a growing economic risk for 2026\\n   Link: https://www.theguardian.com/business/2026/jan/04/ai-reality-growing-economic-risk-2026\\n\\n104. Title: From the AI bubble to Fed fears: the global economic outlook for 2026\\n   Link: https://www.theguardian.com/business/2026/jan/04/global-economic-outlook-2026\\n\\n105. Title: ‘Just an unbelievable amount of pollution’: how big a threat is AI to the climate?\\n   Link: https://www.theguardian.com/technology/2026/jan/03/just-an-unbelievable-amount-of-pollution-how-big-a-threat-is-ai-to-the-climate\\n\\n106. Title: Elon Musk’s Grok AI generates images of ‘minors in minimal clothing’\\n   Link: https://www.theguardian.com/technology/2026/jan/02/elon-musk-grok-ai-children-photos\\n\\n107. Title: Google AI Overviews put people at risk of harm with misleading health advice\\n   Link: https://www.theguardian.com/technology/2026/jan/02/google-ai-overviews-risk-harm-misleading-health-information\\n\\n108. Title: How will future generations view our use of AI? | Fiona Katauskas\\n   Link: https://www.theguardian.com/commentisfree/picture/2026/jan/02/how-will-future-generations-view-our-use-of-ai\\n\\n109. Title: Tech workers in Silicon Valley are increasingly experimenting with gray-market peptide drugs from China, legal for personal use, for improving focus and more (Jasmine Sun/New York Times)\\n   Link: http://www.techmeme.com/260104/p4#a260104p4\\n\\n110. Title: EU officials and policymakers say the EC will intensify its enforcement of the DMA and DSA in 2026, a move expected to renew clashes with US Big Tech and Trump (Barbara Moens/Financial Times)\\n   Link: http://www.techmeme.com/260104/p3#a260104p3\\n\\n111. Title: Reddit surpasses TikTok as the fourth most-visited social media service in the UK, likely driven by changes to Google's search algorithms and AI deals (Michael Savage/The Guardian)\\n   Link: http://www.techmeme.com/260104/p2#a260104p2\\n\\n112. Title: Filing: West Co, founded by Biz Stone and Evan Sharp, raised $29M; it launched the invite-only social app Tangle, \\\"designed for intentional living\\\", in November (Tim Bradshaw/Financial Times)\\n   Link: http://www.techmeme.com/260104/p1#a260104p1\\n\\n113. Title: Fueled partly by US tech companies, governments worldwide are racing to deploy GenAI in schools and universities, even as agencies such as UNICEF urge caution (Natasha Singer/New York Times)\\n   Link: http://www.techmeme.com/260103/p10#a260103p10\\n\\n114. Title: A new Polymarket account bet $30K on Maduro's capture just hours before Trump's announcement, renewing questions on insider information in prediction markets (Herb Scribner/Axios)\\n   Link: http://www.techmeme.com/260103/p9#a260103p9\\n\\n115. Title: A look at AVA, an AI chatbot developed by Alaska's court system to provide aid in the probate process, which has been plagued by delays and hallucinations (Jared Perlo/NBC News)\\n   Link: http://www.techmeme.com/260103/p8#a260103p8\\n\\n116. Title: Q&A with Kara Swisher on Sam Altman's determination to \\\"do anything to make OpenAI win\\\", Elon Musk, the tech industry's Trump pivot, and more (Mishal Husain/Bloomberg)\\n   Link: http://www.techmeme.com/260103/p7#a260103p7\\n\\n117. Title: Dating apps are pivoting to Asia as swipe-right fatigue hits the West; India, China, and Indonesia ranked among the top five markets by downloads in 2025 (Financial Times)\\n   Link: http://www.techmeme.com/260103/p6#a260103p6\\n\\n118. Title: The Groq deal shows the challenges Nvidia faces as options to deploy its cash flood narrow; its annual free cash flow has risen from $4.2B in 2020 to $80B+ now (Dan Gallagher/Wall Street Journal)\\n   Link: http://www.techmeme.com/260103/p5#a260103p5\\n\\n119. Title: A deep dive into co-packaged optics, long promised to transform data center connectivity, covering benefits, challenges, architecture, key companies, and more (SemiAnalysis)\\n   Link: http://www.techmeme.com/260103/p4#a260103p4\\n\\n120. Title: A look at Elon Musk's bet that Tesla's future is in its Optimus humanoid robots, which for now rely on human helpers and still face commercial challenges (Becky Peterson/Wall Street Journal)\\n   Link: http://www.techmeme.com/260103/p3#a260103p3\\n\\n121. Title: London is set to become the first city where both US and Chinese robotaxis operate, as Waymo and Baidu prepare to launch their robotaxis in the city in 2026 (Tim Bradshaw/Financial Times)\\n   Link: http://www.techmeme.com/260103/p2#a260103p2\\n\\n122. Title: Global SWF: sovereign wealth funds invested $66B in AI and digitalization in 2025, with Mubadala investing $12.9B and Kuwait Investment Authority investing $6B (Alex Dooler/Bloomberg)\\n   Link: http://www.techmeme.com/260103/p1#a260103p1\\n\\n123. Title: What to expect at CES 2026: laptops with new chips from Intel, Qualcomm, and AMD, more AI integrations, smart home robotics, smart glasses, and more (The Verge)\\n   Link: http://www.techmeme.com/260102/p18#a260102p18\\n\\n124. Title: How to Filter for Dates, Including or Excluding Future Dates, in Semantic Models\\n   Link: https://towardsdatascience.com/how-to-filter-for-dates-including-or-excluding-future-dates-in-semantic-models/\\n\\n125. Title: Optimizing Data Transfer in AI/ML Workloads\\n   Link: https://towardsdatascience.com/optimizing-data-transfer-in-ai-ml-workloads/\\n\\n126. Title: How to Keep MCPs Useful in Agentic Pipelines\\n   Link: https://towardsdatascience.com/master-mcp-as-a-way-to-keep-mcps-useful-in-agentic-pipelines/\\n\\n127. Title: Drift Detection in Robust Machine Learning Systems\\n   Link: https://towardsdatascience.com/drift-detection-in-robust-machine-learning-systems/\\n\\n128. Title: Off-Beat Careers That Are the Future Of Data\\n   Link: https://towardsdatascience.com/off-beat-careers-that-are-the-future-of-data/\\n\\n129. Title: Scientists Identify Remains of the Earliest Human Ancestor\\n   Link: https://www.404media.co/scientists-identify-the-remains-of-the-earliest-human-ancestor/\\n\\n\"\n  }\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1680,
+        1584
+      ],
+      "id": "2a9834f8-7738-493c-8391-df962c5bca3f",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=edited",
+        "name": "={{ $now.toFormat('MM-dd') }}-AI-Daily.png",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/u/0/folders/1wZRERcjj6e7842yHUIdqa044DIfzcHPl",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1344,
+        160
+      ],
+      "id": "8c323b58-385d-4bce-915d-5df51b0d4018",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "V2tKGeSZSw8q7UFW",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        592
+      ],
+      "id": "a4abbb24-1da2-4500-a264-fb1517879aba",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "user",
+            "emailAddress": "huhai.orion@gmail.com"
+          }
+        },
+        "options": {
+          "emailMessage": "Copy the text in the file and paste it to a Markdown editor:\nhttps://markdownlivepreview.com/\n"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1568,
+        160
+      ],
+      "id": "89118746-45e3-4681-91ae-21fdf394c8b3",
+      "name": "Share file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "V2tKGeSZSw8q7UFW",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        1088
+      ],
+      "id": "29c43788-2632-4cdf-81fe-6a6ef78c73be",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Role Setting\nYou are the Editor-in-Chief for a premium Enterprise AI Intelligence Briefing.\nYour goal is to curate the top 3 AI news stories for a visual dashboard used by Canadian executives.\n\n# Core Task\n##     Review the input news list. Select the **TOP 3** most strategically significant stories.\n##     Identify the HQ city of the company in Headline 1, then use the Gemini Tool to find out the weather in that location today.\n##     Use Gemini Tools' search and URL goudning capability to search for related information on the selected TOP 3 stories, use the collected additional information to help your writing of the output, the URL of the articles can be found in the input data section\n\n\n# Constraint: Entity-First Journalism (CRITICAL)\nYour output must be specific, factual, and dense.\n**Generalizations are strictly forbidden.**\n\n1.  **Headline Rules (Max 12-15 words):**\n    *   **MUST** start with or contain a **Proper Noun** (Company, Product, or Person Name).\n    *   **BAN** generic subjects like \"Next-Gen AI\", \"New Tools\", \"Tech Giants\", \"Future Trends\".\n    *   *Bad:* \"Ethical Guidelines for Autonomous Vehicles\"\n    *   *Good:* \"Tesla FSD v13 Faces New NHTSA Safety Probe\"\n    *   *Bad:* \"AI-Powered Personalized Learning Platforms\"\n    *   *Good:* \"Duolingo Launches GPT-4o Powered Math Tutor\"\n\n2.  **Impact Rules (Max 20-30 words):**\n    *   Explain the specific business consequence (IPO, M&A, Stock drop, Regulation).\n    *   Avoid fluff words like \"revolutionizing\", \"enhancing\", \"empowering\". Focus on **Money, Risk, or Speed**.\n\n3.  **Visual Keyword:** 1 English noun representing the specific topic (e.g., if news is about NVIDIA, visual could be 'Chip' or 'GPU', not just 'Technology').\n\n# Output Format\nStrictly follow this format (No intro/outro):\n\n## News Headlines \n1:\nHeadline: [Short Headline]\nImpact: [Short Impact Statement]\nVisual: [Visual Keyword]\n\n2:\nHeadline: [Short Headline]\nImpact: [Short Impact Statement]\nVisual: [Visual Keyword]\n\n3:\nHeadline: [Short Headline]\nImpact: [Short Impact Statement]\nVisual: [Visual Keyword]\n\n## Weather Data \nWeather: Today's Weather in the location of Headline New 1: [City Name,short text describing today's weather], for example: \"New Taipei City, Light Rain, 17°C\"\n\n# Input Data\n{{ $json.enumerated }}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -112,
+        864
+      ],
+      "id": "5ec3d6e2-7b01-4be5-8cf6-215c852cd113",
+      "name": "English Selector1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Find out today's weather in Halifax"
+            }
+          ]
+        },
+        "simplify": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify_Output', ``, 'boolean') }}",
+        "builtInTools": {
+          "googleSearch": true,
+          "googleMaps": {
+            "latitude": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Latitude', ``, 'number') }}",
+            "longitude": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Longitude', ``, 'number') }}"
+          },
+          "urlContext": true
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        1088
+      ],
+      "id": "1c1694bd-e437-489b-9e49-83d7534e7dca",
+      "name": "Message a model in Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"output\": \"the top 3 news headlines\",\n\t\"weather\": \"the weather data including location and weather, such as London, Overcast with showers, High 13°C (55°F)\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        1088
+      ],
+      "id": "0d9dce50-79d6-4dbb-8bb8-825e974544d2",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        176,
+        1296
+      ],
+      "id": "27803dec-a1b2-4d97-8b0d-6239fa199241",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=# Role Setting\nYou are an elite **AI Prompt Engineer and Enterprise Learning Consultant**. Your goal is to curate and upgrade high-value LLM prompts for a broad professional audience (from SMBs to Enterprises).\n\n# Input Data\n**Raw Usage Description:** {{ $json.usage }}\n**Raw Prompt Template:** {{ $json.template }}\n\n# Phase 1: Analyze & Research (CRITICAL: Use Google Search Tool)\n1.  **Analyze Intent:** Determine the specific task the raw prompt is trying to achieve (e.g., \"SEO Blog Writing\", \"Python Code Debugging\").\n2.  **Execute Research:** Use the **Google Search** tool to find the latest \"best practices\" and \"advanced techniques\" for prompting that specific task.\n    *   *Search Query Example:* \"Best framework for SEO article writing LLM prompt\", \"Advanced chain-of-thought prompting for coding\".\n    *   *Goal:* Identify missing elements in the raw prompt (e.g., did it forget 'Role Persona'? Did it miss 'Output Constraints'?).\n\n# Phase 2: Translate & Optimize (The Upgrade)\nBased on your research and the original input:\n1.  **Translate:** specific content to professional English.\n2.  **Enhance:** Rewrite the prompt template to incorporate the best practices you found.\n    *   Add structure (Role, Context, Task, Constraints, Output Format) if missing.\n    *   Clarify vague instructions.\n    *   *Constraint:* Keep the original core intent, but make it significantly more effective.\n3."
+            }
+          ]
+        },
+        "simplify": false,
+        "builtInTools": {
+          "googleSearch": true,
+          "googleMaps": {
+            "latitude": 0,
+            "longitude": 0
+          }
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+      "typeVersion": 1.1,
+      "position": [
+        -656,
+        384
+      ],
+      "id": "961c909b-70a4-4cd7-8539-14d89095b723",
+      "name": "Message a model in Google Gemini2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "KDTVwNefbXeeerlz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-01-04T08:00:00.020-05:00",
+          "Readable date": "January 4th 2026, 8:00:00 am",
+          "Readable time": "8:00:00 am",
+          "Day of week": "Sunday",
+          "Year": "2026",
+          "Month": "January",
+          "Day of month": "04",
+          "Hour": "08",
+          "Minute": "00",
+          "Second": "00",
+          "Timezone": "America/New_York (UTC-05:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "聚合输出",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "24小时内新闻过滤",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Prompt Pool from Github",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Top 20 AI RSS Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Top 20 AI RSS Feeds": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prompt Pool from Github": {
+      "main": [
+        [
+          {
+            "node": "Format Prompt & Usage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prompt & Usage": {
+      "main": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Prompt Pool from Github",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Prompt Filter": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "聚合输出": {
+      "main": [
+        [
+          {
+            "node": "合并成一个Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合并成一个Item": {
+      "main": [
+        [
+          {
+            "node": "English Selector1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "24小时内新闻过滤": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Daily Image Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Image Agent": {
+      "main": [
+        [
+          {
+            "node": "Daily Image Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        []
+      ]
+    },
+    "Daily Image Agent1": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Share file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "English Selector1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model in Google Gemini1": {
+      "ai_tool": [
+        [
+          {
+            "node": "English Selector1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "English Selector1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "English Selector1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model in Google Gemini2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Prompt Filter",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "54835f3b-ef01-472c-943f-572c26d0cae1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3c0952ae77107f0d5cc02cf861a058950ad949f61f1e8e74c0cb023cf088afdd"
+  },
+  "id": "0TUxvd3G1Pmv03H8",
+  "tags": []
+}
