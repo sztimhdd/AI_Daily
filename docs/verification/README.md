@@ -34,7 +34,17 @@ remain local-only, the published repository carries the compiled
 knowledge assets under `knowledge/` (provenance retained), and the
 deterministic tests use `knowledge/rss-catalog.json`.
 
-Saved results live in `docs/verification/results/`.
+Saved results live in `docs/verification/results/`:
+
+- `2026-08-12-codex-exec-uat.md` — black-box UAT (sessions A/B/C/C2,
+  findings F1–F4).
+- `2026-08-12-fixture-uat.md` — deterministic fixture chain (17/17).
+- `2026-08-12-live-integrations-uat.md` — live AIHOT + full real RSS
+  catalog UAT.
+- `2026-08-12-github-publication.md` — isolated publication with
+  remote reread hash.
+- `2026-08-12-final-acceptance-audit.md` — final acceptance audit of
+  the V1 evidence.
 
 ## What the local checks prove
 
@@ -47,13 +57,18 @@ Saved results live in `docs/verification/results/`.
   (`tests/test_publish.py`) and honest `local-only` fallback.
 - Immutable core-IP JSONs still parse (`jq empty` on all five).
 
-## External UAT remaining (needs network / accounts / humans)
+## External UAT status (needs network / accounts / humans)
+
+Three of five items are complete as of 2026-08-12. Remaining: the real
+ChatGPT cover export (optional — cover is optional in V1) and the human
+topic gate in a real desktop chat (required for V1 acceptance; desktop
+completion is not claimed).
 
 | # | Item | How to verify | Status |
 |---|------|---------------|--------|
-| 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | pending |
-| 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote-verified` and `publish-sha256` in state.md | pending |
-| 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | pending |
+| 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 1 |
+| 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote`, `publish-verified: remote-reread`, and `publish-sha256` in state.md | COMPLETE — [GitHub publication](results/2026-08-12-github-publication.md) |
+| 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 4 |
 | 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | pending |
 | 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | pending |
 
