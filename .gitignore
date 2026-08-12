@@ -1,0 +1,22 @@
+# Local runtime state and credentials
+.local/
+.env
+.env.*
+!.env.example
+
+# Python bytecode and generated caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+
+# Temporary and editor files
+.DS_Store
+*.log
+*.tmp
+*.swp
+
+# Local drafts and intermediate media
+outputs/**/drafts/
+outputs/**/candidates/
+outputs/**/raw/

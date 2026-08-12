@@ -1,0 +1,1054 @@
+{
+  "catalog_version": 1,
+  "generated_from": [
+    "workflows/reference/公众号选题写稿配图一体化工作流.json",
+    "[Atomic] Researcher_Skill.json",
+    "[Atomic] Topic_Survey_Skill.json",
+    "[Atomic] Universal Draft Writing.json",
+    "Long-Content-Writing.json"
+  ],
+  "summary": {
+    "legacy_entries": 93,
+    "feed_occurrences": 91,
+    "auxiliary_services": 2,
+    "entry_math": "93 = 91 source occurrences + 2 auxiliary services",
+    "unique_extractable_urls": 73,
+    "unique_fetchable_urls": 76,
+    "dual_pool_urls": 15,
+    "extractability_note": "extractable is a marker heuristic (feed/rss/atom marker, .xml suffix, known JSON feed API); it is not runtime verification"
+  },
+  "sources": [
+    {
+      "url": "http://antirez.com/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "http://feeds.feedburner.com/blogspot/gJZg",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "http://feeds.feedburner.com/nvidiablog",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "http://googleaiblog.blogspot.com/atom.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://aws.amazon.com/blogs/machine-learning/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://bair.berkeley.edu/blog/feed.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://becominghuman.ai/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://blog.cloudflare.com/rss/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://blog.samaltman.com/posts.atom",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://buttondown.email/hillelwayne/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://charity.wtf/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://danluu.com/atom.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://daringfireball.net/feeds/main",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://deepmind.google/blog/rss.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://earthly.dev/blog/rss.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://engineering.fb.com/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://feeds.arstechnica.com/arstechnica/index",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://fly.io/blog/feed.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://fs.blog/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://futurism.com/categories/ai-artificial-intelligence/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://gizmodo.com/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://gpt-rss.vercel.app/atom.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/blog/feed.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://jmmv.dev/index.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": false,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://jvns.ca/atom.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://krebsonsecurity.com/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://lilianweng.github.io/lil-log/feed.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://machinelearningmastery.com/blog/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://magazine.sebastianraschka.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://medium.com/feed/@karpathy",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://netflixtechblog.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://news.mit.edu/rss/topic/artificial-intelligence2",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://openai.com/blog/rss/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://openai.com/news/rss.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://paulgraham.com/rss.html",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rss.caixin.com/technology/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/36kr/search/article/AI",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/jike/topic/54d6ec72e4b0d38dca182f07",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/jiqizhixin/daily",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/jiqizhixin/topic/68bee5aa-3b89-40fe-8165-66c34cbdb522",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/juejin/tag/AI",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/qbitai",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://rsshub.app/v2ex/topics/ai",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://simonwillison.net/atom/everything/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://stability.ai/blog?format=rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://stratechery.com/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://techcrunch.com/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://thegradient.pub/rss/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://towardsdatascience.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://uber.github.io/feed.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://venturebeat.com/category/ai/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://waitbutwhy.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.404media.co/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/news/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.artificialintelligence-news.com/feed/rss/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.astralcodexten.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.baldurbjarnason.com/index.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": false,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.ben-evans.com/benedictevans?format=rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.geekpark.net/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.jeffgeerling.com/blog.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": false,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.jiqizhixin.com/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.kdnuggets.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.marktechpost.com/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/research/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.qbitai.com/feed",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.reddit.com/r/artificial/.rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.techmeme.com/feed.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.technologyreview.com/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/technology/artificialintelligenceai/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.theverge.com/rss/index.xml",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.unite.ai/feed/",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        }
+      ]
+    },
+    {
+      "url": "https://www.wired.com/feed/tag/ai/latest/rss",
+      "format": "rss_xml",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "Top 20 AI RSS Feeds"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Super RSS Pool & Sampler"
+        }
+      ]
+    },
+    {
+      "url": "https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total",
+      "format": "json_feed",
+      "extractable": true,
+      "identifiable": true,
+      "provenance": [
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Zhihu HTTP API"
+        }
+      ]
+    }
+  ],
+  "auxiliary_services": [
+    {
+      "name": "Event Registry API",
+      "role": "news_api",
+      "extractable_feed": false,
+      "provenance": [
+        {
+          "file": "workflows/reference/公众号选题写稿配图一体化工作流.json",
+          "node": "CallNewsAPI2"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "NewsAPI.ai Fetch"
+        }
+      ]
+    },
+    {
+      "name": "Tavily Search API",
+      "role": "web_search",
+      "extractable_feed": false,
+      "provenance": [
+        {
+          "file": "[Atomic] Researcher_Skill.json",
+          "node": "Tavily Search Fetch"
+        },
+        {
+          "file": "[Atomic] Researcher_Skill.json",
+          "node": "Tavily Search Adapter"
+        },
+        {
+          "file": "[Atomic] Researcher_Skill.json",
+          "node": "Tavily Key A"
+        },
+        {
+          "file": "[Atomic] Researcher_Skill.json",
+          "node": "Tavily Key B"
+        },
+        {
+          "file": "[Atomic] Researcher_Skill.json",
+          "node": "统一情报洗数据"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Tavily Search Adapter"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Tavily Key A"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "Tavily Key B"
+        },
+        {
+          "file": "[Atomic] Topic_Survey_Skill.json",
+          "node": "统一情报洗数据"
+        }
+      ]
+    }
+  ]
+}

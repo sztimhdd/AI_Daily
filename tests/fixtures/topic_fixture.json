@@ -1,0 +1,17 @@
+{
+  "title": "AI 搜索预算与个人创作者的研究成本",
+  "slug": "ai-search-budget-research-cost",
+  "thesis": "AI 智能体的成本重心正从模型调用转向搜索与检索预算，个人创作者第一次需要像团队一样管理研究成本。",
+  "hook": "大家都在卷模型价格，真正吃掉预算的却是每次深度研究背后的几十次搜索调用。",
+  "audience": "独立开发者、个人创作者、小型 AI 产品团队的技术决策者",
+  "evidence_gaps": [
+    "主流深度研究产品单次任务的搜索调用次数与费用区间缺少公开口径",
+    "个人创作者与团队用户的检索成本占比差异缺少一手数据"
+  ],
+  "research_queries": [
+    "OpenRouter web search benchmark agent cost",
+    "deep research agent search budget pricing",
+    "个人创作者 AI 研究成本"
+  ],
+  "direction": "重点讨论个人创作者如何控制深度研究成本。"
+}
