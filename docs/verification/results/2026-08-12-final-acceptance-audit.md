@@ -111,6 +111,45 @@ None remain required for V1 acceptance.
 - Follow-up docs commit on top of `b007053` — this audit update, the
   README item-5 completion, and
   `results/2026-08-12-desktop-human-gate-uat.md`.
+- `641dfbf4572d87bfc69730a7c7ead3c77672f875` — fix: strip evidence
+  residue from research, draft, and assembly; regenerate the
+  2026-08-12 article and package without re-collect
+  (`collect_runs` stays 1, cover stays skipped); fast-forward push;
+  reread-verified 8/8 at the exact commit.
+- Follow-up docs commit on top of `641dfbf` — the residue-fix record
+  below and the corrected UAT claims.
+
+## Post-publication residue fix (2026-08-12)
+
+A post-publication audit of the live article found published-article
+residue: raw HTML fragments and ellipsis-truncated sentences copied
+from capped RSS summaries through research excerpts into the draft.
+The V1 assembly gate checked placeholders/debug artifacts only and
+did not catch them. The original "no placeholders/debug artifacts"
+claim in the desktop human-gate UAT was literally true but
+materially incomplete; it is corrected in
+`results/2026-08-12-desktop-human-gate-uat.md`.
+
+Fix (`641dfbf4572d87bfc69730a7c7ead3c77672f875`, fast-forward on
+`main`): research evidence normalization strips markup, unescapes
+entities, and removes truncated unclosed tags; excerpts keep only the
+first complete sentence with its terminator (ellipsis fragments and
+unterminated tails dropped, item-title fallback); the draft never
+hard-cuts with `…`; assembly validation now rejects raw HTML tags,
+ellipsis sequences, and truncated URL fragments. 32 new
+positive/negative tests across `tests/test_research.py`,
+`tests/test_draft.py`, `tests/test_assemble.py`; no existing test
+weakened. Suite counts after the fix: source workspace `Ran 240
+tests` OK; published tree (isolated temp worktree @ `origin/main`)
+`Ran 227 tests` OK (skipped=4); fixture UAT 17/17 PASS.
+
+The 2026-08-12 run was regenerated over the unchanged evidence pool
+(research/outline/draft/assemble `--force`; `collect_runs` stayed 1;
+cover stayed skipped). Corrected article SHA-256:
+`f3e68b4d35f7ea5a2b779320a5cfedddced8f8dac0fa6e58a56b579fab54e01a`
+(final article and package `article.md` byte-identical), with zero
+HTML/ellipsis residue and only real source links; reread-verified at
+`641dfbf` via `gh api` (8/8 EQUAL, tabulated in the UAT record).
 
 With the human topic gate now proven in a real desktop chat, all
 required V1 acceptance items are complete. The only non-complete item
