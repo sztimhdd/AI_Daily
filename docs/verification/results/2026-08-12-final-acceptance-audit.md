@@ -82,15 +82,41 @@ Details:
   `publish-mode: remote` and `publish-verified: remote-reread` (plus
   `publish-sha256`). Results index added.
 
-## Pending items (not complete, not claimed)
+## Pending items
 
-- Optional — real ChatGPT cover export adoption: cover is optional in
-  V1; fixture cover adoption is proven, but no real ChatGPT-exported
-  image has been run through `cli cover` yet.
-- Required — human topic gate in a real desktop chat: `cli candidates`
-  → human choice → `cli choose-topic --choice N --direction ...` in a
-  live desktop session. This has not been executed; desktop completion
-  is not claimed. V1 acceptance is not final until this gate passes.
+None remain required for V1 acceptance.
+
+- UNAVAILABLE / NONBLOCKING — real ChatGPT cover export adoption:
+  cover is optional in V1 and fixture cover adoption is proven, but on
+  2026-08-12 no reachable logged-in ChatGPT Web session existed on any
+  browser surface, so no real export was generated, downloaded, or
+  adopted (`results/2026-08-12-chatgpt-cover-uat.md`).
+- COMPLETE — human topic gate in a real desktop chat: executed on
+  2026-08-12 in a live desktop session
+  (`results/2026-08-12-desktop-human-gate-uat.md`). Candidates were
+  presented in the real conversation; the editor chose candidate 3;
+  `cli choose-topic --choice 3` recorded `topic_choice: human` with
+  empty direction; the run resumed without re-collect
+  (`collect_runs: 1` unchanged) and reached `completed`; the article
+  was published to GitHub with remote reread hash equality.
+
+## Post-audit updates (2026-08-12, after this audit commit)
+
+- `6affcc6c71149011ff63d8909823607f377f7fc1` — docs: record ChatGPT
+  cover UAT as unavailable/nonblocking (item 4).
+- `b0070532c3297780c211c1fc20bf22420be2d505` — feat: publish the
+  2026-08-12 Muse Glimmer article and package produced by the desktop
+  human-gate run (item 5); parent `6affcc6`, fast-forward push,
+  reread-verified 8/8 at the exact commit.
+- Follow-up docs commit on top of `b007053` — this audit update, the
+  README item-5 completion, and
+  `results/2026-08-12-desktop-human-gate-uat.md`.
+
+With the human topic gate now proven in a real desktop chat, all
+required V1 acceptance items are complete. The only non-complete item
+is the optional real ChatGPT cover export, recorded UNAVAILABLE /
+NONBLOCKING (no logged-in ChatGPT Web session; cover is optional in
+V1).
 
 ## Disclosures (local-only operator issues)
 

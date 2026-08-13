@@ -48,6 +48,11 @@ Saved results live in `docs/verification/results/`:
 - `2026-08-12-chatgpt-cover-uat.md` — real ChatGPT cover export UAT
   attempt: no logged-in session on any reachable browser surface, item
   not executed (optional, nonblocking).
+- `2026-08-12-desktop-human-gate-uat.md` — human topic gate in a real
+  desktop chat: candidates presented in conversation, editor chose
+  candidate 3, recorded as `topic_choice: human` with empty direction,
+  run resumed without re-collect to `completed`, article published and
+  reread-verified at the exact commit.
 
 ## What the local checks prove
 
@@ -62,13 +67,17 @@ Saved results live in `docs/verification/results/`:
 
 ## External UAT status (needs network / accounts / humans)
 
-Three of five items are complete as of 2026-08-12. Item 4 (real
+Four of five items are complete as of 2026-08-12. Item 4 (real
 ChatGPT cover export) is UNAVAILABLE / NONBLOCKING: no reachable
 logged-in ChatGPT Web session exists on any browser surface, so no
 generation, download, or adoption was attempted; the cover is optional
 in V1 and the published no-cover package is unchanged. Item 5, the
-human topic gate in a real desktop chat, remains PENDING (required for
-V1 acceptance; desktop completion is not claimed).
+human topic gate in a real desktop chat, is COMPLETE: the candidates
+were presented in a live desktop conversation, the editor chose
+candidate 3 (no direction), the choice was recorded as
+`topic_choice: human` with empty direction, and the run resumed
+without re-collect to `completed` and published its article with
+remote reread hash equality.
 
 | # | Item | How to verify | Status |
 |---|------|---------------|--------|
@@ -76,7 +85,7 @@ V1 acceptance; desktop completion is not claimed).
 | 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote`, `publish-verified: remote-reread`, and `publish-sha256` in state.md | COMPLETE — [GitHub publication](results/2026-08-12-github-publication.md) |
 | 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 4 |
 | 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | UNAVAILABLE / NONBLOCKING — [ChatGPT cover UAT](results/2026-08-12-chatgpt-cover-uat.md): no reachable logged-in ChatGPT Web session; not executed |
-| 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | pending |
+| 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | COMPLETE — [desktop human-gate UAT](results/2026-08-12-desktop-human-gate-uat.md): choice 3 recorded as `topic_choice: human` (empty direction); resumed without re-collect to `completed`; article published + reread-verified |
 
 External UAT writes only into the run's own sandbox/root; it never
 modifies the five immutable JSONs or legacy artifacts.
