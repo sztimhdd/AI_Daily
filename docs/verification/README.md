@@ -8,7 +8,10 @@ external user acceptance testing.
 Run from the repository root:
 
 ```bash
-# 1. Full unit + integration suite (stdlib unittest, 240 tests)
+# 1. Full unit + integration suite (stdlib unittest)
+#    Full local source workspace: 240 tests OK. Published tree:
+#    227 tests OK with 4 skip entries because the raw core-IP JSONs
+#    are intentionally local-only.
 python3 -m unittest discover tests
 
 # 2. Deterministic fixture UAT through the real CLI (17 checks)

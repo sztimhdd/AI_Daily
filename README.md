@@ -111,10 +111,14 @@ Exit codes: `0` success, `1` controlled domain error (message on stderr),
 ## Test
 
 ```bash
-python3 -m unittest discover tests          # full suite (240 tests)
+python3 -m unittest discover tests          # full suite (240 tests OK in the local source workspace)
 python3 -m unittest tests.test_pipeline_e2e # black-box E2E subset
 scripts/uat_cli.sh                          # deterministic fixture UAT (17 checks)
 ```
+
+The full local source workspace suite is 240 tests OK; the published
+tree runs 227 tests OK with 4 skip entries because the raw core-IP
+JSONs are intentionally local-only.
 
 Tests never touch the network or real credentials; live paths are
 exercised with injected fetchers/transports.
