@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import json
 
-from . import deslop, outline, state, topics
+from . import deslop, outline, research, state, topics
 
 ARTICLE_MD = "article.md"
 
@@ -46,16 +46,25 @@ def _citation(ev) -> str:
     return f"[{ev['title']}]({ev['url']})"
 
 
-def _short(text: str, limit: int = 48) -> str:
-    """First clause, capped; keeps paragraphs mobile-short."""
-    clause = text
-    for sep in ("。", "！", "？", "，", "；", ","):
+_CLAUSE_SEPARATORS = ("。", "！", "？", "!", "?", "，", "；", ",")
+_TRAILING_CLAUSE_PUNCT = "。！？!?.；;，,、 \u3000"
+
+
+def _short(text: str, limit: int = 48, fallback: str = "") -> str:
+    """First clause of the evidence, mobile-short and residue-free.
+
+    The old version hard-cut at ``limit`` and appended ``…``, which
+    leaked truncated words, URLs and raw HTML into published articles.
+    Now the text is normalized (no markup/entities), ellipsis fragments
+    and truncated tails are dropped, and a clause longer than ``limit``
+    is kept whole — ``limit`` stays an advisory style hint only.
+    """
+    clause = research.evidence_excerpt(text, fallback)
+    for sep in _CLAUSE_SEPARATORS:
         idx = clause.find(sep)
         if 0 < idx < len(clause):
             clause = clause[:idx]
-    if len(clause) > limit:
-        clause = clause[:limit] + "…"
-    return clause
+    return clause.rstrip(_TRAILING_CLAUSE_PUNCT).strip()
 
 
 def _peg_paragraphs(data) -> list:
@@ -66,7 +75,7 @@ def _peg_paragraphs(data) -> list:
             "其余都要按不确定处理。"
         ]
     return [
-        f"{_short(ev['excerpt'], 60)}。",
+        f"{_short(ev['excerpt'], 60, ev.get('title', ''))}。",
         f"出处：{_citation(ev)}。这是本次选题最硬的一条事实。",
     ]
 
@@ -90,12 +99,12 @@ def _evidence_paragraphs(query, data) -> list:
         ]
     ev1 = question["evidence"][0]
     paras = [
-        f"**{query}** {_short(ev1['excerpt'])}。",
+        f"**{query}** {_short(ev1['excerpt'], fallback=ev1.get('title', ''))}。",
         f"出处：{_citation(ev1)}。",
     ]
     if len(question["evidence"]) > 1:
         ev2 = question["evidence"][1]
-        paras.append(f"另一条佐证：{_short(ev2['excerpt'], 32)}（{_citation(ev2)}）。")
+        paras.append(f"另一条佐证：{_short(ev2['excerpt'], 32, ev2.get('title', ''))}（{_citation(ev2)}）。")
     return paras
 
 
@@ -120,7 +129,7 @@ def _section_paragraphs(bullet: str, topic, data, outline_text) -> list:
     if ev is None:
         return ["这一节没有可引用的证据，只保留结构，不作事实陈述。"]
     return [
-        f"**补充事实。** {_short(ev['excerpt'])}。",
+        f"**补充事实。** {_short(ev['excerpt'], fallback=ev.get('title', ''))}。",
         f"出处：{_citation(ev)}。",
     ]
 

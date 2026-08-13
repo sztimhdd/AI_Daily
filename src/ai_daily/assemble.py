@@ -3,7 +3,9 @@
 Assembly is the quality gate before publishing.  It refuses to package
 an article that is empty, missing a title, or carries placeholders and
 debug artifacts (``{[IMG_x]}``, ``{{ $json }}`` n8n expressions, bare
-``[IMG_x]`` markers).  Source links must survive into the package.
+``[IMG_x]`` markers), published-article residue (raw HTML tags, ellipsis
+sequences, truncated URL fragments), or nothing at all.  Source links
+must survive into the package.
 
 Outputs:
 
@@ -36,6 +38,17 @@ _PLACEHOLDER_RES = (
 
 _LINK_RE = re.compile(r"\]\((https?://[^)\s]+)\)")
 
+# Published-article residue: raw HTML and ellipsis-truncated fragments
+# leaked from capped feed summaries must never ship.
+_RESIDUE_HTML_TAG_RE = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*(?:\s[^<>]*)?>")
+_RESIDUE_HTML_UNCLOSED_RE = re.compile(r"<[a-zA-Z/][^<>\n]*$", re.M)
+_RESIDUE_ELLIPSIS_RE = re.compile(r"\u2026|\.{3,}")
+_RESIDUE_TRUNCATED_URL_RE = re.compile(
+    r"https?://\S*?(?:\u2026|\.{3,})"
+    r"|(?<![(\]\w])https?://[a-zA-Z0-9-]+(?=[\s，。；：、！？（）]|$)",
+    re.M,
+)
+
 
 class AssembleError(RuntimeError):
     """Raised when the draft fails the assembly quality gate."""
@@ -55,6 +68,16 @@ def validate_article(text: str) -> list:
         m = rx.search(text)
         if m:
             problems.append(f"placeholder/debug artifact: {m.group(0)!r}")
+    for rx in (_RESIDUE_HTML_TAG_RE, _RESIDUE_HTML_UNCLOSED_RE):
+        m = rx.search(text)
+        if m:
+            problems.append(f"raw HTML tag: {m.group(0)!r}")
+    m = _RESIDUE_ELLIPSIS_RE.search(text)
+    if m:
+        problems.append(f"ellipsis residue: {m.group(0)!r}")
+    m = _RESIDUE_TRUNCATED_URL_RE.search(text)
+    if m:
+        problems.append(f"truncated URL fragment: {m.group(0)!r}")
     if not _LINK_RE.search(text):
         problems.append("article carries no source links")
     return problems

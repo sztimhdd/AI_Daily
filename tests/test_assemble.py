@@ -210,5 +210,62 @@ class StateMappingTests(AssembleBase):
         self.assertEqual(second["status"], "resumed")
 
 
+class ResidueValidationTests(AssembleBase):
+    """Published-article residue: raw HTML, ellipsis, truncated URLs."""
+
+    def test_clean_article_passes_validation(self):
+        self.assertEqual(assemble.validate_article(ARTICLE), [])
+
+    def test_validate_flags_raw_html_tags(self):
+        bad = ARTICLE.replace(
+            "独立创作者正在为搜索预算付出可计量的成本。",
+            "<p><strong>独立创作者</strong>正在为搜索预算付出可计量的成本。</p>",
+        )
+        problems = assemble.validate_article(bad)
+        self.assertTrue(any("raw HTML" in p for p in problems), problems)
+
+    def test_validate_flags_truncated_unclosed_html_tag(self):
+        bad = ARTICLE + '\n另一条佐证：<p><strong><a href="https://rese\n'
+        problems = assemble.validate_article(bad)
+        self.assertTrue(any("raw HTML" in p for p in problems), problems)
+
+    def test_validate_flags_ellipsis_residue(self):
+        for fragment in ("OpenRou…。", "预算还在增长..."):
+            bad = ARTICLE + f"\n{fragment}\n"
+            problems = assemble.validate_article(bad)
+            self.assertTrue(any("ellipsis" in p for p in problems),
+                            f"{fragment!r}: {problems}")
+
+    def test_validate_flags_truncated_url_fragment(self):
+        bad = ARTICLE + "\n详见 https://rese 的报道。\n"
+        problems = assemble.validate_article(bad)
+        self.assertTrue(any("truncated URL" in p for p in problems), problems)
+
+    def test_full_urls_and_decimals_still_pass(self):
+        extra = (
+            "\n数字如 2.5x、Qwen3.8-2.4T 与完整链接 "
+            "https://source-a.example.com/posts/agent-search-cost 都合法。\n"
+        )
+        self.assertEqual(assemble.validate_article(ARTICLE + extra), [])
+
+    def test_assemble_rejects_html_residue(self):
+        self.write_article(ARTICLE + '\n<p><strong><a href="https://rese…\n')
+        self.write_research()
+        with self.assertRaises(assemble.AssembleError):
+            assemble.run(self.rp)
+
+    def test_assemble_rejects_ellipsis_residue(self):
+        self.write_article(ARTICLE.replace("可计量的成本。", "可计量的成本…。"))
+        self.write_research()
+        with self.assertRaises(assemble.AssembleError):
+            assemble.run(self.rp)
+
+    def test_assemble_rejects_truncated_url_fragment(self):
+        self.write_article(ARTICLE + "\n详见 https://rese 的报道。\n")
+        self.write_research()
+        with self.assertRaises(assemble.AssembleError):
+            assemble.run(self.rp)
+
+
 if __name__ == "__main__":
     unittest.main()

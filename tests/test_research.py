@@ -209,5 +209,174 @@ class ResumeAfterFailureTests(ResearchTestBase):
         self.assertEqual(calls["n"], 1, "failed attempt must not count as collected")
 
 
+
+class EvidenceTextNormalizationTests(unittest.TestCase):
+    """Evidence normalization: HTML and truncated fragments never survive."""
+
+    def test_html_tags_stripped_and_entities_unescaped(self):
+        raw = '<p>Meta&#8217;s model <a href="https://x.example.com/a">ships</a> today</p>'
+        self.assertEqual(
+            research.normalize_evidence_text(raw), "Meta's model ships today"
+        )
+
+    def test_block_tags_become_line_breaks(self):
+        raw = "<p>First line</p><p>Second line</p>"
+        self.assertEqual(
+            research.normalize_evidence_text(raw), "First line\nSecond line"
+        )
+
+    def test_truncated_unclosed_tag_is_removed(self):
+        raw = 'Agent pricing notes <a href="https://rese'
+        self.assertEqual(research.normalize_evidence_text(raw), "Agent pricing notes")
+
+    def test_first_complete_sentence_kept_with_terminator(self):
+        raw = "Budgets shrank fast. Costs kept growing"
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"), "Budgets shrank fast."
+        )
+
+    def test_ellipsis_fragment_is_dropped_not_repeated(self):
+        raw = "Search costs are exploding… full numbers coming soon."
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"), "full numbers coming soon."
+        )
+
+    def test_truncated_tail_without_terminator_is_dropped(self):
+        raw = (
+            "Deep research agents now price every search call separately! "
+            "The pricing page lists 25 calls per task and budgets keep gro"
+        )
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"),
+            "Deep research agents now price every search call separately!",
+        )
+
+    def test_no_complete_sentence_falls_back_to_title(self):
+        raw = "个人创作者的 AI 研究成本核算还没有公开口径，所有数字都来自零散的社区统"
+        self.assertEqual(
+            research.evidence_excerpt(raw, "Personal research cost notes"),
+            "Personal research cost notes",
+        )
+
+    def test_decimal_dots_do_not_end_sentences(self):
+        raw = "Costs rose 2.5x and budgets shrank."
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"),
+            "Costs rose 2.5x and budgets shrank.",
+        )
+
+
+DIRTY_RSS_ITEMS = [
+    {
+        "title": "Deep research agent search budget pricing",
+        "url": "https://dirty.example.com/deep-research-pricing",
+        "date_raw": "2026-08-12",
+        "summary": (
+            '<p><strong><a href="https://dirty.example.com/deep-research-pricing">'
+            "Deep research agent search budget pricing</a></strong></p>\n"
+            "Deep research agents now price every search call separately! "
+            "The pricing page lists 25 search calls per task and budgets keep gro"
+        ),
+        "feed": "https://feeds.example.com/dirty",
+        "origin": "rss",
+    },
+    {
+        "title": "Search budget benchmarks for solo builders",
+        "url": "https://dirty.example.com/search-budget-benchmarks",
+        "date_raw": "2026-08-12",
+        "summary": (
+            "Search budget benchmarks are exploding… full numbers coming soon."
+        ),
+        "feed": "https://feeds.example.com/dirty",
+        "origin": "rss",
+    },
+    {
+        "title": "Personal research cost notes",
+        "url": "https://dirty.example.com/personal-research-cost",
+        "date_raw": "2026-08-12",
+        "summary": "个人创作者的 AI 研究成本核算还没有公开口径，所有数字都来自零散的社区统",
+        "feed": "https://feeds.example.com/dirty",
+        "origin": "rss",
+    },
+]
+
+_RESIDUE_HTML_RE = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*[\s>/]")
+
+
+class DirtyEvidenceRunTests(ResearchTestBase):
+    """Research over HTML-littered, truncated summaries stays clean prose."""
+
+    def write_dirty_rss(self):
+        (self.paths.work_dir / "rss-items.json").write_text(
+            json.dumps(DIRTY_RSS_ITEMS, ensure_ascii=False), encoding="utf-8"
+        )
+
+    def test_research_md_contains_no_raw_html_or_ellipsis(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        md = (self.paths.work_dir / "research.md").read_text(encoding="utf-8")
+        self.assertIsNone(_RESIDUE_HTML_RE.search(md), md)
+        self.assertNotIn("…", md)
+        self.assertNotIn("...", md)
+
+    def test_research_json_excerpts_are_clean_prose(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        data = json.loads(
+            (self.paths.work_dir / "research.json").read_text(encoding="utf-8")
+        )
+        excerpts = [
+            ev["excerpt"]
+            for q in data["questions"]
+            for ev in q["evidence"]
+        ]
+        self.assertTrue(excerpts)
+        for excerpt in excerpts:
+            self.assertIsNone(_RESIDUE_HTML_RE.search(excerpt), excerpt)
+            self.assertNotIn("…", excerpt)
+            self.assertNotIn("...", excerpt)
+
+    def test_html_summary_excerpt_keeps_anchor_text_not_markup(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        data = json.loads(
+            (self.paths.work_dir / "research.json").read_text(encoding="utf-8")
+        )
+        q2 = next(
+            q for q in data["questions"]
+            if q["query"] == "deep research agent search budget pricing"
+        )
+        lead = q2["evidence"][0]
+        self.assertEqual(
+            lead["excerpt"],
+            "Deep research agents now price every search call separately!",
+        )
+
+    def test_truncated_summary_without_sentence_falls_back_to_title(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        data = json.loads(
+            (self.paths.work_dir / "research.json").read_text(encoding="utf-8")
+        )
+        q3 = next(q for q in data["questions"] if q["query"] == "个人创作者 AI 研究成本")
+        excerpts = {ev["excerpt"] for ev in q3["evidence"]}
+        self.assertIn("Personal research cost notes", excerpts)
+
+    def test_full_source_links_survive_normalization(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        md = (self.paths.work_dir / "research.md").read_text(encoding="utf-8")
+        cited = set(URL_RE.findall(md))
+        dirty_urls = {it["url"] for it in DIRTY_RSS_ITEMS}
+        self.assertTrue(dirty_urls <= cited, f"missing links: {dirty_urls - cited}")
+
+    def test_dirty_evidence_does_not_bump_collect(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        self.assertEqual(
+            state.read_state(self.paths)["counters"].get("collect_runs", 0), 0
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

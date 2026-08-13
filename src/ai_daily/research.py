@@ -8,6 +8,7 @@ resume never re-runs collection.
 
 from __future__ import annotations
 
+import html
 import json
 import re
 import unicodedata
@@ -87,12 +88,59 @@ def _match_score(query: str, item: dict) -> int:
     return 2 * ascii_shared + bigram_shared
 
 
-def _first_sentence(text: str) -> str:
-    for part in re.split(r"[。！？!?]", text or ""):
-        part = part.strip()
-        if part:
-            return part
-    return (text or "").strip()
+_BLOCK_TAG_RE = re.compile(
+    r"</?(?:p|div|br|hr|li|ul|ol|dl|dt|dd|blockquote|pre|figure|figcaption|"
+    r"h[1-6]|table|thead|tbody|tfoot|tr|td|th|section|article|header|"
+    r"footer|nav|aside|main)(?:\s[^<>]*)?\s*/?>",
+    re.IGNORECASE,
+)
+_ANY_TAG_RE = re.compile(r"</?[a-zA-Z][^<>]*>")
+_UNCLOSED_TAIL_TAG_RE = re.compile(r"<[^<>\n]*$")
+_ELLIPSIS_RE = re.compile(r"\u2026|\.{3,}")
+_SENTENCE_END_RE = re.compile(r"[。！？!?]|\.(?=\s|$)")
+_CURLY_APOSTROPHES = {0x2018: "'", 0x2019: "'"}
+
+
+def normalize_evidence_text(raw: str) -> str:
+    """Turn messy feed evidence into clean prose.
+
+    Feed summaries arrive with raw HTML, escaped entities and truncated
+    tails (collect caps summaries mid-sentence, sometimes mid-tag).
+    Unescape entities, drop a trailing unclosed tag, convert block tags
+    to line breaks, strip all remaining markup and collapse whitespace.
+    """
+    text = html.unescape(raw or "")
+    text = text.translate(_CURLY_APOSTROPHES)
+    text = _UNCLOSED_TAIL_TAG_RE.sub("", text)
+    text = _BLOCK_TAG_RE.sub("\n", text)
+    text = _ANY_TAG_RE.sub("", text)
+    lines = [re.sub(r"\s+", " ", line).strip() for line in text.split("\n")]
+    return "\n".join(line for line in lines if line)
+
+
+def _first_complete_sentence(line: str) -> str:
+    match = _SENTENCE_END_RE.search(line)
+    if match:
+        candidate = line[: match.end()].strip()
+        if any(ch.isalnum() for ch in candidate):
+            return candidate
+    return ""
+
+
+def evidence_excerpt(summary: str, title: str) -> str:
+    """First complete, residue-free sentence of a summary.
+
+    Ellipsis-truncated fragments and unterminated tails are dropped
+    instead of repeated; when no complete sentence survives, the
+    normalized title stands in.  Never returns raw HTML.
+    """
+    text = normalize_evidence_text(summary)
+    for chunk in _ELLIPSIS_RE.split(text):
+        for line in chunk.split("\n"):
+            sentence = _first_complete_sentence(line.strip())
+            if sentence:
+                return sentence
+    return normalize_evidence_text(title)
 
 
 def match_evidence(query: str, items: list) -> list:
@@ -253,7 +301,7 @@ def run(run_paths, ensure_evidence=None, force: bool = False) -> dict:
                 "title": it.get("title", ""),
                 "url": _item_url(it),
                 "origin": it.get("origin", ""),
-                "excerpt": _first_sentence(it.get("summary")) or it.get("title", ""),
+                "excerpt": evidence_excerpt(it.get("summary", ""), it.get("title", "")),
             }
             for it in evidence_items
             if _item_url(it)

@@ -13,24 +13,20 @@
 
 ### glimmer meta muse openrouter
 
-- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
-- <p><strong><a href="https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model">Introducing Muse Glimmer</a></strong></p>
-Meta are back in the open weights game（[Introducing Muse Glimmer](https://simonwillison.net/2026/Aug/10/introducing-muse-glimmer/#atom-everything)，rss）
-- <p>Meta's Muse Glimmer is a 30B open-weights agentic model under Apache 2.0. It fits 24 GB VRAM and decodes 3.1x faster with DFlash speculation.</p>
-<p>The post <a href="https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/">Meta AI Releases Muse Glimmer: A 30B O（[Meta AI Releases Muse Glimmer: A 30B Open-Weights Agentic Model That Runs on One Consumer GPU](https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/)，rss）
+- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线！（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
+- Meta are back in the open weights game!（[Introducing Muse Glimmer](https://simonwillison.net/2026/Aug/10/introducing-muse-glimmer/#atom-everything)，rss）
+- Meta's Muse Glimmer is a 30B open-weights agentic model under Apache 2.0.（[Meta AI Releases Muse Glimmer: A 30B Open-Weights Agentic Model That Runs on One Consumer GPU](https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/)，rss）
 
 ### 开源 权重 许可证 自部署
 
-- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
-- 阿里 Qwen 团队正式开放 Qwen3.8-2.4T-A95B 模型权重，这是 Qwen-Max 级别模型首次开源（[阿里开放 Qwen3.8-2.4T-A95B 模型权重：2.4T MoE、激活 95B、原生 256K 上下文](https://www.ithome.com/0/989/001.htm)，aihot）
+- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线！（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
+- 阿里 Qwen 团队正式开放 Qwen3.8-2.4T-A95B 模型权重，这是 Qwen-Max 级别模型首次开源。（[阿里开放 Qwen3.8-2.4T-A95B 模型权重：2.4T MoE、激活 95B、原生 256K 上下文](https://www.ithome.com/0/989/001.htm)，aihot）
 
 ### Meta 开源 Muse Glimmer 登陆 OpenRouter
 
-- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
-- <p><strong><a href="https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model">Introducing Muse Glimmer</a></strong></p>
-Meta are back in the open weights game（[Introducing Muse Glimmer](https://simonwillison.net/2026/Aug/10/introducing-muse-glimmer/#atom-everything)，rss）
-- <p>Meta's Muse Glimmer is a 30B open-weights agentic model under Apache 2.0. It fits 24 GB VRAM and decodes 3.1x faster with DFlash speculation.</p>
-<p>The post <a href="https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/">Meta AI Releases Muse Glimmer: A 30B O（[Meta AI Releases Muse Glimmer: A 30B Open-Weights Agentic Model That Runs on One Consumer GPU](https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/)，rss）
+- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线！（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
+- Meta are back in the open weights game!（[Introducing Muse Glimmer](https://simonwillison.net/2026/Aug/10/introducing-muse-glimmer/#atom-everything)，rss）
+- Meta's Muse Glimmer is a 30B open-weights agentic model under Apache 2.0.（[Meta AI Releases Muse Glimmer: A 30B Open-Weights Agentic Model That Runs on One Consumer GPU](https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/)，rss）
 
 ## 证据不足（不确定）
 
