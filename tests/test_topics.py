@@ -194,6 +194,42 @@ class TopicGateTests(unittest.TestCase):
         with self.assertRaises(topics.TopicError):
             topics.record_human_choice(self.paths, cands, choice=9)
 
+    def test_simulated_choice_bypasses_human_gate(self):
+        cands = topics.generate_candidates(aihot_items(), rss_items=[])
+        topics.record_simulated_choice(self.paths, cands, choice=2)
+        st = state.read_state(self.paths)
+        self.assertEqual(st["topic_choice"], "simulated")
+        self.assertEqual(st["slug"], cands[1]["slug"])
+        self.assertEqual(st["topic_title"], cands[1]["title"])
+        self.assertTrue(
+            any(
+                "topic choice: simulated (unattended mode, candidate 2)" in line
+                for line in st["stage_log"]
+            ),
+            st["stage_log"],
+        )
+        # the gate accepts the simulated choice; no human wait
+        self.assertEqual(topics.require_choice(self.paths)["title"], cands[1]["title"])
+
+    def test_simulated_choice_preserves_candidate_verbatim_empty_direction(self):
+        cands = topics.generate_candidates(aihot_items(), rss_items=[])
+        topic = topics.record_simulated_choice(self.paths, cands, choice=1)
+        self.assertEqual(topic["title"], cands[0]["title"])
+        self.assertEqual(topic["slug"], cands[0]["slug"])
+        self.assertEqual(topic["thesis"], cands[0]["thesis"])
+        self.assertEqual(topic["direction"], "")
+        saved = json.loads(
+            (self.paths.work_dir / "selected-topic.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(saved["title"], cands[0]["title"])
+        self.assertEqual(saved["slug"], cands[0]["slug"])
+        self.assertEqual(saved["direction"], "")
+
+    def test_simulated_choice_index_out_of_range_rejected(self):
+        cands = topics.generate_candidates(aihot_items(), rss_items=[])
+        with self.assertRaises(topics.TopicError):
+            topics.record_simulated_choice(self.paths, cands, choice=9)
+
 
 
 

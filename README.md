@@ -11,6 +11,11 @@ collect → topic_choice (human gate) → research → outline → draft
         → optional_cover → assembly → publish
 ```
 
+The topic gate is mandatory but can be satisfied three ways: a human
+choice (`--choice N`), a deterministic fixture bypass (`--fixture`), or
+an unattended simulated choice (`--simulate`, records
+`topic_choice: simulated`).
+
 One run per date (`AI-Daily/YYYY-MM-DD`). Working state lives in
 `.local/runs/<date>/state.md`; the durable package lands in
 `outputs/YYYY/MM/DD/<article-slug>/` and the publishable article at
@@ -98,6 +103,32 @@ python3 -m ai_daily.cli run --date $DATE \
   --aihot-fixture tests/fixtures/aihot_items.json
 ```
 
+Unattended mode (no human wait): the topic gate accepts a simulated
+choice. The ranked candidate is kept verbatim (title/slug/thesis), the
+direction defaults to empty, and state records `topic_choice: simulated`
+plus the stage_log note `topic choice: simulated (unattended mode,
+candidate N)`. Resume never re-collects.
+
+```bash
+python3 -m ai_daily.cli choose-topic --date $DATE --simulate --choice 1
+python3 -m ai_daily.cli choose-topic --date $DATE --simulate  # auto-selects candidate 1
+```
+
+Live unattended daily chain (AIHOT + RSS catalog with bounded
+timeouts; RSS failures recorded nonblocking in `rss-stats.json`):
+
+```bash
+python3 -m ai_daily.cli init --date $DATE
+python3 -m ai_daily.cli collect --date $DATE --mode live
+python3 -m ai_daily.cli candidates --date $DATE
+python3 -m ai_daily.cli choose-topic --date $DATE --simulate --choice 1
+python3 -m ai_daily.cli research --date $DATE
+python3 -m ai_daily.cli outline --date $DATE
+python3 -m ai_daily.cli draft --date $DATE
+python3 -m ai_daily.cli cover --date $DATE          # optional, skipped cleanly when absent
+python3 -m ai_daily.cli assemble --date $DATE
+```
+
 After a human edits `.local/runs/<date>/article-outline.md`, rebuild
 the draft without re-collecting:
 
@@ -111,13 +142,13 @@ Exit codes: `0` success, `1` controlled domain error (message on stderr),
 ## Test
 
 ```bash
-python3 -m unittest discover tests          # full suite (240 tests OK in the local source workspace)
+python3 -m unittest discover tests          # full suite (254 tests OK in the local source workspace)
 python3 -m unittest tests.test_pipeline_e2e # black-box E2E subset
 scripts/uat_cli.sh                          # deterministic fixture UAT (17 checks)
 ```
 
-The full local source workspace suite is 240 tests OK; the published
-tree runs 227 tests OK with 4 skip entries because the raw core-IP
+The full local source workspace suite is 254 tests OK; the published
+tree runs 241 tests OK with 4 skip entries because the raw core-IP
 JSONs are intentionally local-only.
 
 Tests never touch the network or real credentials; live paths are

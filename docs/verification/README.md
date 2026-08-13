@@ -9,8 +9,8 @@ Run from the repository root:
 
 ```bash
 # 1. Full unit + integration suite (stdlib unittest)
-#    Full local source workspace: 240 tests OK. Published tree:
-#    227 tests OK with 4 skip entries because the raw core-IP JSONs
+#    Full local source workspace: 254 tests OK. Published tree:
+#    241 tests OK with 4 skip entries because the raw core-IP JSONs
 #    are intentionally local-only.
 python3 -m unittest discover tests
 
@@ -56,6 +56,10 @@ Saved results live in `docs/verification/results/`:
   candidate 3, recorded as `topic_choice: human` with empty direction,
   run resumed without re-collect to `completed`, article published and
   reread-verified at the exact commit.
+- `2026-08-13-unattended-uat.md` — first unattended live run: simulated
+  topic choice, live AIHOT + RSS collect with nonblocking feed
+  failures, F5 research priority fix, article validation, package
+  hashes.
 
 ## What the local checks prove
 
@@ -67,6 +71,30 @@ Saved results live in `docs/verification/results/`:
 - Publish verification logic against a real bare git remote
   (`tests/test_publish.py`) and honest `local-only` fallback.
 - Immutable core-IP JSONs still parse (`jq empty` on all five).
+- Unattended simulated topic choice: gate bypass, verbatim
+  title/slug preservation, default-empty direction, out-of-range
+  refusal, and resume without re-collect
+  (`tests/test_topics.py`, `tests/test_pipeline.py`,
+  `tests/test_cli.py`).
+
+## Unattended mode
+
+The topic gate has an unattended simulated path:
+`cli choose-topic --simulate [--choice N]` records
+`topic_choice: simulated`, keeps the ranked candidate's title/slug
+verbatim, defaults the direction to empty, and writes the stage_log
+note `topic choice: simulated (unattended mode, candidate N)`
+(`--simulate` without `--choice` auto-selects candidate 1, the
+top-ranked editorial candidate). `require_choice` accepts simulated
+choices, and resume never re-collects. Combining `--simulate` with
+`--fixture` is a usage error (exit 2).
+
+Status: EXERCISED — first real use was the 2026-08-13 live unattended
+run ([results](results/2026-08-13-unattended-uat.md)): init → live
+collect (aihot=15, rss kept 445, 18 failed feeds nonblocking) →
+candidates → simulated choice of candidate 1 → research → outline →
+draft → cover skipped → assemble, ending `stage: completed` with
+`collect_runs: 1` and no human wait.
 
 ## External UAT status (needs network / accounts / humans)
 
@@ -84,9 +112,9 @@ remote reread hash equality.
 
 | # | Item | How to verify | Status |
 |---|------|---------------|--------|
-| 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 1 |
+| 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 1, re-exercised live by the [2026-08-13 unattended run](results/2026-08-13-unattended-uat.md) |
 | 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote`, `publish-verified: remote-reread`, and `publish-sha256` in state.md | COMPLETE — [GitHub publication](results/2026-08-12-github-publication.md) |
-| 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 4 |
+| 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), case 4, re-exercised live by the [2026-08-13 unattended run](results/2026-08-13-unattended-uat.md) |
 | 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | UNAVAILABLE / NONBLOCKING — [ChatGPT cover UAT](results/2026-08-12-chatgpt-cover-uat.md): no reachable logged-in ChatGPT Web session; not executed |
 | 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | COMPLETE — [desktop human-gate UAT](results/2026-08-12-desktop-human-gate-uat.md): choice 3 recorded as `topic_choice: human` (empty direction); resumed without re-collect to `completed`; article published + reread-verified |
 

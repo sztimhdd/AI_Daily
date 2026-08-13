@@ -54,6 +54,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--fixture", default=None, help="fixture bypass JSON")
     p.add_argument("--choice", type=int, default=None, help="human choice 1..3")
     p.add_argument("--direction", default="", help="editorial direction, kept verbatim")
+    p.add_argument("--simulate", action="store_true",
+                   help="unattended simulated choice (no human wait); "
+                        "records topic_choice: simulated with the candidate "
+                        "kept verbatim; defaults to candidate 1 when --choice is omitted")
 
     for name, help_text in (
         ("research", "run targeted research"),
@@ -143,12 +147,19 @@ def cmd_candidates(args) -> int:
 def cmd_choose_topic(args) -> int:
     run_paths = _paths(args)
     _ensure_state(run_paths)
+    if args.simulate and args.fixture:
+        print("error: choose-topic: --simulate cannot be combined with --fixture",
+              file=sys.stderr)
+        return 2
     if args.fixture:
         topic = pipeline.run_topic_fixture(run_paths, args.fixture)
+    elif args.simulate:
+        choice = args.choice if args.choice is not None else 1
+        topic = pipeline.run_simulated_choice(run_paths, choice, args.direction)
     elif args.choice:
         topic = pipeline.run_human_choice(run_paths, args.choice, args.direction)
     else:
-        print("error: choose-topic needs --fixture or --choice", file=sys.stderr)
+        print("error: choose-topic needs --fixture, --choice, or --simulate", file=sys.stderr)
         return 2
     print(f"topic chosen: {topic['title']} ({topic['slug']})")
     return 0

@@ -423,7 +423,7 @@ def candidates_markdown(date: str, candidates: list) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Human gate: fixture bypass and verbatim human choice
+# Topic gate: fixture bypass, verbatim human choice, simulated choice
 # ---------------------------------------------------------------------------
 
 _SELECTED_FILENAME = "selected-topic.json"
@@ -469,8 +469,9 @@ def choose_fixture(run_paths, fixture_path) -> dict:
     return topic
 
 
-def record_human_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
-    """Record the editor's 1-based choice with direction kept verbatim."""
+def _record_choice(run_paths, candidates: list, choice: int, direction: str,
+                   kind: str, note: str) -> dict:
+    """Shared verbatim recording for human and simulated choices."""
     if not isinstance(choice, int) or choice < 1 or choice > len(candidates):
         raise TopicError(
             f"choice {choice!r} out of range; expected 1..{len(candidates)}"
@@ -481,16 +482,42 @@ def record_human_choice(run_paths, candidates: list, choice: int, direction: str
     _write_selected(run_paths, cand)
     state.update_fields(
         run_paths,
-        note=f"topic choice: human (candidate {choice})",
-        topic_choice="human",
+        note=note,
+        topic_choice=kind,
         slug=cand["slug"],
         topic_title=cand["title"],
     )
     return cand
 
 
+def record_human_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
+    """Record the editor's 1-based choice with direction kept verbatim."""
+    return _record_choice(
+        run_paths, candidates, choice, direction,
+        "human", f"topic choice: human (candidate {choice})",
+    )
+
+
+def record_simulated_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
+    """Record an unattended simulated choice; candidate kept verbatim.
+
+    Unattended runs never wait for a human: the editorial choice is
+    simulated and durably marked as such (``topic_choice: simulated``).
+    The ranked candidate's title/slug/thesis carry over verbatim and
+    the direction defaults to empty.
+    """
+    return _record_choice(
+        run_paths, candidates, choice, direction,
+        "simulated", f"topic choice: simulated (unattended mode, candidate {choice})",
+    )
+
+
 def require_choice(run_paths) -> dict:
-    """Gate for research and later stages."""
+    """Gate for research and later stages.
+
+    Accepts any recorded choice kind: human, simulated (unattended),
+    or fixture bypass.
+    """
     st = state.read_state(run_paths)
     selected = run_paths.work_dir / _SELECTED_FILENAME
     if not st.get("topic_choice") or not selected.exists():

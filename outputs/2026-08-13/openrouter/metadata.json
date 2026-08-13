@@ -1,0 +1,38 @@
+{
+  "run_id": "AI-Daily/2026-08-13",
+  "date": "2026-08-13",
+  "slug": "openrouter",
+  "title": "OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型",
+  "topic_choice": "simulated",
+  "has_cover": false,
+  "cover": null,
+  "sources": [
+    {
+      "title": "OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型",
+      "url": "https://openrouter.ai/blog/announcements/web-search-benchmark",
+      "origin": "aihot"
+    },
+    {
+      "title": "DeepSeek Ships V4 Pro as Its Flagship Model Leaves Preview",
+      "url": "https://www.unite.ai/deepseek-ships-v4-pro-as-its-flagship-model-leaves-preview/",
+      "origin": "rss"
+    },
+    {
+      "title": "DeepSeek V4 Pro 0813 (on OpenRouter)",
+      "url": "https://simonwillison.net/2026/Aug/12/deepseek-v4-pro-0813/",
+      "origin": "rss"
+    },
+    {
+      "title": "Meta 开源 Muse Glimmer 登陆 OpenRouter",
+      "url": "https://x.com/OpenRouter/status/2087509478480765218",
+      "origin": "aihot"
+    },
+    {
+      "title": "AutoGPT 如何用 AGENTS.md 和技能门控管理 AI 生成的拉取请求",
+      "url": "https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project",
+      "origin": "aihot"
+    }
+  ],
+  "final_article": "articles/2026-08-13-openrouter-zh.md",
+  "package": "outputs/2026-08-13/openrouter"
+}

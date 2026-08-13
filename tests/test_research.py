@@ -378,5 +378,111 @@ class DirtyEvidenceRunTests(ResearchTestBase):
         )
 
 
+class TopicEventPriorityTests(unittest.TestCase):
+    """The topic's own event must outrank lexically-related siblings.
+
+    A sibling story that merely mentions the topic's named entity (for
+    example another product launching on the same platform) must never
+    become the article's lead: the topic's own event is the hardest
+    fact, even when lexical ties and the per-question evidence cap would
+    otherwise push it out of the question entirely.
+    """
+
+    TOPIC_TITLE = "OpenRouter 推出实时网页搜索基准测试"
+    TOPIC_URL = "https://openrouter.ai/blog/announcements/web-search-benchmark"
+    SIBLING_URL = "https://offtopic.example.com/deepseek-v4-pro"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self._tmp.name)
+        self.paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        self.paths.ensure_work_dir()
+        state.init_state(self.paths)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def rss_item(self, title, summary, url):
+        return {
+            "title": title,
+            "summary": summary,
+            "url": url,
+            "origin": "rss",
+            "feed": "https://feeds.example.com/x",
+            "published": "",
+            "score": 5,
+        }
+
+    def write_pool(self):
+        # Three sibling stories merely mention OpenRouter mid-sentence;
+        # together with title-ascending tie-breaks they outrank the
+        # topic's own announcement, which the evidence cap then drops.
+        pool = [
+            self.rss_item(
+                "DeepSeek Ships V4 Pro as Its Flagship Model Leaves Preview",
+                "DeepSeek has released the production version of its "
+                "flagship model on OpenRouter, the company said.",
+                self.SIBLING_URL,
+            ),
+            self.rss_item(
+                "DeepSeek V4 Pro 0813 (on OpenRouter)",
+                "Simon reviews the new DeepSeek release hosted on "
+                "OpenRouter with benchmarks and pricing.",
+                "https://simonwillison.example.com/deepseek-v4-pro",
+            ),
+            self.rss_item(
+                "Meta 开源 Muse Glimmer 登陆 OpenRouter",
+                "Meta 的开源模型 Muse Glimmer 现已上线 OpenRouter 平台。",
+                "https://x.example.com/openrouter-muse-glimmer",
+            ),
+            self.rss_item(
+                self.TOPIC_TITLE,
+                "OpenRouter 发布实时网页搜索基准测试排行榜，系统评测搜索引擎。",
+                self.TOPIC_URL,
+            ),
+        ]
+        (self.paths.work_dir / "rss-items.json").write_text(
+            json.dumps(pool, ensure_ascii=False, indent=1), encoding="utf-8"
+        )
+
+    def choose(self):
+        cand = {
+            "title": self.TOPIC_TITLE,
+            "slug": "openrouter-web-search-benchmark",
+            "thesis": "OpenRouter 发布实时排行榜。",
+            "hook": "hook",
+            "evidence_gaps": ["目前只有 1 个来源报道，缺少独立的第二来源验证。"],
+            "research_queries": ["openrouter", self.TOPIC_TITLE],
+            "strategic_relevance": "影响模型选型。",
+            "sources": [
+                {"url": self.TOPIC_URL, "title": self.TOPIC_TITLE, "origin": "rss"}
+            ],
+        }
+        topics.record_human_choice(self.paths, [cand], choice=1)
+
+    def test_topics_own_event_ranks_first_in_matching_questions(self):
+        self.write_pool()
+        self.choose()
+        result = research.run(self.paths)
+        first = result["questions"][0]
+        self.assertEqual(first["status"], "supported")
+        self.assertEqual(first["evidence"][0]["url"], self.TOPIC_URL)
+
+    def test_draft_lead_cites_topics_own_event_not_sibling_story(self):
+        from ai_daily import draft, outline
+
+        self.write_pool()
+        self.choose()
+        research.run(self.paths)
+        outline.run(self.paths)
+        draft.run(self.paths)
+        marker = chr(10) + "## "
+        article = (self.paths.work_dir / "article.md").read_text(encoding="utf-8")
+        sections = article.split(marker)
+        lead = next(s for s in sections if s.startswith("导语"))
+        self.assertIn(self.TOPIC_URL, lead)
+        self.assertNotIn(self.SIBLING_URL, lead)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -143,14 +143,27 @@ def evidence_excerpt(summary: str, title: str) -> str:
     return normalize_evidence_text(title)
 
 
-def match_evidence(query: str, items: list) -> list:
+def match_evidence(query: str, items: list, topic_title: str = "") -> list:
+    """Rank pool items against one query, deterministically.
+
+    Items qualify at score >= 2 (one shared ascii token, or two shared
+    CJK bigrams).  The topic's own event always ranks first — it is the
+    hardest fact of the run — then higher lexical scores, then
+    title-ascending.  The ordering is applied before the per-question
+    cap, so the topic's own announcement can never be squeezed out of a
+    question by lexically-tied sibling stories that merely mention the
+    same platform or company.
+    """
     scored = []
     for item in items:
         score = _match_score(query, item)
         if score >= 2:  # one shared ascii token, or two shared CJK bigrams
-            scored.append((score, item))
-    scored.sort(key=lambda pair: (-pair[0], pair[1].get("title", "")))
-    return [item for _, item in scored[:MAX_EVIDENCE_PER_QUESTION]]
+            not_own_event = (
+                0 if topics.same_event(item.get("title", ""), topic_title) else 1
+            )
+            scored.append((not_own_event, -score, item.get("title", ""), item))
+    scored.sort(key=lambda entry: (entry[0], entry[1], entry[2]))
+    return [entry[-1] for entry in scored[:MAX_EVIDENCE_PER_QUESTION]]
 
 
 # ---------------------------------------------------------------------------
@@ -293,9 +306,10 @@ def run(run_paths, ensure_evidence=None, force: bool = False) -> dict:
             state.fail(run_paths, "research", "collection produced no evidence items")
             raise ResearchError("collection produced no evidence items")
 
+    topic_title = topic.get("title", "")
     questions = []
     for query in topic.get("research_queries") or [topic["title"]]:
-        evidence_items = match_evidence(query, items)
+        evidence_items = match_evidence(query, items, topic_title)
         evidence = [
             {
                 "title": it.get("title", ""),

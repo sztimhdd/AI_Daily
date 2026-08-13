@@ -10,7 +10,7 @@ Rules enforced here:
   the run is marked failed (no training-memory fallback).
 - RSS failures never block: they are recorded in rss-stats.json.
 - Resume never re-collects: existing evidence short-circuits collect.
-- research is gated on the topic choice (human or fixture bypass).
+- research is gated on the topic choice (human, simulated, or fixture bypass).
 - Each stage transitions the durable state and clears stale errors on
   success.
 """
@@ -163,6 +163,16 @@ def run_candidates(run_paths) -> list:
 def run_human_choice(run_paths, choice: int, direction: str = "") -> dict:
     state.transition(run_paths, "topic_choice")
     return topics.record_human_choice(run_paths, run_candidates(run_paths), choice, direction)
+
+
+def run_simulated_choice(run_paths, choice: int, direction: str = "") -> dict:
+    """Simulated (unattended) choice from the ranked candidates.
+
+    No human is waiting: the choice is recorded as
+    ``topic_choice: simulated`` with the candidate kept verbatim.
+    """
+    state.transition(run_paths, "topic_choice")
+    return topics.record_simulated_choice(run_paths, run_candidates(run_paths), choice, direction)
 
 
 # ---------------------------------------------------------------------------

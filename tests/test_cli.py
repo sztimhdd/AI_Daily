@@ -86,6 +86,55 @@ class SteppedCliTests(CliBase):
         self.assertEqual(code, 1)
         self.assertIn("topic", err.lower())
 
+    def test_choose_topic_simulate_chain_completes_without_recollect(self):
+        date_args = ("--root", self.root, "--date", "2026-08-13")
+        code, _, err = self.run_cli("collect", *date_args, "--mode", "fixture",
+                                    "--aihot-fixture", AIHOT_FIXTURE)
+        self.assertEqual(code, 0, err)
+        code, out, err = self.run_cli("choose-topic", *date_args,
+                                      "--simulate", "--choice", "1")
+        self.assertEqual(code, 0, err)
+        self.assertIn("topic chosen:", out)
+        state_path = pathlib.Path(self.root) / ".local" / "runs" / "2026-08-13" / "state.md"
+        state_text = state_path.read_text(encoding="utf-8")
+        self.assertIn("- topic_choice: simulated", state_text)
+        self.assertIn("topic choice: simulated (unattended mode, candidate 1)", state_text)
+        for cmd in ("research", "outline", "draft", "assemble"):
+            code, _, err = self.run_cli(cmd, *date_args)
+            self.assertEqual(code, 0, f"{cmd}: {err}")
+        state_text = state_path.read_text(encoding="utf-8")
+        self.assertIn("- stage: completed", state_text)
+        self.assertIn("collect_runs: 1", state_text)
+
+    def test_choose_topic_simulate_without_choice_autoselects_candidate_one(self):
+        date_args = ("--root", self.root, "--date", "2026-08-13")
+        code, _, err = self.run_cli("collect", *date_args, "--mode", "fixture",
+                                    "--aihot-fixture", AIHOT_FIXTURE)
+        self.assertEqual(code, 0, err)
+        code, cands_out, err = self.run_cli("candidates", *date_args)
+        self.assertEqual(code, 0, err)
+        first_title = next(
+            line[len("## 候选 1："):].strip()
+            for line in cands_out.splitlines()
+            if line.startswith("## 候选 1：")
+        )
+        code, _, err = self.run_cli("choose-topic", *date_args, "--simulate")
+        self.assertEqual(code, 0, err)
+        state_text = (
+            pathlib.Path(self.root) / ".local" / "runs" / "2026-08-13" / "state.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("- topic_choice: simulated", state_text)
+        self.assertIn(f"- topic_title: {first_title}", state_text)
+        self.assertIn("topic choice: simulated (unattended mode, candidate 1)", state_text)
+
+    def test_choose_topic_simulate_with_fixture_is_usage_error(self):
+        code, _, err = self.run_cli(
+            "choose-topic", "--root", self.root, "--date", "2026-08-13",
+            "--simulate", "--fixture", TOPIC_FIXTURE,
+        )
+        self.assertEqual(code, 2)
+        self.assertIn("--simulate cannot be combined with --fixture", err)
+
     def test_unknown_command_exits_nonzero(self):
         code, _, err = self.run_cli("frobnicate")
         self.assertNotEqual(code, 0)
