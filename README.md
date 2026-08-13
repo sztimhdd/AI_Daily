@@ -111,7 +111,7 @@ Exit codes: `0` success, `1` controlled domain error (message on stderr),
 ## Test
 
 ```bash
-python3 -m unittest discover tests          # full suite (208 tests)
+python3 -m unittest discover tests          # full suite (240 tests)
 python3 -m unittest tests.test_pipeline_e2e # black-box E2E subset
 scripts/uat_cli.sh                          # deterministic fixture UAT (17 checks)
 ```
