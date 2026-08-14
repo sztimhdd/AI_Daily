@@ -102,18 +102,6 @@ class PromptChoiceTests(unittest.TestCase):
         self.assertIn("1..3", prompts[0])
 
 
-class PromptOptionalDirectionTests(unittest.TestCase):
-    def test_empty_input_returns_empty_string(self):
-        self.assertEqual(tui.prompt_optional_direction(input_fn=lambda _prompt: ""), "")
-        self.assertEqual(tui.prompt_optional_direction(input_fn=lambda _prompt: "  "), "")
-
-    def test_input_is_stripped(self):
-        result = tui.prompt_optional_direction(
-            input_fn=lambda _prompt: "  按企业采购视角写，别写开发者教程。  "
-        )
-        self.assertEqual(result, "按企业采购视角写，别写开发者教程。")
-
-
 class ColorTests(unittest.TestCase):
     def test_plain_rendering_never_emits_escape_sequences(self):
         progress = tui.render_progress("topic_choice", STAGES, color=False)

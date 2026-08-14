@@ -215,17 +215,26 @@ class SessionCommandTests(CliBase):
         self.assertIn("选题已定", second[1])
         self.assertNotIn("选择 1..3", second[1])
 
-    def test_session_without_choice_prompts_interactively(self):
+    def test_session_without_choice_records_no_direction(self):
+        class FakeTtyIn(io.StringIO):
+            def isatty(self):
+                return True
+
         with mock.patch.object(
             cli.tui, "prompt_choice", return_value=2
         ), mock.patch.object(
-            cli.tui, "prompt_optional_direction", return_value="按企业采购视角写"
-        ), mock.patch.object(
-            sys.stdin, "isatty", return_value=True
+            sys, "stdin", FakeTtyIn("按企业采购视角写\n")
         ):
             code, out, err = self.run_cli(*self._session_args())
         self.assertEqual(code, 0, err)
         self.assertIn("选题已定", out)
+        selected = json.loads(
+            (
+                pathlib.Path(self.root) / ".local" / "runs"
+                / "2026-08-13" / "selected-topic.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(selected.get("direction"), "")
         state_text = (
             pathlib.Path(self.root) / ".local" / "runs" / "2026-08-13" / "state.md"
         ).read_text(encoding="utf-8")

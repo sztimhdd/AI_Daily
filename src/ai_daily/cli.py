@@ -199,9 +199,9 @@ def cmd_choose_topic(args) -> int:
         topic = pipeline.run_human_choice(run_paths, args.choice, args.direction)
     else:
         # Interactive TUI: show the stage progress and the candidates,
-        # then let the editor pick by number and optionally add a
-        # writing direction.  Output rendering falls back to plain text
-        # when stdout is not a terminal, so scripted usage stays greppable.
+        # then let the editor pick by number.  Output rendering falls
+        # back to plain text when stdout is not a terminal, so scripted
+        # usage stays greppable.
         code = _require_interactive()
         if code is not None:
             return code
@@ -212,8 +212,7 @@ def cmd_choose_topic(args) -> int:
         print()
         print(tui.render_candidates(cands, color=use_color))
         choice = tui.prompt_choice(len(cands))
-        direction = tui.prompt_optional_direction()
-        topic = pipeline.run_human_choice(run_paths, choice, direction)
+        topic = pipeline.run_human_choice(run_paths, choice, "")
     print(f"topic chosen: {topic['title']} ({topic['slug']})")
     return 0
 
@@ -396,8 +395,7 @@ def cmd_session(args) -> int:
         if code is not None:
             return code
         choice = tui.prompt_choice(len(cands))
-        direction = tui.prompt_optional_direction()
-        topic = pipeline.run_human_choice(run_paths, choice, direction)
+        topic = pipeline.run_human_choice(run_paths, choice, "")
         print(f"选题已定：{topic['title']}（{topic['slug']}）")
     print()
 

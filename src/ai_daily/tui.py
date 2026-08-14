@@ -197,9 +197,3 @@ def prompt_choice(count: int, input_fn=input) -> int:
             continue
         if 1 <= value <= count:
             return value
-
-
-def prompt_optional_direction(input_fn=input) -> str:
-    """Prompt for an optional editorial direction; Enter returns ""."""
-    raw = input_fn("可选写作方向（直接回车跳过）：")
-    return raw.strip()
