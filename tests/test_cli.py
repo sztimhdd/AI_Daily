@@ -272,7 +272,11 @@ class SessionCommandTests(CliBase):
             "title": "某热点", "summary": "", "source_name": "某源",
             "score": 80, "links": {"aihot": "https://aihot.virxact.com/items/x"},
         }
-        cands = [{"title": "候选一", "thesis": "论点", "hook": "钩子"}]
+        cands = [{
+            "title": "候选一", "thesis": "论点", "hook": "钩子",
+            "research_queries": ["查询"],
+            "sources": [{"url": "https://example.com/x"}],
+        }]
         seen = {}
 
         def fake_collect(run_paths, **kwargs):

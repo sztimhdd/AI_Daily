@@ -14,10 +14,57 @@ import json
 import pathlib
 import re
 import unicodedata
+from urllib.parse import urlparse
 
 from . import state
 
 CANDIDATE_COUNT = 3
+
+# Editorial rubric compiled from the legacy prompt assets (see the
+# 2026-08-14 prompt-asset migration matrix):
+# - VETO 四杀 + EIC 三维: TSV Triage Agent / LCW Set Discovery Params1
+# - 3+ independent sources + Top3: REF topicChoserAgent
+# - candidate schema: REF Parser[6] (representative_title/search_keywords/
+#   justification/urls mapped to title/research_queries/thesis/sources)
+
+# EIC selection dimensions (information asymmetry / emotional trigger /
+# strategic value), deterministic keyword approximation.
+_INFO_KEYWORDS = (
+    "首发", "首次", "独家", "未披露", "内幕", "泄露", "反直觉",
+    "鲜为人知", "被忽视", "抢先", "提前曝光", "预印", "独家内容",
+    "exclusive", "leaked", "leak", "undisclosed", "internal memo",
+)
+_EMOTION_KEYWORDS = (
+    "炸锅", "破防", "刷屏", "争议", "愤怒", "抗议", "焦虑", "恐慌",
+    "断供", "涨价", "淘汰", "颠覆", "锁死", "抽成", "垄断", "捆绑",
+    "围墙", "绞杀", "错过", "fomo",
+    "price war", "protest", "outrage", "backlash", "lawsuit", "sues",
+    "ban", "banned",
+)
+
+# Veto Power (hard filter): PR/AI-washing release wording, routine funding
+# without architectural implications, benchmark-only incremental updates,
+# and items with no editorial trigger at all.
+_VETO_PR_MARKERS = (
+    "战略合作", "强强联合", "携手", "赋能", "生态伙伴", "共赢",
+    "里程碑", "新品发布会", "隆重", "荣膺", "荣获", "斩获",
+)
+_VETO_FUNDING_MARKERS = (
+    "轮融资", "融资", "pre-a", "a轮", "b轮", "c轮", "种子轮",
+    "领投", "跟投", "估值",
+)
+_VETO_BENCHMARK_MARKERS = (
+    "基准测试", "跑分", "登顶", "刷新纪录", "benchmark",
+)
+_HARD_SIGNAL_KEYWORDS = (
+    "发布", "上线", "开源", "权重", "api", "架构", "训练", "推理",
+    "定价", "价格", "收购", "裁员", "离职", "上下文", "参数",
+    "token", "芯片", "算力", "数据中心", "实测",
+    "price", "pricing", "open source", "open-source", "weights",
+    "release", "launch", "layoff", "acquisition", "gpu", "chip",
+    "datacenter", "data center", "context", "parameters", "training",
+    "inference", "architecture", "context window",
+)
 
 REQUIRED_FIELDS = (
     "title",
@@ -159,6 +206,15 @@ _KEYWORD_WEIGHTS.update({kw: 3 for kw in ("门控", "拉取请求", "ci", "覆�
 _KEYWORD_WEIGHTS.update(
     {kw: 1 for kw in INFRA_KEYWORDS if kw not in _KEYWORD_WEIGHTS}
 )
+_KEYWORD_WEIGHTS.update({
+    # English equivalents of the cost/deploy/open/engineering/infra sets,
+    # so English RSS items score on the strategic dimension too.
+    "price": 3, "pricing": 3, "cost": 3, "budget": 3, "enterprise": 3,
+    "open source": 2, "open-source": 2, "weights": 2, "architecture": 2,
+    "infrastructure": 2, "training": 2, "inference": 2, "gpu": 2,
+    "chip": 2, "datacenter": 2, "acquisition": 3, "layoff": 3,
+    "lawsuit": 3, "antitrust": 3, "regulation": 3,
+})
 
 _ASCII_KW_RE = {
     kw: re.compile(r"(?<![a-z0-9])" + re.escape(kw) + r"(?![a-z0-9])")
@@ -284,6 +340,48 @@ def cluster_events(items: list) -> list:
     return clusters
 
 
+def eic_scores(text: str) -> tuple:
+    """Editorial EIC score (info, emotion, strategy) for one text."""
+    text = (text or "").lower()
+    info = sum(1 for kw in _INFO_KEYWORDS if kw in text)
+    emotion = sum(1 for kw in _EMOTION_KEYWORDS if kw in text)
+    strategy = len(_matched_keywords(text))
+    return info, emotion, strategy
+
+
+def veto_reason(text: str) -> str | None:
+    """Veto Power: the three explicit noise categories are hard-filtered.
+
+    PR/AI-washing release wording, routine funding without architectural
+    implications, and benchmark-only incremental updates get dropped.
+    The fourth legacy veto (no CTO FOMO trigger) is applied as a ranking
+    penalty instead — a keyword veto there was killing English RSS
+    stories wholesale, so zero-EIC items simply sink in candidate order.
+    """
+    text = (text or "").lower()
+    hard = any(kw in text for kw in _HARD_SIGNAL_KEYWORDS)
+    if any(m in text for m in _VETO_PR_MARKERS) and not hard:
+        return "公关通稿"
+    if any(m in text for m in _VETO_FUNDING_MARKERS) and not hard:
+        return "无范式融资"
+    if any(m in text for m in _VETO_BENCHMARK_MARKERS) and not hard:
+        return "增量跑分更新"
+    return None
+
+
+def _source_identity(view: dict) -> str:
+    """One media organization per domain; name+origin when no URL."""
+    domain = urlparse(view.get("url") or "").netloc
+    if domain:
+        return domain
+    return f"{view.get('origin', '')}:{view.get('source_name', '')}"
+
+
+def independent_sources(cluster: list) -> int:
+    """Distinct media organizations in one cluster (legacy 3+ source rule)."""
+    return len({_source_identity(v) for v in cluster})
+
+
 # ---------------------------------------------------------------------------
 # Candidate enrichment
 # ---------------------------------------------------------------------------
@@ -324,15 +422,15 @@ def _build_candidate(cluster: list, date: str) -> dict:
 
     # Gap wording must match the actual evidence: only clusters with a
     # single independent source may claim a second source is missing.
-    independent_sources = len({(v["origin"], v["source_name"]) for v in cluster})
-    if independent_sources > 1:
+    source_count = independent_sources(cluster)
+    if source_count > 1:
         gaps = [
-            f"已有 {independent_sources} 个独立来源报道同一事件，"
+            f"已有 {source_count} 个独立来源报道同一事件，"
             "数字与口径仍需 research 阶段交叉核对。"
         ]
     else:
         gaps = [
-            "目前只有 1 个来源报道，缺少独立的第二来源验证。",
+            "目前只有 1 个独立来源报道，缺少独立的第二来源验证。",
             "关键数字缺少官方口径或可复现来源，需要 research 阶段补齐。",
         ]
 
@@ -374,24 +472,47 @@ def generate_candidates(aihot_items: list, rss_items: list = None, date: str = "
     rss_items = rss_items or []
     pool = list(aihot_items) + list(rss_items)
     clusters = cluster_events(pool)
-    if len(clusters) < CANDIDATE_COUNT:
+
+    # Veto Power: hard-filter clusters whose lead item trips the four vetoes.
+    survivors = []
+    for cluster in clusters:
+        lead = max(
+            cluster,
+            key=lambda v: strategic_score(v["title"], v["summary"], v["popularity"]),
+        )
+        if veto_reason(f"{lead['title']} {lead['summary']}"):
+            continue
+        survivors.append(cluster)
+    if len(survivors) < CANDIDATE_COUNT:
         raise TopicError(
-            f"only {len(clusters)} distinct event(s) available; "
+            f"only {len(survivors)} event(s) pass the editorial veto; "
             f"need {CANDIDATE_COUNT} for an honest topic choice"
         )
 
-    def cluster_key(cluster):
-        best = max(
-            strategic_score(v["title"], v["summary"], v["popularity"]) for v in cluster
-        )
-        pop = max(v["popularity"] for v in cluster)
-        return (-best, -pop, cluster[0]["title"])
+    # Legacy 3+ source rule: prefer clusters with 3+ independent media
+    # organizations when the pool supports it; otherwise fall back to the
+    # veto survivors (single-source gaps are then recorded honestly).
+    multi_source = [c for c in survivors if independent_sources(c) >= 3]
+    eligible = multi_source if len(multi_source) >= CANDIDATE_COUNT else survivors
 
-    clusters.sort(key=cluster_key)
+    def cluster_key(cluster):
+        lead = max(
+            cluster,
+            key=lambda v: strategic_score(v["title"], v["summary"], v["popularity"]),
+        )
+        text = f"{lead['title']} {lead['summary']}"
+        info, emotion, strategy = eic_scores(text)
+        sunk = strategic_score(lead["title"], lead["summary"], lead["popularity"]) < 0
+        pop = max(v["popularity"] for v in cluster)
+        # Editorial signals first, raw popularity last: heat never outranks
+        # information asymmetry, emotional trigger or strategic value.
+        return (sunk, -strategy, -info, -emotion, -pop, cluster[0]["title"])
+
+    eligible.sort(key=cluster_key)
     import datetime as _dt
 
     date = date or _dt.date.today().isoformat()
-    return [_build_candidate(c, date) for c in clusters[:CANDIDATE_COUNT]]
+    return [_build_candidate(c, date) for c in eligible[:CANDIDATE_COUNT]]
 
 
 # ---------------------------------------------------------------------------
@@ -423,7 +544,7 @@ def candidates_markdown(date: str, candidates: list) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Human gate: fixture bypass and verbatim human choice
+# Topic gate: fixture bypass, verbatim human choice, simulated choice
 # ---------------------------------------------------------------------------
 
 _SELECTED_FILENAME = "selected-topic.json"
@@ -469,28 +590,77 @@ def choose_fixture(run_paths, fixture_path) -> dict:
     return topic
 
 
-def record_human_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
-    """Record the editor's 1-based choice with direction kept verbatim."""
+def _record_choice(run_paths, candidates: list, choice: int, direction: str,
+                   kind: str, note: str) -> dict:
+    """Shared verbatim recording for human and simulated choices."""
     if not isinstance(choice, int) or choice < 1 or choice > len(candidates):
         raise TopicError(
             f"choice {choice!r} out of range; expected 1..{len(candidates)}"
         )
     cand = dict(candidates[choice - 1])
+    schema_errors = validate_candidate(cand)
+    if schema_errors:
+        raise TopicError(
+            "candidate fails the editorial schema: " + "; ".join(schema_errors)
+        )
     cand["direction"] = direction
     cand.setdefault("slug", _slugify_title(cand["title"], run_paths.date))
     _write_selected(run_paths, cand)
     state.update_fields(
         run_paths,
-        note=f"topic choice: human (candidate {choice})",
-        topic_choice="human",
+        note=note,
+        topic_choice=kind,
         slug=cand["slug"],
         topic_title=cand["title"],
     )
     return cand
 
 
+def validate_candidate(cand: dict) -> list:
+    """REF Parser[6] schema as a validator (title/queries/thesis/urls)."""
+    errors = []
+    if not (cand.get("title") or "").strip():
+        errors.append("title 为空")
+    queries = [q for q in (cand.get("research_queries") or []) if str(q).strip()]
+    if not queries:
+        errors.append("research_queries 为空")
+    if not (cand.get("thesis") or "").strip():
+        errors.append("thesis 为空")
+    urls = [s.get("url") for s in (cand.get("sources") or [])
+            if isinstance(s, dict) and s.get("url")]
+    if not urls or not all(u.startswith("http") for u in urls):
+        errors.append("sources 缺失或含非 http URL")
+    return errors
+
+
+def record_human_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
+    """Record the editor's 1-based choice with direction kept verbatim."""
+    return _record_choice(
+        run_paths, candidates, choice, direction,
+        "human", f"topic choice: human (candidate {choice})",
+    )
+
+
+def record_simulated_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
+    """Record an unattended simulated choice; candidate kept verbatim.
+
+    Unattended runs never wait for a human: the editorial choice is
+    simulated and durably marked as such (``topic_choice: simulated``).
+    The ranked candidate's title/slug/thesis carry over verbatim and
+    the direction defaults to empty.
+    """
+    return _record_choice(
+        run_paths, candidates, choice, direction,
+        "simulated", f"topic choice: simulated (unattended mode, candidate {choice})",
+    )
+
+
 def require_choice(run_paths) -> dict:
-    """Gate for research and later stages."""
+    """Gate for research and later stages.
+
+    Accepts any recorded choice kind: human, simulated (unattended),
+    or fixture bypass.
+    """
     st = state.read_state(run_paths)
     selected = run_paths.work_dir / _SELECTED_FILENAME
     if not st.get("topic_choice") or not selected.exists():

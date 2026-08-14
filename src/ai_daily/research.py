@@ -8,6 +8,7 @@ resume never re-runs collection.
 
 from __future__ import annotations
 
+import datetime
 import html
 import json
 import pathlib
@@ -15,6 +16,7 @@ import re
 import shutil
 import subprocess
 import unicodedata
+from zoneinfo import ZoneInfo
 
 from . import aihot, fetch, state, topics
 
@@ -623,19 +625,54 @@ def _codex_prompt(topic: dict, matrix: dict, evidence: list) -> str:
         for ev in evidence
     ]
     keys = "、".join(m["key"] for m in INITIAL_MODULES)
+    now = datetime.datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y年%m月%d日")
     return (
         "你是 OSINT 情报分析师。基于给定的 AIHOT story matrix 与抓取证据，"
         "生成七模块情报档案：核心事实与时间线、财务与资本账本、技术架构与工程实锤、"
-        "生态博弈与护城河、社区原声与野生实操、组织动荡与人事、主编定向指令核查。\n"
+        "生态博弈与护城河、社区原声与野生实操、组织动荡与人事、主编定向指令核查。\n\n"
+        "【研究契约】（编译自 knowledge/research-contract.md 核心 IP）\n"
+        + _RESEARCH_CONTRACT + "\n"
+        "【时间红线】\n"
+        f"当前系统时间是：{now}。\n"
+        "1. 提取任何产品发布、算力售罄、财报数据、高管离职时，必须严格核对原文中的具体时间。\n"
+        "2. 严禁将不同时间线的事件强行因果缝合。\n"
+        "3. 如果原文没有明确说明“X月发生了Y”，必须标注为“[时间未披露]”，绝对禁止脑补月份和日期！\n\n"
+        "【提取纪律】\n"
+        "1. 数据零压缩：不要把“1.2亿美元”总结为“巨额资金”，保留原始数字、API 定价、Token 限制。\n"
+        "2. 微观场景：去知乎/X/Reddit 找开发者实际怎么用、怎么骂，提取具体场景与原话。\n"
+        "3. 剥离公关话术：跳过“致力于、赋能、革命性”，只看发布了什么接口、砍了什么功能、收了多少钱。\n"
+        "4. 禁止 AI 味：严禁出现“不可否认、总而言之、标志着、具有深远意义”。\n\n"
         "约束：只引用证据中出现的 URL；证据不足的模块 summary 写\"无\"，不脑补；"
         "输出必须是单个 JSON 对象："
         "{\"modules\":[{\"key\":\"...\",\"summary\":\"...\",\"gaps\":[...]}],"
         "\"evidence_gaps\":[...]}。"
+        "禁止输出任何前言、解释、Markdown 代码块或尾注，只输出这一个 JSON 对象。"
         f"modules[].key 只能取：{keys}。\n"
         f"选题方向（原样保留）：{topic.get('direction') or ''}\n"
+        f"选题的研究问题（逐条回答，答不上来记入 gaps）："
+        f"{'；'.join(topic.get('research_queries') or [])}\n"
         f"story matrix：{json.dumps(matrix, ensure_ascii=False)}\n"
         f"抓取证据：{json.dumps(compact, ensure_ascii=False)}\n"
     )
+
+
+# 编译自 knowledge/research-contract.md（源头：RES core_directives、
+# UDW anti_hallucination_and_firewall、LCW 增量搜证目标）。
+_RESEARCH_CONTRACT = (
+    "1. 围绕关键问题：必须逐条回答选题的 research queries，不做泛泛摘要。\n"
+    "2. 证据层级：一手来源（官方公告、论文、发布说明）优先于二手转述；"
+    "AIHOT/RSS 摘要属于二手信号，引用时必须保留原始出处链接。\n"
+    "3. 引用协议：每条重要事实必须带 [标题](URL) 形式的来源链接；"
+    "没有链接的事实不得进入证据区。\n"
+    "4. 冲突显式标注：来源互相矛盾时，明确写出冲突双方与各自链接，"
+    "不得抹平分歧；冲突本身记为证据缺口。\n"
+    "5. 不确定处理：无法充分支持的内容必须三选一——降低断言强度、"
+    "标记为不确定、或直接删除。\n"
+    "6. 零捏造：不得为了让档案完整而编造数字、引语、来源、实验结果；"
+    "不得虚构数字、金额与硬件型号。\n"
+    "7. 恢复语义：不得丢弃已采集的证据，缺什么就如实写进 evidence_gaps。\n"
+    "8. 维度控制：输出维度数量服从选题要求，不注水、不超发。\n"
+)
 
 
 def _parse_jsonl_events(stdout: str) -> list:
@@ -687,10 +724,25 @@ def _codex_event_message_text(obj: dict) -> str:
 
 
 def _decode_json_text(text: str):
-    """Decode ``text`` as a JSON value, unwrapping one level of double encoding."""
+    """Decode ``text`` as a JSON value, unwrapping one level of double encoding.
+
+    Models sometimes prefix or suffix the required JSON with prose; when
+    the whole message does not parse, the last balanced ``{...}`` object
+    is retried so a valid payload inside prose still counts.
+    """
     try:
         parsed = json.loads(text)
     except json.JSONDecodeError:
+        parsed = None
+    if parsed is None and isinstance(text, str):
+        start = text.rfind("{")
+        end = text.rfind("}")
+        if start != -1 and end > start:
+            try:
+                parsed = json.loads(text[start:end + 1])
+            except json.JSONDecodeError:
+                parsed = None
+    if parsed is None:
         return None
     if isinstance(parsed, str):
         try:

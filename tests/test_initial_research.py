@@ -220,6 +220,16 @@ class InitialResearchHappyPathTests(InitialResearchBase):
         urls = research._initial_url_list(topic, matrix)
         self.assertEqual(urls, ["https://x.com/a", "https://example.com/b"])
 
+    def test_analysis_message_with_preamble_still_parses_json(self):
+        analysis = {"modules": [], "evidence_gaps": ["gap"]}
+        text = (
+            "知识库说明：无额外格式要求。\n\n"
+            + json.dumps(analysis, ensure_ascii=False)
+            + "\n以上为档案。"
+        )
+        result = research._decode_json_text(text)
+        self.assertEqual(result, analysis)
+
     def test_happy_path_writes_story_matrix(self):
         result = self.run_initial()
         self.assertEqual(result["status"], "generated")
@@ -649,6 +659,40 @@ class CodexExecOutputParseTests(unittest.TestCase):
         self.assertEqual(
             argv0, "/Applications/ChatGPT.app/Contents/Resources/codex"
         )
+
+
+class CodexPromptContractTests(unittest.TestCase):
+    def _topic(self):
+        return {
+            "title": "某事件",
+            "direction": "",
+            "research_queries": ["成本 预算 定价 口径"],
+        }
+
+    def test_prompt_includes_research_contract_rules(self):
+        prompt = research._codex_prompt(
+            self._topic(), {"status": "ok"}, []
+        )
+        self.assertIn("证据层级", prompt)
+        self.assertIn("引用协议", prompt)
+        self.assertIn("冲突", prompt)
+        self.assertIn("零捏造", prompt)
+
+    def test_prompt_includes_temporal_red_line_and_current_date(self):
+        prompt = research._codex_prompt(
+            self._topic(), {"status": "ok"}, []
+        )
+        self.assertIn("时间红线", prompt)
+        self.assertIn("当前系统时间", prompt)
+        self.assertIn("[时间未披露]", prompt)
+
+    def test_prompt_includes_research_queries_and_raw_data_rules(self):
+        prompt = research._codex_prompt(
+            self._topic(), {"status": "ok"}, []
+        )
+        self.assertIn("成本 预算 定价 口径", prompt)
+        self.assertIn("数据零压缩", prompt)
+        self.assertIn("微观场景", prompt)
 
 
 if __name__ == "__main__":
