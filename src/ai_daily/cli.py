@@ -385,7 +385,7 @@ def cmd_session(args) -> int:
     print()
 
     st = state.read_state(run_paths)
-    if st.get("topic_choice") and not args.force:
+    if st.get("topic_choice") and args.choice is None:
         print(f"选题已定：{st.get('topic_title', '')}（{st.get('slug', '')}）")
     elif args.choice is not None:
         topic = pipeline.run_human_choice(run_paths, args.choice, args.direction)

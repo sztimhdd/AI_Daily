@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import html
 import json
+import pathlib
 import re
+import shutil
 import subprocess
 import unicodedata
 
@@ -747,6 +749,22 @@ def _parse_codex_exec_stdout(stdout: str) -> dict:
     }
 
 
+_CODEX_FALLBACK_PATHS = (
+    "/Applications/ChatGPT.app/Contents/Resources/codex",
+)
+
+
+def _codex_binary() -> str:
+    """Resolve the codex CLI on PATH, then known macOS install locations."""
+    found = shutil.which("codex")
+    if found:
+        return found
+    for candidate in _CODEX_FALLBACK_PATHS:
+        if pathlib.Path(candidate).is_file():
+            return candidate
+    return "codex"
+
+
 def _default_codex_runner(prompt: str) -> dict:
     """Run the local ``codex exec --json`` CLI; never raises.
 
@@ -756,7 +774,7 @@ def _default_codex_runner(prompt: str) -> dict:
     """
     try:
         proc = subprocess.run(
-            ["codex", "exec", "--json", prompt],
+            [_codex_binary(), "exec", "--json", prompt],
             capture_output=True,
             text=True,
             timeout=900,

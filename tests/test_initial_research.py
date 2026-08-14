@@ -634,6 +634,22 @@ class CodexExecOutputParseTests(unittest.TestCase):
         self.assertEqual(result["status"], "unavailable")
         self.assertIn("no usable JSON output", result["reason"])
 
+    def test_default_codex_runner_uses_fallback_binary_when_off_path(self):
+        with mock.patch(
+            "ai_daily.research.shutil.which", return_value=None
+        ), mock.patch(
+            "ai_daily.research.subprocess.run",
+            return_value=mock.Mock(
+                returncode=0, stdout='{"status":"completed"}', stderr=""
+            ),
+        ) as run:
+            result = research._default_codex_runner("prompt")
+        self.assertEqual(result["status"], "completed")
+        argv0 = run.call_args.args[0][0]
+        self.assertEqual(
+            argv0, "/Applications/ChatGPT.app/Contents/Resources/codex"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

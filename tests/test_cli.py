@@ -215,6 +215,14 @@ class SessionCommandTests(CliBase):
         self.assertIn("选题已定", second[1])
         self.assertNotIn("选择 1..3", second[1])
 
+    def test_session_force_keeps_existing_topic_choice(self):
+        first = self.run_cli(*self._session_args(), "--choice", "1")
+        second = self.run_cli(*self._session_args(), "--force")
+        self.assertEqual(first[0], 0, first[2])
+        self.assertEqual(second[0], 0, second[2])
+        self.assertIn("选题已定", second[1])
+        self.assertNotIn("选择 1..3", second[1])
+
     def test_session_without_choice_records_no_direction(self):
         class FakeTtyIn(io.StringIO):
             def isatty(self):
