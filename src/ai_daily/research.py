@@ -544,6 +544,12 @@ def _initial_url_list(topic: dict, matrix: dict, discover_runner=None) -> list:
 
     for report in matrix.get("reports") or []:
         add(report.get("original_url") or "")
+    if not urls:
+        # Board rotation can leave the matrix without reports; the editor's
+        # chosen sources still carry fetchable original URLs.
+        for source in topic.get("sources") or []:
+            if isinstance(source, dict):
+                add(source.get("url") or "")
     if discover_runner is not None:
         for query in topic.get("research_queries") or []:
             for link in fetch.discover(query, runner=discover_runner) or []:
@@ -652,25 +658,25 @@ def _parse_jsonl_events(stdout: str) -> list:
 
 def _codex_event_message_text(obj: dict) -> str:
     """Final assistant message text carried by a ``codex exec`` event."""
-    payload = obj.get("payload")
-    if isinstance(payload, dict):
+    for envelope_key in ("payload", "item"):
+        payload = obj.get(envelope_key)
+        if not isinstance(payload, dict):
+            continue
         text = payload.get("text")
         if isinstance(text, str) and text.strip():
             return text
-        item = payload.get("item")
-        if isinstance(item, dict):
-            content = item.get("content")
-            if isinstance(content, list):
-                blocks = []
-                for block in content:
-                    if not isinstance(block, dict):
-                        continue
-                    if block.get("type") in ("output_text", "text", "message"):
-                        value = block.get("text")
-                        if isinstance(value, str):
-                            blocks.append(value)
-                if blocks:
-                    return "".join(blocks)
+        content = payload.get("content")
+        if isinstance(content, list):
+            blocks = []
+            for block in content:
+                if not isinstance(block, dict):
+                    continue
+                if block.get("type") in ("output_text", "text", "message"):
+                    value = block.get("text")
+                    if isinstance(value, str):
+                        blocks.append(value)
+            if blocks:
+                return "".join(blocks)
     for key in ("text", "message"):
         value = obj.get(key)
         if isinstance(value, str) and value.strip():

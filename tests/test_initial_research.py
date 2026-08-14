@@ -191,6 +191,35 @@ class InitialResearchGateTests(InitialResearchBase):
 
 
 class InitialResearchHappyPathTests(InitialResearchBase):
+    def test_parse_codex_exec_stdout_accepts_real_item_completed_envelope(self):
+        result_payload = json.dumps(
+            {"status": "completed", "modules": [], "evidence_gaps": []},
+            ensure_ascii=False,
+        )
+        events = "\n".join([
+            '{"type":"turn.started"}',
+            '{"type":"item.completed","item":{"id":"item_0",'
+            '"type":"agent_message","text":'
+            + json.dumps(result_payload)
+            + "}}",
+            '{"type":"turn.completed","usage":{"input_tokens":1}}',
+        ])
+        result = research._parse_codex_exec_stdout(events)
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["modules"], [])
+
+    def test_topic_source_urls_fill_evidence_when_matrix_has_no_reports(self):
+        topic = {
+            "sources": [
+                {"url": "https://x.com/a", "origin": "aihot"},
+                {"url": "https://example.com/b", "origin": "rss"},
+            ],
+            "research_queries": [],
+        }
+        matrix = {"status": "unavailable", "reports": []}
+        urls = research._initial_url_list(topic, matrix)
+        self.assertEqual(urls, ["https://x.com/a", "https://example.com/b"])
+
     def test_happy_path_writes_story_matrix(self):
         result = self.run_initial()
         self.assertEqual(result["status"], "generated")
@@ -502,21 +531,8 @@ class CodexExecOutputParseTests(unittest.TestCase):
                     '{"type":"agent_message","payload":{"id":"m1",'
                     '"sender":"assistant","text":"looking up sources"}}'
                 ),
-                json.dumps(
-                    {
-                        "type": "item_completed",
-                        "payload": {
-                            "item": {
-                                "content": [
-                                    {
-                                        "type": "output_text",
-                                        "text": json.dumps(analysis),
-                                    }
-                                ]
-                            }
-                        },
-                    }
-                ),
+                '{"type":"item.completed","item":{"id":"item_0",'
+                '"type":"agent_message","text":' + json.dumps(json.dumps(analysis)) + '}}',
             ]
         )
         self.assertEqual(research._parse_codex_exec_stdout(stdout), analysis)
@@ -597,21 +613,8 @@ class CodexExecOutputParseTests(unittest.TestCase):
         stdout = "\n".join(
             [
                 '{"type":"log","payload":{"message":"boot"}}',
-                json.dumps(
-                    {
-                        "type": "item_completed",
-                        "payload": {
-                            "item": {
-                                "content": [
-                                    {
-                                        "type": "output_text",
-                                        "text": json.dumps(analysis),
-                                    }
-                                ]
-                            }
-                        },
-                    }
-                ),
+                '{"type":"item.completed","item":{"id":"item_0",'
+                '"type":"agent_message","text":' + json.dumps(json.dumps(analysis)) + '}}',
             ]
         )
         with mock.patch(
