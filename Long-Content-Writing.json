@@ -1,0 +1,1832 @@
+{
+  "name": "Long-Content-Writing",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        -832
+      ],
+      "id": "c5ebad9c-ffc9-4ec5-9671-aabe0e7b61ad",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mother-orchestrator-start",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -1024
+      ],
+      "id": "86553ed9-d5eb-4ef9-9a66-b64b4f12880f",
+      "name": "Manual Webhook (OpenClaw)",
+      "webhookId": "21d13785-3b1d-48e8-8aa0-89b1e74c2ee4"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "Hb3dZAptPg1cKmek",
+          "mode": "list",
+          "cachedResultName": "content_ledger",
+          "cachedResultUrl": "/projects/AU2jkmV4FOOD6ASB/datatables/Hb3dZAptPg1cKmek"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "content_id",
+              "keyValue": "={{ $json.content_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "content_id": "={{ $json.content_id }}",
+            "url": "={{ $('Parse Selection1').first().json.target_url }}",
+            "title": "={{ $('Parse Selection1').first().json.selected_title }}",
+            "drive_brief_id": "={{ $json.drive_file_id }}",
+            "status": "research_done"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "drive_brief_id",
+              "displayName": "drive_brief_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "drive_draft_id",
+              "displayName": "drive_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "github_img_urls",
+              "displayName": "github_img_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "published_url",
+              "displayName": "published_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1264,
+        -928
+      ],
+      "id": "2c6c09ff-f5c1-429f-8be8-140b19ab3757",
+      "name": "Upsert Knowledge Base"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03117d61-9aaa-4b90-af9f-603bef88d719",
+              "name": "topic_intent",
+              "value": "作为首席技术分析师（Principal Technology Analyst），请在全球科技信息源中扫描并提取过去 24-48 小时内最具战略级影响力的 3 个 AI 与前沿科技事件。  【执行链路与筛选标准】 1. 跨源聚类 (Cross-Source Clustering)：聚合来自全球科技媒体、RSS源以及中文硬核技术社区（如知乎）的碎片化信息，按核心事件进行去重和聚类。 2. 交叉验证 (Cross-Validation)：入选事件必须在至少 3 个独立的高质量信息源中被报道或引发高热度技术讨论，坚决过滤常规 PR 通稿与低价值的微小版本更新。 3. 战略锚定 (Strategic Ranking)：以 CTO、AI 架构师和独立开发者的视角进行价值评估。重点关注：底层模型架构突破、颠覆性开源项目、具有行业风向标意义的商业化落地案例，或引发开发者范式转移的工具链演进。  【输出要求】 请输出 3 个独立的高优选题。每个选题需包含：精确的事件标题、核心事实摘要，以及一段高信息密度的“战略洞察 (Why it matters)”，明确指出该事件对技术决策者的潜在影响。",
+              "type": "string"
+            },
+            {
+              "id": "8b91640a-c979-4c32-8610-a2215a7f764b",
+              "name": "source_lane",
+              "value": "auto",
+              "type": "string"
+            },
+            {
+              "id": "cd74301f-8f80-4d5b-a407-ac789801e485",
+              "name": "target_count",
+              "value": "3",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        -1248
+      ],
+      "id": "907cc8ae-e416-43ae-938b-ea0b3a936938",
+      "name": "Set Discovery Params"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "huhai.orion@gmail.com",
+        "subject": "=[Omni-Pipeline] 请选择今日深度研究选题",
+        "message": "=情报雷达已完成广度扫描，并已入库。请选择一个主题进行深度搜证：\n\n【Topic 1】: {{ $input.all()[0].json.title }}\n链接: {{ $input.all()[0].json.url }}\n\n【Topic 2】: {{ $input.all()[1].json.title }}\n链接: {{ $input.all()[1].json.url }}\n\n【Topic 3】: {{ $input.all()[2].json.title }}\n链接: {{ $input.all()[2].json.url }}",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "请选择要推进的选题 (1/2/3)",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1"
+                  },
+                  {
+                    "option": "2"
+                  },
+                  {
+                    "option": "3"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "附加研究指令 (可选，例如：重点关注商业化落地数据)",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        368,
+        -1248
+      ],
+      "id": "07e3ca97-66c7-422e-867d-a8345b444c3d",
+      "name": "HITL: Topic Selection",
+      "webhookId": "hitl-topic-selection-webhook",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9fHNijVBkA8vYvWp",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取 Gmail 节点返回的表单数据\nconst form = $input.first().json.data;\n\nif (!form) {\n  throw new Error(\"未找到表单数据，请检查 Gmail 节点输出。\");\n}\n\n// 2. 精准提取新表单中的字段\nconst finalTitle = form['1. 最终敲定标题 (Title)'] || '未命名标题';\nconst finalThesis = form['2. 最终核心洞察 (Thesis)'] || '';\nconst finalArguments = form['3. 最终核心论据 (Key Arguments & Facts)'] || '';\nconst editorFeedback = form['4. 定向搜证补充 (如需AI再查某些数据，请填写)'] || '无附加要求';\n\n// 3. 跨节点获取上游生成的 content_id (保持你的 Fallback 逻辑)\nlet contentId = \"UNKNOWN\";\ntry {\n  contentId = $('Parse Narrative JSON').first().json.content_id;\n  if (!contentId || contentId === \"UNKNOWN\") {\n    contentId = $('Parse Selectionx').first().json.content_id;\n  }\n} catch (e) {}\n\n// 4. 物理缝合 Markdown 大纲\nconst outlineContent = `> **核心洞察 (Thesis):**\\n${finalThesis}\\n\\n### 核心论据 (Key Arguments)\\n${finalArguments}`;\n\nconst selectedAngle = {\n  title: finalTitle,\n  outline: outlineContent\n};\n\n// 🚀 新增：获取当前时间，防止搜证 Agent 产生时间幻觉\nconst currentDate = new Date().toLocaleDateString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: 'long', day: 'numeric' });\n\n// 🚀 5. 构造极度硬核的定向搜证 Intent\nconst targetedIntent = editorFeedback && editorFeedback !== '无附加要求' \n  ? `【主编定向狙击】：${editorFeedback}。请全网深挖硬核数据与实锤证据。`\n  : `【深度弹药补全】：针对《${finalTitle}》的核心论点，挖掘最新的开发者吐槽(Reddit/X)、竞品API真实定价或财报实锤，拒绝公关废话。`;\n\n// 🚀 6. 重构 Triage Prompt：从“找背景”升级为“找弹药”\nconst triagePrompt = `<role>\n你是一位隶属于顶级科技媒体的“王牌调查记者”。主编已经敲定了文章的大纲，你的任务绝不是去搜集泛泛的“行业背景”或“专家废话”，而是为这篇即将发布的爆款长文寻找最锋利的【增量弹药】。\n</role>\n\n<context>\n- **当前系统时间**：${currentDate} (搜证时必须对齐最新时间线)\n- **文章标题**：《${finalTitle}》\n- **主编特殊指令**：${editorFeedback}\n- **已有核心论点**：${finalThesis}\n</context>\n\n<objective>\n**绝对不要重复大纲里已经有的信息！** 你需要全网搜索（特别是 GitHub, Reddit, X/Twitter, 财报, 开发者论坛, 法庭文件），寻找以下三类增量信息：\n1. **硬核数据补全**：比如具体的算力成本数字、API定价变动、财报里的隐藏亏损。\n2. **社区真实吃瓜**：开发者、KOL或业内人士的犀利吐槽、原话引用（必须带情绪和具体场景，如“我的4090跑爆了”）。\n3. **事实交叉验证**：如果大纲里提到了某项技术或诉讼（如迪士尼版权案），去查一下最新的进展、判决结果或官方回应。\n</objective>\n\n<output_format>\n请用 Markdown 输出一份【增量弹药库】，直接列出干货，不要任何过渡句：\n### 1. 📊 最新硬核数据 (New Hard Facts)\n-[时间戳] 具体数据或事实...\n\n### 2. 🗣️ 社区与开发者原声 (Community Voices)\n- [平台/人名] 原话引用...\n\n### 3. 🔍 细节与进展补充 (Context & Updates)\n- [时间戳] 最新进展...\n\n*(注意：如果没有找到某类高质量信息，请直接写“无增量”，绝不脑补！)*\n</output_format>`;\n\n// 7. 构造完美的输出契约\nreturn {\n  json: {\n    content_id: contentId,\n    final_narrative: selectedAngle,\n    editor_feedback: editorFeedback,\n    topic_intent: targetedIntent,\n    source_lane: \"auto\",\n    target_url: \"\", \n    timeframe: \"any\",\n    target_count: 1,\n    triage_prompt: triagePrompt\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2752,
+        -928
+      ],
+      "id": "3e91ffb5-eba5-4b34-9180-75ccebfce7ec",
+      "name": "Parse Editor Feedback"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取子工作流返回的所有 Item\nconst items = $input.all();\nlet zhData = {}, enData = {}, contentId = \"\";\n\nfor (const item of items) {\n  const data = item.json;\n  \n  // 1. 提取全局 content_id\n  if (!contentId && data.content_id) contentId = data.content_id;\n\n  // 2. 识别中英文 Item (通过特征检测)\n  const lang = (data.task_config?.language || data.language || \"\").toLowerCase();\n  \n  // 如果语言标记包含 'zh'，或者标题里含有中文字符，判定为中文版\n  if (lang.includes('zh') || /[\\u4e00-\\u9fa5]/.test(data.article_title || \"\")) {\n    zhData = data;\n  } else {\n    enData = data;\n  }\n}\n\n// 辅助函数：更加宽容的标签提取逻辑\nfunction extractTag(text, tag) {\n  if (!text) return \"\";\n  // 匹配 **标签**: 或者 **标签**： 甚至带括号的情况\n  const regex = new RegExp(`\\\\*\\\\*${tag}[^*]*\\\\*\\\\*[:：]\\\\s*([\\\\s\\\\S]*?)(?=\\\\n\\\\*\\\\*|$)`, \"i\");\n  const match = text.match(regex);\n  return match ? match[1].trim() : \"\";\n}\n\n// 3. 最终装配\nreturn {\n  json: {\n    content_id: contentId,\n    // 中文资产：优先取 article_title，去掉 .md 后缀\n    zh_title: (zhData.article_title || \"\").replace(\".md\", \"\") || extractTag(zhData.social_kit, \"推文标题\") || \"未命名微信文章\",\n    zh_markdown: zhData.cleaned_article || \"\",\n    zh_social: zhData.social_kit || \"\",\n    \n    // 英文资产\n    en_title: (enData.article_title || \"\").replace(\".md\", \"\") || extractTag(enData.social_kit, \"SEO Title\") || \"Untitled LinkedIn Post\",\n    en_markdown: enData.cleaned_article || \"\",\n    en_social: enData.social_kit || \"\",\n    \n    // 特别提取 LinkedIn SEO 描述\n    en_seo_desc: extractTag(enData.social_kit, \"SEO Description\") || extractTag(enData.social_kit, \"摘要\") || \"\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6240,
+        -928
+      ],
+      "id": "11dd688c-acf5-4f8e-99c8-f885b897f6a6",
+      "name": "Aggregate Drafts",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\n// 1. 安全序列化：将几千字的 Markdown 压扁成绝对安全的 JS 字符串，彻底免疫语法崩溃\nconst safeZhMarkdown = JSON.stringify(data.zh_markdown || \"\");\nconst safeEnMarkdown = JSON.stringify(data.en_markdown || \"\");\nconst zhTitle = data.zh_title || \"未命名文章\";\nconst enTitle = data.en_title || \"Untitled Article\";\nconst enSeoDesc = JSON.stringify(data.en_seo_desc || \"\");\n\n// 2. 构造双平台“保姆级”执行剧本\nreturn [\n  // === 微信分支已注释掉 ===\n  /*\n  {\n    json: {\n      platform: \"WeChat\",\n      start_url: \"https://md.doocs.org/\",\n      payload: {\n        title: zhTitle,\n        markdown: data.zh_markdown\n      },\n      objective: `【WeChat 物理注入全流程指南】\n1. **渲染中转**：导航至 https://md.doocs.org/。\n2. **内容注入**：执行 browser_run_code 将中文 Markdown字段（payload.markdown） 写入系统剪贴板并粘贴到编辑器；\n3. **富文本提取**：获取新快照，点击页面右上角的【复制微信】按钮。此时，格式完美的富文本已进入系统剪贴板。\n4. **后台导航**：导航至 https://mp.weixin.qq.com/。点击页面中下部分【新的创作】区域的【文章】按钮。\n5. **内容装配**：\n   - 点击正文区域使其聚焦。\n   - 执行 browser_run_code 物理粘贴：\\`await page.keyboard.down('Control'); await page.keyboard.press('V'); await page.keyboard.up('Control');\\`\n   - 在标题栏输入：${zhTitle}。\n   - 在作者栏【请输入作者】处点击，并在下拉菜单中选择 \"AI老兵 拉蒙\"\n6. **收尾**：点击页面底部的【保存为草稿】按钮（绝对不要点群发）。确认显示“已保存”后，返回当前草稿页面的完整 URL。`\n    }\n  },\n  */\n\n  {\n    json: {\n      platform: \"LinkedIn\",\n      start_url: \"https://md.doocs.org/\",\n      payload: {\n        title: enTitle,\n        markdown: data.en_markdown,\n        seo_title: enTitle,\n        seo_description: data.en_seo_desc\n      },\n      objective: `【LinkedIn Article 物理注入指南 - 核心关注 React 动态 DOM】\n1. **渲染中转**：导航至 https://md.doocs.org/。\n2. **内容注入**：执行 browser_run_code 将英文 Markdown字段 （payload.markdown） 注入左侧编辑器；\n3. **富文本提取**：获取新快照，点击页面右上角的【复制】或【复制微信】按钮（确保富文本格式进入剪贴板）。\n4. **后台导航**：导航至 https://www.linkedin.com/article/new/。\n5. **正文装配**：\n   - 找到 'Write here...' 正文区并点击。\n   - 执行 browser_run_code 物理粘贴：\\`await page.keyboard.down('Control'); await page.keyboard.press('V'); await page.keyboard.up('Control');\\`\n   - 找到 'Title' 文本框，输入：${enTitle}。\n6. **SEO 设置（动态 DOM 操作）**：\n   - 点击顶部【Manage】下拉菜单 -> 点击【SEO settings】。\n   - **核心：侧边栏弹出后，必须重新获取页面快照 (Snapshot) 以刷新元素 Ref！**\n   - 在 SEO Title 框填入：${enTitle}。\n   - 在 SEO Description 框填入：${enSeoDesc}。\n7. **收尾**：观察右下角显示 'Draft - saved'。提取并返回当前页面的完整 URL。绝对不要点击 Publish。`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6464,
+        -928
+      ],
+      "id": "eb5f7be3-08f2-4d9f-a392-82de89d54ef5",
+      "name": "Prepare Browser Tasks",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-pro-preview",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        5392,
+        -752
+      ],
+      "id": "ba114022-4a52-4220-a8ff-5c973d84f203",
+      "name": "Gemini (Task Master)",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QaWUP98JFKesK5YO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "76GAdn9XzuEK5j4L",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/76GAdn9XzuEK5j4L",
+          "cachedResultName": "[Atomic] Topic_Survey_Skill"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        -928
+      ],
+      "id": "059d2b28-9b5e-4768-9476-f0f7adfbd43c",
+      "name": "Topic Discovery"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Q7SvDzlTWgSk_ftHRIk4H",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Q7SvDzlTWgSk_ftHRIk4H",
+          "cachedResultName": "[Atomic] Researcher_Skill"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1056,
+        -928
+      ],
+      "id": "22039b3f-bd21-4b6e-98a2-47e63ebaa68d",
+      "name": "Initial Research Phase"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Q7SvDzlTWgSk_ftHRIk4H",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Q7SvDzlTWgSk_ftHRIk4H",
+          "cachedResultName": "[Atomic] Researcher_Skill"
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2976,
+        -928
+      ],
+      "id": "8287007b-00f6-46e0-909a-7dcedbc348b5",
+      "name": "Targeted Research Phase"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "u2_oy5mGZ9Cffd8ZWZVmQ",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/u2_oy5mGZ9Cffd8ZWZVmQ",
+          "cachedResultName": "[Atomic] Universal Draft Writing"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        6016,
+        -928
+      ],
+      "id": "cc711fd8-54ef-457b-94bf-e2c89b439b0e",
+      "name": "Drafting Phase"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取 Browser Pilot 的执行日志\nconst pilotResults = $input.all().map(item => item.json);\nconst aggregateData = $('Aggregate Drafts').first().json;\n\n// 2. 提取草稿 URL (设置默认 Fallback)\nlet linkedinUrl = \"https://www.linkedin.com/article/new/\"; \nlet wechatUrl = \"https://mp.weixin.qq.com/\"; \n\npilotResults.forEach(res => {\n  const outputText = res.output || \"\";\n  if (outputText.includes('linkedin.com')) {\n    const match = outputText.match(/(https:\\/\\/www\\.linkedin\\.com\\/article\\/edit\\/\\d+\\/)/);\n    if (match) linkedinUrl = match[1];\n  }\n  if (outputText.includes('mp.weixin.qq.com')) {\n    const match = outputText.match(/(https:\\/\\/mp\\.weixin\\.qq\\.com\\/[^\\s\"']+)/);\n    if (match) wechatUrl = match[1];\n  }\n});\n\n// 3. 提取并清洗中英文宣发物料\nconst zhContentRaw = aggregateData.social_kits.split('========== 【en-US 宣发物料】 ==========')[0].replace('========== 【zh-CN 宣发物料】 ==========', '').trim();\nconst enContentRaw = aggregateData.en_social_kit || \"\";\n\n// 简易 Markdown 转 HTML 解析器 (处理加粗和换行)\nfunction parseMarkdown(text) {\n  if (!text) return \"无内容\";\n  return text\n    .replace(/\\*\\*(.*?)\\*\\*/g, '<strong style=\"color: #222;\">$1</strong>') // 加粗\n    .replace(/\\n/g, '<br>'); // 换行\n}\n\nconst zhContentHtml = parseMarkdown(zhContentRaw);\nconst enContentHtml = parseMarkdown(enContentRaw);\n\n// 4. 构建精美的 HTML 邮件模板 (内联 CSS 适配各类邮箱客户端)\nconst today = new Date().toISOString().split('T')[0];\nconst time = new Date().toLocaleTimeString('zh-CN', { hour12: false });\n\nconst htmlEmail = `\n<div style=\"max-width: 650px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #333; line-height: 1.6; background-color: #ffffff; padding: 20px;\">\n  \n  <!-- Header -->\n  <h2 style=\"border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px; font-size: 22px; color: #111;\">\n    🚀 Omni-Pipeline V2: Drafts Ready\n  </h2>\n  <p style=\"color: #888; font-size: 13px; margin-bottom: 30px;\">Date: ${today}</p>\n\n  <!-- WeChat Card -->\n  <div style=\"border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);\">\n    <div style=\"color: #07C160; font-size: 18px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center;\">\n      🇨🇳 WeChat Zhihu / 微信公众号 知乎文章\n    </div>\n    <p style=\"font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #555;\">📝 宣发物料与封面建议:</p>\n    <div style=\"background-color: #f8f9fa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 16px; font-size: 14px; color: #444;\">\n      ${zhContentHtml}\n    </div>\n    <div style=\"margin-top: 24px;\">\n      <a href=\"${wechatUrl}\" target=\"_blank\" style=\"background-color: #07C160; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-block;\">\n        打开草稿箱 (WeChat)\n      </a>\n    </div>\n  </div>\n\n  <!-- LinkedIn Card -->\n  <div style=\"border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);\">\n    <div style=\"color: #0A66C2; font-size: 18px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center;\">\n      🇺🇸 LinkedIn Article\n    </div>\n    <p style=\"font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #555;\">📝 SEO & Social Kit:</p>\n    <div style=\"background-color: #f8f9fa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 16px; font-size: 14px; color: #444;\">\n      ${enContentHtml}\n    </div>\n    <div style=\"margin-top: 24px;\">\n      <a href=\"${linkedinUrl}\" target=\"_blank\" style=\"background-color: #0A66C2; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-block;\">\n        Open Draft (LinkedIn)\n      </a>\n    </div>\n  </div>\n\n  <!-- Footer -->\n  <div style=\"text-align: center; color: #aaa; font-size: 12px; margin-top: 40px; border-top: 1px solid #f0f0f0; padding-top: 20px;\">\n    Generated by Omni-Pipeline V2 Automation • ${time}\n  </div>\n\n</div>\n`;\n\n// 🚀 【新增】将上下游 ID 与 URL 透传给数据库更新节点\nreturn {\n  json: {\n    content_id: aggregateData.content_id,\n    drive_draft_ids: aggregateData.drive_draft_ids,\n    wechat_url: wechatUrl,\n    linkedin_url: linkedinUrl,\n    email_html: htmlEmail\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6848,
+        -928
+      ],
+      "id": "e6200be3-c3be-4cfc-9514-e62d7b77f40a",
+      "name": "Parse Pilot Results",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sendTo": "huhai.orion@gmail.com",
+        "subject": "🎉[Omni-Pipeline] 双平台原生草稿已就绪，请配图发布",
+        "message": "=Google Drive Link: {{ $('Drafting Phase').item.json.drive_draft_link }}\nSEO Kit:{{ $('Drafting Phase').item.json.social_kit }}\n\n{{ $json.email_html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        7024,
+        -928
+      ],
+      "id": "05f28d59-a2e1-45c6-9c1a-e3922a5f71d0",
+      "name": "Notify: Drafts Ready",
+      "webhookId": "abcd8339-18e2-432d-a60b-a8bcafa3be97",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9fHNijVBkA8vYvWp",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "Hb3dZAptPg1cKmek",
+          "mode": "list",
+          "cachedResultName": "content_ledger"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "content_id",
+              "keyValue": "={{ $('Parse Pilot Results').item.json.content_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "published",
+            "drive_draft_id": "={{ $('Parse Pilot Results').item.json.drive_draft_ids }}",
+            "published_url": "={{ JSON.stringify({ wechat: $json.wechat_url, linkedin: $json.linkedin_url }) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "drive_brief_id",
+              "displayName": "drive_brief_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "drive_draft_id",
+              "displayName": "drive_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "github_img_urls",
+              "displayName": "github_img_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "published_url",
+              "displayName": "published_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        7248,
+        -928
+      ],
+      "id": "f5717a4d-c059-4037-85cb-fe4c79821039",
+      "name": "Close Ledger (Published)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取 Gemini 原生节点输出的纯文本字符串\n// 兼容 n8n 各种文本输出路径\nlet rawText = $input.first().json.text || $input.first().json.message?.content || $input.first().json.content?.parts?.[0]?.text || \"\";\n\n// 如果由于某些原因它已经是对象了，直接转回文本（极少发生）\nif (typeof rawText !== 'string') {\n    rawText = JSON.stringify(rawText);\n}\n\n// 2. 物理清洗（防范万一出现的 ```json 标签）\nlet cleanText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();\n\n// 3. 解冻！将字符串反序列化为真实的 JSON 对象\nlet parsed = {};\ntry {\n  parsed = JSON.parse(cleanText);\n} catch (e) {\n  throw new Error(\"JSON.parse 解析失败，请检查模型输出是否为合法 JSON。原始文本: \" + cleanText);\n}\n\n// 4. 提取离散的结构化数据\nconst angleA = parsed.angle_1 || parsed.angle_a ||  {};\nconst angleB = parsed.angle_2 || parsed.angle_b || {};\n\n// 5. 继承上游主键 (请确保这里写的是你上游保存上下文的节点名)\n// 默认回退一个空对象防报错\nlet context = { content_id: \"UNKNOWN\" };\ntry {\n    context = $('Brief Data Extraction').first().json;\n} catch(e) {}\n\n// 6. 华丽输出！现在下游可以直接用 $json.angle_a.title 引用了！\nreturn {\n  json: {\n    content_id: context.content_id,\n    angle_a: angleA,\n    angle_b: angleB\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        -928
+      ],
+      "id": "08fab65f-a1a2-44c7-8e75-b5aa660b9523",
+      "name": "Parse Narrative JSON"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "huhai.orion@gmail.com",
+        "subject": "⚡[Omni-Pipeline] 请精调并审批最终大纲 (Edit Article Narrative)",
+        "message": "=<div align=\"left\" style=\"text-align: left !important; white-space: pre-wrap; word-wrap: break-word; line-height: 1.6; font-size: 14px;\">\n<b>主编，深度调查的叙事大纲已生成！</b>\n请在下方的审批表单中，直接进行像素级精调。您可以在表单中自由删改、缝合。\n\n==========================\n<b>【Angle A: The Investigative Angle】</b>\n📌 <b>标题 (Title)：</b> {{ $json.angle_a.title }}\n🔥 <b>新闻锚点 (Hook)：</b> {{ $json.angle_a.hook }}\n🧠 <b>核心洞察 (Thesis)：</b> {{ $json.angle_a.thesis }}\n🔬 <b>核心论据 (Key Arguments)：</b>\n{{ $json.angle_a.key_arguments || $json.angle_a.markdown_content }}\n\n==========================\n<b>【Angle B: The Geopolitical/Strategic Angle】</b>\n📌 <b>标题 (Title)：</b> {{ $json.angle_b.title }}\n🔥 <b>新闻锚点 (Hook)：</b> {{ $json.angle_b.hook }}\n🧠 <b>核心洞察 (Thesis)：</b> {{ $json.angle_b.thesis }}\n🔬 <b>核心论据 (Key Arguments)：</b>\n{{ $json.angle_b.key_arguments || $json.angle_b.markdown_content }}\n</div>",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "1. 最终敲定标题 (Title)",
+              "placeholder": "Here is your chosen title of the article",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "2. 最终核心洞察 (Thesis)",
+              "fieldType": "textarea",
+              "placeholder": "This is the thesis statement. It should be a single, strong, debatable sentence that clearly states the central argument.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "3. 最终核心论据 (Key Arguments & Facts)",
+              "fieldType": "textarea",
+              "placeholder": "* **Argument Point 1:** A short, memorable heading...\n* **Summary:** A one-sentence explanation...",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "4. 定向搜证补充 (如需AI再查某些数据，请填写)",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2528,
+        -928
+      ],
+      "id": "6615b5f6-38a2-4075-abd9-4c9d2ef3fac1",
+      "name": "HITL: Narrative Approval",
+      "webhookId": "06b455d1-0623-4583-a49c-b4426fa886a7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9fHNijVBkA8vYvWp",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 提取 Google Drive 下载的二进制文件为纯文本\nconst binaryBuffer = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst briefText = binaryBuffer.toString('utf-8');\n\n// 继承上游所有 JSON 数据 (如 content_id, title 等)，并追加长文本\nreturn {\n  json: {\n    ...$input.first().json,\n    brief_content: briefText\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        -928
+      ],
+      "id": "017900d6-6362-41ee-af5a-beb90b4ba8b0",
+      "name": "Brief Data Extraction"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.drive_brief_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4992,
+        -928
+      ],
+      "id": "516dd56a-9a3c-413d-b0e7-def003949820",
+      "name": "Download Complete KB",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ixUqEuQq0UM2nud9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_brief_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1504,
+        -928
+      ],
+      "id": "170a925d-14ad-441b-a112-61a03c3e4152",
+      "name": "Download Init KB",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ixUqEuQq0UM2nud9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-content-id",
+              "name": "content_id",
+              "value": "={{ $json.content_id }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-original-id",
+              "name": "drive_brief_id",
+              "value": "={{ $json.drive_brief_id }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-supp-id",
+              "name": "drive_supp_id",
+              "value": "={{ $('Targeted Research Phase').first().json.drive_file_id || $('Call Gateway (Targeted Research)').first().json.drive_file_id }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-narrative",
+              "name": "final_narrative",
+              "value": "={{ $('Parse Editor Feedback').first().json.final_narrative }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3424,
+        -928
+      ],
+      "id": "b2e5b678-7dd1-4f23-a5aa-4c200f4b6fb4",
+      "name": "Assemble File Pointers"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n  // 将第一次下载的原始简报 Buffer 转为纯文本，保存在 JSON 中防丢失\n  const buffer = await this.helpers.getBinaryDataBuffer(i, 'data');\n  items[i].json.original_brief_text = buffer.toString('utf-8');\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3872,
+        -928
+      ],
+      "id": "4ea717f4-41eb-4849-9666-101f83cc37cf",
+      "name": "Extract Original Text"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_supp_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4096,
+        -928
+      ],
+      "id": "b36ad4d6-9095-4237-b5df-a03a61310f78",
+      "name": "Download Supp Brief",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ixUqEuQq0UM2nud9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const { original_brief_text, final_narrative } = item.json;\n\n  // 1. 获取第二次下载的增量简报纯文本\n  const suppBuffer = await this.helpers.getBinaryDataBuffer(i, 'data');\n  const suppText = suppBuffer.toString('utf-8');\n\n  // 2. 提取大纲内容\n  const title = final_narrative?.title || '未命名大纲';\n  const outline = final_narrative?.outline || JSON.stringify(final_narrative);\n\n  // 3. 终极物理缝合 (Markdown)\n  const mergedContent = `${original_brief_text}\\n\\n---\\n\\n# 【主编敲定大纲】\\n${title}\\n\\n${outline}\\n\\n---\\n\\n# 【定向增量情报】\\n${suppText}`;\n\n  // 4. 重新打包为 n8n Binary Data，准备覆盖原始文件\n  item.binary = {\n    data: await this.helpers.prepareBinaryData(\n      Buffer.from(mergedContent, 'utf-8'),\n      'updated_brief.md',\n      'text/markdown'\n    )\n  };\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4320,
+        -928
+      ],
+      "id": "0cffae60-b4de-4cfb-88a2-8ed73d17332f",
+      "name": "Compile Merged Brief"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_brief_id }}",
+          "mode": "id"
+        },
+        "changeFileContent": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4544,
+        -928
+      ],
+      "id": "dec9a6d1-b4a2-4209-bd34-39948d5c57c4",
+      "name": "Update Original Brief",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ixUqEuQq0UM2nud9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "Hb3dZAptPg1cKmek",
+          "mode": "list",
+          "cachedResultName": "content_ledger"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "content_id",
+              "keyValue": "={{ $('Parse Editor Feedback').first().json.content_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3200,
+        -928
+      ],
+      "id": "b4684c43-c5f6-4926-9459-72dd04923c37",
+      "name": "DataTable - Get Ledger1"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_brief_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3648,
+        -928
+      ],
+      "id": "4446ca97-413d-4d65-a7bf-fa5586cf2657",
+      "name": "Download Original Brief1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ixUqEuQq0UM2nud9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "Hb3dZAptPg1cKmek",
+          "mode": "list",
+          "cachedResultName": "content_ledger"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "content_id",
+              "keyValue": "={{ $('Extract Original Text').item.json.content_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "narrative_locked",
+            "drive_brief_id": "={{ $json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "content_id",
+              "displayName": "content_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "drive_brief_id",
+              "displayName": "drive_brief_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "drive_draft_id",
+              "displayName": "drive_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "github_img_urls",
+              "displayName": "github_img_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "published_url",
+              "displayName": "published_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        4768,
+        -928
+      ],
+      "id": "8adac02f-e62a-442e-a6b5-64577a2943b2",
+      "name": "DataTable - Lock Status1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 遍历并提取二进制文本\nconst items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n  const buffer = await this.helpers.getBinaryDataBuffer(i, 'data');\n  items[i].json.brief_content = buffer.toString('utf-8');\n  \n  // 2. 强力继承主键上下文\n  // 优先从当前流转的 item 中取，如果丢失则向历史节点追溯\n  items[i].json.content_id = items[i].json.content_id || $('DataTable - Get1').first().json.content_id;\n  items[i].json.drive_brief_id = items[i].json.drive_brief_id || $('DataTable - Get1').first().json.drive_brief_id;\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5216,
+        -928
+      ],
+      "id": "4c456776-a1be-4b15-aa9f-fbffbbd0f35b",
+      "name": "Extract Brief Text1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<role>\n你是一位顶尖科技媒体主编，同时也是独立硬核评测老哥（风格融合 Stratechery 的战略深度与 Gamers Nexus 的零容忍实测态度）。你深耕 Silicon Valley 多年，极其厌恶厂商的 PPT 炒作、虚假承诺和反消费者行为。你为普通开发者、CTO 和技术爱好者撰写 LinkedIn 长文，擅长把复杂的技术泄露、架构缺陷和商业真相，转化成让人“停住滚动、读完后直呼过瘾”的爆款内容。你的声音平实、真诚、锋利，像一位懂行的老哥在和同行聊天，但一旦遇到厂商忽悠，就会毫不留情地用真实数据和第一手证据打脸。\n</role>\n\n<objective>\n阅读 <knowledge_base> 中的原始情报，为下游撰稿机器生成一份极具执行力的 <creative_blueprint>。你必须设计出能在 LinkedIn 上爆火的长文框架：\n\n## 第一行就要用强 Hook 抓住注意力，整体结构清晰、可扫读\n\n## 用真实数据和消费者视角揭示“PPT 宣传 vs 实际真相”的巨大落差\n\n## 最终给出让开发者或 CTO 能立刻行动的实用洞察\n</objective>\n\n<>\n<rules>\n1. 消费者/开发者本位：所有内容必须站在普通开发者、CTO 和技术爱好者的视角。核心问题是“这玩意儿对普通人到底有没有用？厂商是不是在坑我们的钱？我们作为付费用户到底被坑了多少？”\n\n2. 拒绝一切炒作：绝对禁止使用“震惊”“颠覆”“革命性”“神作”“打了脸”“吃相难看”等任何带强烈情绪、过度修辞、非常用比喻和类比、或接近地摊文学、阴谋论的表达。文章的全部张力必须完全来自“厂商 PPT 宣传”与“真实数据、代码泄露、实际测试结果”之间的巨大落差。用数据和冷事实说话。\n\n3. 硬核证据优先：hook、conflict、deep_dive 三个字段必须100%基于 <knowledge_base> 中的真实数据、代码细节、参数、成本或泄露事实。不得虚构、不得情绪化、不得使用比喻。\n\n4. LinkedIn 爆款结构意识：\n   - hook 必须极强，能在 LinkedIn 前 2 秒抓住滚动用户（直接抛出最反直觉的事实或数据）。\n   - conflict 负责制造张力（PPT vs 现实）。\n   - deep_dive 负责硬核拆解，用大白话把复杂技术/商业逻辑讲透。\n   - takeaway 必须给出明确、可落地的行动建议。\n\n5. 语气与风格红线：\n   - 微信端：极度口语化、接地气，像硬核评测老哥在群里聊天，允许轻微冷幽默，但严禁低俗或情绪化吐槽。\n   - LinkedIn 端：专业、冷静、highly technical，死板 delivery，用数据和事实说话。\n\n6. 纯净输出铁律：\n   - 必须直接输出合法、可被 JSON.parse 的纯 JSON 对象。\n   - 不要出现任何 Markdown 代码块（```json）、解释文字、前缀或后缀。\n   - 严格按照 <output_schema> 中的字段层级和名称输出，不能增加、减少或修改任何字段。\n   - 温度 0.2 下也必须保持最高一致性。\n\n7. 最高优先级：如果 <knowledge_base> 中包含主编定向指令（Module 7），必须优先满足其要求。\n</rules>\n\n<knowledge_base>\n{{ $json.brief_content }}\n</knowledge_base>\n\n**Final Instruction:**\nBased on the knowledge_base, intelligently fill in the four fields (hook, conflict, deep_dive, takeaway) for both wechat_task and linkedin_task. Make them specific, data-driven, and sharp. Output **nothing but the clean JSON object** above.\n\n<output_schema>\n{\n  \"wechat_task\": {\n    \"content_type\": \"wechat_official_account_article\",\n    \"language\": \"zh-CN\",\n    \"word_count_target\": \"2500-3000字\",\n    \"persona_and_vantage_point\": \"自己掏钱买首发、熬夜测数据的硬核评测老哥。要求：语气平实亲民，像聊天一样，但对数据极度严谨，对厂商的公关话术零容忍\",\n    \"narrative_arc\": {\n      \"hook\": \"\",\n      \"conflict\": \"\",\n      \"deep_dive\": \"\",\n      \"takeaway\": \"\"\n    },\n    \"rhetorical_rules\": {\n      \"language_purity\": \"必须 100% 纯中文输出。保留必要的英文专有名词（如 API, GPU, Token）。绝对禁止使用 TL;DR 等结构化前缀。\",\n      \"sentence_structure\": \"口语化、接地气。多用‘我们来看看’、‘说白了就是’这种拉家常的句式。遇到厂商作恶时，允许使用冷幽默或直接吐槽。\",\n      \"rhetorical_restraint\": \"极度克制。严禁任何感叹号堆砌。严禁使用‘颠覆’、‘革命性’、‘神作’。好就是好，烂就是烂，用数据说话。\"\n    },\n    \"anti_slop_blacklist\": [\n      \"吞噬算力的巨兽\", \"宛如一颗深水炸弹\", \"掀起了一场风暴\", \"一场悄无声息的革命\", \"交织成一幅壮丽的画卷\",\n      \"站在时代的十字路口\", \"犹如一把双刃剑\", \"打破了原有的宁静\", \"背后的逻辑令人深思\", \"这绝非偶然\",\n      \"开启了全新的篇章\", \"不仅是一次技术的飞跃，更是一场\", \"这不仅仅是一个产品，而是一个\", \"犹如脱缰的野马\",\n      \"敲响了丧钟\", \"史无前例的变局\", \"一场没有硝烟的战争\", \"犹如潘多拉的魔盒\", \"打破了垄断神话\",\n      \"这无疑是一记重磅炸弹\", \"犹如一颗璀璨的明珠\", \"开启了元年\", \"这不仅是一场豪赌，更是\", \"犹如一道闪电划破夜空\",\n      \"成为了试金石\", \"这无疑是一场降维打击\", \"犹如一场席卷全球的风暴\", \"成为了照妖镜\", \"这不仅是一次洗牌，更是\",\n      \"犹如一座无法逾越的大山\", \"成为了催化剂\", \"这无疑是一场权力的游戏\", \"犹如一把悬在头顶的达摩克利斯之剑\",\n      \"成为了里程碑\", \"这不仅是一次颠覆，更是\", \"犹如一场狂欢\", \"成为了风向标\", \"这无疑是一场生死时速\",\n      \"犹如一匹黑马\", \"成为了垫脚石\", \"这不仅是一次突围，更是\", \"犹如一场地震\", \"成为了拦路虎\",\n      \"这无疑是一场零和博弈\", \"犹如一颗定时炸弹\", \"成为了牺牲品\", \"这不仅是一次反击，更是\", \"犹如一场海啸\",\n      \"成为了替罪羊\", \"这无疑是一场狂飙\", \"犹如一场噩梦\", \"成为了绊脚石\", \"这不仅是一次涅槃，更是\",\n      \"犹如一场闹剧\", \"成为了遮羞布\", \"这无疑是一场狂欢背后的落寞\", \"犹如一场幻影\", \"成为了墓志铭\",\n      \"犹如一场泡沫\", \"成为了陪跑者\", \"这无疑是一场资本的盛宴\", \"犹如一场海市蜃楼\", \"成为了炮灰\",\n      \"这不仅是一次收割，更是\", \"犹如一场黄粱一梦\", \"成为了弃子\", \"这无疑是一场豪赌背后的深渊\", \"犹如一场镜花水月\",\n      \"成为了绝唱\", \"犹如一场水中捞月\", \"成为了挽歌\", \"这无疑是一场资本的狂欢\", \"犹如一场空中楼阁\",\n      \"成为了终章\", \"这不仅是一次盛宴，更是\", \"犹如一场南柯一梦\", \"成为了休止符\", \"这无疑是一场技术的狂欢\",\n      \"犹如一场昙花一现\", \"成为了句号\", \"犹如一场过眼云烟\", \"成为了叹息\", \"这无疑是一场时代的狂欢\",\n      \"犹如一场大梦初醒\", \"成为了眼泪\", \"犹如一场曲终人散\", \"成为了遗憾\", \"这无疑是一场历史的狂欢\",\n      \"犹如一场繁华落尽\", \"成为了悲歌\", \"在这个日新月异的时代\", \"不可否认的是\", \"值得注意的是\",\n      \"织就\", \"深刻的启示\", \"不可磨灭的印记\", \"时代的浪潮\", \"历史的车轮\", \"星辰大海\", \"一场关于深刻反思\", \"在加持下\"\n    ]\n  },\n  \"linkedin_task\": {\n    \"content_type\": \"linkedin_long_post\",\n    \"language\": \"en-US\",\n    \"word_count_target\": \"800-1200 words\",\n    \"persona_and_vantage_point\": \"Independent, rigorous tech reviewer (Gamers Nexus style). Consumer advocate, zero tolerance for PR spin.\",\n    \"narrative_arc\": {\n      \"hook\": \"\",\n      \"conflict\": \"\",\n      \"deep_dive\": \"\",\n      \"takeaway\": \"\"\n    },\n    \"rhetorical_rules\": {\n      \"language_purity\": \"100% Native English. No structural meta-text.\",\n      \"sentence_structure\": \"Conversational but highly technical. Deadpan delivery. Let the charts do the talking.\",\n      \"rhetorical_restraint\": \"No hype words. No exclamation marks for emphasis. Call out anti-consumer practices directly.\"\n    },\n    \"anti_slop_blacklist\": [\n      \"This is not a product release, but a grand scheme to overtake the throne\", \"In today's fast-paced digital world\",\n      \"In the ever-evolving landscape of\", \"A testament to\", \"Delve into the intricacies of\", \"Navigating the complexities of\",\n      \"At the intersection of\", \"Not just a tool, but a\", \"This is not merely a\", \"A profound paradigm shift\",\n      \"Unleashing the power of\", \"A rich tapestry of\", \"In the realm of\", \"Embark on a journey\", \"A beacon of\",\n      \"It's important to note that\", \"It is worth mentioning that\", \"As we look to the future\", \"Paving the way for\",\n      \"Revolutionizing the way we\", \"A symphony of\", \"A dance between\", \"The kicker is\", \"And honestly? That's rare.\",\n      \"Shouting into the void\", \"You're not imagining it\", \"Here's the part most people miss\", \"The dawn of a new era\",\n      \"A double-edged sword\", \"Catalyst for change\", \"Bridging the gap\", \"Seamlessly integrating\", \"A myriad of\",\n      \"Brings to the table\", \"Shattering the illusion\", \"The elephant in the room\", \"A stark reminder\",\n      \"Sending shockwaves through the industry\", \"The holy grail of\", \"A force to be reckoned with\", \"Redefining the boundaries\",\n      \"Pushing the envelope\", \"A quantum leap\", \"The linchpin of\", \"A masterclass in\", \"The undisputed king of\",\n      \"A David and Goliath story\", \"The writing is on the wall\", \"A ticking time bomb\", \"The tip of the iceberg\",\n      \"A watershed moment\", \"The ultimate game of chess\", \"A Trojan horse\", \"The silver bullet\", \"A perfect storm\",\n      \"The final nail in the coffin\", \"A rude awakening\", \"The calm before the storm\", \"A bitter pill to swallow\",\n      \"A house of cards\", \"The magic bullet\", \"A race to the bottom\", \"A paradigm-shattering\", \"The undisputed heavyweight champion\",\n      \"A masterstroke of genius\", \"The ultimate flex\", \"A cautionary tale\", \"A game of 4D chess\", \"The ultimate litmus test\",\n      \"A tectonic shift\", \"The undisputed kingmaker\", \"A masterclass in disruption\", \"The ultimate trump card\", \"A seismic event\",\n      \"The undisputed juggernaut\", \"A masterstroke of strategy\", \"The ultimate endgame\", \"A paradigm-shifting revelation\",\n      \"The undisputed titan\", \"A masterclass in innovation\", \"The ultimate power move\", \"A seismic shift in the landscape\",\n      \"The undisputed behemoth\", \"A masterstroke of execution\", \"The ultimate ace in the hole\", \"delve\", \"tapestry\", \"realm\",\n      \"intricacies\", \"ever-evolving\", \"multifaceted\", \"pivotal\", \"vibrant\", \"embark\"\n    ]\n  }\n}\n</output_schema>\n\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        5440,
+        -928
+      ],
+      "id": "5d80937e-fa5c-4750-85ff-5c022d793efe",
+      "name": "Task Master Agent1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 兼容性提取 LLM 返回的纯文本\nlet rawOutput = $input.first().json.text || $input.first().json.message?.content || \"\";\nif (typeof rawOutput !== 'string') {\n  rawOutput = JSON.stringify(rawOutput);\n}\n\n// 2. 物理清洗 JSON 外壳\nconst cleanJson = rawOutput.replace(/```json/gi, '').replace(/```/g, '').trim();\n\nlet dynamicTasks = {};\ntry {\n  dynamicTasks = JSON.parse(cleanJson);\n} catch (e) {\n  throw new Error(\"Task Master Agent JSON 解析失败: \" + e.message + \"\\n原始输出: \" + rawOutput);\n}\n\n// 3. 继承上下文主键\nconst context = $('Extract Brief Text1').first().json;\n\n// 4. 组装 Fan-out 数组 (严格对齐 Universal_Drafter 契约，并加入兜底默认值)\nreturn[\n  {\n    json: {\n      content_id: context.content_id,\n      drive_brief_id: context.drive_brief_id,\n      task_config: {\n        content_type: dynamicTasks.wechat_task?.content_type || \"wechat_official_account_article\",\n        language: dynamicTasks.wechat_task?.language || \"zh-CN\",\n        tone_and_style: dynamicTasks.wechat_task?.tone_and_style || \"深度、犀利的资深架构师口吻，多用短句，注重排版呼吸感。\",\n        word_count_target: dynamicTasks.wechat_task?.word_count_target || \"2000-2500字\"\n      },\n      additional_instructions: dynamicTasks.wechat_task?.additional_instructions || \"请详细拆解技术细节并给出落地建议。\"\n    }\n  },\n  {\n    json: {\n      content_id: context.content_id,\n      drive_brief_id: context.drive_brief_id,\n      task_config: {\n        content_type: dynamicTasks.linkedin_task?.content_type || \"linkedin_long_post\",\n        language: dynamicTasks.linkedin_task?.language || \"en-US\",\n        tone_and_style: dynamicTasks.linkedin_task?.tone_and_style || \"Professional, insightful, and authoritative. Targeted at global tech leaders.\",\n        word_count_target: dynamicTasks.linkedin_task?.word_count_target || \"1000-1500 words\"\n      },\n      additional_instructions: dynamicTasks.linkedin_task?.additional_instructions || \"Structure with clear headings and emphasize the business ROI.\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5840,
+        -1392
+      ],
+      "id": "ae607d43-55f3-4dff-876a-775e371a9f84",
+      "name": "Parse & Fan-out Tasks1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite-preview",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        5552,
+        -1184
+      ],
+      "id": "288e7675-71d8-4009-ba53-bdd88f35bd3d",
+      "name": "Gemini (Task Master)1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QaWUP98JFKesK5YO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=你是一位顶级的“全媒体内容主编 (Chief Content Strategist)”。\n你的任务是深度阅读我提供的【核心情报库 (Brief)】，并为下游的两位 AI 撰稿人量身定制最犀利、最契合当前话题的【撰稿指令】。\n\n# 核心情报库 (Brief)\n```markdown\n{{ $json.brief_content }}\n```\n\n# 动态分析与指令生成逻辑\n1. **评估内容调性**：如果 Brief 是硬核技术，指令应强调“原理解析与极客口吻”；如果是商业博弈，指令应强调“利益拆解与冷峻分析”。\n2. **平台差异化**：\n   - **微信公众号/知乎文章 (zh-CN)**：需要深度、细节、情绪张力和老兵的辛辣点评。\n   - **LinkedIn (en-US)**：需要极高的信息密度、面向高管的 ROI 洞察，以及强烈的 Hook。\n\n# 输出契约 (Strict JSON)\n请严格按照以下 JSON 结构输出，不要包含任何 Markdown 代码块（如 ```json），直接输出 JSON 文本：\n{\n  \"wechat_task\": {\n    \"content_type\": \"wechat_official_account_article\", \n    \"language\": \"zh-CN\",\n    \"tone_and_style\": \"(动态生成 50 字以内的中文文风设定，例如：冷峻的架构师口吻，重点使用大白话拆解技术壁垒...)\",\n    \"word_count_target\": \"(根据内容估算，如：2500-3000字)\",\n    \"additional_instructions\": \"(动态生成 100 字以内的撰稿要求，必须点出需要在文章中重点引用的事实或数据)\"\n  },\n  \"linkedin_task\": {\n    \"content_type\": \"linkedin_long_post\",\n    \"language\": \"en-US\",\n    \"tone_and_style\": \"(Dynamic 20-word English tone setting, e.g., Visionary Silicon Valley CTO...)\",\n    \"word_count_target\": \"(e.g., 1000-1500 words)\",\n    \"additional_instructions\": \"(Dynamic 100-word English instruction, focusing on the most critical business metrics to highlight)\"\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        5472,
+        -1408
+      ],
+      "id": "365fc584-d74a-4606-9e88-342dd6c0ca9f",
+      "name": "Task Master Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 兼容性提取 LLM 返回的纯文本\nlet rawOutput = $input.first().json.text || $input.first().json.message?.content || \"\";\nif (typeof rawOutput !== 'string') {\n  rawOutput = JSON.stringify(rawOutput);\n}\n// 2. 物理清洗 JSON 外壳\nlet cleanJson = rawOutput\n  .replace(/```json/gi, '')\n  .replace(/```/g, '')\n  .replace(/<output_schema>/gi, '')\n  .replace(/<\\/output_schema>/gi, '')\n  .trim();\nlet dynamicTasks = {};\ntry {\n  dynamicTasks = JSON.parse(cleanJson);\n} catch (e) {\n  const match = cleanJson.match(/\\{[\\s\\S]*\\}/);\n  if (match) {\n    try {\n      dynamicTasks = JSON.parse(match[0]);\n    } catch (innerE) {\n      throw new Error(\"Task Master Agent JSON 解析彻底失败: \" + innerE.message + \"\\n原始输出: \" + rawOutput);\n    }\n  } else {\n    throw new Error(\"Task Master Agent JSON 解析失败: \" + e.message + \"\\n原始输出: \" + rawOutput);\n  }\n}\n// 3. 继承上下文主键\nconst context = $('Extract Brief Text1').first().json;\n// 4. 组装 Fan-out 数组：注入 Gamers Nexus 风格的强壮兜底\nreturn [\n  {\n    json: {\n      content_id: context.content_id,\n      drive_brief_id: context.drive_brief_id,\n      creative_blueprint: {\n        content_type: dynamicTasks.wechat_task?.content_type || \"wechat_official_account_article\",\n        language: dynamicTasks.wechat_task?.language || \"zh-CN\",\n        word_count_target: dynamicTasks.wechat_task?.word_count_target || \"2500-3000字\",\n        persona_and_vantage_point: dynamicTasks.wechat_task?.persona_and_vantage_point || \"自己掏钱买首发、盯着后台跑分的硬核评测老哥。极度反感厂商PPT和虚假繁荣。语气平实、真诚，像在懂行群里吐槽，只用测试数据和真实体感说话。\",\n        narrative_arc: {\n          hook: dynamicTasks.wechat_task?.narrative_arc?.hook || \"不卖关子，第一句直接抛出最反常识的数据或核心结论（如：装了这6个插件，你的AI才算通了网）。\",\n          conflict: dynamicTasks.wechat_task?.narrative_arc?.conflict || \"对比厂商/全网的吹嘘与我们实际测出来的坑（如：成本、环境依赖、报错）。\",\n          deep_dive: dynamicTasks.wechat_task?.narrative_arc?.deep_dive || \"用大白话拆解复杂的参数或操作，强调‘我替你们踩过坑了’。\",\n          takeaway: dynamicTasks.wechat_task?.narrative_arc?.takeaway || \"给普通人的实在建议：买不买？用不用？是不是智商税？\"\n        },\n        rhetorical_rules: {\n          language_purity: dynamicTasks.wechat_task?.rhetorical_rules?.language_purity || \"100%纯中文。保留硬核英文缩写。严禁中英夹杂装逼。\",\n          sentence_structure: dynamicTasks.wechat_task?.rhetorical_rules?.sentence_structure || \"口语化、接地气。多用‘说白了就是’这种拉家常的句式。张力来自真实数据。\",\n          rhetorical_restraint: dynamicTasks.wechat_task?.rhetorical_rules?.rhetorical_restraint || \"极度克制。严禁使用‘颠覆’、‘神作’、‘震惊’。好就是好，烂就是烂。\"\n        },\n        anti_slop_blacklist: dynamicTasks.wechat_task?.anti_slop_blacklist ||[\n          \"吞噬算力的巨兽\", \"宛如一颗深水炸弹\", \"掀起了一场风暴\", \"一场悄无声息的革命\", \"交织成一幅壮丽的画卷\",\n  \"站在时代的十字路口\", \"犹如一把双刃剑\", \"打破了原有的宁静\", \"背后的逻辑令人深思\", \"这绝非偶然\",\n  \"开启了全新的篇章\", \"不仅是一次技术的飞跃，更是一场\", \"这不仅仅是一个产品，而是一个\", \"犹如脱缰的野马\",\n  \"敲响了丧钟\", \"史无前例的变局\", \"一场没有硝烟的战争\", \"犹如潘多拉的魔盒\", \"打破了垄断神话\",\n  \"这无疑是一记重磅炸弹\", \"犹如一颗璀璨的明珠\", \"开启了元年\", \"这不仅是一场豪赌，更是\", \"犹如一道闪电划破夜空\",\n  \"成为了试金石\", \"这无疑是一场降维打击\", \"犹如一场席卷全球的风暴\", \"成为了照妖镜\", \"这不仅是一次洗牌，更是\",\n  \"犹如一座无法逾越的大山\", \"成为了催化剂\", \"这无疑是一场权力的游戏\", \"犹如一把悬在头顶的达摩克利斯之剑\",\n  \"成为了里程碑\", \"这不仅是一次颠覆，更是\", \"犹如一场狂欢\", \"成为了风向标\", \"这无疑是一场生死时速\",\n  \"犹如一匹黑马\", \"成为了垫脚石\", \"这不仅是一次突围，更是\", \"犹如一场地震\", \"成为了拦路虎\",\n  \"这无疑是一场零和博弈\", \"犹如一颗定时炸弹\", \"成为了牺牲品\", \"这不仅是一次反击，更是\", \"犹如一场海啸\",\n  \"成为了替罪羊\", \"这无疑是一场狂飙\", \"犹如一场噩梦\", \"成为了绊脚石\", \"这不仅是一次涅槃，更是\",\n  \"犹如一场闹剧\", \"成为了遮羞布\", \"这无疑是一场狂欢背后的落寞\", \"犹如一场幻影\", \"成为了墓志铭\",\n  \"犹如一场泡沫\", \"成为了陪跑者\", \"这无疑是一场资本的盛宴\", \"犹如一场海市蜃楼\", \"成为了炮灰\",\n  \"这不仅是一次收割，更是\", \"犹如一场黄粱一梦\", \"成为了弃子\", \"这无疑是一场豪赌背后的深渊\", \"犹如一场镜花水月\",\n  \"成为了绝唱\", \"犹如一场水中捞月\", \"成为了挽歌\", \"这无疑是一场资本的狂欢\", \"犹如一场空中楼阁\",\n  \"成为了终章\", \"这不仅是一次盛宴，更是\", \"犹如一场南柯一梦\", \"成为了休止符\", \"这无疑是一场技术的狂欢\",\n  \"犹如一场昙花一现\", \"成为了句号\", \"犹如一场过眼云烟\", \"成为了叹息\", \"这无疑是一场时代的狂欢\",\n  \"犹如一场大梦初醒\", \"成为了眼泪\", \"犹如一场曲终人散\", \"成为了遗憾\", \"这无疑是一场历史的狂欢\",\n  \"犹如一场繁华落尽\", \"成为了悲歌\", \"在这个日新月异的时代\", \"不可否认的是\", \"值得注意的是\",\n  \"织就\", \"深刻的启示\", \"不可磨灭的印记\", \"时代的浪潮\", \"历史的车轮\", \"星辰大海\", \"一场关于深刻反思\", \"在加持下\"\n]\n      }\n    }\n  },\n  \n\n  {\n    json: {\n      content_id: context.content_id,\n      drive_brief_id: context.drive_brief_id,\n      creative_blueprint: {\n        content_type: dynamicTasks.linkedin_task?.content_type || \"linkedin_long_post\",\n        language: dynamicTasks.linkedin_task?.language || \"en-US\",\n        word_count_target: dynamicTasks.linkedin_task?.word_count_target || \"800-1200 words\",\n        persona_and_vantage_point: dynamicTasks.linkedin_task?.persona_and_vantage_point || \"Independent, rigorous tech reviewer. Consumer advocate, zero tolerance for PR spin.\",\n        narrative_arc: {\n          hook: dynamicTasks.linkedin_task?.narrative_arc?.hook || \"Start directly with the test results or the core issue. No clickbait.\",\n          conflict: dynamicTasks.linkedin_task?.narrative_arc?.conflict || \"Expose the gap between corporate marketing and actual performance/cost.\",\n          deep_dive: dynamicTasks.linkedin_task?.narrative_arc?.deep_dive || \"Let's look at the charts/data. Break down the actual use cases.\",\n          takeaway: dynamicTasks.linkedin_task?.narrative_arc?.takeaway || \"Honest consumer/developer advice. Is it worth the money?\"\n        },\n        rhetorical_rules: {\n          language_purity: dynamicTasks.linkedin_task?.rhetorical_rules?.language_purity || \"100% Native English. No structural meta-text.\",\n          sentence_structure: dynamicTasks.linkedin_task?.rhetorical_rules?.sentence_structure || \"Conversational but factual. Deadpan delivery.\",\n          rhetorical_restraint: dynamicTasks.linkedin_task?.rhetorical_rules?.rhetorical_restraint || \"No hype words. No exclamation marks for hype. Call out anti-consumer behavior.\"\n        },\n        anti_slop_blacklist: dynamicTasks.linkedin_task?.anti_slop_blacklist ||[\"This is not a product release, but a grand scheme to overtake the throne\", \"In today's fast-paced digital world\",\n  \"In the ever-evolving landscape of\", \"A testament to\", \"Delve into the intricacies of\", \"Navigating the complexities of\",\n  \"At the intersection of\", \"Not just a tool, but a\", \"This is not merely a\", \"A profound paradigm shift\",\n  \"Unleashing the power of\", \"A rich tapestry of\", \"In the realm of\", \"Embark on a journey\", \"A beacon of\",\n  \"It's important to note that\", \"It is worth mentioning that\", \"As we look to the future\", \"Paving the way for\",\n  \"Revolutionizing the way we\", \"A symphony of\", \"A dance between\", \"The kicker is\", \"And honestly? That's rare.\",\n  \"Shouting into the void\", \"You're not imagining it\", \"Here's the part most people miss\", \"The dawn of a new era\",\n  \"A double-edged sword\", \"Catalyst for change\", \"Bridging the gap\", \"Seamlessly integrating\", \"A myriad of\",\n  \"Brings to the table\", \"Shattering the illusion\", \"The elephant in the room\", \"A stark reminder\",\n  \"Sending shockwaves through the industry\", \"The holy grail of\", \"A force to be reckoned with\", \"Redefining the boundaries\",\n  \"Pushing the envelope\", \"A quantum leap\", \"The linchpin of\", \"A masterclass in\", \"The undisputed king of\",\n  \"A David and Goliath story\", \"The writing is on the wall\", \"A ticking time bomb\", \"The tip of the iceberg\",\n  \"A watershed moment\", \"The ultimate game of chess\", \"A Trojan horse\", \"The silver bullet\", \"A perfect storm\",\n  \"The final nail in the coffin\", \"A rude awakening\", \"The calm before the storm\", \"A bitter pill to swallow\",\n  \"A house of cards\", \"The magic bullet\", \"A race to the bottom\", \"A paradigm-shattering\", \"The undisputed heavyweight champion\",\n  \"A masterstroke of genius\", \"The ultimate flex\", \"A cautionary tale\", \"A game of 4D chess\", \"The ultimate litmus test\",\n  \"A tectonic shift\", \"The undisputed kingmaker\", \"A masterclass in disruption\", \"The ultimate trump card\", \"A seismic event\",\n  \"The undisputed juggernaut\", \"A masterstroke of strategy\", \"The ultimate endgame\", \"A paradigm-shifting revelation\",\n  \"The undisputed titan\", \"A masterclass in innovation\", \"The ultimate power move\", \"A seismic shift in the landscape\",\n  \"The undisputed behemoth\", \"A masterstroke of execution\", \"The ultimate ace in the hole\", \"delve\", \"tapestry\", \"realm\",\n  \"intricacies\", \"ever-evolving\", \"multifaceted\", \"pivotal\", \"vibrant\", \"embark\"\n]\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5792,
+        -928
+      ],
+      "id": "60803aa4-5843-4148-97a6-ac43126f2a5d",
+      "name": "Parse & Fan-out Tasks"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "nxp0HrGh1Oz8TFTdZjXQS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/nxp0HrGh1Oz8TFTdZjXQS",
+          "cachedResultName": "[Atomic] Universal_Browser_Pilot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        6656,
+        -928
+      ],
+      "id": "67307c1b-d50f-4262-b095-90b4e0f684c5",
+      "name": "Call '[Atomic] Universal_Browser_Pilot'",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03117d61-9aaa-4b90-af9f-603bef88d719",
+              "name": "topic_intent",
+              "value": "**Role Setting**\n\nYou are a **Principal Technology Analyst** at a premier market intelligence firm, similar to Gartner or Forrester. Your specialty is AI and Machine Learning. Your primary responsibility is to sift through the daily noise and identify the few pivotal events that have genuine strategic implications for enterprise technology leaders. You don't just report news; you detect signals that predict future trends and demand deeper investigation.\n\n## Core Objective\nFrom the provided list of news headlines, your mission is to identify the **top 5 most consequential AI and AI related events in the last 48 hours**. A \"consequential event\" is defined not by the volume of press coverage, but by its potential impact on enterprise strategy and technology stacks.\n",
+              "type": "string"
+            },
+            {
+              "id": "8b91640a-c979-4c32-8610-a2215a7f764b",
+              "name": "source_lane",
+              "value": "auto",
+              "type": "string"
+            },
+            {
+              "id": "cd74301f-8f80-4d5b-a407-ac789801e485",
+              "name": "target_count",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "new-triage-prompt-id-1234",
+              "name": "triage_prompt",
+              "value": "From the list of valid, justified input news events, rank them by their strategic importance and most likely to invite target audiences. Select the top 3 most consequential events.",
+              "type": "string"
+            },
+            {
+              "id": "f99c949b-dd92-4e2f-9c1e-00219bef95dd",
+              "name": "timeframe",
+              "value": "2d",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        -1248
+      ],
+      "id": "a51bc39e-788c-4a47-9def-f814b7b808bc",
+      "name": "Set Discovery Params11"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03117d61-9aaa-4b90-af9f-603bef88d719",
+              "name": "topic_intent",
+              "value": "=<role>\nYou are a top-tier Silicon Valley insider and investigative tech journalist — a blend of Ben Thompson’s strategic clarity and the cold, unflinching eye of a cynical venture capitalist who has seen too many pitch decks. Your task is to surface raw, undiluted signals and transform them into sharp, long-form essays capable of cutting through the noise for CxOs on LinkedIn and serious developers on Zhihu.\n</role>\n\n<objective>\nScan the global tech landscape — news wires, GitHub trending repositories, hacker forums, and financial filings — from the past seventy-two hours. Identify the five most significant raw events that reveal deep technical conflict, commercial warfare, or genuine paradigm shifts. Apply the mental_models_library to evaluate their journalistic weight and structural importance.\n</objective>\n\n<mental_models_library>\nAs a cognitive architect, when you set out to define your point of entry, you must choose two or three dimensions from the following three layers and ten autopsy perspectives, and bring them into a cross-validation attack.\n\nLayer One: Capital and Macro Calculations\n1. Follow the Money. Who is quietly collecting tolls? Where do the profit pools accumulate? And who, in the end, is left holding the bill?\n\n2. PR Deconstruction. Strip away the reassuring language of “open source” and “benefiting humanity,” and ask what monopolistic arrangements the lawyers and accountants are actually executing behind the scenes.\n\n3. Regulatory Chokepoints. Great-power sanctions, compute export bans, antitrust fines — how do these blunt instruments puncture the sleek PowerPoint visions?\n\nLayer Two: Engineering and Physical Reality\n4. Architectural Debt. However compelling the pitch, is the actual implementation compromised at its foundation? Are there irreducible trade-offs that no amount of marketing can resolve?\n\n5. Physical Limits and Real Bills. Set aside the benchmarks and calculate the true cost: power consumption, thermal barriers, VRAM overflow, and the unsparing arithmetic of API billing.\n\n6. Ecosystem Warfare. Who is quietly erecting walled gardens? Who wields open source as a weapon of disruption? And whose livelihood is taken in the first wave?\n\nLayer Three: Human Organization and Timing\n7. Internal Power Struggles. What authority are the executives and scientists truly contending for? What unspoken signals emerge from the departure of key team members?\n\n8. User Entropy and Digital Waste. Does the technology actually improve usability, or does it chiefly produce new forms of cyber detritus and increase the entropy of the systems it touches?\n\n9. Timing Catalyst. Why release it today, of all days? Is the announcement meant to obscure a disappointing earnings report, to steal attention from a rival, or simply to satisfy impatient investors?\n\n10. Blast Radius. Once the technology lands in the real world, which cohort is hit first — which outsourcing firms, which SaaS wrapper companies? Whose budgets will be cut immediately?\n</mental_models_library>\n\n<negative_constraints>\nIgnore the following noise:\n- Routine funding rounds or acquisitions that carry no significant architectural implications.\n- Generic LLM benchmark updates (“Model X beats GPT-4 on benchmark Y”).\n- Corporate PR announcements and any form of AI-washing press releases.\n</negative_constraints>",
+              "type": "string"
+            },
+            {
+              "id": "8b91640a-c979-4c32-8610-a2215a7f764b",
+              "name": "source_lane",
+              "value": "auto",
+              "type": "string"
+            },
+            {
+              "id": "cd74301f-8f80-4d5b-a407-ac789801e485",
+              "name": "target_count",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "new-triage-prompt-id-1234",
+              "name": "triage_prompt",
+              "value": "=<role>\nYou are the Editor-in-Chief of a top-tier AI and technology publication. You are reviewing five raw events from your reporters. Your only KPI is identifying stories with the strongest potential to engage senior technical audiences — CTOs, architects, and founders.\n</role>\n\n<objective>\nSelect the events with the highest viral potential for elite tech readers. Discard anything routine or incremental.\n</objective>\n\n<selection_dimensions>\nEvaluate each event using these three dimensions:\n\n1. Information Asymmetry: Does it reveal something most developers and tech leaders do not yet know?\n\n2. Emotional Trigger: Does it create FOMO, anxiety about current tech stacks, or the realization of a hidden monopoly?\n\n3. Strategic Value: Does it force a CTO to reconsider their 2026 technology roadmap?\n</selection_dimensions>\n\n<execution_protocol>\nFor each selected event, output a JSON array. In the `intel_content` field, use exactly this structure to brief downstream writers:\n\n- [News Anchor]: One or two sentences stating the plain facts of what happened.\n\n- [The Viral Hook]: Why is the mainstream narrative wrong? What is the counter-intuitive angle that will make people stop scrolling?\n\n- [The Deep Dive Angle]: What hidden technical trade-off, architectural limitation, or commercial motive must the final article expose?\n</execution_protocol>",
+              "type": "string"
+            },
+            {
+              "id": "f99c949b-dd92-4e2f-9c1e-00219bef95dd",
+              "name": "timeframe",
+              "value": "72h",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        -928
+      ],
+      "id": "d1e3165a-766a-41d4-b23a-e58b90d40486",
+      "name": "Set Discovery Params1"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "huhai.orion@gmail.com",
+        "subject": "=[Omni-Pipeline] 🚨 请选择今日深度研究选题 (Top 5)",
+        "message": "=情报雷达已完成广度扫描，并为您挖掘了过去 72 小时最具爆款潜力的 5 个科技事件。请审阅其【反共识钩子】并选择一个主题进行深度搜证：\n\n=========================\n【Topic 1】: {{ $input.all()[0].json.title }}\n🧠 核心情报与爆款钩子:\n{{ $input.all()[0].json.intel_content }}\n🔗 来源链接: {{ $input.all()[0].json.url }}\n\n=========================\n【Topic 2】: {{ $input.all()[1].json.title }}\n🧠 核心情报与爆款钩子:\n{{ $input.all()[1].json.intel_content }}\n🔗 来源链接: {{ $input.all()[1].json.url }}\n\n=========================\n【Topic 3】: {{ $input.all()[2].json.title }}\n🧠 核心情报与爆款钩子:\n{{ $input.all()[2].json.intel_content }}\n🔗 来源链接: {{ $input.all()[2].json.url }}\n\n=========================\n【Topic 4】: {{ $input.all()[3].json.title }}\n🧠 核心情报与爆款钩子:\n{{ $input.all()[3].json.intel_content }}\n🔗 来源链接: {{ $input.all()[3].json.url }}\n\n=========================\n【Topic 5】: {{ $input.all()[4].json.title }}\n🧠 核心情报与爆款钩子:\n{{ $input.all()[4].json.intel_content }}\n🔗 来源链接: {{ $input.all()[4].json.url }}",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "请选择要推进的选题 (1-5)",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1"
+                  },
+                  {
+                    "option": "2"
+                  },
+                  {
+                    "option": "3"
+                  },
+                  {
+                    "option": "4"
+                  },
+                  {
+                    "option": "5"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Additional_research_instructions",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        592,
+        -928
+      ],
+      "id": "9f343789-22c3-4d83-9a73-fe35571998be",
+      "name": "HITL: Topic Selection1",
+      "webhookId": "hitl-topic-selection-webhook",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9fHNijVBkA8vYvWp",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 解析用户在 Gmail 表单中的选择\nconst formData = $input.first().json.data;\n\nif (!formData) {\n  throw new Error(\"未找到表单数据，请检查 Gmail 节点的输出结构。\");\n}\n\nconst selectedIndex = parseInt(formData['请选择要推进的选题 (1/2/3)']) - 1;\nconst additionalPrompt = formData['附加研究指令 (可选，例如：重点关注商业化落地数据)'] || '';\n\n// 【架构师注意】：请将 'DataTable Upsert' 替换为您 Gmail 节点前一个真实节点的名称\nconst discoveryItems = $('Topic Discovery').all(); \nconst selectedTopic = discoveryItems[selectedIndex].json;\n\n// 3. 构造深度搜证的意图与【反压缩】Triage Prompt\nconst researchIntent = `深度搜证并提取此主题的所有细节：${selectedTopic.title}。附加要求：${additionalPrompt}`;\n\nconst triagePrompt = `【全景深度研究模式】你现在的角色是顶级科技智库的首席研究员。你面前是关于“${selectedTopic.title}”的深度抓取内容。\n请绝对不要进行简单的“压缩式总结”，而是要输出一份【极具信息密度、保留大量原始细节】的全景研报（Markdown格式）。\n\n执行指令：\n1. 颗粒度极度下钻：必须保留所有具体的数字、公司名、技术专有名词、核心代码逻辑（如有）以及专家原话（Quotes）。\n2. 逻辑链条展开：不要只给结论，必须详细阐述技术原理、商业逻辑或事件的来龙去脉。\n3. 结合附加要求（${additionalPrompt}）进行深度挖掘。\n4. 结构要求：必须包含【核心定义与技术演进】、【全景数据与硬核案例拆解】、【产业链/生态博弈】、【争议与技术瓶颈】、【对CTO/架构师的战略建议】等模块。\n请在 intel_content 中输出这份长篇巨制，字数越多越好，拒绝空话。`;\n\n// 4. 严格按照 Omni_Ingestion_Gateway 的输入契约返回数据\nreturn {\n  json: {\n    content_id: selectedTopic.content_id,\n    selected_title: selectedTopic.title,\n    topic_intent: researchIntent,\n    source_lane: \"auto\", \n    target_url: selectedTopic.url,\n    timeframe: \"any\",\n    target_count: 1,\n    triage_prompt: triagePrompt\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -1248
+      ],
+      "id": "27e8e117-e68c-44d7-bb09-7299898be864",
+      "name": "Parse Selectionx"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 解析用户在 Gmail 表单中的选择\nconst formData = $input.first().json.data;\n\nif (!formData) {\n  throw new Error(\"未找到表单数据，请检查 Gmail 节点的输出结构。\");\n}\n// 注意：这里的键名必须和 Gmail 节点里的 fieldLabel 完全一致\nconst selectedIndex = parseInt(formData['请选择要推进的选题 (1-5)']) - 1;\nconst editorDirective = formData['Additional_research_instructions'] || '';\n\n// 2. 跨节点获取雷达网关的原始输出\nconst discoveryItems = $('Topic Discovery').all(); \nconst selectedTopic = discoveryItems[selectedIndex].json;\n\n// 3. 构造深度搜证意图 (Intent)\nconst researchIntent = `Deep OSINT Forensic Investigation for: ${selectedTopic.title}. Focus: ${editorDirective}`;\n\n// 获取当前系统时间，用于打败大模型的时间幻觉\nconst currentDate = new Date().toLocaleDateString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: 'long', day: 'numeric' });\n\n// ==========================================\n// 🚀 4. 2026 顶级 OSINT 搜证 Prompt (防幻觉 & 证据称重版)\n// 核心：强制时间对齐，按【6大叙事原型】分类提取纯事实\n// ==========================================\n\nconst triagePrompt = `<role>\n你是一位冷酷无情的 OSINT（开源情报）分析师。你的唯一任务是从抓取到的网页、知乎讨论、财报和论坛中，像法医一样提取关于 \"${selectedTopic.title}\" 的纯粹事实（Hard Facts）、财务数据和人类真实情绪。\n</role>\n\n<temporal_and_fact_grounding>\n**当前系统时间是：${currentDate}。**\n【绝对事实红线】：\n1. 在提取任何产品发布、算力售罄、财报数据、高管离职时，必须严格核对原文中的具体时间。\n2. 严禁将不同时间线的事件强行因果缝合。\n3. 如果原文没有明确说明“X月发生了Y”，你必须标注为“[时间未披露]”，**绝对禁止脑补月份和日期！**\n</temporal_and_fact_grounding>\n\n<objective>\n你**不是**在写新闻报道，你是在建立一份供主编定调用的“底层情报档案（Raw Intelligence Dossier）”。\n不要总结！不要升华！不要连词！只提取血淋淋的数据、代码细节、原话引用和微观场景。\n</objective>\n\n<editor_directive>\n主编下达了最高优先级的定向搜证指令：\"${editorDirective}\"。\n你必须在档案中单开一章，用最硬核的证据（链接、截图描述、原话、财报数字）直接回应这个指令。\n</editor_directive>\n\n<execution_rules>\n1. **数据零压缩**：绝对不要把“1.2亿美元”总结为“巨额资金”，保留原始数字、API定价、Token限制。\n2. **提取微观场景 (Micro-Scenes)**：去知乎/X/Reddit上找开发者*实际*是怎么用/怎么骂的。提取具体场景（例如：“我用它跑了100个并发，结果显存爆了”）。\n3. **剥离公关话术**：跳过所有“致力于、赋能、革命性”的废话，只看他们发布了什么接口、砍了什么功能、收了多少钱。\n</execution_rules>\n\n<output_format>\n请严格使用中文，按以下 Markdown 结构输出情报档案。这直接决定了下游主编能否判断新闻的“叙事原型”：\n\n# OSINT 深度情报档案：${selectedTopic.title}\n\n## 1. 核心事实与时间线 (Core Facts & Timeline)\n- [时间戳] 事实描述（必须精确，不可脑补）\n\n## 2. 财务与资本账本 (Financials & CapEx)\n- 提取所有的 ROI、算力成本、定价策略、融资金额。如果没有，写“无”。\n\n## 3. 技术架构与工程实锤 (Tech Architecture & Evidence)\n- 提取论文细节、GitHub 跑分、架构缺陷、API 变动。如果没有，写“无”。\n\n## 4. 生态博弈与护城河 (Ecosystem & Monopoly)\n- 提取开源/闭源冲突、平台政策打压、法务诉讼（如版权绞杀）。如果没有，写“无”。\n\n## 5. 社区原声与野生实操 (Community Voice & Indie Hacks)\n- 提取第三方开发者、KOL 或普通用户的原话引用（带上他们的情绪：嘲讽、震惊或愤怒）及具体测试案例。\n\n## 6. 组织动荡与人事 (Org & Execs)\n- 提取高管离职、团队内讧、裁员数据。如果没有，写“无”。\n\n## 7. 🎯 主编定向指令核查 (Editor's Directive Fulfillment)\n- 针对主编指令的专项证据提取（必须详尽）。\n</output_format>\n\n<critical_constraints>\n- **禁止 AI 味**：严禁出现“不可否认、总而言之、标志着、具有深远意义”。\n- **越长越好**：尽可能多地保留原文的硬核细节和金句，不要为了排版而删减信息。\n</critical_constraints>`;\n\n// 5. 严格按照 Omni_Ingestion_Gateway 的输入契约返回数据\nreturn {\n  json: {\n    content_id: selectedTopic.content_id,\n    selected_title: selectedTopic.title,\n    topic_intent: researchIntent,\n    source_lane: \"auto\", \n    target_url: selectedTopic.url,\n    timeframe: \"3m\",\n    target_count: 1,\n    triage_prompt: triagePrompt\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        -928
+      ],
+      "id": "7fb904bf-dfd4-4b9d-b5b0-5a1a45ffadae",
+      "name": "Parse Selection1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3.1-pro-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=<objective>\n阅读下面的《深度情报档案》。按以下流程执行：\n1. **维度锁定**：从 System Prompt 的<mental_models_library>中，找出证据最强的 2-3 个维度（记录在 `selected_dimensions` 中）。\n2. **原型匹配**：根据锁定的维度组合，从<narrative_archetypes> 中选择最匹配的一个（记录在 `selected_archetype` 中）。\n3. **角度生成**：基于该原型，构思两个完全独立、视角互补或对立的分析角度。\n</objective>\n\n<evaluation_rules>\n1. **维度-原型映射表**（必须严格执行）：\n   - 如果锁定的维度主要来自【图层一】（如 1+2 或 1+3），应选 [The Financial Shift]（算账与商业）。\n   - 如果锁定的维度主要来自【图层二】（如 4+5 或 4+6），应选 [The Hardcore Teardown]（硬核拆解）。\n   - 如果锁定的维度主要来自【图层三】（如 7+9 或 8+10），应选 [The Executive Shuffle]（人事与八卦）或 [The Ecosystem Battle]（生态吃瓜）。\n   - 如果锁定的维度混合了【图层一】和【图层三】（如 1+9），可考虑 [The Timing Catalyst] 风格，归入 [The Financial Shift] 或 [The Executive Shuffle] 的变体。\n   - 如果档案中只有公关性质的产品更新，无任何硬核证据，直接判定为 [The Routine Update]（日常快讯）。\n\n2. **角度互斥要求**：Angle 1 和 Angle 2 必须在选定的维度组合上形成互补或对立（例如，一个侧重“算账”，另一个侧重“工程真相”），不能是同一逻辑的简单重复。\n\n3. **证据决定叙事**：\n   - 选 [Hardcore Teardown] 必须包含代码、跑分、架构缺陷等 Layer Two 证据。\n   - 选 [Financial Shift] 必须包含具体烧钱数字、定价、成本等 Layer One 证据。\n   - 选 [Ecosystem Battle] 必须包含大厂冲突、开源闭源之争等 Layer Two 或 Three 证据。\n</evaluation_rules>\n\n<mental_models_library>\n作为认知架构师，在构思切入点时，你必须从以下【三大图层，十大深度透视视角】中，挑选 2-3 个维度进行交叉分析：\n\n【图层一：资本与宏观博弈】\n1. 利益分配与隐性成本 (Follow the Money)：追踪资金的真实流向。谁在赚取基础设施的过路费？谁在承担最终的隐性成本？\n2. 公关叙事解构 (PR Deconstruction)：剥离“科技普惠/开源共建”的宏大叙事，透视其背后真实的垄断诉求与商业闭环。\n3. 合规与地缘摩擦 (Regulatory Friction)：技术落地如何撞上现实边界？算力禁令、数据主权、反垄断审查将如何重塑基本面？\n\n【图层二：工程与物理常识】\n4. 架构隐患与技术债务 (Architectural Debt)：抛开华丽的 Demo，底层是否存在难以跨越的工程瓶颈或即将爆发的技术债？\n5. 物理限制与真实 ROI (Physical Limits & ROI)：回归物理与财务常识，算算真实的能耗、显存开销、云端推理成本，以及商业模式的生死线。\n6. 生态暗战与护城河 (Ecosystem Warfare)：谁在建立围墙花园？谁在用开源生态进行降维打击？开发者流向何方？\n\n【图层三：组织架构与时间切片】\n7. 组织撕裂与路线分歧 (Organizational Politics)：核心团队离职或高管变动背后，隐藏着怎样的主导权之争？\n8. 体验折现与社会熵增 (User Entropy)：这项技术是真的提升了生产力，还是仅仅在制造“数字垃圾”、恶化既有体验？\n9. 发布时机与逼空节点 (Timing Catalyst)：为什么偏偏选在今天发布？是为了掩盖财报压力、对冲竞品，还是向资本市场交差？\n10. 范式转移与毁灭半径 (Blast Radius)：新技术落地后，供应链上下游谁首当其冲被波及？哪类公司的生存空间将被直接清零？\n</mental_models_library>\n\n<narrative_archetypes>\n1. [The Hardcore Teardown] (硬核拆解)：聚焦技术原理、模型参数、真实性能与工程缺陷。\n2. [The Financial Shift] (算账与商业)：帮读者算清楚经济账、ROI、成本结构。\n3. [The Ecosystem Battle] (生态吃瓜)：大厂博弈、开源生态冲突、开发者流向。\n4. [The Indie Hacker Showcase] (实测与玩法)：普通开发者能怎么用，以及实际翻车点。\n5. [The Executive Shuffle] (人事与八卦)：高管变动背后的技术路线分歧与权力斗争。\n6. [The Routine Update] (日常快讯)：直接介绍产品更新和新功能，无深度分析。\n</narrative_archetypes>\n\n<input_data>\n# 选定选题:\n{{ $json.title }}\n\n# 原始情报库 (Raw Intelligence Dossier):\n{{ $json.brief_content }}\n</input_data>\n\n<output_schema>\n请严格按照以下 JSON 格式输出（直接输出纯 JSON，不要包含任何额外文字）：\n\n{\n  \"selected_dimensions\": [\"例如：Layer1. 利益分配与隐性成本\", \"Layer2. 物理限制与真实 ROI\"],\n  \"selected_archetype\": \"例如：[The Financial Shift] (算账与商业)\",\n  \"reasoning\": \"一句话说明为什么选择这个原型，并明确指出 selected_dimensions 中哪 2-3 个维度提供了最强证据\",\n  \"angle_1\": {\n    \"narrative_focus\": \"一句大白话说明这个角度要讲什么\",\n    \"title\": \"吸睛但克制的标题（带数据或具体痛点）\",\n    \"hook\": \"1-2句接地气的引入，直接抛出最反直觉的事实\",\n    \"thesis\": \"一句话核心论点，用大白话总结本质\",\n    \"key_arguments\": \"用 Markdown 列表写出 3 个实锤证据（必须包含具体数据或细节）\",\n    \"audience_takeaway\": \"给普通用户或开发者的行动建议或吃瓜总结\"\n  },\n  \"angle_2\": {\n    \"narrative_focus\": \"一句大白话说明另一个角度的切入点（必须与 angle_1 形成互补或对立）\",\n    \"title\": \"吸睛但克制的标题（带数据或具体痛点）\",\n    \"hook\": \"1-2句接地气的引入\",\n    \"thesis\": \"一句话核心论点，用大白话总结本质\",\n    \"key_arguments\": \"用 Markdown 列表写出 3 个实锤证据（必须包含具体数据或细节）\",\n    \"audience_takeaway\": \"给普通用户或开发者的行动建议或吃瓜总结\"\n  }\n}\n</output_schema>"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {
+          "googleSearch": true,
+          "urlContext": true
+        },
+        "options": {
+          "systemMessage": "=<role>\n你是顶级科技媒体的总编辑，兼具深厚的技术功底和敏锐的商业嗅觉。你的写作风格清晰、接地气、略带冷峻的洞察——就像一个资深的开发者在对懂行的朋友复盘。\n</role>\n\n<mental_models_library>\n作为认知架构师，在构思切入点时，你必须从以下【三大图层，十大深度透视视角】中，挑选 2-3 个维度进行交叉分析：\n\n【图层一：资本与宏观博弈】\n1. 利益分配与隐性成本 (Follow the Money)：追踪资金的真实流向。谁在赚取基础设施的过路费？谁在承担最终的隐性成本？\n2. 公关叙事解构 (PR Deconstruction)：剥离“科技普惠/开源共建”的宏大叙事，透视其背后真实的垄断诉求与商业闭环。\n3. 合规与地缘摩擦 (Regulatory Friction)：技术落地如何撞上现实边界？算力禁令、数据主权、反垄断审查将如何重塑基本面？\n\n【图层二：工程与物理常识】\n4. 架构隐患与技术债务 (Architectural Debt)：抛开华丽的 Demo，底层是否存在难以跨越的工程瓶颈或即将爆发的技术债？\n5. 物理限制与真实 ROI (Physical Limits & ROI)：回归物理与财务常识，算算真实的能耗、显存开销、云端推理成本，以及商业模式的生死线。\n6. 生态暗战与护城河 (Ecosystem Warfare)：谁在建立围墙花园？谁在用开源生态进行降维打击？开发者流向何方？\n\n【图层三：组织架构与时间切片】\n7. 组织撕裂与路线分歧 (Organizational Politics)：核心团队离职或高管变动背后，隐藏着怎样的主导权之争？\n8. 体验折现与社会熵增 (User Entropy)：这项技术是真的提升了生产力，还是仅仅在制造“数字垃圾”、恶化既有体验？\n9. 发布时机与逼空节点 (Timing Catalyst)：为什么偏偏选在今天发布？是为了掩盖财报压力、对冲竞品，还是向资本市场交差？\n10. 范式转移与毁灭半径 (Blast Radius)：新技术落地后，供应链上下游谁首当其冲被波及？哪类公司的生存空间将被直接清零？\n</mental_models_library>\n\n<critical_rules>\n- **强制交叉验证**：在构思任何角度前，必须先从上述 10 个维度中锁定 2-3 个证据最强的维度，并记录在 `selected_dimensions` 字段中。\n- **绝对禁词**：严禁使用“赋能”、“闭环”、“底层逻辑”、“时代变革”、“颠覆”、“绞杀”、“降维打击”等 AI 塑料词汇。\n- **说话方式**：像一个资深开发者在跟懂行的朋友聊天——清晰、接地气、略带冷峻，所有结论必须基于情报档案中的具体数据。\n- **证据第一**：没有实锤的维度，绝不硬选。\n- **优先执行主编指令**：如果档案中包含 Module 7（主编定向指令），该指令的优先级最高。\n</critical_rules>",
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1952,
+        -928
+      ],
+      "id": "85c5c8b4-6e9c-449e-b3bc-fda0d3224ee2",
+      "name": "Narrative Agent",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QaWUP98JFKesK5YO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-04-09T23:00:00.017-04:00",
+          "Readable date": "April 9th 2026, 11:00:00 pm",
+          "Readable time": "11:00:00 pm",
+          "Day of week": "Thursday",
+          "Year": "2026",
+          "Month": "April",
+          "Day of month": "09",
+          "Hour": "23",
+          "Minute": "00",
+          "Second": "00",
+          "Timezone": "America/New_York (UTC-04:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Discovery Params1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Webhook (OpenClaw)": {
+      "main": [
+        [
+          {
+            "node": "Set Discovery Params1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Discovery Params": {
+      "main": [
+        []
+      ]
+    },
+    "HITL: Topic Selection": {
+      "main": [
+        []
+      ]
+    },
+    "Parse Editor Feedback": {
+      "main": [
+        [
+          {
+            "node": "Targeted Research Phase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Knowledge Base": {
+      "main": [
+        [
+          {
+            "node": "Download Init KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Drafts": {
+      "main": [
+        [
+          {
+            "node": "Prepare Browser Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Browser Tasks": {
+      "main": [
+        [
+          {
+            "node": "Call '[Atomic] Universal_Browser_Pilot'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini (Task Master)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Task Master Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic Discovery": {
+      "main": [
+        [
+          {
+            "node": "HITL: Topic Selection1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initial Research Phase": {
+      "main": [
+        [
+          {
+            "node": "Upsert Knowledge Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Targeted Research Phase": {
+      "main": [
+        [
+          {
+            "node": "DataTable - Get Ledger1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drafting Phase": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Drafts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Pilot Results": {
+      "main": [
+        [
+          {
+            "node": "Notify: Drafts Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify: Drafts Ready": {
+      "main": [
+        []
+      ]
+    },
+    "Parse Narrative JSON": {
+      "main": [
+        [
+          {
+            "node": "HITL: Narrative Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HITL: Narrative Approval": {
+      "main": [
+        [
+          {
+            "node": "Parse Editor Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brief Data Extraction": {
+      "main": [
+        [
+          {
+            "node": "Narrative Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Complete KB": {
+      "main": [
+        [
+          {
+            "node": "Extract Brief Text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Init KB": {
+      "main": [
+        [
+          {
+            "node": "Brief Data Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble File Pointers": {
+      "main": [
+        [
+          {
+            "node": "Download Original Brief1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Original Text": {
+      "main": [
+        [
+          {
+            "node": "Download Supp Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Supp Brief": {
+      "main": [
+        [
+          {
+            "node": "Compile Merged Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Merged Brief": {
+      "main": [
+        [
+          {
+            "node": "Update Original Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Original Brief": {
+      "main": [
+        [
+          {
+            "node": "DataTable - Lock Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataTable - Get Ledger1": {
+      "main": [
+        [
+          {
+            "node": "Assemble File Pointers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Original Brief1": {
+      "main": [
+        [
+          {
+            "node": "Extract Original Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DataTable - Lock Status1": {
+      "main": [
+        [
+          {
+            "node": "Download Complete KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Brief Text1": {
+      "main": [
+        [
+          {
+            "node": "Task Master Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Master Agent1": {
+      "main": [
+        [
+          {
+            "node": "Parse & Fan-out Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse & Fan-out Tasks1": {
+      "main": [
+        []
+      ]
+    },
+    "Gemini (Task Master)1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Task Master Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse & Fan-out Tasks": {
+      "main": [
+        [
+          {
+            "node": "Drafting Phase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call '[Atomic] Universal_Browser_Pilot'": {
+      "main": [
+        [
+          {
+            "node": "Parse Pilot Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Discovery Params11": {
+      "main": [
+        []
+      ]
+    },
+    "Set Discovery Params1": {
+      "main": [
+        [
+          {
+            "node": "Topic Discovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HITL: Topic Selection1": {
+      "main": [
+        [
+          {
+            "node": "Parse Selection1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Selectionx": {
+      "main": [
+        []
+      ]
+    },
+    "Parse Selection1": {
+      "main": [
+        [
+          {
+            "node": "Initial Research Phase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narrative Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse Narrative JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "a2f49ed3-caa5-4603-8919-c6d4ddb58c5f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1be078014d58a0a57eace08259519a4fb2789524a0e0ea4b879d06181e9e45a7"
+  },
+  "id": "Yr0WI1JE_yuQrVpDaKcm2",
+  "tags": []
+}

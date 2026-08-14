@@ -1,0 +1,33 @@
+{
+  "run_id": "AI-Daily/2026-08-14",
+  "date": "2026-08-14",
+  "slug": "ai-search-budget-research-cost",
+  "title": "AI 搜索预算与个人创作者的研究成本",
+  "topic_choice": "fixture",
+  "has_cover": false,
+  "cover": null,
+  "sources": [
+    {
+      "title": "Meta 开源 Muse Glimmer 登陆 OpenRouter",
+      "url": "https://x.com/OpenRouter/status/2087509478480765218",
+      "origin": "aihot"
+    },
+    {
+      "title": "OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型",
+      "url": "https://openrouter.ai/blog/announcements/web-search-benchmark",
+      "origin": "aihot"
+    },
+    {
+      "title": "Research Gold 号称\"100%人类撰写、绝不使用AI\"，实则全程由AI驱动",
+      "url": "https://www.404media.co/company-offering-100-human-written-never-ai-peer-review-is-entirely-ai",
+      "origin": "aihot"
+    },
+    {
+      "title": "空货架还是丢钥匙？Google 研究：Recall 是参数化事实性的瓶颈",
+      "url": "https://research.google/blog/empty-shelves-or-lost-keys-recall-is-the-bottleneck-for-parametric-factuality",
+      "origin": "aihot"
+    }
+  ],
+  "final_article": "articles/2026-08-14-ai-search-budget-research-cost-zh.md",
+  "package": "outputs/2026/08/14/ai-search-budget-research-cost"
+}

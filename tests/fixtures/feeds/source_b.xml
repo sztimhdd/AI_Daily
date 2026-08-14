@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Source B</title>
+  <entry>
+    <title>Duplicate URL story</title>
+    <link href="https://source-a.example.com/posts/agent-search-cost#tracking"/>
+    <updated>2026-08-12T02:00:00Z</updated>
+    <summary>Same article, different feed, with tracking fragment.</summary>
+  </entry>
+  <entry>
+    <title>  agent search benchmarks show cost gap between engines  </title>
+    <link href="https://source-b.example.com/notes/cost-gap"/>
+    <updated>2026-08-12T03:00:00Z</updated>
+    <summary>Same headline wording, different outlet.</summary>
+  </entry>
+  <entry>
+    <title>Unique story about research budgets for solo creators</title>
+    <link href="https://source-b.example.com/notes/solo-research-budget"/>
+    <updated>2026-08-12T04:00:00Z</updated>
+    <summary>Individual creators now pay measurable search budgets.</summary>
+  </entry>
+</feed>

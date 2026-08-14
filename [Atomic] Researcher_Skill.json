@@ -1,0 +1,1198 @@
+{
+  "name": "[Atomic] Researcher_Skill",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ingestion-gateway",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2d716174-fcd0-410c-9549-7a5a0058d6df",
+      "name": "Webhook (OpenClaw)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1488,
+        1152
+      ],
+      "webhookId": "d064f4ab-efed-49a8-a06f-861127b5d1f8"
+    },
+    {
+      "parameters": {},
+      "id": "2bc668e2-1ad8-4585-8745-532e9828920f",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        1344
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取所有输入条目 (Items)\nconst items = $input.all();\n\n// 2. 遍历并规范化每一个条目\nreturn items.map(item => {\n  // 兼容 Webhook (body) 和 直接传参\n  const data = item.json.body || item.json;\n\n  // --- 逻辑 A: 规范化 URL 列表 (防御性编程) ---\n  let rawUrls = data.target_urls || data.target_url || [];\n  if (typeof rawUrls === 'string') {\n    rawUrls = rawUrls.split(',').map(u => u.trim()).filter(Boolean);\n  } else if (!Array.isArray(rawUrls)) {\n    rawUrls = [];\n  }\n  const target_urls = [...new Set(rawUrls.filter(url => typeof url === 'string' && url.trim() !== ''))];\n\n  // --- 逻辑 B: 规范化撰稿指南 ---\n  const triage_prompt = data.focus_instruction || data.triage_prompt || \"请提取核心价值，输出结构化的 Markdown 研报。\";\n\n  // --- 逻辑 C: 动态推断目标数量 ---\n  let target_count = data.target_count;\n  if (!target_count) {\n    target_count = target_urls.length > 0 ? target_urls.length : 3;\n  }\n\n  // 返回规范化后的 Item 结构\n  return {\n    json: {\n      content_id: data.content_id || `ID_${Math.random().toString(36).substr(2, 9)}`, // 容错：无 ID 时生成临时 ID\n      topic_intent: data.topic_intent || \"\",\n      source_lane: data.source_lane || \"auto\",\n      timeframe: data.timeframe || \"any\",\n      target_count: target_count,\n      triage_prompt: triage_prompt,\n      target_urls: target_urls,\n      target_url: target_urls.join(\", \") // 保持向下兼容\n    }\n  };\n});"
+      },
+      "id": "62506535-e650-4036-8c86-24415f832721",
+      "name": "Normalize Inputs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1264,
+        1248
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -320,
+        1248
+      ],
+      "id": "1ad2e749-2f70-4202-8897-49337be2472e",
+      "name": "Loop (Fan-out)"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite-preview",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        1680
+      ],
+      "id": "45275c39-e47e-4de6-90a6-440d644d6b15",
+      "name": "Gemini 3.1 Pro (Auto-Fixer)",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QaWUP98JFKesK5YO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<system_purpose>\n你作为 Microscope_Gateway 的首席调度官。你的唯一任务是根据用户输入的元数据，将搜证请求拆解为“原子任务清单”。\n你必须在[mcp, firecrawl, google] 三大引擎中做出最优选择。\n</system_purpose>\n\n<logical_rules>\n1. 若 source_lane !== \"auto\"，则强制所有任务分配至 source_lane。\n2. 默认任务生成优先级：\n   - A. [定向爆破]: 遍历 target_urls 数组。若 URL 匹配 (zhihu.com, mp.weixin.qq.com 等明显需登录的平台)，分配至 \"mcp\"；常规无头 URL 分配至 \"firecrawl\"。\n   - B. [全网搜证]: 若 target_urls 为空，则提取 topic_intent 的核心关键词，分配至 \"google\"。\n   - C. [多轨搜证补全]: 在研究模式下，即使有 URL，若 topic_intent 明确要求“对比、全网核实”，可额外追加一个 \"google\" 搜索任务。\n3. Query 提取规则：严禁包含时间词（如“最近”、“最新”），仅保留核心名词或实体名称（如“Agent Long-term Memory”）。\n</logical_rules>",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=<context_data>\n- content_id: {{ $json.content_id }}\n- target_urls: {{ JSON.stringify($json.target_urls || []) }}\n- topic_intent: {{ $json.topic_intent }}\n- source_lane: {{ $json.source_lane }}\n- timeframe: {{ $json.timeframe }}\n</context_data>\n\n请根据以上上下文和系统规则，严格输出 JSON 格式的任务清单。注意：content_id 必须原样返回。"
+            }
+          ]
+        }
+      },
+      "id": "43007b84-58ab-4382-820b-b3db2a588974",
+      "name": "Intent Router Agent1",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -1008,
+        1248
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite-preview",
+        "options": {
+          "temperature": 1,
+          "topP": 0.9
+        }
+      },
+      "id": "471f074d-74c7-4375-b5dd-3a37e3420739",
+      "name": "Gemini 3.1 Flash1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        1472
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QaWUP98JFKesK5YO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"content_id\": {\n      \"type\": \"string\",\n      \"description\": \"从输入中原样继承的 ID\"\n    },\n    \"mode\": {\n      \"type\": \"string\",\n      \"enum\":[\"research\", \"discovery\"]\n    },\n    \"tasks\": {\n      \"type\": \"array\",\n      \"description\": \"拆解后的原子任务清单。你可以智能地追加 google 搜索任务以进行交叉验证。\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"target\": {\n            \"type\": \"string\",\n            \"enum\": [\"mcp\", \"firecrawl\", \"google\"]\n          },\n          \"query\": {\n            \"type\": \"string\",\n            \"description\": \"提炼的搜索关键词。如果有具体的 target_url 则留空。\"\n          },\n          \"target_url\": {\n            \"type\": \"string\",\n            \"description\": \"需要抓取的具体链接。纯搜索任务留空。\"\n          }\n        },\n        \"required\": [\"target\"]\n      }\n    }\n  },\n  \"required\": [\"content_id\", \"mode\", \"tasks\"]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -912,
+        1472
+      ],
+      "id": "ec5b463f-49a0-4538-9b72-0512983c3dba",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取 Router 吐出的 Agent 任务清单\nconst items = $input.all();\n\n// 2. 【防弹设计】尝试跨节点获取原始数据。如果找不到节点，安全降级为空数组\nlet originalInputs =[];\ntry {\n  originalInputs = $('Normalize Inputs').all().map(i => i.json);\n} catch (e) {\n  console.log(\"[Gateway Warning] 无法跨节点读取 Normalize Inputs，将使用默认安全值。\");\n}\n\n// 3. 遍历、缝合并扁平化\nconst flattenedItems = items.flatMap(item => {\n  const data = item.json.output || item.json;\n  const content_id = data.content_id || \"MISSING_ID\";\n  \n  // 核心缝合逻辑：通过 content_id 找到当初传进来的那个原始请求\n  const originalData = originalInputs.find(orig => orig.content_id === content_id) || {};\n  \n  // 🌟 无论大模型怎么想，target_count 永远使用用户最初设定的真实值！(找不到则默认为 1)\n  const true_target_count = originalData.target_count || 1;\n  const mode = data.mode || \"research\";\n  const tasks = data.tasks ||[];\n\n  // 将拆解的子任务实例化为独立 n8n Item，并注入真实的 target_count\n  return tasks.map(t => ({\n    json: {\n      content_id: content_id,\n      mode: mode,\n      target_count: true_target_count, // 彻底锁死，不再受任务数组长度影响！\n      target: t.target || \"google\",\n      query: t.query || \"\",\n      target_url: t.target_url || \"\"\n    }\n  }));\n});\n\nreturn flattenedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        1248
+      ],
+      "id": "59d1fa3d-c838-4d9d-8c38-590b31146aa0",
+      "name": "Post-Router Relational (Broadcast)1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "rule-mcp-lane",
+                    "leftValue": "={{ $json.target }}",
+                    "rightValue": "mcp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "MCP (Browser)"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "rule-firecrawl-lane",
+                    "leftValue": "={{ $json.target }}",
+                    "rightValue": "firecrawl",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Firecrawl"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "rule-google-lane",
+                    "leftValue": "={{ $json.target }}",
+                    "rightValue": "google",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Google (Tavily)"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        736
+      ],
+      "id": "ed7a7d2b-dc27-4f91-8857-7a99e2769971",
+      "name": "Switch (3-Lanes)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 继承上游所有元数据 (防止 Context Amnesia)\nconst item = $input.item.json;\n\n// 2. 获取全局上下文 (从最源头提取撰稿指南)\nlet triage_prompt = \"\";\ntry {\n  triage_prompt = $('Normalize Inputs').first().json.triage_prompt || \"\";\n} catch(e) {}\n\n// 3. 动态组装给 MCP 浏览器的 Prompt\nlet objective = \"请你作为 AI 物理浏览器领航员，前往此页面提取核心正文，并输出为纯净的标准 Markdown。\\n\";\n\nif (item.query) {\n  objective += `【提取重点关注实体/关键词】: ${item.query}\\n`;\n}\nif (triage_prompt) {\n  objective += `【最终研报目标参考】: ${triage_prompt}\\n`;\n}\nobjective += \"【注意】: 请忽略底部的广告、评论区无关争吵和点赞引导。\";\n\n// 4. 返回完整结构 (解构合并)\nreturn {\n  json: {\n    ...item, // 👈 核心：保留 content_id, mode, target_count 等所有字段！\n    objective: objective,\n    start_url: item.target_url || \"\"\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        560
+      ],
+      "id": "06e2e9c8-a062-469c-8951-17c205918572",
+      "name": "MCP Payload Adapter"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "nxp0HrGh1Oz8TFTdZjXQS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/nxp0HrGh1Oz8TFTdZjXQS",
+          "cachedResultName": "[Atomic] Universal_Browser_Pilot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1376,
+        800
+      ],
+      "id": "b1b4b6e6-0ca8-4c33-b155-adc3f4159a44",
+      "name": "Call '[Atomic] Universal_Browser_Pilot'1",
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 提取当前失败的原子任务\nconst item = $input.item.json;\nconst failedUrl = item.target_url || item.url || \"未知URL\";\n\n// 2. 尝试获取全局指南\nlet triage_prompt = \"\";\ntry {\n  triage_prompt = $('Normalize Inputs').first().json.triage_prompt || \"\";\n} catch(e) {}\n\n// 3. 组装最高级别的接管指令\nlet objective = `【系统降级警报】Firecrawl 云端爬虫遭遇反爬拦截 (403) 或死链。请你作为最后的底牌，启动物理浏览器前往此页面提取正文，输出标准 Markdown。\\n`;\nif (item.query) {\n  objective += `【提取重点】: ${item.query}\\n`;\n}\nif (triage_prompt) {\n  objective += `【研报目标】: ${triage_prompt}\\n`;\n}\n\n// 4. 完美变身为 MCP 引擎需要的 Payload 格式\nreturn {\n  json: {\n    ...item, // 核心：带着 content_id 去抢救！\n    objective: objective,\n    start_url: failedUrl\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        800
+      ],
+      "id": "42975a6e-b60c-4518-ac13-64721585ee66",
+      "name": "Fallback to MCP (Rescue)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 继承上游的全部上下文（极其重要！绝不能把 content_id 和 final_narrative 弄丢）\nconst item = $input.item.json;\n\n// 2. 提取定向搜证的查询词\n// 在 Research 分支中，极具杀伤力的搜索指令存在于 topic_intent 里\n// 如果为空，兜底使用标题\nconst finalQuery = item.topic_intent || item.query || item.title || \"Latest tech news\";\n\n// 3. 时间清洗与双规格式化 (同时兼容 Tavily 和 Brave)\nconst timeframe = item.timeframe || 'any';\nlet tavilyTimeRange = undefined;\nlet braveFreshness = undefined;\n\nif (timeframe !== 'any') {\n  const match = timeframe.match(/(\\d+)([hd])/);\n  if (match) {\n    const hours = match[2] === 'd' ? parseInt(match[1]) * 24 : parseInt(match[1]);\n    \n    if (hours <= 24) { \n      tavilyTimeRange = \"day\"; \n      braveFreshness = \"pd\"; // Brave 的 past day\n    } else if (hours <= 168) { \n      tavilyTimeRange = \"week\"; \n      braveFreshness = \"pw\"; // Brave 的 past week\n    } else if (hours <= 720) { \n      tavilyTimeRange = \"month\"; \n      braveFreshness = \"pm\"; // Brave 的 past month\n    } else { \n      tavilyTimeRange = \"year\"; \n      braveFreshness = \"py\"; // Brave 的 past year\n    }\n  }\n}\n\n// 4. 组装 Tavily API 专属请求体 (用于 Tavily A 和 Tavily B)\nconst tavilyPayload = {\n  // 注意：不要把 API Key 硬编码在代码里，让 HTTP 节点去使用 Credentials，这里只传参数\n  \"query\": finalQuery,\n  \"search_depth\": \"advanced\", // 定向搜证必须用 advanced，挖得更深\n  \"include_answer\": true,\n  \"include_raw_content\": false,\n  \"max_results\": 5\n};\nif (tavilyTimeRange) tavilyPayload.time_range = tavilyTimeRange;\n\n// 5. 组装 Brave API 专属 Query Parameters (用于最后的兜底)\nconst braveQs = {\n  \"q\": finalQuery,\n  \"count\": 5\n};\nif (braveFreshness) braveQs.freshness = braveFreshness;\n\n// 6. 将组装好的炸药包挂载在 item 上，继续向下流转\nreturn {\n  json: {\n    ...item, \n    tavily_payload: tavilyPayload,\n    brave_qs: braveQs\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        1552
+      ],
+      "id": "cf89939c-09b4-4edc-b192-646ea93fa45a",
+      "name": "Tavily Payload Builder"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.tavily_payload }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        1008
+      ],
+      "id": "77fcb646-b56d-483d-bc3e-ce5f33feca30",
+      "name": "Tavily Search Fetch",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 提取原始任务数据 (重要：包含 content_id)\nconst item = $input.item.json;\n\n// 2. 安全提取 Tavily 结果 (如果是报错流入的，结果为空)\nconst results = item.results ||[];\nconst aiAnswer = item.answer || \"\";\n\n// 3. 映射为全域标准情报格式\nlet intel = results.map(res => ({\n  source: \"Tavily Search\",\n  title: res.title || \"未知标题\",\n  url: res.url || \"\",\n  snippet: res.content || \"\"\n}));\n\n// 4. 追加 Tavily 的 AI 原生总结 (高权重)\nif (aiAnswer) {\n  intel.unshift({\n    source: \"Tavily AI Summary\",\n    title: \"Tavily 智能综述: \" + (item.tavily_payload?.query || \"Search Result\"),\n    url: \"https://tavily.com\",\n    snippet: aiAnswer\n  });\n}\n\n// 5. 如果抓取完全失败/无结果，依然返回一条空情报，保证下游闭环\nif (intel.length === 0) {\n  intel.push({\n    source: \"Tavily Search (Failed)\",\n    title: \"无有效搜索结果\",\n    url: \"\",\n    snippet: \"未能检索到相关情报。\"\n  });\n}\n\n// 6. 清理临时变量，保留必要数据输出给 Fan-in 节点\ndelete item.tavily_payload;\ndelete item.results;\ndelete item.answer;\ndelete item.images;\n\nreturn {\n  json: {\n    ...item,        // 👈 核心：身份证 (content_id) 完美保留\n    intel: intel   // 存放标准化后的短情报数组\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        1008
+      ],
+      "id": "95dd0abf-1418-4f70-ba00-98a1d0061b05",
+      "name": "Tavily Search Adapter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取 Loop 节点 (Done 分支) 抓取回来的所有碎片数据\nconst items = $input.all();\nconsole.log(`[Fan-in] 收到待聚合的碎片条目数: ${items.length}`);\n\n// 2. 【核心简化】直接从大门节点获取全局唯一契约！\n// 因为母工作流是 Run once for each item，所以这里绝对安全且唯一\nconst globalInput = $('Normalize Inputs').first().json;\nconst content_id = globalInput.content_id || \"MISSING_ID\";\nconst triage_prompt = globalInput.triage_prompt || \"请输出结构化的 Markdown 研报。\";\nconst topic_intent = globalInput.topic_intent || \"\";\nconst target_count = globalInput.target_count || 1;\n\n// 3. 初始化唯一的情报池\nconst allIntel =[];\nconst seenUrls = new Set();\n\n// 内部辅助函数：处理并推入情报，包含 Token 软截断保护\nconst addIntel = (candidate) => {\n  if (!candidate.title && !candidate.intel_content && !candidate.snippet) return;\n  \n  const rawUrl = candidate.url || candidate.link || \"\";\n  const normalizedUrl = rawUrl.toLowerCase().replace(/\\/$/, \"\");\n  if (normalizedUrl && seenUrls.has(normalizedUrl)) return;\n\n  // 防 Token 溢出截断 (80,000 字符)\n  if (candidate.intel_content && candidate.intel_content.length > 80000) {\n      candidate.intel_content = candidate.intel_content.substring(0, 80000) + \"\\n\\n...[网关警告：由于长度超限，后文已被截断]...\";\n  }\n\n  // 标记来源\n  if (!candidate.source) {\n      if (rawUrl.includes(\"zhihu\")) candidate.source = \"Zhihu\";\n      else if (rawUrl.includes(\"tavily\")) candidate.source = \"Tavily\";\n      else candidate.source = \"Deep Scrape Engine\";\n  }\n\n  if (normalizedUrl) seenUrls.add(normalizedUrl);\n  allIntel.push(candidate);\n};\n\n// 4. 遍历提取所有抓取结果\nfor (const item of items) {\n  const json = item.json;\n\n  // 情况 A: MCP / Firecrawl 返回的长文本\n  if (json.output || json.result || json.markdown) {\n    const rawContent = json.output || json.result || json.markdown;\n    let extractedTitle = \"深度抓取长文 (MCP/Firecrawl)\";\n    const titleMatch = rawContent.match(/^#\\s+(.+)$/m);\n    if (titleMatch) extractedTitle = titleMatch[1];\n\n    addIntel({\n      source: \"Deep Scrape Engine\",\n      title: extractedTitle,\n      url: json.target_url || json.url,\n      intel_content: rawContent\n    });\n  }\n  // 情况 B: 标准短情报数组 (Tavily)\n  else if (json.intel && Array.isArray(json.intel)) {\n    json.intel.forEach(i => addIntel(i));\n  }\n}\n\n// 5. 组装最终的单一输出载荷给 Triage Agent\nreturn {\n  json: {\n    content_id: content_id,\n    topic_intent: topic_intent,\n    triage_prompt: triage_prompt,\n    target_count: target_count,\n    valid_intel_count: allIntel.length,\n    intel: allIntel\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        384
+      ],
+      "id": "96269d4e-41d1-4e0c-bd0e-f3ea05d69da2",
+      "name": "Aggregate Intel (Fan-in)"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-pro-preview-customtools",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-pro-preview-customtools"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=<task_context>\n- Topic Intent: {{ $json.topic_intent }}\n- Required Dimensions: {{ $json.target_count }}\n</task_context>\n\n<user_writing_guideline>\n{{ $json.triage_prompt }}\n</user_writing_guideline>\n\n<raw_intelligence>\n{{ JSON.stringify($json.intel) }}\n</raw_intelligence>\n\n<instruction>\nPerform your cognitive workflow:\n1. Assess the veracity of the provided <raw_intelligence>.\n2. Use Google Search or URL Context to resolve factual gaps or contradictions.\n3. Synthesize the findings into a high-trust intelligence brief following the <user_writing_guideline>.\n4. Return the final output strictly as the requested JSON structure.\n</instruction>"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {
+          "googleSearch": true,
+          "urlContext": true
+        },
+        "options": {
+          "systemMessage": "=<persona>\nYou are the Chief Intelligence Analyst (CIO) and Senior Technical Writer of the Microscope Gateway. \nYou specialize in OSINT (Open Source Intelligence), technical architectural analysis, and adversarial fact-checking. \nYour goal is to transform raw, fragmented, and potentially conflicting intelligence into a high-trust, publication-ready Markdown intelligence brief.\n</persona>\n\n<core_directives>\n1. EVIDENCE HIERARCHY: Prioritize primary sources (e.g., official docs, Arxiv papers) over secondary summaries.\n2. CONFLICT RESOLUTION: When intelligence sources contradict, explicitly label the conflict and perform a Google Search to determine the prevailing consensus. Do not smooth over disagreements; highlight them as critical intelligence gaps.\n3. CITATION PROTOCOL: Every claim in the Markdown report MUST be linked to its source via inline Markdown citations (e.g., [Title](URL)).\n4. COGNITIVE WORKFLOW: \n   - Step A: Analyze the reliability of raw inputs. \n   - Step B: Identify missing information. \n   - Step C: Use built-in tools (Google Search/URL Context) to bridge gaps.\n   - Step D: Synthesize final output.\n5. DIMENSION CONTROL: Strictly adhere to the requested number of dimensions.\n6. OUTPUT LANGUAGE: Professional Business English.\n</core_directives>\n\n<json_schema>\nYou must respond in pure, valid JSON. Do not include markdown code blocks or explanatory prefixes:\n{\n  \"content_id\": \"string\",\n  \"report_title\": \"string\",\n  \"report_markdown\": \"string (Use H1-H3 headers, Markdown tables for comparisons, and citation links)\"\n}\n</json_schema>",
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        384
+      ],
+      "id": "1785f395-7636-400b-9b94-b1625293badd",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QaWUP98JFKesK5YO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 智能提取所有文本片段 (穿透 Grounding 嵌套)\nlet rawText = \"\";\n\nif ($json.content && Array.isArray($json.content.parts)) {\n  // 当开启了 Google Search 工具时，Gemini 会返回多个 parts\n  // 我们过滤出所有包含 'text' 属性的 part，并把它们无缝拼接起来\n  rawText = $json.content.parts\n    .filter(part => part.text !== undefined)\n    .map(part => part.text)\n    .join(\"\\n\");\n} else if ($json.text) {\n  rawText = $json.text; // 兼容未触发工具时的常规结构\n} else {\n  rawText = JSON.stringify($json);\n}\n\n// 2. 暴力清洗与 JSON 解析 (防大模型幻觉)\nlet parsedData = {};\ntry {\n  // 大模型有时会在 JSON 前后加废话，利用正则提取最外层的 {}\n  const jsonMatch = rawText.match(/\\{[\\s\\S]*\\}/);\n  let cleanText = jsonMatch ? jsonMatch[0] : rawText;\n  \n  // 彻底剔除 Markdown 代码块标记\n  cleanText = cleanText.replace(/```json/gi, '').replace(/```/g, '').trim();\n  \n  parsedData = JSON.parse(cleanText);\n} catch (error) {\n  console.log(\"JSON 解析失败，原始文本:\", rawText);\n  // 终极底线：哪怕解析彻底崩溃，也要把几万字的长文保住，绝不丢失资产！\n  parsedData = {\n    content_id: \"PARSE_ERROR\",\n    report_title: \"解析异常_请人工核对\",\n    report_markdown: \"## 网关解析异常\\n未能成功解析大模型输出的 JSON，以下为原始返回文本：\\n\\n\" + rawText\n  };\n}\n\n// 3. 提取最终落盘字段\nconst content_id = parsedData.content_id || \"MISSING_ID\";\nconst title = parsedData.report_title || `Deep_Research_${content_id}`;\nconst markdown = parsedData.report_markdown || \"# No content generated.\";\n\n// 4. 组装给 Google Drive 和 Database 的标准载荷\nreturn {\n  json: {\n    content_id: content_id,\n    file_name: `${title}.md`,\n    file_content: markdown\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        384
+      ],
+      "id": "26e2eda7-9318-4a97-8368-84c90170b7e1",
+      "name": "Prepare Persistence Data"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.file_content }}",
+        "name": "={{ $json.file_name }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1uDoSCB2r_RGwkKtSsMMJGgHZgItSD-zM",
+          "mode": "list",
+          "cachedResultName": "Brief",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1uDoSCB2r_RGwkKtSsMMJGgHZgItSD-zM"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        704,
+        384
+      ],
+      "id": "b2cd6bb9-7b56-4a1f-a003-19ec3f5c5a7a",
+      "name": "Google Drive Upload",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ixUqEuQq0UM2nud9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取当前节点 (DB Update) 的所有输入\nconst items = $input.all();\n\n// 2. 跨节点安全获取持久化前的数据 (防弹寻址)\n// 假设这批任务有多个，我们按索引或原样提取\nconst driveItems = $('Google Drive Upload').all();\nconst prepItems = $('Prepare Persistence Data').all();\n\n// 3. 组装标准化的出口数据契约 (Return Payload)\nreturn items.map((item, index) => {\n  const prepData = prepItems[index]?.json || {};\n  const driveData = driveItems[index]?.json || {};\n  \n  return {\n    json: {\n      content_id: prepData.content_id || item.json.content_id || \"UNKNOWN_ID\",\n      status: \"research_done\",\n      service_node: \"[Atomic] Microscope_Gateway\",\n      drive_file_id: driveData.id || \"MISSING_FILE_ID\",\n      file_name: prepData.file_name || \"report.md\",\n      // 提取前 150 个字符作为摘要，方便母工作流进行飞书/钉钉/Slack 消息推送\n      report_preview: prepData.file_content ? prepData.file_content.substring(0, 150).replace(/\\n/g, ' ') + \"...\" : \"\"\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        384
+      ],
+      "id": "754daa3a-0560-43e5-8f84-7d5c6c1c766f",
+      "name": "Gateway Output Contract"
+    },
+    {
+      "parameters": {
+        "url": "https://api.scrape.do/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "a8d0f7e3771f43838039b57b4973c8d8828c0e66f80"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.scrape_do_params.url}}"
+            },
+            {
+              "name": "render",
+              "value": "true"
+            },
+            {
+              "name": "super",
+              "value": "true"
+            },
+            {
+              "name": "output",
+              "value": "=markdown"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1488,
+        1680
+      ],
+      "id": "e75069f5-6817-4345-a0f8-6cea19abcc46",
+      "name": "HTTP Request",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "Actors",
+        "operation": "Run actor and get dataset"
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        496,
+        736
+      ],
+      "id": "a5b28423-6b1b-4a2f-a274-26af936d87a2",
+      "name": "Run an Actor and get dataset",
+      "credentials": {
+        "apifyApi": {
+          "id": "SI97kkgr02zbCEFT",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c091951e-38bd-45dc-96f7-15c8bb68ea5b",
+              "leftValue": "={{ $json.target_url }}",
+              "rightValue": "zhihu.com",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        720
+      ],
+      "id": "bd98a144-e8e8-4143-b164-e65b293a2ccd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "41d2794b-ce57-4b9a-8b49-309a46ed3888",
+              "leftValue": "={{ $json.markdown }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        928,
+        704
+      ],
+      "id": "159ea334-4619-4fda-bfe8-142d86138364",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取 Apify 吐出的每一个 Item\nconst items = $input.all();\n\nreturn items.map(item => {\n  const data = item.json;\n  \n  // 1. 核心数据：提取 Apify 清洗好的 Markdown\n  // 即使 Apify 有时会返回空，我们也要确保返回一个合法的 JSON 结构给下游\n  const markdown = data.markdown || data.text || \"# No content extracted\";\n  \n  // 2. 来源数据：从原始输入中继承 content_id (这需要你在前序节点中透传)\n  // 确保之前的节点把 content_id 挂载在 item.json 下\n  const content_id = item.json.content_id || \"MISSING_ID\";\n  const target_url = data.url || \"\";\n\n  // 3. 返回标准化格式，直接对接 Aggregate Intel (Fan-in)\n  return {\n    json: {\n      content_id: content_id,      // 身份牌：确保数据流不乱\n      target_url: target_url,      // 溯源：标记这是哪个网页的数据\n      markdown: markdown,          // 载荷：纯净的长文内容\n      source: \"Apify Crawler\"      // 来源标签\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        704
+      ],
+      "id": "6c144037-0e40-4ffd-8f05-c3437c37cb16",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.tavily_payload }}",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "b05f64a8-2ada-46fc-8eef-4f0dadfd35b8",
+      "name": "Tavily Key A",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        704,
+        1552
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "VpLwjEcMJzMghmV3",
+          "name": "Tavily - 1"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Tavily Key A\"].json.results ? 'OK' : 'FAIL' }}",
+              "value2": "OK"
+            }
+          ]
+        }
+      },
+      "id": "74c0721b-3ad2-4639-9e2d-f01c196583a5",
+      "name": "A 是否挂了",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        992,
+        1568
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Tavily Payload Builder').item.json.tavily_payload }}",
+        "options": {}
+      },
+      "id": "2c456b29-de89-4991-a5fb-5b5c6f37ac03",
+      "name": "Tavily Key B",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1216,
+        1712
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ohgBsEQ3EAQQy6do",
+          "name": "Tavily - 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Tavily Key B\"].json.results ? 'OK' : 'FAIL' }}",
+              "value2": "OK"
+            }
+          ]
+        }
+      },
+      "id": "7c543c57-8597-40a0-b688-dd0dc61e53bf",
+      "name": "B 是否也挂了",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        1712
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.search.brave.com/res/v1/web/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.brave_qs.q }}"
+            },
+            {
+              "name": "count",
+              "value": "={{ $json.brave_qs.count }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Subscription-Token",
+              "value": "BSAC6lRAT1OxpxoGeDQcd0O-Up-01bj"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5ccf83da-080d-4158-a916-c7b4f9ddc711",
+      "name": "Brave Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1664,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. 获取所有潜在搜索节点的引用\n// 注意：请确保你的节点名称分别为 \"Tavily Key A\", \"Tavily Key B\", \"Brave Search\"\nlet nodeA, nodeB, nodeBrave;\ntry { nodeA = $(\"Tavily Key A\").all(); } catch (e) {}\ntry { nodeB = $(\"Tavily Key B\").all(); } catch (e) {}\ntry { nodeBrave = $(\"Brave Search\").all(); } catch (e) {}\n\nlet rawResults = [];\nlet aiAnswer = \"\";\nlet sourceName = \"\";\nlet searchTopic = \"\";\n\n// 2. 优先级判定：谁有数据就用谁 (A -> B -> Brave)\nif (nodeA && nodeA[0]?.json?.results) {\n  rawResults = nodeA[0].json.results;\n  aiAnswer = nodeA[0].json.answer || \"\";\n  sourceName = \"Tavily (Key A)\";\n  searchTopic = nodeA[0].json.query || \"\";\n} else if (nodeB && nodeB[0]?.json?.results) {\n  rawResults = nodeB[0].json.results;\n  aiAnswer = nodeB[0].json.answer || \"\";\n  sourceName = \"Tavily (Key B)\";\n  searchTopic = nodeB[0].json.query || \"\";\n} else if (nodeBrave && nodeBrave[0]?.json?.web?.results) {\n  // Brave 的字段映射：title, url, description -> content\n  rawResults = nodeBrave[0].json.web.results.map(r => ({\n    title: r.title,\n    url: r.url,\n    content: r.description\n  }));\n  sourceName = \"Brave Search\";\n  searchTopic = $(\"Normalize Inputs\").first().json.topic_intent || \"\";\n}\n\n// 3. 映射为全域标准情报格式 (符合你原本 Adapter 的 intel 契约)\nlet intel = rawResults.map(item => ({\n  source: sourceName,\n  title: item.title,\n  url: item.url,\n  snippet: item.content || \"\"\n}));\n\n// 4. 处理 Tavily 特有的 AI Answer (如果是从 Tavily 回来的话)\nif (aiAnswer) {\n  intel.unshift({\n    source: sourceName + \" Summary\",\n    title: \"智能综述: \" + searchTopic,\n    url: \"https://tavily.com\",\n    snippet: aiAnswer\n  });\n}\n\n// 5. 极端兜底：如果三路全灭，给下游一个报错标记，防止 Aggregate 节点因空数据崩溃\nif (intel.length === 0) {\n  intel.push({\n    source: \"System Error\",\n    title: \"⚠️ 搜索通道全线告急\",\n    url: \"\",\n    snippet: \"Tavily (A/B) 及 Brave Search 均未返回结果，请检查 API 额度或网络环境。\"\n  });\n}\n\n// 6. 最终输出给下游 Aggregate 节点\nreturn { json: { intel: intel } };"
+      },
+      "id": "8789aba9-b081-4484-9e2a-0ec47de6b4aa",
+      "name": "统一情报洗数据",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        1712
+      ]
+    }
+  ],
+  "pinData": {
+    "Execute Workflow Trigger": [
+      {
+        "json": {
+          "selected_title": "Meta’s 'Muse Spark' and the Billion-Dollar Redemption Arc",
+          "topic_intent": "Deep OSINT Forensic Investigation for: Meta’s 'Muse Spark' and the Billion-Dollar Redemption Arc. Focus: Latest benchmarks of Muse Spark;\r\nAlexander’s track record before joining Meta;\r\nMeta’s financial performance throughout 2025 and 2026Q1",
+          "source_lane": "auto",
+          "target_url": "[\"https://techcrunch.com/2026/04/09/meta-ai-app-climbs-to-no-5-on-the-app-store-after-muse-spark-launch/\",\"https://www.qbitai.com/2026/04/398020.html\"]",
+          "timeframe": "3m",
+          "target_count": 1,
+          "triage_prompt": "<role>\n你是一位冷酷无情的 OSINT（开源情报）分析师。你的唯一任务是从抓取到的网页、知乎讨论、财报和论坛中，像法医一样提取关于 \"Meta’s 'Muse Spark' and the Billion-Dollar Redemption Arc\" 的纯粹事实（Hard Facts）、财务数据和人类真实情绪。\n</role>\n\n<temporal_and_fact_grounding>\n**当前系统时间是：2026年4月10日。**\n【绝对事实红线】：\n1. 在提取任何产品发布、算力售罄、财报数据、高管离职时，必须严格核对原文中的具体时间。\n2. 严禁将不同时间线的事件强行因果缝合。\n3. 如果原文没有明确说明“X月发生了Y”，你必须标注为“[时间未披露]”，**绝对禁止脑补月份和日期！**\n</temporal_and_fact_grounding>\n\n<objective>\n你**不是**在写新闻报道，你是在建立一份供主编定调用的“底层情报档案（Raw Intelligence Dossier）”。\n不要总结！不要升华！不要连词！只提取血淋淋的数据、代码细节、原话引用和微观场景。\n</objective>\n\n<editor_directive>\n主编下达了最高优先级的定向搜证指令：\"Latest benchmarks of Muse Spark;\r\nAlexander’s track record before joining Meta;\r\nMeta’s financial performance throughout 2025 and 2026Q1\"。\n你必须在档案中单开一章，用最硬核的证据（链接、截图描述、原话、财报数字）直接回应这个指令。\n</editor_directive>\n\n<execution_rules>\n1. **数据零压缩**：绝对不要把“1.2亿美元”总结为“巨额资金”，保留原始数字、API定价、Token限制。\n2. **提取微观场景 (Micro-Scenes)**：去知乎/X/Reddit上找开发者*实际*是怎么用/怎么骂的。提取具体场景（例如：“我用它跑了100个并发，结果显存爆了”）。\n3. **剥离公关话术**：跳过所有“致力于、赋能、革命性”的废话，只看他们发布了什么接口、砍了什么功能、收了多少钱。\n</execution_rules>\n\n<output_format>\n请严格使用中文，按以下 Markdown 结构输出情报档案。这直接决定了下游主编能否判断新闻的“叙事原型”：\n\n# OSINT 深度情报档案：Meta’s 'Muse Spark' and the Billion-Dollar Redemption Arc\n\n## 1. 核心事实与时间线 (Core Facts & Timeline)\n- [时间戳] 事实描述（必须精确，不可脑补）\n\n## 2. 财务与资本账本 (Financials & CapEx)\n- 提取所有的 ROI、算力成本、定价策略、融资金额。如果没有，写“无”。\n\n## 3. 技术架构与工程实锤 (Tech Architecture & Evidence)\n- 提取论文细节、GitHub 跑分、架构缺陷、API 变动。如果没有，写“无”。\n\n## 4. 生态博弈与护城河 (Ecosystem & Monopoly)\n- 提取开源/闭源冲突、平台政策打压、法务诉讼（如版权绞杀）。如果没有，写“无”。\n\n## 5. 社区原声与野生实操 (Community Voice & Indie Hacks)\n- 提取第三方开发者、KOL 或普通用户的原话引用（带上他们的情绪：嘲讽、震惊或愤怒）及具体测试案例。\n\n## 6. 组织动荡与人事 (Org & Execs)\n- 提取高管离职、团队内讧、裁员数据。如果没有，写“无”。\n\n## 7. 🎯 主编定向指令核查 (Editor's Directive Fulfillment)\n- 针对主编指令的专项证据提取（必须详尽）。\n</output_format>\n\n<critical_constraints>\n- **禁止 AI 味**：严禁出现“不可否认、总而言之、标志着、具有深远意义”。\n- **越长越好**：尽可能多地保留原文的硬核细节和金句，不要为了排版而删减信息。\n</critical_constraints>"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook (OpenClaw)": {
+      "main": [
+        [
+          {
+            "node": "Normalize Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalize Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Inputs": {
+      "main": [
+        [
+          {
+            "node": "Intent Router Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop (Fan-out)": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Intel (Fan-in)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch (3-Lanes)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini 3.1 Pro (Auto-Fixer)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Router Agent1": {
+      "main": [
+        [
+          {
+            "node": "Post-Router Relational (Broadcast)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini 3.1 Flash1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Intent Router Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Intent Router Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-Router Relational (Broadcast)1": {
+      "main": [
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch (3-Lanes)": {
+      "main": [
+        [
+          {
+            "node": "MCP Payload Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tavily Payload Builder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Payload Adapter": {
+      "main": [
+        [
+          {
+            "node": "Call '[Atomic] Universal_Browser_Pilot'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call '[Atomic] Universal_Browser_Pilot'1": {
+      "main": [
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fallback to MCP (Rescue)": {
+      "main": [
+        [
+          {
+            "node": "Call '[Atomic] Universal_Browser_Pilot'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily Payload Builder": {
+      "main": [
+        [
+          {
+            "node": "Brave Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily Search Fetch": {
+      "main": [
+        [
+          {
+            "node": "Tavily Search Adapter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily Search Adapter": {
+      "main": [
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Intel (Fan-in)": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Prepare Persistence Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Upload": {
+      "main": [
+        [
+          {
+            "node": "Gateway Output Contract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Persistence Data": {
+      "main": [
+        [
+          {
+            "node": "Google Drive Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Fallback to MCP (Rescue)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Run an Actor and get dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run an Actor and get dataset": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fallback to MCP (Rescue)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily Key A": {
+      "main": [
+        [
+          {
+            "node": "A 是否挂了",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A 是否挂了": {
+      "main": [
+        [
+          {
+            "node": "统一情报洗数据",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Tavily Key B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily Key B": {
+      "main": [
+        [
+          {
+            "node": "B 是否也挂了",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "B 是否也挂了": {
+      "main": [
+        [
+          {
+            "node": "统一情报洗数据",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Brave Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brave Search": {
+      "main": [
+        [
+          {
+            "node": "统一情报洗数据",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "统一情报洗数据": {
+      "main": [
+        [
+          {
+            "node": "Loop (Fan-out)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "c0a6872c-1c4b-4c58-8768-37322bfdeef8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1be078014d58a0a57eace08259519a4fb2789524a0e0ea4b879d06181e9e45a7"
+  },
+  "id": "Q7SvDzlTWgSk_ftHRIk4H",
+  "tags": []
+}

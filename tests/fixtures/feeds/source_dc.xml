@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Source DC</title>
+    <link>https://dc.example.com</link>
+    <item>
+      <title>Fresh story dated with dc namespace</title>
+      <link>https://dc.example.com/posts/fresh</link>
+      <dc:date>2026-08-12T06:00:00Z</dc:date>
+      <description>Dated via a namespaced dc:date element.</description>
+    </item>
+    <item>
+      <title>Ancient story dated with dc namespace</title>
+      <link>https://dc.example.com/posts/ancient</link>
+      <dc:date>2026-07-01T06:00:00Z</dc:date>
+      <description>Outside the 96h window.</description>
+    </item>
+    <item>
+      <title>Undated story kept conservatively</title>
+      <link>https://dc.example.com/posts/undated</link>
+      <description>No date element at all.</description>
+    </item>
+  </channel>
+</rss>

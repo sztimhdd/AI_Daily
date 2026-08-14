@@ -1,0 +1,476 @@
+"""Command-line interface for the daily editorial pipeline.
+
+Runnable from the repo root:
+
+    PYTHONPATH=src python3 -m ai_daily.cli <command> [options]
+
+Stages: collect -> topic_choice -> research -> outline -> draft ->
+optional_cover -> assembly -> completed.  Exit code 0 on success, 1 on
+a controlled pipeline/gate failure (message on stderr), 2 on usage
+errors.  No credentials are ever requested or stored.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import sys
+
+from . import STAGES, assemble, draft, fetch, outline, pipeline, publish, state, topics, tui
+from .paths import RunPaths
+
+
+def _today() -> str:
+    return datetime.date.today().isoformat()
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="ai_daily", description=__doc__)
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    def common(p, need_root=True):
+        p.add_argument("--root", default=".", help="repository root")
+        p.add_argument("--date", default=_today(), help="run date YYYY-MM-DD")
+
+    p = sub.add_parser("init", help="create state.md for a date")
+    common(p)
+
+    p = sub.add_parser("status", help="print the run state")
+    common(p)
+
+    p = sub.add_parser("collect", help="collect AIHOT (+ optional RSS)")
+    common(p)
+    p.add_argument("--mode", choices=("fixture", "live"), default="fixture")
+    p.add_argument("--aihot-fixture", default=None)
+    p.add_argument("--rss-url", action="append", default=None,
+                   help="explicit RSS URL (repeatable); default: none in fixture mode, catalog in live mode")
+    p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("candidates", help="print the 3 topic candidates")
+    common(p)
+
+    p = sub.add_parser("choose-topic", help="record the topic choice")
+    common(p)
+    p.add_argument("--fixture", default=None, help="fixture bypass JSON")
+    p.add_argument("--choice", type=int, default=None, help="human choice 1..3")
+    p.add_argument("--direction", default="", help="editorial direction, kept verbatim")
+    p.add_argument("--simulate", action="store_true",
+                   help="unattended simulated choice (no human wait); "
+                        "records topic_choice: simulated with the candidate "
+                        "kept verbatim; defaults to candidate 1 when --choice is omitted")
+
+    for name, help_text in (
+        ("outline", "build the outline"),
+        ("draft", "write the draft"),
+        ("assemble", "validate and package the article"),
+    ):
+        p = sub.add_parser(name, help=help_text)
+        common(p)
+        p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("research", help="run targeted research")
+    common(p)
+    p.add_argument("--force", action="store_true")
+    p.add_argument(
+        "--mode",
+        choices=("fixture", "live"),
+        default="fixture",
+        help=(
+            "fixture: closed-pool V1 research (default, compatible); "
+            "live: active-search V2 initial research (story matrix + "
+            "real URL fetching)"
+        ),
+    )
+
+    p = sub.add_parser("regenerate-outline",
+                       help="rebuild the draft after a human outline edit")
+    common(p)
+
+    p = sub.add_parser("cover", help="optional cover adoption (nonblocking)")
+    common(p)
+    p.add_argument("--source-dir", default=None,
+                   help="dir holding ChatGPT Image exports")
+
+    p = sub.add_parser("publish", help="publish with verified remote or local-only")
+    common(p)
+    p.add_argument("--repo-dir", required=True)
+    p.add_argument("--remote-url", default=None)
+    p.add_argument("--branch", default="main")
+
+    p = sub.add_parser("run", help="unattended fixture end-to-end run")
+    common(p)
+    p.add_argument("--topic-fixture", required=True)
+    p.add_argument("--aihot-fixture", required=True)
+    p.add_argument("--cover-source", default=None)
+    p.add_argument("--repo-dir", default=None)
+
+    p = sub.add_parser("fetch", help="fetch one URL via the unified three-lane primitive")
+    common(p)
+    p.add_argument("--lane", choices=("auto", "http", "cdp"), default="auto",
+                   help="force a lane (default: auto-route by host)")
+    p.add_argument("url", help="URL to fetch")
+
+    p = sub.add_parser(
+        "session",
+        help="visible-terminal session: collect -> topic choice -> research (TUI)",
+    )
+    common(p)
+    p.add_argument("--mode", choices=("fixture", "live"), default="live")
+    p.add_argument("--aihot-fixture", default=None)
+    p.add_argument("--force", action="store_true")
+    p.add_argument("--choice", type=int, default=None,
+                   help="skip the interactive topic prompt with this choice")
+    p.add_argument("--direction", default="")
+
+    return parser
+
+
+def _paths(args) -> RunPaths:
+    return RunPaths.for_date(args.root, args.date)
+
+
+def _ensure_state(run_paths) -> None:
+    state.init_state(run_paths)
+
+
+def cmd_init(args) -> int:
+    _ensure_state(_paths(args))
+    print(f"initialized run state for {args.date}")
+    return 0
+
+
+def cmd_status(args) -> int:
+    run_paths = _paths(args)
+    st = state.read_state(run_paths)
+    print(f"run: {st['run_id']}")
+    for key in ("stage", "status", "slug", "topic_choice", "topic_title", "last_error", "updated_at"):
+        print(f"- {key}: {st.get(key, '')}")
+    print("counters:")
+    for k, v in sorted(st["counters"].items()):
+        print(f"- {k}: {v}")
+    print("artifacts:")
+    for k, v in sorted(st["artifacts"].items()):
+        print(f"- {k}: {v}")
+    return 0
+
+
+def cmd_collect(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_collect(
+        run_paths,
+        mode=args.mode,
+        aihot_fixture=args.aihot_fixture,
+        rss_urls=args.rss_url,
+        force=args.force,
+    )
+    aihot_path = run_paths.work_dir / "aihot-items.json"
+    items = (
+        json.loads(aihot_path.read_text(encoding="utf-8"))
+        if aihot_path.exists() else []
+    )
+    print(tui.render_hot_topics(items, color=tui.supports_color()))
+    print(f"collect: {result['status']} "
+          f"(aihot={result.get('aihot_items', '?')} rss={result.get('rss_items', '?')})")
+    return 0
+
+
+def cmd_candidates(args) -> int:
+    run_paths = _paths(args)
+    cands = pipeline.run_candidates(run_paths)
+    print(topics.candidates_markdown(args.date, cands))
+    return 0
+
+
+def cmd_choose_topic(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    if args.simulate and args.fixture:
+        print("error: choose-topic: --simulate cannot be combined with --fixture",
+              file=sys.stderr)
+        return 2
+    if args.fixture:
+        topic = pipeline.run_topic_fixture(run_paths, args.fixture)
+    elif args.simulate:
+        choice = args.choice if args.choice is not None else 1
+        topic = pipeline.run_simulated_choice(run_paths, choice, args.direction)
+    elif args.choice is not None:
+        topic = pipeline.run_human_choice(run_paths, args.choice, args.direction)
+    else:
+        # Interactive TUI: show the stage progress and the candidates,
+        # then let the editor pick by number and optionally add a
+        # writing direction.  Output rendering falls back to plain text
+        # when stdout is not a terminal, so scripted usage stays greppable.
+        code = _require_interactive()
+        if code is not None:
+            return code
+        cands = pipeline.run_candidates(run_paths)
+        st = state.read_state(run_paths)
+        use_color = tui.supports_color()
+        print(tui.render_progress(st.get("stage", ""), STAGES, color=use_color))
+        print()
+        print(tui.render_candidates(cands, color=use_color))
+        choice = tui.prompt_choice(len(cands))
+        direction = tui.prompt_optional_direction()
+        topic = pipeline.run_human_choice(run_paths, choice, direction)
+    print(f"topic chosen: {topic['title']} ({topic['slug']})")
+    return 0
+
+
+def cmd_research(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    if args.mode == "live":
+        result = pipeline.run_initial_research(run_paths, force=args.force)
+    else:
+        result = pipeline.run_research(run_paths, force=args.force)
+    print(f"research: {result['status']} ({result['research_md']})")
+    return 0
+
+
+def cmd_outline(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_outline(run_paths, force=args.force)
+    print(f"outline: {result['status']} ({result['outline']})")
+    return 0
+
+
+def cmd_draft(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_draft(run_paths, force=args.force)
+    print(f"draft: {result['status']} ({result['article']})")
+    return 0
+
+
+def cmd_regenerate_outline(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.regenerate_outline_from_edit(run_paths)
+    print(f"draft rebuilt from edited outline: {result['status']} ({result['article']})")
+    return 0
+
+
+def cmd_cover(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_cover(run_paths, source_dir=args.source_dir)
+    if result.ok:
+        print(f"cover: ok ({result.path} {result.width}x{result.height} {result.format})")
+    else:
+        print(f"cover: skipped (optional): {result.reason}")
+    return 0  # cover is optional and never fails the run
+
+
+def cmd_assemble(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_assemble(run_paths, force=args.force)
+    print(f"assemble: {result['status']}")
+    print(f"- package: {result['package_dir']}")
+    print(f"- final: {result['final_article']}")
+    return 0
+
+
+def cmd_publish(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_publish(
+        run_paths, repo_dir=args.repo_dir,
+        remote_url=args.remote_url, branch=args.branch,
+    )
+    print(f"publish: mode={result.mode}")
+    print(f"- reason: {result.reason}")
+    if result.remote_sha256:
+        print(f"- remote sha256: {result.remote_sha256}")
+    print(f"- local sha256: {result.local_sha256}")
+    print(f"- article: {result.published_relpath}")
+    return 0
+
+
+def cmd_run(args) -> int:
+    summary = pipeline.run_fixture_e2e(
+        root=args.root,
+        date=args.date,
+        topic_fixture=args.topic_fixture,
+        aihot_fixture=args.aihot_fixture,
+        cover_source=args.cover_source,
+        repo_dir=args.repo_dir,
+    )
+    print(f"run: {summary['run_id']} slug={summary['slug']}")
+    print(f"- collect: {summary['collect']['status']}")
+    print(f"- research/outline/draft: {summary['research']}/{summary['outline']}/{summary['draft']}")
+    print(f"- cover_ok: {summary['cover_ok']}")
+    print(f"- assembly: {summary['assembly']}")
+    print(f"- publish: {summary['publish_mode']}")
+    print(f"- final: {summary['final_article']}")
+    print(f"- stage: {summary['stage']}")
+    return 0
+
+
+def cmd_fetch(args) -> int:
+    """Low-level fetch primitive: usable at any stage, no state.md needed."""
+    run_paths = _paths(args)
+    lane = None if args.lane == "auto" else args.lane
+    result = fetch.fetch(args.url, run_paths, lane=lane)
+    print(f"fetch: {result.status} lane={result.source_lane} "
+          f"sha256={result.sha256} title={result.title}")
+    print(result.markdown[:200])
+    return 0
+
+
+def _session_progress(use_color: bool):
+    """Render live research milestones inside the visible session terminal."""
+    def emit(kind, payload):
+        if kind == "matrix":
+            print(tui.render_matrix(payload, color=use_color))
+            print()
+        elif kind == "evidence":
+            print(tui.render_evidence(payload, color=use_color))
+            print()
+        elif kind == "analysis_start":
+            print("正在调用 Codex CLI 生成七模块 OSINT 分析…")
+        elif kind == "analysis_done":
+            reason = payload.get("reason")
+            print(
+                f"Codex 分析：{payload.get('status', '?')}"
+                + (f"（{reason}）" if reason else "")
+            )
+    return emit
+
+
+def _require_interactive():
+    """None when stdin is a terminal; else a usage error exit code."""
+    if sys.stdin.isatty():
+        return None
+    print("error: stdin is not an interactive terminal; "
+          "pass --choice N to run unattended", file=sys.stderr)
+    return 2
+
+
+def _next_stage_hint(stage: str, mode: str = "fixture") -> str:
+    if mode == "live":
+        return "03 已跑完，本会话结束（live 证据包已生成，narrative 阶段待接入）"
+    if stage in STAGES and stage != STAGES[-1]:
+        return f"03 已跑完，下一步：{STAGES[STAGES.index(stage) + 1]}"
+    return "03 已跑完，本会话结束"
+
+
+def cmd_session(args) -> int:
+    """One visible-terminal session through stage 03 with full TUI output."""
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    use_color = tui.supports_color()
+    st = state.read_state(run_paths)
+    print(tui.render_header(args.date, run_paths.run_id, color=use_color))
+    print()
+    print(tui.render_progress(st.get("stage", ""), STAGES, color=use_color))
+    print()
+
+    result = pipeline.run_collect(
+        run_paths, mode=args.mode, aihot_fixture=args.aihot_fixture, force=args.force,
+    )
+    aihot_path = run_paths.work_dir / "aihot-items.json"
+    items = (
+        json.loads(aihot_path.read_text(encoding="utf-8"))
+        if aihot_path.exists() else []
+    )
+    print(tui.render_hot_topics(items, color=use_color))
+    print(f"collect: {result['status']}（AIHOT {len(items)} 条）")
+    print()
+
+    cands = pipeline.run_candidates(run_paths)
+    print(tui.render_candidates(cands, color=use_color))
+    print()
+
+    st = state.read_state(run_paths)
+    if st.get("topic_choice") and not args.force:
+        print(f"选题已定：{st.get('topic_title', '')}（{st.get('slug', '')}）")
+    elif args.choice is not None:
+        topic = pipeline.run_human_choice(run_paths, args.choice, args.direction)
+        print(f"选题已定：{topic['title']}（{topic['slug']}）")
+    else:
+        code = _require_interactive()
+        if code is not None:
+            return code
+        choice = tui.prompt_choice(len(cands))
+        direction = tui.prompt_optional_direction()
+        topic = pipeline.run_human_choice(run_paths, choice, direction)
+        print(f"选题已定：{topic['title']}（{topic['slug']}）")
+    print()
+
+    if args.mode == "live":
+        result = pipeline.run_initial_research(
+            run_paths, force=args.force, progress=_session_progress(use_color),
+        )
+    else:
+        result = pipeline.run_research(run_paths, force=args.force)
+    print(f"research: {result['status']}")
+    osint_path = run_paths.work_dir / "initial-osint.json"
+    if osint_path.exists():
+        data = json.loads(osint_path.read_text(encoding="utf-8"))
+        print(tui.render_osint(
+            data.get("modules", []),
+            data.get("evidence_gaps", []),
+            analysis_status=data.get("analysis_status", ""),
+            color=use_color,
+        ))
+        print()
+    print(_next_stage_hint(
+        state.read_state(run_paths).get("stage", ""), mode=args.mode
+    ))
+    return 0
+
+
+COMMANDS = {
+    "init": cmd_init,
+    "status": cmd_status,
+    "collect": cmd_collect,
+    "candidates": cmd_candidates,
+    "choose-topic": cmd_choose_topic,
+    "research": cmd_research,
+    "outline": cmd_outline,
+    "draft": cmd_draft,
+    "regenerate-outline": cmd_regenerate_outline,
+    "cover": cmd_cover,
+    "assemble": cmd_assemble,
+    "publish": cmd_publish,
+    "run": cmd_run,
+    "fetch": cmd_fetch,
+    "session": cmd_session,
+}
+
+# Controlled domain errors: reported cleanly, exit 1 (never a traceback).
+_DOMAIN_ERRORS = (
+    pipeline.PipelineError,
+    topics.TopicError,
+    topics.TopicGateBlocked,
+    assemble.AssembleError,
+    publish.PublishError,
+    state.StateError,
+    draft.__class__ and RuntimeError,  # draft/outline/research raise RuntimeError subclasses
+)
+
+
+def main(argv=None) -> int:
+    parser = build_parser()
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as exc:
+        code = exc.code
+        return code if isinstance(code, int) else 2
+    handler = COMMANDS.get(args.command)
+    if handler is None:
+        print(f"error: unknown command {args.command!r}", file=sys.stderr)
+        return 2
+    try:
+        return handler(args)
+    except _DOMAIN_ERRORS as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

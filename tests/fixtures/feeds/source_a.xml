@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Source A</title>
+    <link>https://source-a.example.com</link>
+    <item>
+      <title>Agent search benchmarks show cost gap between engines</title>
+      <link>https://source-a.example.com/posts/agent-search-cost</link>
+      <pubDate>Tue, 11 Aug 2026 18:00:00 GMT</pubDate>
+      <description>Deep-research agents spend most of their budget on search calls.</description>
+    </item>
+    <item>
+      <title>Open-weight models reshape deployment economics</title>
+      <link>https://source-a.example.com/posts/open-weight-economics</link>
+      <pubDate>Tue, 11 Aug 2026 09:30:00 GMT</pubDate>
+      <description>Large MoE weights are now runnable on rented clusters.</description>
+    </item>
+    <item>
+      <title>Old story outside the window</title>
+      <link>https://source-a.example.com/posts/old-story</link>
+      <pubDate>Sat, 01 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Too old for the 96h filter.</description>
+    </item>
+  </channel>
+</rss>
