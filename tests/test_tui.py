@@ -127,6 +127,17 @@ class ColorTests(unittest.TestCase):
         self.assertTrue(tui.supports_color(FakeTTY()))
         self.assertFalse(tui.supports_color(FakePipe()))
 
+    def test_color_mode_uses_truecolor_palette(self):
+        header = tui.render_header("2026-08-15", "run", color=True)
+        topics_out = tui.render_hot_topics([sample_hot_item()], color=True)
+        osint = tui.render_osint(
+            [{"key": "x", "title": "模块", "summary": "内容"}],
+            gaps=["缺口"], analysis_status="completed", color=True,
+        )
+        self.assertIn("\033[38;2;", header)
+        self.assertIn("\033[38;2;", topics_out)
+        self.assertIn("\033[38;2;", osint)
+
 
 class RenderHotTopicsTests(unittest.TestCase):
     def test_ranks_titles_sources_and_scores(self):

@@ -15,11 +15,21 @@ from . import STAGES
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
-GREEN = "\033[32m"
 DIM = "\033[2m"
+
+# Truecolor palette (OTTY/iTerm2/kitty 原生支持；旧终端按最接近色降级)。
+ACCENT = "\033[38;2;94;200;235m"     # 亮青：标题与当前阶段
+GREEN = "\033[38;2;74;222;128m"      # 成功/完成
+YELLOW = "\033[38;2;250;204;21m"     # 缺口/警告
+RED = "\033[38;2;248;113;113m"       # 失败
+MUTED = "\033[38;2;148;163;184m"     # 次要信息
 
 DONE_MARK = "\u2713"      # ✓
 CURRENT_MARK = "\u2192"   # →
+
+
+def _paint(text: str, code: str, color: bool) -> str:
+    return f"{code}{text}{RESET}" if color else text
 
 
 def supports_color(stream=None) -> bool:
@@ -49,13 +59,13 @@ def render_progress(stage: str, stages: list = None, color: bool = False) -> str
         if i < index:
             mark = f"{DONE_MARK} "
             if color:
-                line = f"{GREEN}{mark}{RESET}{name}"
+                line = f"{GREEN}{mark}{RESET}{MUTED}{name}{RESET}"
             else:
                 line = f"{mark}{name}"
         elif i == index:
             mark = f"{CURRENT_MARK} "
             if color:
-                line = f"{BOLD}{mark}{name}{RESET}"
+                line = f"{ACCENT}{BOLD}{mark}{name}{RESET}"
             else:
                 line = f"{mark}{name}"
         else:
@@ -80,7 +90,7 @@ def render_candidates(candidates: list, color: bool = False) -> str:
     for i, cand in enumerate(candidates, 1):
         title = cand.get("title", "")
         if color:
-            head = f"{BOLD}{i}. {title}{RESET}"
+            head = f"{ACCENT}{BOLD}{i}.{RESET} {BOLD}{title}{RESET}"
         else:
             head = f"{i}. {title}"
         lines = [head]
@@ -89,10 +99,14 @@ def render_candidates(candidates: list, color: bool = False) -> str:
             ("hook", "hook"),
             ("战略相关性", "strategic_relevance"),
         ):
-            lines.append(f"   {label}：{cand.get(key, '')}")
+            if color:
+                lines.append(f"   {MUTED}{label}：{RESET}{cand.get(key, '')}")
+            else:
+                lines.append(f"   {label}：{cand.get(key, '')}")
         gaps = cand.get("evidence_gaps") or []
         if gaps:
-            lines.append("   证据缺口：" + "；".join(gaps))
+            gap_text = "   证据缺口：" + "；".join(gaps)
+            lines.append(_paint(gap_text, YELLOW, color))
         blocks.append("\n".join(lines))
     return "\n\n".join(blocks)
 
@@ -103,21 +117,24 @@ def render_header(date: str, run_id: str = "", color: bool = False) -> str:
     if run_id:
         line += f"  ({run_id})"
     if color:
-        line = f"{BOLD}{line}{RESET}"
+        line = f"{ACCENT}{BOLD}{line}{RESET}"
+        width = max(len(date) + len(run_id) + 16, 44)
+        line += f"\n{MUTED}{'─' * width}{RESET}"
     return line
 
 
 def render_hot_topics(items: list, limit: int = None, color: bool = False) -> str:
     """Ranked AIHOT hot topics: title, source, score, story link, summary."""
-    lines = ["AIHOT 热点榜"]
+    lines = [_paint("AIHOT 热点榜", f"{ACCENT}{BOLD}", color)]
     if not items:
         lines.append("暂无数据")
         return "\n".join(lines)
     for i, item in enumerate(items[:limit] if limit else items, 1):
         title = item.get("title", "")
-        head = f"{i:>2}. {title}"
         if color:
-            head = f"{BOLD}{head}{RESET}"
+            head = f"{ACCENT}{BOLD}{i:>2}.{RESET} {BOLD}{title}{RESET}"
+        else:
+            head = f"{i:>2}. {title}"
         lines.append(head)
         meta = "    "
         source = item.get("source_name", "")
@@ -126,7 +143,7 @@ def render_hot_topics(items: list, limit: int = None, color: bool = False) -> st
         score = item.get("score")
         if score is not None:
             meta += f" · 热度 {score}"
-        lines.append(meta)
+        lines.append(_paint(meta, MUTED, color))
         summary = (item.get("summary") or "").strip()
         if summary:
             lines.append(f"    {summary}")
@@ -135,49 +152,62 @@ def render_hot_topics(items: list, limit: int = None, color: bool = False) -> st
 
 def render_matrix(matrix: dict, color: bool = False) -> str:
     """AIHOT story matrix: matched story plus its reports (max 8 shown)."""
-    lines = ["AIHOT 报道矩阵"]
+    lines = [_paint("AIHOT 报道矩阵", f"{ACCENT}{BOLD}", color)]
     if matrix.get("status") != "ok":
-        lines.append(f"不可用（{matrix.get('reason') or '无原因'}）")
+        lines.append(_paint(
+            f"不可用（{matrix.get('reason') or '无原因'}）", YELLOW, color
+        ))
         return "\n".join(lines)
-    lines.append(f"命中：{matrix.get('story_title', '')}（{matrix.get('story_id', '')}）")
+    hit = f"命中：{matrix.get('story_title', '')}（{matrix.get('story_id', '')}）"
+    lines.append(_paint(hit, BOLD, color))
     reports = matrix.get("reports") or []
-    lines.append(f"报道：{len(reports)} 条")
+    lines.append(_paint(f"报道：{len(reports)} 条", MUTED, color))
     for i, report in enumerate(reports[:8], 1):
         source = report.get("source_name") or report.get("source", "")
-        lines.append(f"  {i}. {source} — {report.get('title', '')}")
+        lines.append(f"  {i}. {_paint(source, BOLD, color)} — {report.get('title', '')}")
         if report.get("original_url"):
-            lines.append(f"     {report['original_url']}")
+            lines.append(_paint(f"     {report['original_url']}", MUTED, color))
     if len(reports) > 8:
-        lines.append(f"  … 其余 {len(reports) - 8} 条")
+        lines.append(_paint(f"  … 其余 {len(reports) - 8} 条", MUTED, color))
     return "\n".join(lines)
 
 
 def render_evidence(evidence: list, color: bool = False) -> str:
     """Fetch status per evidence URL: check/cross marks and lane."""
     ok = sum(1 for e in evidence if e.get("status") == "fetched")
-    lines = [f"抓取证据：{len(evidence)} 条（成功 {ok}）"]
+    lines = [_paint(f"抓取证据：{len(evidence)} 条（成功 {ok}）", BOLD, color)]
     for e in evidence:
         mark = "✓" if e.get("status") == "fetched" else "✗"
-        lines.append(f"  {mark} {e.get('url', '')} [{e.get('source_lane', '?')}]")
+        code = GREEN if e.get("status") == "fetched" else RED
+        lane = _paint(f"[{e.get('source_lane', '?')}]", MUTED, color)
+        lines.append(
+            f"  {_paint(mark, code, color)} {e.get('url', '')} "
+            f"{lane}"
+        )
     return "\n".join(lines)
 
 
 def render_osint(modules: list, gaps: list, analysis_status: str = "",
                  color: bool = False) -> str:
     """Seven-module OSINT archive summary plus evidence gaps."""
-    lines = ["OSINT 情报档案"]
+    lines = [_paint("OSINT 情报档案", f"{ACCENT}{BOLD}", color)]
     for m in modules or []:
         summary = (m.get("summary") or "").strip()
-        mark = "—" if summary in ("", "无") else "✓"
-        lines.append(f"  {mark} {m.get('title', '')}（{m.get('key', '')}）")
+        if summary in ("", "无"):
+            mark, code, name_code = "—", MUTED, ""
+        else:
+            mark, code, name_code = "✓", GREEN, BOLD
+        name = _paint(f"{m.get('title', '')}（{m.get('key', '')}）", name_code, color)
+        lines.append(f"  {_paint(mark, code, color)} {name}")
         if summary and summary != "无":
             lines.append(f"      {summary[:160]}")
     if analysis_status:
-        lines.append(f"Codex 分析：{analysis_status}")
+        code = GREEN if analysis_status == "completed" else YELLOW
+        lines.append(_paint(f"Codex 分析：{analysis_status}", code, color))
     if gaps:
-        lines.append("证据缺口：")
+        lines.append(_paint("证据缺口：", f"{YELLOW}{BOLD}", color))
         for gap in gaps:
-            lines.append(f"  - {gap}")
+            lines.append(_paint(f"  - {gap}", YELLOW, color))
     return "\n".join(lines)
 
 
