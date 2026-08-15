@@ -388,11 +388,12 @@ def independent_sources(cluster: list) -> int:
 
 
 def _first_sentence(text: str) -> str:
-    for part in re.split(r"[。！？!?]", text or ""):
+    plain = re.sub(r"<[^>]+>", "", text or "")
+    for part in re.split(r"[。！？!?]", plain):
         part = part.strip()
         if part:
             return part
-    return (text or "").strip()
+    return plain.strip()
 
 
 def _slugify_title(title: str, date: str) -> str:

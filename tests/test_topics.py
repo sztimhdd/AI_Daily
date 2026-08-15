@@ -21,6 +21,38 @@ def aihot_items():
 
 
 class CandidateGenerationTests(unittest.TestCase):
+    def test_candidate_thesis_strips_html_from_summaries(self):
+        html_item = {
+            "id": "h1",
+            "title": "DeepSeek V4 Pro 正式版 API 上线",
+            "summary": (
+                '<p style="text-align:center"><img src="https://x/i.png"></p>'
+                "<h1>DeepSeek V4 Pro 正式版发布</h1><p>8 月 13 日消息。</p>"
+            ),
+            "source_name": "极客公园",
+            "links": {"aihot": "https://aihot.virxact.com/items/h1", "original": ""},
+            "score": 90,
+            "origin": "rss",
+            "feed": "极客早知道",
+        }
+        pool = [html_item] + [
+            {
+                "id": f"f{i}",
+                "title": f"补充战略事件{i}",
+                "summary": "企业定价与工程架构变化",
+                "source_name": f"S{i}",
+                "links": {"aihot": f"https://aihot.virxact.com/items/f{i}", "original": ""},
+                "score": 50,
+                "origin": "aihot",
+            }
+            for i in range(3)
+        ]
+        cands = topics.generate_candidates(pool, rss_items=[])
+        deepseek = next(c for c in cands if "DeepSeek" in c["title"])
+        self.assertNotIn("<", deepseek["thesis"])
+        self.assertNotIn("img", deepseek["thesis"])
+        self.assertIn("8 月 13 日", deepseek["thesis"])
+
     def test_exactly_three_candidates(self):
         cands = topics.generate_candidates(aihot_items(), rss_items=[])
         self.assertEqual(len(cands), 3)
