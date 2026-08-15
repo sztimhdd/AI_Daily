@@ -340,6 +340,41 @@ def _session_progress(use_color: bool):
     return emit
 
 
+def _stale_run(run_paths) -> bool:
+    """True when the saved AIHOT pool was written before today (a leftover run).
+
+    A daily run must never resume yesterday's evidence or topic choice;
+    same-day reruns still resume normally.  The file's own write time is
+    the source of truth: it records when OUR pipeline collected the pool.
+    """
+    path = run_paths.work_dir / "aihot-items.json"
+    if not path.exists():
+        return False
+    try:
+        mtime = datetime.datetime.fromtimestamp(path.stat().st_mtime).date()
+    except OSError:
+        return False
+    return mtime < datetime.date.today()
+
+
+def _reset_run(run_paths) -> None:
+    """Drop a previous day's regenerable artifacts and restart the state."""
+    for name in (
+        "aihot-items.json", "rss-items.json", "rss-pool.md", "rss-stats.json",
+        "selected-topic.json", "story-matrix.json", "initial-evidence.json",
+        "initial-osint.json", "initial-osint.md",
+    ):
+        path = run_paths.work_dir / name
+        if path.exists():
+            path.unlink()
+    state_path = run_paths.work_dir / "state.md"
+    if state_path.exists():
+        state_path.unlink()
+    state.init_state(run_paths)
+    print("检测到隔天的过期数据，已重置为全新一天（重新 collect + 重新选题）。")
+    print()
+
+
 def _require_interactive():
     """None when stdin is a terminal; else a usage error exit code."""
     if sys.stdin.isatty():
@@ -361,6 +396,8 @@ def cmd_session(args) -> int:
     """One visible-terminal session through stage 03 with full TUI output."""
     run_paths = _paths(args)
     _ensure_state(run_paths)
+    if _stale_run(run_paths):
+        _reset_run(run_paths)
     use_color = tui.supports_color()
     st = state.read_state(run_paths)
     print(tui.render_header(args.date, run_paths.run_id, color=use_color))

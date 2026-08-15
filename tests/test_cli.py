@@ -302,6 +302,90 @@ class SessionCommandTests(CliBase):
         self.assertNotIn("下一步：outline", out)
         self.assertTrue(callable(seen.get("progress")))
 
+    def _seed_stale_run(self, date, stale=False):
+        import datetime as _dt
+        import os
+
+        from ai_daily import paths, state
+
+        run_paths = paths.RunPaths.for_date(self.root, date)
+        run_paths.ensure_work_dir()
+        state.init_state(run_paths)
+        state.update_fields(
+            run_paths,
+            topic_choice="human",
+            slug="old-slug",
+            topic_title="昨天录的旧选题",
+        )
+        pool_path = run_paths.work_dir / "aihot-items.json"
+        pool_path.write_text(
+            json.dumps(
+                [
+                    {
+                        "title": f"旧事件{i}", "summary": summary,
+                        "source_name": "旧源", "score": 10,
+                        "discovered_at": (
+                            _dt.date.today() - _dt.timedelta(days=1)
+                        ).isoformat() + "T12:00:00.000Z",
+                        "links": {"aihot": "https://aihot.virxact.com/items/o"},
+                        "origin": "aihot",
+                    }
+                    for i, summary in enumerate(
+                        (
+                            "多家推理服务商调整定价，企业成本结构将重算",
+                            "开源模型权重发布，工程团队工作流将改变",
+                            "平台抽成政策调整，生态格局将重排",
+                        ),
+                        1,
+                    )
+                ],
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        if stale:
+            yesterday = _dt.datetime.now() - _dt.timedelta(days=1)
+            os.utime(pool_path, (yesterday.timestamp(), yesterday.timestamp()))
+        (run_paths.work_dir / "selected-topic.json").write_text(
+            json.dumps({"title": "昨天录的旧选题"}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        return run_paths
+
+    def test_session_resets_stale_previous_day_run(self):
+        from ai_daily import state
+
+        date = "2026-08-15"
+        run_paths = self._seed_stale_run(
+            date, stale=True
+        )
+        code, out, err = self.run_cli(
+            "session", "--root", self.root, "--date", date,
+            "--mode", "fixture", "--aihot-fixture", AIHOT_FIXTURE,
+            "--choice", "1",
+        )
+        self.assertEqual(code, 0, err)
+        self.assertIn("过期", out)
+        st = state.read_state(run_paths)
+        self.assertNotEqual(st.get("topic_title"), "昨天录的旧选题")
+        self.assertEqual(st.get("stage"), "research")
+
+    def test_session_keeps_same_day_run(self):
+        from ai_daily import state
+
+        date = "2026-08-15"
+        run_paths = self._seed_stale_run(date)
+        code, out, err = self.run_cli(
+            "session", "--root", self.root, "--date", date,
+            "--mode", "fixture", "--aihot-fixture", AIHOT_FIXTURE,
+        )
+        self.assertEqual(code, 0, err)
+        self.assertNotIn("过期", out)
+        self.assertIn("选题已定", out)
+        self.assertEqual(
+            state.read_state(run_paths).get("topic_title"), "昨天录的旧选题"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
