@@ -124,8 +124,62 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
 
     def test_prompt_imposes_compactness_constraints(self):
         prompt = self._prompt()
-        self.assertIn("6000 字符", prompt)
+        self.assertIn("8000 字符", prompt)
         self.assertIn("2-4 条", prompt)
+
+    def test_run_retries_once_after_truncated_output(self):
+        import tempfile as _tf
+        from ai_daily import paths as _paths, state as _state, topics as _topics
+
+        calls = {"n": 0}
+        valid = {
+            "candidates": [
+                {
+                    "archetype": "decision_brief", "title": "标题",
+                    "hook": "h", "thesis": "t",
+                    "key_arguments": [{
+                        "claim": "c", "observable": "o", "source": "s",
+                        "limitation": "l", "decision": "d",
+                    }],
+                    "decision_rule": "r",
+                    "platform_notes": {"linkedin": "l", "wechat": "w"},
+                    "evidence_audit": "e",
+                },
+                {
+                    "archetype": "decision_brief", "title": "标题2",
+                    "hook": "h", "thesis": "t",
+                    "key_arguments": [{
+                        "claim": "c", "observable": "o", "source": "s",
+                        "limitation": "l", "decision": "d",
+                    }],
+                    "decision_rule": "r",
+                    "platform_notes": {"linkedin": "l", "wechat": "w"},
+                    "evidence_audit": "e",
+                },
+            ]
+        }
+
+        def runner(prompt):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return {"status": "unavailable",
+                        "reason": "codex exec final message is not JSON: {.."}
+            return valid
+
+        with _tf.TemporaryDirectory() as tmp:
+            rp = _paths.RunPaths.for_date(pathlib.Path(tmp), "2026-08-15")
+            rp.ensure_work_dir()
+            _state.init_state(rp)
+            _topics.choose_fixture(
+                rp, pathlib.Path(__file__).resolve().parent
+                / "fixtures" / "topic_fixture.json"
+            )
+            (rp.work_dir / "initial-osint.json").write_text(
+                json.dumps(sample_osint(), ensure_ascii=False), encoding="utf-8"
+            )
+            result = narrative.run(rp, codex_runner=runner, force=True)
+        self.assertEqual(result["status"], "generated")
+        self.assertEqual(calls["n"], 2)
 
 
 class NarrativeRunTests(unittest.TestCase):
