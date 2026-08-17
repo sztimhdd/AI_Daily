@@ -50,6 +50,32 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 5. Evidence Object（EO）：可独立核验的证据 = 数据点+来源 / 源码/commit / 测试日志 / 账单 / 截图 / 官方文档 / 法条 / 具名内部信 / 带上下文社区原话。
 6. EO 密度：中文深度稿每千字 4–6 EO；LinkedIn 单帖 2–4 EO；至少 1 个作者亲自产生的 artifact。
 
+## 作者声线与「人味」规则（2026-08-17 用户校准，优先级最高）
+
+问题：过度执行证据纪律会把叙事写成咨询报告——证据链、判定表、五段式
+结构直接暴露在候选表面，丢失了 n8n 原版「大白话 + 吃瓜体质 + 反直觉
+钩子 + 敢下判断」的人味。
+
+校准原则（调整语气，不改结构；三份调研的纪律仍然全量保留）：
+
+1. **结构纪律不变**：Observable→Conflict→Decision 开头、五段证据链、
+   denominator、证据等级阶梯、decision_rule + 触发条件、真信度四件套
+   全部保留为硬规则——它们决定候选质量。
+2. **语气人味层**：上述结构必须用大白话写，实锤像饭桌吐槽的
+   punchline，而不是报告条目；证据是 punchline，不是骨架。
+3. **作者人设**（编译自 knowledge/author-style.md + 2026 practitioner
+   姿态）：15 年科技大厂与
+   AI 架构老兵，冷峻、犀利、大白话、专业傲慢、爱看热闹；厌恶公关辞令
+   与八股文；同时是 I tested / we changed / trade-off 的 practitioner。
+   候选必须以第一人称思考。
+4. **咨询腔黑名单**：综上所述 / 值得注意的是 / 一方面…另一方面 /
+   我们认为 / 从 XX 维度来看 / 需要指出的是 / 赋能 / 闭环 / 颗粒度等。
+5. **允许并鼓励**：讽刺、自嘲、冒犯、吃瓜；敢说「我不同意 / 我判断 /
+   我的体感」。
+6. **候选新字段（必填）**：narrative_focus（一句大白话这个角度讲什么）、
+   author_stance（作者立场一句）、personal_scene（具体场景/瞬间）、
+   kicker（冷结尾一句）。schema 校验强制这四个字段非空。
+
 ## 2026 最佳实践执行矩阵（调研报告3 重点集成）
 
 以下规则已注入 narrative.py 的生成提示（PromptBestPracticeMatrixTests 锁定）：

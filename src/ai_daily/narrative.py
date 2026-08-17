@@ -206,35 +206,51 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> s
         for key in allowed
     )
     return (
-        "你是叙事策划主编。基于给定的 OSINT 情报档案，为选题生成两个"
-        "互补或对立的叙事候选，供主编二选一。\n\n"
+        "你是那篇专栏的作者本人：15 年科技大厂与 AI 架构老兵，冷峻、犀利、"
+        "大白话、带专业傲慢，也爱看热闹；同时是 2026 年的 practitioner——"
+        "I tested / we changed / here is the trade-off。你在为今天这个选题想"
+        "两个完全不同的写法，用第一人称思考。\n\n"
         "【叙事契约】(knowledge/narrative-contract.md v2026)\n"
         "范式：热点 × 可验证冲突 × 证据资产 × 读者决策。\n"
         f"本轮可用原型白名单：{archetype_names}。禁止使用白名单之外的原型；"
         "证据不足的论据宁可放弃也不编造。\n"
-        "硬规则：\n"
-        "1. 开头三段 = Observable（可观察事实）→ Conflict（与主流说法/发布会的冲突）"
-        "→ Decision（改变读者的哪个决策）。\n"
-        f"hook 必须采用以下五种 2026 高潜力模式之一（HookPatternConfidence）：\n"
-        f"{'；'.join(_HOOK_PATTERNS)}\n"
-        "2. 每条 key_arguments 走 Claim → Observable → Source → Limitation → Decision。\n"
-        "3. 证据等级阶梯：\n" + _EVIDENCE_LADDER + "\n"
-        "   引用研究时必须给 [机构],[日期],[样本/方法],发现[结果];但[limitation]。\n"
-        "4. 任何成本百分比必须回答 denominator（每token/每请求/每任务/每成功任务/"
-        "含人工review与否）；人事类事实必须标 Confirmed/Reported/Inferred/Unknown。\n"
-        "5. 结尾用 decision_rule + 改变判断的触发条件，禁止金句升华与万能提问。\n"
-        "6. 真信度四件套：至少 1 个失败/局限点、1 个可核验 artifact、"
+        "【结构纪律（必须执行）】\n"
+        "1. 开头三段 = Observable（可观察事实）→ Conflict（与主流说法/发布会的"
+        "冲突）→ Decision（改变读者的哪个决策）。\n"
+        f"2. hook 优先采用 2026 高潜力模式（HookPatternConfidence）："
+        f"{'；'.join(_HOOK_PATTERNS)}。\n"
+        "3. 每条 key_arguments 走 Claim → Observable → Source → Limitation → "
+        "Decision。\n"
+        "4. 证据等级阶梯：\n" + _EVIDENCE_LADDER + "\n"
+        "   引用研究必须给 [机构],[日期],[样本/方法],发现[结果];但[limitation]。\n"
+        "5. 任何成本百分比必须回答 denominator（每token/每请求/每成功任务/"
+        "含人工review）；人事事实标 Confirmed/Reported/Inferred/Unknown。\n"
+        "6. 结尾用 decision_rule + 改变判断的触发条件，禁止金句升华与万能提问。\n"
+        "7. 真信度四件套：至少 1 个失败/局限点、1 个可核验 artifact、"
         "1 句只有真正调查过才写得出的话；只引用证据里出现的 URL 与事实。\n"
-        f"7. 原型解剖速查（只按白名单执行）：\n{anatomy}\n"
-        "8. platform_notes 分别给出 LinkedIn（practitioner memo 语气，结论先行）"
-        "与微信公众号（editor-analyst 语气，新闻性开门分析性留人）各一句。\n"
+        f"8. 原型解剖速查（只按白名单执行）：\n{anatomy}\n"
         "9. 两个候选必须在论证上互补或对立，不得同义重复。\n\n"
+        "【语气人味（决定这些结构怎么写，不改变结构本身）】\n"
+        "1. 语言必须大白话：像跟做技术的朋友在饭桌上说这件事，"
+        "每条实锤都像吐槽时的 punchline，而不是报告条目。\n"
+        "2. 作者表态：author_stance 写一句你本人的鲜明判断（我不同意/我判断/"
+        "我的体感）；personal_scene 写一个具体到细节的场景或瞬间；"
+        "kicker 用冷结尾一句收束态度。允许讽刺、自嘲、冒犯、吃瓜。\n"
+        "3. 禁止咨询腔与报告腔：综上所述、值得注意的是、一方面…另一方面、"
+        "我们认为、从XX维度来看、需要指出的是，以及赋能/闭环/颗粒度等黑话。\n"
+        "4. 态度不是口号：先亮判断，再用上面的证据纪律钉死它。\n\n"
         "输出必须是单个 JSON 对象（禁止前言、Markdown 代码块或尾注）：\n"
         '{"candidates":[{"archetype":"<白名单 key>","title":"...","hook":"...",'
-        '"thesis":"...","key_arguments":[{"claim":"...","observable":"...",'
+        '"narrative_focus":"一句大白话这个角度讲什么","thesis":"...",'
+        '"key_arguments":[{"claim":"...","observable":"...",'
         '"source":"...","limitation":"...","decision":"..."}],'
-        '"decision_rule":"...","platform_notes":{"linkedin":"...","wechat":"..."},'
+        '"author_stance":"作者本人的鲜明立场一句","personal_scene":"一个具体场景'
+        '/瞬间","kicker":"冷结尾一句","decision_rule":"...",'
+        '"platform_notes":{"linkedin":"...","wechat":"..."},'
         '"evidence_audit":"..."}]}\n'
+        "platform_notes 要像你本人说话：LinkedIn 是带 receipts 的个人 take"
+        "（第一人称、敢下判断），微信公众号是老兵视角的事件拆解"
+        "（有态度有温度，新闻性开门）。\n"
         "篇幅约束：整个 JSON 不超过 8000 字符，且必须完整闭合；每个候选 "
         "key_arguments 2-4 条、每条不超过 60 字；放不下就删减论据，"
         "绝不截断输出；宁可少而硬，不要注水。\n"
@@ -252,6 +268,9 @@ def _validate_candidate(cand: dict, allowed: list) -> list:
     if cand.get("archetype") not in allowed:
         errors.append(f"archetype {cand.get('archetype')!r} not in whitelist")
     for field in ("title", "hook", "thesis", "decision_rule"):
+        if not (cand.get(field) or "").strip():
+            errors.append(f"{field} 为空")
+    for field in ("author_stance", "personal_scene", "kicker"):
         if not (cand.get(field) or "").strip():
             errors.append(f"{field} 为空")
     if not (cand.get("evidence_audit") or "").strip():
@@ -356,6 +375,7 @@ def _render_candidates_md(data: dict) -> str:
         lines += [
             f"\n## 候选 {i}：{cand.get('title')}",
             f"- 原型：{title}（{cand.get('archetype')}）",
+            f"- 角度：{cand.get('narrative_focus', '')}",
             f"- hook：{cand.get('hook')}",
             f"- thesis：{cand.get('thesis')}",
         ]
@@ -365,7 +385,10 @@ def _render_candidates_md(data: dict) -> str:
                 f"来源 {arg.get('source')}；局限 {arg.get('limitation')}）"
             )
         lines += [
+            f"- 作者立场：{cand.get('author_stance', '')}",
+            f"- 个人场景：{cand.get('personal_scene', '')}",
             f"- decision_rule：{cand.get('decision_rule')}",
+            f"- 冷结尾：{cand.get('kicker', '')}",
             f"- LinkedIn：{cand.get('platform_notes', {}).get('linkedin')}",
             f"- 微信公众号：{cand.get('platform_notes', {}).get('wechat')}",
             f"- evidence_audit：{cand.get('evidence_audit')}",

@@ -253,6 +253,13 @@ def render_narrative_candidates(candidates: list, color: bool = False) -> str:
         if cand.get("decision_rule"):
             line = f"   决策规则：{cand['decision_rule']}"
             lines.append(_paint(line, GREEN, color))
+        if cand.get("author_stance"):
+            line = f"   作者立场：{cand['author_stance']}"
+            lines.append(_paint(line, ACCENT, color))
+        if cand.get("personal_scene"):
+            lines.append(f"   个人场景：{cand['personal_scene']}")
+        if cand.get("kicker"):
+            lines.append(f"   冷结尾：{cand['kicker']}")
         blocks.append("\n".join(lines))
     return "\n\n".join(blocks)
 

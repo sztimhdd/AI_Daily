@@ -122,6 +122,27 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         self.assertIn("真信度四件套", prompt)
         self.assertIn("只有真正调查过才写得出", prompt)
 
+    def test_prompt_anchors_author_persona_and_stance(self):
+        prompt = self._prompt()
+        self.assertIn("老兵", prompt)
+        self.assertIn("author_stance", prompt)
+        self.assertIn("personal_scene", prompt)
+        self.assertIn("kicker", prompt)
+        self.assertIn("第一人称", prompt)
+
+    def test_prompt_keeps_evidence_discipline_rules(self):
+        prompt = self._prompt()
+        self.assertIn("Observable", prompt)
+        self.assertIn("Conflict", prompt)
+        self.assertIn("Claim → Observable → Source → Limitation", prompt)
+        self.assertIn("decision_rule", prompt)
+
+    def test_prompt_blacklists_consulting_tone(self):
+        prompt = self._prompt()
+        self.assertIn("综上所述", prompt)
+        self.assertIn("一方面", prompt)
+        self.assertIn("我们认为", prompt)
+
     def test_prompt_imposes_compactness_constraints(self):
         prompt = self._prompt()
         self.assertIn("8000 字符", prompt)
@@ -143,6 +164,9 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
                     }],
                     "decision_rule": "r",
                     "platform_notes": {"linkedin": "l", "wechat": "w"},
+                    "author_stance": "我的判断",
+                    "personal_scene": "凌晨三点被报警吵醒",
+                    "kicker": "先别急着上车。",
                     "evidence_audit": "e",
                 },
                 {
@@ -154,6 +178,9 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
                     }],
                     "decision_rule": "r",
                     "platform_notes": {"linkedin": "l", "wechat": "w"},
+                    "author_stance": "我的判断",
+                    "personal_scene": "凌晨三点被报警吵醒",
+                    "kicker": "先别急着上车。",
                     "evidence_audit": "e",
                 },
             ]
@@ -217,6 +244,9 @@ class NarrativeRunTests(unittest.TestCase):
                         }],
                         "decision_rule": "条件成立才切",
                         "platform_notes": {"linkedin": "LN", "wechat": "WX"},
+                        "author_stance": "我的判断",
+                        "personal_scene": "凌晨三点被报警吵醒",
+                        "kicker": "先别急着上车。",
                         "evidence_audit": "EO 充足",
                     },
                     {
@@ -231,6 +261,9 @@ class NarrativeRunTests(unittest.TestCase):
                         }],
                         "decision_rule": "先观察",
                         "platform_notes": {"linkedin": "LN2", "wechat": "WX2"},
+                        "author_stance": "我的判断",
+                        "personal_scene": "凌晨三点被报警吵醒",
+                        "kicker": "先别急着上车。",
                         "evidence_audit": "EO 充足",
                     },
                 ]
@@ -333,6 +366,16 @@ class NarrativeRunTests(unittest.TestCase):
         allowed = narrative.route_archetypes(osint, set())
         self.assertEqual(allowed, ["decision_brief"])
 
+    def test_candidate_missing_author_stance_rejected(self):
+        def runner(prompt):
+            payload = self.make_runner()(prompt)
+            del payload["candidates"][0]["author_stance"]
+            return payload
+
+        result = narrative.run(self.run_paths, codex_runner=runner, force=True)
+        self.assertEqual(result["status"], "unavailable")
+        self.assertIn("author_stance", result["reason"])
+
 
 class NarrativeGateTests(unittest.TestCase):
     def setUp(self):
@@ -356,6 +399,9 @@ class NarrativeGateTests(unittest.TestCase):
                 "hook": "h", "thesis": "t", "key_arguments": [],
                 "decision_rule": "d",
                 "platform_notes": {"linkedin": "l", "wechat": "w"},
+                "author_stance": "我的判断",
+                "personal_scene": "凌晨三点被报警吵醒",
+                "kicker": "先别急着上车。",
                 "evidence_audit": "e",
             }
         ]
@@ -386,6 +432,9 @@ class NarrativeGateTests(unittest.TestCase):
                 "hook": "h", "thesis": "t", "key_arguments": [],
                 "decision_rule": "d",
                 "platform_notes": {"linkedin": "l", "wechat": "w"},
+                "author_stance": "我的判断",
+                "personal_scene": "凌晨三点被报警吵醒",
+                "kicker": "先别急着上车。",
                 "evidence_audit": "e",
             }
         ]
