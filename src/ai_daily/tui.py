@@ -260,6 +260,15 @@ def render_narrative_candidates(candidates: list, color: bool = False) -> str:
             lines.append(f"   个人场景：{cand['personal_scene']}")
         if cand.get("kicker"):
             lines.append(f"   冷结尾：{cand['kicker']}")
+        scores = cand.get("scores") or {}
+        if scores:
+            line = (
+                f"   评分：LinkedIn {scores.get('linkedin_total', '?')} · "
+                f"公众号 {scores.get('wechat_total', '?')}"
+                f"（E {scores.get('evidence', '?')} C {scores.get('conflict', '?')}"
+                f" D {scores.get('decision', '?')} F {scores.get('freshness', '?')}）"
+            )
+            lines.append(_paint(line, MUTED, color))
         blocks.append("\n".join(lines))
     return "\n\n".join(blocks)
 

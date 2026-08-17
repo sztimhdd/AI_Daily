@@ -302,6 +302,17 @@ class RenderNarrativeCandidatesTests(unittest.TestCase):
             tui._ARCHETYPE_TITLES, narrative._ARCHETYPE_TITLES
         )
 
+    def test_candidate_scores_rendered_when_present(self):
+        cand = sample_narrative_candidate()
+        cand["scores"] = {
+            "evidence": 0.9, "conflict": 1.0, "decision": 1.0,
+            "freshness": 0.5, "linkedin_total": 0.84, "wechat_total": 0.85,
+        }
+        out = tui.render_narrative_candidates([cand], color=False)
+        self.assertIn("LinkedIn 0.84", out)
+        self.assertIn("公众号 0.85", out)
+        self.assertIn("E 0.9", out)
+
 
 class RenderAuditTests(unittest.TestCase):
     def test_verdict_states_render_with_coverage_and_tasks(self):

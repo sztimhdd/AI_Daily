@@ -30,6 +30,18 @@ def sample_osint():
     }
 
 
+def sample_narrative_candidate():
+    return {
+        "archetype": "cost_ledger", "title": "账本篇", "hook": "h",
+        "thesis": "t", "key_arguments": [], "decision_rule": "d",
+        "platform_notes": {"linkedin": "l", "wechat": "w"},
+        "evidence_audit": "e",
+        "author_stance": "我的判断",
+        "personal_scene": "凌晨三点被报警吵醒",
+        "kicker": "先别急着上车。",
+    }
+
+
 class StagesOrderTests(unittest.TestCase):
     def test_narrative_stage_follows_research(self):
         self.assertEqual(
@@ -62,6 +74,15 @@ class EvidenceInventoryTests(unittest.TestCase):
         inv = narrative.evidence_inventory({"modules": [], "sources": [], "evidence_gaps": []})
         self.assertFalse(inv["primary_signal"])
 
+    def test_billion_dollar_terms_set_cost_flag(self):
+        osint = sample_osint()
+        osint["modules"][1]["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://e/x", "status": "fetched",
+            "title": "a", "excerpt": "backing up to $105 billion guarantee",
+        }]
+        self.assertTrue(narrative.evidence_inventory(osint)["cost_data"])
+
 
 class TensionDetectionTests(unittest.TestCase):
     def test_counter_consensus_hook_detected(self):
@@ -81,7 +102,7 @@ class RouteArchetypeTests(unittest.TestCase):
         osint["modules"][5]["summary"] = "CEO 离职"
         allowed = narrative.route_archetypes(osint, {"consensus_vs_data"})
         self.assertIn("cost_ledger", allowed)
-        self.assertIn("power_map", allowed)
+        self.assertNotIn("power_map", allowed)
         self.assertIn("decision_brief", allowed)
         self.assertNotIn("compliance_risk", allowed)
 
@@ -90,6 +111,135 @@ class RouteArchetypeTests(unittest.TestCase):
             narrative.route_archetypes(
                 {"modules": [], "sources": [], "evidence_gaps": []}, set()
             )
+
+    def test_power_map_requires_org_artifact_not_just_org_keywords(self):
+        osint = sample_osint()
+        osint["modules"][5]["summary"] = "CEO 离职"
+        allowed = narrative.route_archetypes(osint, set())
+        self.assertNotIn("power_map", allowed)
+
+    def test_power_map_unlocked_by_internal_letter_artifact(self):
+        osint = sample_osint()
+        osint["modules"][5]["summary"] = "CEO 离职"
+        osint["sources"].append({
+            "url": "https://example.com/letter", "status": "fetched",
+            "title": "内部信", "excerpt": "CEO 内部信确认组织重组与汇报线变化",
+        })
+        allowed = narrative.route_archetypes(osint, set())
+        self.assertIn("power_map", allowed)
+
+    def test_mechanism_teardown_requires_tech_artifact(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            if m["key"] == "tech_engineering":
+                m["summary"] = "无"
+        osint["sources"][0]["excerpt"] = "普通新闻稿"
+        allowed = narrative.route_archetypes(osint, set())
+        self.assertNotIn("mechanism_teardown", allowed)
+
+    def test_bare_resignation_report_does_not_unlock_power_map(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            if m["key"] == "org_people":
+                m["summary"] = "无"
+        osint["sources"].append({
+            "url": "https://example.com/news", "status": "fetched",
+            "title": "某大厂 CEO 离职", "excerpt": "人事大调整，内部消息称",
+        })
+        allowed = narrative.route_archetypes(osint, set())
+        self.assertNotIn("power_map", allowed)
+
+
+class KillConditionTests(unittest.TestCase):
+    def _real_shaped_osint(self, sources):
+        return {
+            "analysis_status": "completed",
+            "modules": [
+                {"key": k, "title": t, "summary": "（已采集证据，待分析）"}
+                for k, t in (
+                    ("core_timeline", "时间线"),
+                    ("finance_capital", "财务"),
+                    ("tech_engineering", "工程"),
+                    ("unclassified", "未归类线索"),
+                )
+            ],
+            "evidence_gaps": [],
+            "sources": sources,
+        }
+
+    def test_press_release_only_evidence_killed(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            m["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/pr", "status": "fetched",
+            "title": "某公司宣布战略合作，强强联合赋能行业", "excerpt": "",
+        }]
+        self.assertIsNotNone(narrative._kill_reason(osint, {}))
+
+    def test_press_release_kill_fires_on_real_research_shape(self):
+        osint = self._real_shaped_osint([
+            {
+                "url": "https://example.com/pr", "status": "fetched",
+                "title": "某公司宣布战略合作，强强联合赋能行业", "excerpt": "",
+            }
+        ])
+        self.assertIsNotNone(narrative._kill_reason(osint, {}))
+
+    def test_rumor_kill_fires_on_real_research_shape(self):
+        osint = self._real_shaped_osint([
+            {
+                "url": "https://www.reddit.com/r/ai/x", "status": "fetched",
+                "title": "听说是真的", "excerpt": "",
+            }
+        ])
+        self.assertIsNotNone(narrative._kill_reason(osint, {}))
+
+    def test_rumor_only_evidence_killed(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            m["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://www.reddit.com/r/ai/x", "status": "fetched",
+            "title": "听说是真的", "excerpt": "",
+        }]
+        self.assertIsNotNone(narrative._kill_reason(osint, {}))
+
+    def test_benchmark_without_method_killed(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            m["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/b", "status": "fetched",
+            "title": "某模型 benchmark 登顶", "excerpt": "刷新纪录",
+        }]
+        topic = {"title": "某模型跑分登顶", "hook": ""}
+        self.assertIsNotNone(narrative._kill_reason(osint, topic))
+
+    def test_real_evidence_not_killed(self):
+        self.assertIsNone(narrative._kill_reason(sample_osint(), {}))
+
+    def test_arxiv_benchmark_not_killed_by_missing_method_keywords(self):
+        osint = self._real_shaped_osint([
+            {
+                "url": "https://arxiv.org/abs/2603.12201", "status": "fetched",
+                "title": "benchmark 结果公布", "excerpt": "分数刷新纪录",
+            }
+        ])
+        topic = {"title": "某模型跑分登顶", "hook": "", "thesis": ""}
+        self.assertIsNone(narrative._kill_reason(osint, topic))
+
+    def test_kill_reason_names_actual_veto_class(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            m["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/f", "status": "fetched",
+            "title": "某公司完成 5000 万美元 A 轮融资", "excerpt": "由某基金领投",
+        }]
+        reason = narrative._kill_reason(osint, {})
+        self.assertIsNotNone(reason)
+        self.assertIn("融资", reason)
 
 
 class PromptBestPracticeMatrixTests(unittest.TestCase):
@@ -147,6 +297,78 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         prompt = self._prompt()
         self.assertIn("8000 字符", prompt)
         self.assertIn("2-4 条", prompt)
+
+
+class CandidateScoreTests(unittest.TestCase):
+    def test_scores_within_unit_range(self):
+        scores = narrative.score_candidate(
+            sample_narrative_candidate(), sample_osint()
+        )
+        for key in ("evidence", "conflict", "decision", "freshness"):
+            self.assertGreaterEqual(scores[key], 0.0)
+            self.assertLessEqual(scores[key], 1.0)
+
+    def test_platform_weighted_totals_differ_by_platform(self):
+        scores = narrative.score_candidate(
+            sample_narrative_candidate(), sample_osint()
+        )
+        self.assertIn("linkedin_total", scores)
+        self.assertIn("wechat_total", scores)
+        self.assertAlmostEqual(
+            scores["linkedin_total"],
+            round(
+                0.35 * scores["evidence"] + 0.30 * scores["decision"]
+                + 0.20 * scores["conflict"] + 0.15 * scores["freshness"],
+                2,
+            ),
+            places=2,
+        )
+        self.assertAlmostEqual(
+            scores["wechat_total"],
+            round(
+                0.30 * scores["conflict"] + 0.25 * scores["evidence"]
+                + 0.25 * scores["decision"] + 0.20 * scores["freshness"],
+                2,
+            ),
+            places=2,
+        )
+
+    def test_conflict_markers_boost_conflict_score(self):
+        blunt = sample_narrative_candidate()
+        blunt["thesis"] = "没有张力的平淡表述"
+        punchy = sample_narrative_candidate()
+        punchy["thesis"] = "与主流说法冲突：这里有一个落差"
+        self.assertGreater(
+            narrative.score_candidate(punchy, sample_osint())["conflict"],
+            narrative.score_candidate(blunt, sample_osint())["conflict"],
+        )
+
+    def test_conditional_decision_rule_scores_full(self):
+        cand = sample_narrative_candidate()
+        cand["decision_rule"] = "当官方确认时重启；只有复现通过才切换"
+        self.assertEqual(
+            narrative.score_candidate(cand, sample_osint())["decision"], 1.0
+        )
+
+    def test_mixed_timestamp_formats_do_not_crash(self):
+        osint = sample_osint()
+        osint["sources"] = [
+            {"url": "https://e/1", "status": "fetched",
+             "fetched_at": "2026-08-15T10:00:00Z"},
+            {"url": "https://e/2", "status": "fetched",
+             "fetched_at": "2026-08-15 10:00:00"},
+        ]
+        scores = narrative.score_candidate(
+            sample_narrative_candidate(), osint
+        )
+        self.assertIn("freshness", scores)
+
+    def test_scores_are_deterministic(self):
+        cand = sample_narrative_candidate()
+        self.assertEqual(
+            narrative.score_candidate(cand, sample_osint()),
+            narrative.score_candidate(cand, sample_osint()),
+        )
 
     def test_run_retries_once_after_truncated_output(self):
         import tempfile as _tf

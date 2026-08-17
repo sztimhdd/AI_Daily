@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import re
+import datetime
 
 from . import research, state, topics
 
@@ -30,10 +31,10 @@ class NarrativeGateBlocked(RuntimeError):
 _ARCHETYPE_REQUIRES = {
     "first_hand_test": ("reproducible_test",),
     "contrarian_audit": ("consensus_vs_data",),
-    "mechanism_teardown": ("mechanism_signal",),
+    "mechanism_teardown": ("mechanism_signal", "tech_artifact"),
     "cost_ledger": ("cost_data",),
     "workflow_playbook": ("workflow_signal",),
-    "power_map": ("org_source",),
+    "power_map": ("org_source", "org_artifact"),
     "compliance_risk": ("policy_text",),
     "decision_brief": ("primary_signal",),
 }
@@ -76,12 +77,27 @@ _EVIDENCE_LADDER = (
     "公司内部发生什么：公司公告/内部信/filing > 具名当事人 > 多源报道 > 单一媒体匿名 > 传闻。"
 )
 
-_COST_KEYWORDS = ("价格", "定价", "成本", "账单", "token", "cost", "price")
+_COST_KEYWORDS = (
+    "价格", "定价", "成本", "账单", "token", "cost", "price",
+    "billion", "亿", "美元", "$", "guarantee", "担保", "租约",
+)
 _POLICY_KEYWORDS = ("法规", "条例", "监管", "合规", "article", "act", "guidance")
 _POLICY_DOMAINS = (".gov", "europa.eu", "eur-lex", ".court", "gov.cn")
 _ORG_KEYWORDS = ("离职", "裁员", "ceo", "组织", "人事", "重组", "收购")
 _WORKFLOW_KEYWORDS = ("工作流", "workflow", "管线", "流程", "组合", "routing")
 _TEST_KEYWORDS = ("实测", "复现", "benchmark", "跑分", "测试", "repo", "github")
+_ORG_ARTIFACT_KEYWORDS = (
+    "内部信", "all hands", "filing", "8-k", "commit", "时间戳",
+    "辞职信",
+)
+_TECH_ARTIFACT_KEYWORDS = (
+    "源码", "trace", "commit", "repo", "论文", "arxiv", "architecture",
+)
+_METHOD_KEYWORDS = ("方法", "协议", "prompt", "repo", "样本", "复现", "methodology")
+_SOCIAL_DOMAINS = (
+    "x.com", "twitter.com", "reddit.com", "zhihu.com", "v2ex.com",
+    "news.ycombinator.com", "weixin.qq.com", "mp.weixin.qq.com",
+)
 
 
 def _module_summary(osint: dict, key: str) -> str:
@@ -117,6 +133,11 @@ def evidence_inventory(osint: dict) -> dict:
         "org_source": bool(
             _module_summary(osint, "org_people") not in ("", "无")
             or any(k in text for k in _ORG_KEYWORDS)
+        ),
+        "org_artifact": any(k in text for k in _ORG_ARTIFACT_KEYWORDS),
+        "tech_artifact": bool(
+            _module_summary(osint, "tech_engineering") not in ("", "无")
+            or any(k in text for k in _TECH_ARTIFACT_KEYWORDS)
         ),
         "policy_text": bool(
             any(k in text for k in _POLICY_KEYWORDS)
@@ -171,6 +192,110 @@ def route_archetypes(osint: dict, tensions: set) -> list:
     if not allowed:
         allowed = ["decision_brief"]
     return allowed
+
+
+def _kill_reason(osint: dict, topic: dict) -> str | None:
+    """Programmatic KILL conditions; None when the evidence may proceed."""
+    sources = [s for s in osint.get("sources") or []
+               if isinstance(s, dict) and s.get("status") == "fetched"]
+    if not sources:
+        return "零证据"
+    blob = " ".join(
+        f"{s.get('title', '')} {s.get('excerpt', '')} {s.get('url', '')}"
+        for s in sources
+    ).lower()
+    module_content = any(
+        m.get("key") != "unclassified"
+        and (m.get("summary") or "") not in ("", "无", "（已采集证据，待分析）")
+        for m in osint.get("modules") or []
+    )
+    veto_reasons = [
+        topics.veto_reason(f"{s.get('title', '')} {s.get('excerpt', '')}")
+        for s in sources
+    ]
+    has_primary_artifact = any(
+        d in (s.get("url") or "").lower()
+        for s in sources
+        for d in ("arxiv", "github.com", ".gov", "europa.eu")
+    )
+    if not module_content and all(veto_reasons) and not has_primary_artifact:
+        return f"只有{veto_reasons[0]}类素材"
+    social_only = all(
+        any(d in (s.get("url") or "").lower() for d in _SOCIAL_DOMAINS)
+        for s in sources
+    )
+    if social_only and not module_content:
+        return "纯社区传闻，无一手机源"
+    topic_text = " ".join([
+        topic.get("title", ""), topic.get("hook", ""), topic.get("thesis", ""),
+    ]).lower()
+    gaps = " ".join(str(g) for g in osint.get("evidence_gaps") or []).lower()
+    if (
+        any(k in topic_text or k in gaps for k in ("benchmark", "跑分", "基准"))
+        and not any(k in blob for k in _METHOD_KEYWORDS)
+        and _module_summary(osint, "tech_engineering") in ("", "无")
+    ):
+        return "无方法学 benchmark，仅可作引子"
+    return None
+
+
+def score_candidate(cand: dict, osint: dict) -> dict:
+    """Four-dimension candidate score + platform-weighted totals.
+
+    Deterministic approximations (系统建议，非平台算法事实):
+    evidence = evidence_audit 存在 + key_arguments 带来源的比例；
+    conflict = hook/thesis 中的冲突标记；decision = decision_rule 的
+    条件触发词；freshness = 证据抓取时间距今 ≤3 天。
+    """
+    audit_ok = 0.4 if (cand.get("evidence_audit") or "").strip() else 0.0
+    arguments = [a for a in cand.get("key_arguments") or []
+                 if isinstance(a, dict) and (a.get("source") or "").strip()]
+    evidence = round(min(1.0, audit_ok + 0.6 * min(1.0, len(arguments) / 3)), 2)
+    text = f"{cand.get('hook', '')} {cand.get('thesis', '')}".lower()
+    conflict = 1.0 if any(
+        k in text for k in ("冲突", "反共识", "反差", "落差", "矛盾", "相反")
+    ) else 0.0
+    rule = cand.get("decision_rule", "").lower()
+    decision = 1.0 if any(
+        k in rule for k in (
+            "触发", "条件", "否则", "即", "如果", "一旦", "当", "只要", "若", "只有",
+        )
+    ) else 0.5
+    fetched_at = [
+        s.get("fetched_at") or ""
+        for s in osint.get("sources") or []
+        if isinstance(s, dict) and s.get("status") == "fetched"
+    ]
+    freshness = 0.5
+    if fetched_at:
+        try:
+            newest = max(
+                datetime.datetime.fromisoformat(t.replace("Z", "+00:00"))
+                for t in fetched_at if t
+            )
+            freshness = (
+                1.0
+                if (datetime.datetime.now(newest.tzinfo) - newest).days <= 3
+                else 0.3
+            )
+        except (ValueError, TypeError):
+            pass
+    linkedin_total = round(
+        0.35 * evidence + 0.30 * decision
+        + 0.20 * conflict + 0.15 * freshness, 2,
+    )
+    wechat_total = round(
+        0.30 * conflict + 0.25 * evidence
+        + 0.25 * decision + 0.20 * freshness, 2,
+    )
+    return {
+        "evidence": evidence,
+        "conflict": conflict,
+        "decision": decision,
+        "freshness": freshness,
+        "linkedin_total": linkedin_total,
+        "wechat_total": wechat_total,
+    }
 
 
 def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> str:
@@ -313,6 +438,10 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
             "initial-osint.json missing; run the live research stage first"
         )
     osint = json.loads(osint_path.read_text(encoding="utf-8"))
+    kill = _kill_reason(osint, topic)
+    if kill:
+        state.update_fields(run_paths, note=f"narrative killed: {kill}")
+        raise NarrativeError(f"narrative killed: {kill}")
     tensions = tension_detection(topic, osint)
     allowed = route_archetypes(osint, tensions)
 
@@ -349,6 +478,7 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
                 "reason": "candidate fails the narrative schema: " + "; ".join(errors),
                 "candidates": [],
             }
+        cand["scores"] = score_candidate(cand, osint)
 
     data = {
         "run_id": run_paths.run_id,
@@ -393,6 +523,14 @@ def _render_candidates_md(data: dict) -> str:
             f"- 微信公众号：{cand.get('platform_notes', {}).get('wechat')}",
             f"- evidence_audit：{cand.get('evidence_audit')}",
         ]
+        scores = cand.get("scores") or {}
+        if scores:
+            lines.append(
+                f"- 评分：LinkedIn {scores.get('linkedin_total', '?')} / "
+                f"公众号 {scores.get('wechat_total', '?')}"
+                f"（E {scores.get('evidence', '?')} C {scores.get('conflict', '?')}"
+                f" D {scores.get('decision', '?')} F {scores.get('freshness', '?')}）"
+            )
     return "\n".join(lines) + "\n"
 
 
