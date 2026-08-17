@@ -399,3 +399,27 @@ def record_choice(run_paths, candidates: list, choice: int,
         narrative_extra_research=extra_research,
     )
     return cand
+
+
+def record_simulated_choice(run_paths, candidates: list, choice: int,
+                            extra_research: str = "") -> dict:
+    """Record an unattended (delegated/simulated) narrative choice."""
+    if not isinstance(choice, int) or choice < 1 or choice > len(candidates):
+        raise NarrativeError(
+            f"choice {choice!r} out of range; expected 1..{len(candidates)}"
+        )
+    cand = dict(candidates[choice - 1])
+    cand["extra_research"] = extra_research
+    (run_paths.work_dir / SELECTED_NARRATIVE_JSON).write_text(
+        json.dumps(cand, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    state.update_fields(
+        run_paths,
+        note=f"narrative choice: simulated (unattended mode, candidate {choice})",
+        narrative_choice="simulated",
+        narrative_title=cand.get("title", ""),
+        narrative_archetype=cand.get("archetype", ""),
+        narrative_extra_research=extra_research,
+    )
+    return cand

@@ -561,6 +561,51 @@ class SessionCommandTests(CliBase):
         self.assertIn("补证 1 轮", out)
         self.assertIn("07", out)
 
+    def test_narrative_simulate_flag_records_unattended(self):
+        from ai_daily import paths, state
+
+        run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        run_paths.ensure_work_dir()
+        state.init_state(run_paths)
+        narrative_cands = [{
+            "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
+            "thesis": "t", "key_arguments": [], "decision_rule": "d",
+            "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "evidence_audit": "e",
+        }]
+        with mock.patch.object(
+            cli.pipeline, "run_narrative",
+            return_value={"status": "generated", "candidates": narrative_cands},
+        ):
+            code, out, err = self.run_cli(
+                "narrative", "--root", self.root, "--date", "2026-08-13",
+                "--choice", "1", "--simulate",
+            )
+        self.assertEqual(code, 0, err)
+        st = state.read_state(run_paths)
+        self.assertEqual(st.get("narrative_choice"), "simulated")
+
+    def test_audit_command_sufficient_skips_loop(self):
+        from ai_daily import paths, state
+
+        run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        run_paths.ensure_work_dir()
+        state.init_state(run_paths)
+        with mock.patch.object(
+            cli.pipeline, "run_sufficiency",
+            return_value={"status": "completed", "verdict": "sufficient",
+                          "claim_coverage": [], "evidence_gaps": [],
+                          "research_tasks": [], "reason": ""},
+        ), mock.patch.object(
+            cli.pipeline, "run_targeted_loop"
+        ) as loop_mock:
+            code, out, err = self.run_cli(
+                "audit", "--root", self.root, "--date", "2026-08-13",
+            )
+        self.assertEqual(code, 0, err)
+        loop_mock.assert_not_called()
+        self.assertIn("07", out)
+
     def _seed_stale_run(self, date, stale=False):
         import datetime as _dt
         import os

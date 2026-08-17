@@ -324,3 +324,18 @@ class NarrativeGateTests(unittest.TestCase):
     def test_record_choice_rejects_out_of_range(self):
         with self.assertRaises(narrative.NarrativeError):
             narrative.record_choice(self.run_paths, [], 1)
+
+    def test_record_simulated_choice_marks_unattended(self):
+        candidates = [
+            {
+                "archetype": "cost_ledger", "title": "账本篇",
+                "hook": "h", "thesis": "t", "key_arguments": [],
+                "decision_rule": "d",
+                "platform_notes": {"linkedin": "l", "wechat": "w"},
+                "evidence_audit": "e",
+            }
+        ]
+        chosen = narrative.record_simulated_choice(self.run_paths, candidates, 1)
+        self.assertEqual(chosen["title"], "账本篇")
+        st = state.read_state(self.run_paths)
+        self.assertEqual(st["narrative_choice"], "simulated")

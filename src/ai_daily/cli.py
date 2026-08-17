@@ -136,6 +136,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true")
     p.add_argument("--choice", type=int, default=None)
     p.add_argument("--extra-research", default="")
+    p.add_argument("--simulate", action="store_true",
+                   help="unattended delegated choice (recorded as simulated)")
+
+    p = sub.add_parser(
+        "audit",
+        help="run the evidence-sufficiency audit and the bounded targeted loop",
+    )
+    common(p)
+    p.add_argument("--force", action="store_true")
 
     return parser
 
@@ -259,7 +268,11 @@ def cmd_narrative(args) -> int:
         if st.get("narrative_choice") and args.choice is None:
             print(f"叙事已定：{st.get('narrative_title', '')}")
         elif args.choice is not None:
-            chosen = narrative.record_choice(
+            recorder = (
+                narrative.record_simulated_choice if args.simulate
+                else narrative.record_choice
+            )
+            chosen = recorder(
                 run_paths, candidates, args.choice, args.extra_research
             )
             print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
@@ -273,6 +286,12 @@ def cmd_narrative(args) -> int:
             )
             print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
     return 0
+
+
+def cmd_audit(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    return _run_audit_flow(run_paths, args.force, tui.supports_color())
 
 
 def cmd_outline(args) -> int:
@@ -453,6 +472,38 @@ def _audit_hint(verdict: str, reason: str = "") -> str:
     return f"两轮补证后仍不足，收口判定 needs_research——{reason or '无原因'}"
 
 
+def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
+    """05 audit + (when needed) 06 bounded loop; shared by session/audit."""
+    audit = pipeline.run_sufficiency(run_paths, force=force)
+    print(tui.render_audit(audit, color=use_color))
+    print()
+    if audit.get("status") == "unavailable":
+        print("05 审计不可用，会话终止（不伪造判定）。")
+        return 1
+    if audit.get("verdict") == "needs_research":
+        loop = pipeline.run_targeted_loop(
+            run_paths, force=force, initial_audit=audit
+        )
+        print(f"补证 {loop.get('rounds', 0)} 轮 → 最终判定："
+              f"{loop.get('verdict')}")
+        if loop.get("status") == "unavailable":
+            print("06 补证循环不可用，会话终止。")
+            return 1
+        verdict = loop.get("verdict")
+        reason = loop.get("reason", "")
+        if verdict != "sufficient":
+            state.fail(run_paths, "audit",
+                       f"narrative {verdict}: {reason or '无原因'}")
+    else:
+        verdict = audit.get("verdict")
+        reason = audit.get("reason", "")
+        if verdict == "unsupported":
+            state.fail(run_paths, "audit",
+                       f"narrative unsupported: {reason or '无原因'}")
+    print(_audit_hint(verdict, reason))
+    return 0 if verdict == "sufficient" else 1
+
+
 def cmd_session(args) -> int:
     """One visible-terminal session through stage 03 with full TUI output."""
     run_paths = _paths(args)
@@ -529,34 +580,7 @@ def cmd_session(args) -> int:
             print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
         print()
         print(_next_stage_hint("narrative", mode="live"))
-        audit = pipeline.run_sufficiency(run_paths, force=args.force)
-        print(tui.render_audit(audit, color=use_color))
-        print()
-        if audit.get("status") == "unavailable":
-            print("05 审计不可用，会话终止（不伪造判定）。")
-            return 1
-        if audit.get("verdict") == "needs_research":
-            loop = pipeline.run_targeted_loop(
-                run_paths, force=args.force, initial_audit=audit
-            )
-            print(f"补证 {loop.get('rounds', 0)} 轮 → 最终判定："
-                  f"{loop.get('verdict')}")
-            if loop.get("status") == "unavailable":
-                print("06 补证循环不可用，会话终止。")
-                return 1
-            verdict = loop.get("verdict")
-            reason = loop.get("reason", "")
-            if verdict != "sufficient":
-                state.fail(run_paths, "audit",
-                           f"narrative {verdict}: {reason or '无原因'}")
-        else:
-            verdict = audit.get("verdict")
-            reason = audit.get("reason", "")
-            if verdict == "unsupported":
-                state.fail(run_paths, "audit",
-                           f"narrative unsupported: {reason or '无原因'}")
-        print(_audit_hint(verdict, reason))
-        return 0 if verdict == "sufficient" else 1
+        return _run_audit_flow(run_paths, args.force, use_color)
     else:
         result = pipeline.run_research(run_paths, force=args.force)
         print(f"research: {result['status']}")
@@ -593,6 +617,7 @@ COMMANDS = {
     "fetch": cmd_fetch,
     "session": cmd_session,
     "narrative": cmd_narrative,
+    "audit": cmd_audit,
 }
 
 # Controlled domain errors: reported cleanly, exit 1 (never a traceback).
