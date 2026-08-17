@@ -474,6 +474,7 @@ def _audit_hint(verdict: str, reason: str = "") -> str:
 
 def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
     """05 audit + (when needed) 06 bounded loop; shared by session/audit."""
+    print("正在调用 Codex 审计证据充分性（约 2–5 分钟）…")
     audit = pipeline.run_sufficiency(run_paths, force=force)
     print(tui.render_audit(audit, color=use_color))
     print()
@@ -482,7 +483,8 @@ def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
         return 1
     if audit.get("verdict") == "needs_research":
         loop = pipeline.run_targeted_loop(
-            run_paths, force=force, initial_audit=audit
+            run_paths, force=force, initial_audit=audit,
+            progress=_audit_progress,
         )
         print(f"补证 {loop.get('rounds', 0)} 轮 → 最终判定："
               f"{loop.get('verdict')}")
@@ -502,6 +504,14 @@ def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
                        f"narrative unsupported: {reason or '无原因'}")
     print(_audit_hint(verdict, reason))
     return 0 if verdict == "sufficient" else 1
+
+
+def _audit_progress(kind, payload):
+    if kind == "round_start":
+        print(f"第 {payload.get('round')} 轮定向补证：发现并抓取 "
+              f"{payload.get('tasks', 0)} 条缺口的来源…")
+    elif kind == "re_audit":
+        print("补证完成，重新调用 Codex 审计…")
 
 
 def cmd_session(args) -> int:
@@ -553,6 +563,7 @@ def cmd_session(args) -> int:
             run_paths, force=args.force, progress=_session_progress(use_color),
         )
         print(f"research: {result['status']}")
+        print("正在调用 Codex 生成两个叙事候选（约 2–5 分钟）…")
         narrative_result = pipeline.run_narrative(run_paths, force=args.force)
         print(f"narrative: {narrative_result['status']}")
         candidates = narrative_result.get("candidates") or []

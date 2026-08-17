@@ -59,7 +59,7 @@ def _execute_tasks(run_paths, tasks: list, discover_runner=None,
 
 def run_loop(run_paths, audit_runner=None, discover_runner=None,
              http_fetcher=None, cdp_runner=None, force: bool = False,
-             initial_audit: dict = None) -> dict:
+             initial_audit: dict = None, progress=None) -> dict:
     """Audit -> targeted rounds (max 2) -> final verdict + evidence package."""
     narrative.require_narrative(run_paths)
     package_path = run_paths.work_dir / EVIDENCE_PACKAGE_JSON
@@ -94,6 +94,9 @@ def run_loop(run_paths, audit_runner=None, discover_runner=None,
     if audit["verdict"] != "sufficient":
         while audit["verdict"] == "needs_research" and len(rounds) < MAX_ROUNDS:
             tasks = audit.get("research_tasks") or []
+            if progress:
+                progress("round_start", {"round": len(rounds) + 1,
+                                         "tasks": len(tasks)})
             entries = _execute_tasks(
                 run_paths, tasks,
                 discover_runner=discover_runner,
@@ -103,6 +106,8 @@ def run_loop(run_paths, audit_runner=None, discover_runner=None,
             rounds.append(entries)
             extra.extend(entries)
             state.transition(run_paths, "targeted_research")
+            if progress:
+                progress("re_audit", {"round": len(rounds) + 1})
             audit = sufficiency.run(
                 run_paths, codex_runner=audit_runner, force=True,
                 extra_evidence=extra, round_number=len(rounds) + 1,

@@ -229,7 +229,8 @@ def run_sufficiency(run_paths, codex_runner=None, force: bool = False) -> dict:
 
 def run_targeted_loop(run_paths, audit_runner=None, discover_runner=None,
                       http_fetcher=None, cdp_runner=None,
-                      force: bool = False, initial_audit: dict = None) -> dict:
+                      force: bool = False, initial_audit: dict = None,
+                      progress=None) -> dict:
     """06 bounded supplementary research loop (max two rounds)."""
     return targeted.run_loop(
         run_paths,
@@ -239,6 +240,7 @@ def run_targeted_loop(run_paths, audit_runner=None, discover_runner=None,
         cdp_runner=cdp_runner,
         force=force,
         initial_audit=initial_audit,
+        progress=progress,
     )
 
 

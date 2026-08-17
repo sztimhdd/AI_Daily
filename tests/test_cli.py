@@ -375,6 +375,8 @@ class SessionCommandTests(CliBase):
         self.assertIn("叙事一", out)
         self.assertIn("04 已跑完", out)
         self.assertIn("05", out)
+        self.assertIn("正在调用 Codex 生成两个叙事候选", out)
+        self.assertIn("正在调用 Codex 审计证据充分性", out)
 
     def test_fixture_session_stops_at_03_without_narrative(self):
         with mock.patch.object(
