@@ -92,6 +92,42 @@ class RouteArchetypeTests(unittest.TestCase):
             )
 
 
+class PromptBestPracticeMatrixTests(unittest.TestCase):
+    def _prompt(self, allowed=None):
+        topic = {"title": "X 发布", "hook": "", "research_queries": []}
+        osint = sample_osint()
+        allowed = allowed or narrative.route_archetypes(osint, set())
+        return narrative._compile_prompt(topic, osint, allowed, set())
+
+    def test_prompt_includes_hook_patterns_and_denominator(self):
+        prompt = self._prompt()
+        self.assertIn("HookPatternConfidence", prompt)
+        self.assertIn("同任务对照", prompt)
+        self.assertIn("denominator", prompt)
+
+    def test_prompt_includes_evidence_ladder_and_citation_format(self):
+        prompt = self._prompt()
+        self.assertIn("可复现实测artifact", prompt)
+        self.assertIn("[机构],[日期],[样本/方法]", prompt)
+        self.assertIn("Confirmed/Reported/Inferred/Unknown", prompt)
+
+    def test_prompt_injects_anatomy_only_for_allowed_archetypes(self):
+        prompt = self._prompt(allowed=["cost_ledger"])
+        self.assertIn("成本与供应链账本", prompt)
+        self.assertIn("denominator", prompt)
+        self.assertNotIn("生态权力图", prompt)
+
+    def test_prompt_includes_authenticity_four_pack(self):
+        prompt = self._prompt()
+        self.assertIn("真信度四件套", prompt)
+        self.assertIn("只有真正调查过才写得出", prompt)
+
+    def test_prompt_imposes_compactness_constraints(self):
+        prompt = self._prompt()
+        self.assertIn("6000 字符", prompt)
+        self.assertIn("2-4 条", prompt)
+
+
 class NarrativeRunTests(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()

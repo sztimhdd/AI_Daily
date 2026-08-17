@@ -50,6 +50,36 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 5. Evidence Object（EO）：可独立核验的证据 = 数据点+来源 / 源码/commit / 测试日志 / 账单 / 截图 / 官方文档 / 法条 / 具名内部信 / 带上下文社区原话。
 6. EO 密度：中文深度稿每千字 4–6 EO；LinkedIn 单帖 2–4 EO；至少 1 个作者亲自产生的 artifact。
 
+## 2026 最佳实践执行矩阵（调研报告3 重点集成）
+
+以下规则已注入 narrative.py 的生成提示（PromptBestPracticeMatrixTests 锁定）：
+
+### 五类高潜力 hook（HookPatternConfidence）
+
+1. 同任务对照：Same task. Same prompt. X vs Y，分数不是最有意思的部分。
+2. 感知 vs 实际：大家以为提升 X，实测却是 Y。
+3. 跑分 vs 实战：榜单第 N，真实项目却……
+4. 标价 vs 真账单：$X/token 看起来便宜，但一个成功任务实际 $Y。
+5. deadline + 纠错：[日期] 生效，但你听到的流行解释是错的。
+
+### 证据等级阶梯（按语境）
+
+- 产品好不好用：可复现实测 artifact > 方法公开的独立研究 > 官方技术材料 > 多源社区交叉印证 > 媒体转述 > 单个匿名用户 > AI 摘要。
+- 法律规定什么：法规/官方 guidance > 专业法律分析 > 可靠媒体 > 专家帖 > 社区讨论。
+- 公司内部发生什么：公司公告/内部信/filing > 具名当事人 > 多源报道 > 单一媒体匿名 > 传闻。
+- 引用研究必须写：[机构],[日期],[样本/方法],发现[结果];但[limitation]。
+
+### 两个强制细节规则
+
+- **denominator 规则**：任何成本百分比必须回答分母——每 token/每请求/每任务/每成功任务/是否含人工 review；没有分母的百分比一律降权。
+- **人事事实状态标注**：每条敏感信息必须标 Confirmed / Reported / Inferred / Unknown；核心人事事实至少双源。
+
+### 原型解剖速查
+
+每个原型的标题公式、段落骨架、EO 密度与 takeaway 公式见 narrative.py 的
+`_ARCHETYPE_ANATOMY`（只在白名单内的原型注入提示词），与报告3 第3节解剖卡
+一一对应。
+
 ## 平台核心要点
 
 ### LinkedIn（practitioner memo）

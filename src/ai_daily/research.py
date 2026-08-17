@@ -791,9 +791,12 @@ def _parse_codex_exec_stdout(stdout: str) -> dict:
             return obj
 
     if last_message:
+        snippet = last_message if len(last_message) <= 360 else (
+            last_message[:200] + " … " + last_message[-160:]
+        )
         return {
             "status": "unavailable",
-            "reason": f"codex exec final message is not JSON: {last_message[:200]}",
+            "reason": f"codex exec final message is not JSON: {snippet}",
         }
     return {
         "status": "unavailable",

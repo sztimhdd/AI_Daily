@@ -77,6 +77,17 @@
 | 源资产 | 去向 | 说明 |
 |---|---|---|
 | REF·NarrativeGenerator + LCW·Narrative Agent + HITL Narrative Approval | ~~narrative_selection(V1.5)~~ → 已落地（04，2026-08-17） | 双角度互斥保留；6 叙事原型被 2026 三方调研的 8 原型取代；4 字段审批表单映射为 TUI 二选一 + 定向搜证补充。详见 knowledge/narrative-contract.md 与 docs/research/narrative-survey-merge-notes.md |
+
+### narrative 2026 最佳实践（调研报告3 重点，2026-08-17 补编译）
+
+| 资产 | 去向 | 处置 |
+|---|---|---|
+| 8 原型解剖卡（标题公式/骨架/EO 密度/takeaway） | narrative.py `_ARCHETYPE_ANATOMY` | 采纳原样，仅白名单原型注入提示词 |
+| 五类高潜力 hook | narrative.py `_HOOK_PATTERNS` | 采纳原样（HookPatternConfidence，不用 ExpectedCTR） |
+| 证据等级阶梯（产品/法律/内部三种语境） | narrative.py `_EVIDENCE_LADDER` | 采纳原样 + 研究引用格式 [机构],[日期],[样本/方法],发现;但[limitation] |
+| denominator 规则 / Confirmed-Reported-Inferred-Unknown | 生成提示硬规则 4 | 采纳原样 |
+| 真信度四件套 / Observable→Conflict→Decision / 五段证据链 | 生成提示硬规则 1/2/6 + schema 校验 | 采纳并落校验 |
+| Reddit/V2EX 作为选题与证据市场（发现问题→可验证假设→一手验证） | 06 定向补证设计输入 | 延后至 06 落地 |
 | UDW·Image Adder（A-N 原型库+绝对视觉禁令）+ REF·Image Adder（四原型） | illustration(V1.5) | 与已批准的 visual_plan 合并去重后启用；封面逻辑为新资产 |
 | UDW·Structured Output Parser2 | illustration(V1.5) | 活路径插图 schema，与新方案兼容 |
 | REF·公众号/LinkedIn MCP 投递、UDW·Final Editor (Universal)、LCW·Parse Pilot Results / Prepare Browser Tasks | delivery(未来) | 浏览器自动化剧本与 SEO 元数据，未来适配器时再评估 |
