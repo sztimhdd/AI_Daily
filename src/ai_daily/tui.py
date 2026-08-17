@@ -211,6 +211,52 @@ def render_osint(modules: list, gaps: list, analysis_status: str = "",
     return "\n".join(lines)
 
 
+_ARCHETYPE_TITLES = {
+    "first_hand_test": "一手实测翻车",
+    "contrarian_audit": "反共识拆台",
+    "mechanism_teardown": "工程机制拆解",
+    "cost_ledger": "成本与供应链账本",
+    "workflow_playbook": "工作流配方",
+    "power_map": "生态权力图",
+    "compliance_risk": "政策合规风险",
+    "decision_brief": "决策快讯",
+}
+
+
+def render_narrative_candidates(candidates: list, color: bool = False) -> str:
+    """Two narrative candidates: archetype, hook, thesis, decision rule."""
+    blocks = []
+    for i, cand in enumerate(candidates, 1):
+        title = cand.get("title", "")
+        if color:
+            head = f"{ACCENT}{BOLD}{i}.{RESET} {BOLD}{title}{RESET}"
+        else:
+            head = f"{i}. {title}"
+        archetype = _ARCHETYPE_TITLES.get(
+            cand.get("archetype", ""), cand.get("archetype", "")
+        )
+        lines = [head, f"   原型：{archetype}（{cand.get('archetype', '')}）"]
+        for label, key in (("hook", "hook"), ("thesis", "thesis")):
+            if cand.get(key):
+                if color:
+                    lines.append(f"   {MUTED}{label}：{RESET}{cand.get(key)}")
+                else:
+                    lines.append(f"   {label}：{cand.get(key)}")
+        for arg in cand.get("key_arguments") or []:
+            line = f"      · {arg.get('claim', '')}（{arg.get('observable', '')}）"
+            lines.append(line)
+        notes = cand.get("platform_notes") or {}
+        if notes.get("linkedin"):
+            lines.append(f"   LinkedIn：{notes['linkedin']}")
+        if notes.get("wechat"):
+            lines.append(f"   微信公众号：{notes['wechat']}")
+        if cand.get("decision_rule"):
+            line = f"   决策规则：{cand['decision_rule']}"
+            lines.append(_paint(line, GREEN, color))
+        blocks.append("\n".join(lines))
+    return "\n\n".join(blocks)
+
+
 def prompt_choice(count: int, input_fn=input) -> int:
     """Loop until a valid 1..count integer is entered.
 
@@ -218,6 +264,8 @@ def prompt_choice(count: int, input_fn=input) -> int:
     raising; only a valid choice returns.  The prompt states the range
     so an interactive user knows what is accepted.
     """
+    if count < 1:
+        return -1
     while True:
         raw = input_fn(f"选择 1..{count}：")
         raw = raw.strip()

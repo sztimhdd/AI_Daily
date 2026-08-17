@@ -21,6 +21,10 @@ FIELD_KEYS = [
     "slug",
     "topic_choice",
     "topic_title",
+    "narrative_choice",
+    "narrative_title",
+    "narrative_archetype",
+    "narrative_extra_research",
     "last_error",
     "updated_at",
 ]

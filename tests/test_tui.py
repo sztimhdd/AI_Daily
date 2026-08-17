@@ -32,6 +32,22 @@ def sample_hot_item(title="热点标题", source="X：官方账号", score=71):
     }
 
 
+def sample_narrative_candidate(title="账本篇", archetype="cost_ledger"):
+    return {
+        "archetype": archetype,
+        "title": title,
+        "hook": "事实。冲突。决策。",
+        "thesis": "核心论点",
+        "decision_rule": "条件成立才切换",
+        "platform_notes": {"linkedin": "LN 一句", "wechat": "WX 一句"},
+        "evidence_audit": "EO 充足",
+        "key_arguments": [
+            {"claim": "成本更低", "observable": "$5 vs $30",
+             "source": "账单", "limitation": "厂商自测", "decision": "可复测"},
+        ],
+    }
+
+
 class RenderProgressTests(unittest.TestCase):
     def test_completed_current_and_future_marks(self):
         lines = tui.render_progress("topic_choice", STAGES, color=False).splitlines()
@@ -100,6 +116,9 @@ class PromptChoiceTests(unittest.TestCase):
 
         tui.prompt_choice(3, input_fn=fake_input)
         self.assertIn("1..3", prompts[0])
+
+    def test_zero_count_returns_invalid_choice_instead_of_looping(self):
+        self.assertEqual(tui.prompt_choice(0, input_fn=lambda _prompt: "1"), -1)
 
 
 class ColorTests(unittest.TestCase):
@@ -252,6 +271,36 @@ class RenderOsintTests(unittest.TestCase):
         )
         self.assertIn("证据缺口：", out)
         self.assertIn("- 模块「财务」暂无证据", out)
+
+
+class RenderNarrativeCandidatesTests(unittest.TestCase):
+    def test_shows_two_candidates_with_archetype_and_anatomy(self):
+        cands = [
+            sample_narrative_candidate("账本篇"),
+            sample_narrative_candidate("机制篇", archetype="mechanism_teardown"),
+        ]
+        out = tui.render_narrative_candidates(cands, color=False)
+        self.assertIn("1. 账本篇", out)
+        self.assertIn("2. 机制篇", out)
+        self.assertIn("原型：成本与供应链账本", out)
+        self.assertIn("原型：工程机制拆解", out)
+        self.assertIn("核心论点", out)
+        self.assertIn("LN 一句", out)
+        self.assertIn("WX 一句", out)
+        self.assertIn("条件成立才切换", out)
+
+    def test_plain_rendering_never_emits_escape_sequences(self):
+        out = tui.render_narrative_candidates(
+            [sample_narrative_candidate()], color=False
+        )
+        self.assertNotIn("\033", out)
+
+    def test_archetype_title_maps_stay_in_sync_with_narrative_module(self):
+        from ai_daily import narrative
+
+        self.assertEqual(
+            tui._ARCHETYPE_TITLES, narrative._ARCHETYPE_TITLES
+        )
 
 
 if __name__ == "__main__":

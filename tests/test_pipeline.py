@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ai_daily import aihot, pipeline, paths, state, topics
+from ai_daily import aihot, narrative, pipeline, paths, state, topics
 
 FIXTURES = pathlib.Path(__file__).resolve().parents[0] / "fixtures"
 AIHOT_FIXTURE = FIXTURES / "aihot_items.json"
@@ -148,6 +148,27 @@ class StageGateTests(PipelineBase):
         with self.assertRaises(pipeline.PipelineError):
             pipeline.run_outline(self.rp)
 
+    def test_outline_blocked_when_narrative_candidates_exist_without_choice(self):
+        topics.choose_fixture(self.rp, TOPIC_FIXTURE)
+        self.rp.ensure_work_dir()
+        (self.rp.work_dir / "research.json").write_text(
+            json.dumps({"status": "ok"}), encoding="utf-8"
+        )
+        (self.rp.work_dir / narrative.NARRATIVE_CANDIDATES_JSON).write_text(
+            json.dumps({"candidates": []}), encoding="utf-8"
+        )
+        with self.assertRaises(narrative.NarrativeGateBlocked):
+            pipeline.run_outline(self.rp)
+
+    def test_outline_unblocked_in_fixture_path_without_narrative_artifacts(self):
+        topics.choose_fixture(self.rp, TOPIC_FIXTURE)
+        self.rp.ensure_work_dir()
+        (self.rp.work_dir / "research.json").write_text(
+            json.dumps({"questions": []}), encoding="utf-8"
+        )
+        result = pipeline.run_outline(self.rp)
+        self.assertEqual(result["status"], "generated")
+
     def test_draft_blocked_without_outline(self):
         topics.choose_fixture(self.rp, TOPIC_FIXTURE)
         with self.assertRaises(pipeline.PipelineError):
@@ -171,6 +192,42 @@ class StageGateTests(PipelineBase):
         st = state.read_state(self.rp)
         self.assertEqual(st["topic_choice"], "human")
         self.assertEqual(st["slug"], topic["slug"])
+
+
+class SimulatedChoiceStageTests(PipelineBase):
+    def test_simulated_choice_passes_gate(self):
+        pipeline.run_collect(self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[])
+        topic = pipeline.run_simulated_choice(self.rp, choice=1)
+        st = state.read_state(self.rp)
+        self.assertEqual(st["topic_choice"], "simulated")
+        self.assertEqual(st["stage"], "topic_choice")
+        self.assertEqual(st["slug"], topic["slug"])
+        self.assertEqual(st["topic_title"], topic["title"])
+        # research gate accepts the simulated choice
+        result = pipeline.run_research(self.rp)
+        self.assertEqual(result["status"], "generated")
+
+    def test_resume_after_simulated_choice_does_not_recollect(self):
+        pipeline.run_collect(self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[])
+        pipeline.run_simulated_choice(self.rp, choice=1)
+        pipeline.run_research(self.rp)
+
+        def must_not_be_called(url, timeout):
+            raise AssertionError("collect must not fetch on resume")
+
+        result = pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE,
+            fetch=must_not_be_called, rss_urls=[],
+        )
+        self.assertEqual(result["status"], "resumed")
+        st = state.read_state(self.rp)
+        self.assertEqual(st["counters"]["collect_runs"], 1)
+        self.assertEqual(st["topic_choice"], "simulated")
+
+    def test_simulated_choice_out_of_range_fails_honestly(self):
+        pipeline.run_collect(self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[])
+        with self.assertRaises(topics.TopicError):
+            pipeline.run_simulated_choice(self.rp, choice=4)
 
 
 class RegenerateOutlineTests(PipelineBase):

@@ -17,7 +17,7 @@ import datetime
 import json
 import sys
 
-from . import STAGES, assemble, draft, fetch, outline, pipeline, publish, state, topics, tui
+from . import STAGES, assemble, draft, fetch, narrative, outline, pipeline, publish, state, topics, tui
 from .paths import RunPaths
 
 
@@ -122,6 +122,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--choice", type=int, default=None,
                    help="skip the interactive topic prompt with this choice")
     p.add_argument("--direction", default="")
+    p.add_argument("--narrative-choice", type=int, default=None,
+                   help="skip the interactive narrative prompt with this choice")
+    p.add_argument("--extra-research", default="",
+                   help="editorial supplementary research direction for 06")
+
+    p = sub.add_parser(
+        "narrative",
+        help="generate two narrative candidates and record the editor's choice",
+    )
+    common(p)
+    p.add_argument("--force", action="store_true")
+    p.add_argument("--choice", type=int, default=None)
+    p.add_argument("--extra-research", default="")
 
     return parser
 
@@ -225,6 +238,39 @@ def cmd_research(args) -> int:
     else:
         result = pipeline.run_research(run_paths, force=args.force)
     print(f"research: {result['status']} ({result['research_md']})")
+    return 0
+
+
+def cmd_narrative(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    use_color = tui.supports_color()
+    result = pipeline.run_narrative(run_paths, force=args.force)
+    print(f"narrative: {result['status']}")
+    candidates = result.get("candidates") or []
+    if result["status"] == "unavailable":
+        print(f"- reason: {result.get('reason', '')}")
+        return 1
+    if result["status"] in ("generated", "resumed"):
+        print(tui.render_narrative_candidates(candidates, color=use_color))
+        print()
+        st = state.read_state(run_paths)
+        if st.get("narrative_choice") and args.choice is None:
+            print(f"叙事已定：{st.get('narrative_title', '')}")
+        elif args.choice is not None:
+            chosen = narrative.record_choice(
+                run_paths, candidates, args.choice, args.extra_research
+            )
+            print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
+        else:
+            code = _require_interactive()
+            if code is not None:
+                return code
+            choice = tui.prompt_choice(len(candidates))
+            chosen = narrative.record_choice(
+                run_paths, candidates, choice, args.extra_research
+            )
+            print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
     return 0
 
 
@@ -363,6 +409,8 @@ def _reset_run(run_paths) -> None:
         "aihot-items.json", "rss-items.json", "rss-pool.md", "rss-stats.json",
         "selected-topic.json", "story-matrix.json", "initial-evidence.json",
         "initial-osint.json", "initial-osint.md",
+        "narrative-candidates.json", "narrative-candidates.md",
+        "selected-narrative.json",
     ):
         path = run_paths.work_dir / name
         if path.exists():
@@ -385,8 +433,12 @@ def _require_interactive():
 
 
 def _next_stage_hint(stage: str, mode: str = "fixture") -> str:
-    if mode == "live":
-        return "03 已跑完，本会话结束（live 证据包已生成，narrative 阶段待接入）"
+    if stage == "narrative":
+        if mode == "live":
+            return "04 已跑完，本会话结束（下一步：05 证据充分性审计）"
+        return "04 已跑完，本会话结束（下一步：outline）"
+    if stage == "research" and mode == "fixture":
+        return "03 已跑完（fixture 模式止步；live 模式继续叙事选择）"
     if stage in STAGES and stage != STAGES[-1]:
         return f"03 已跑完，下一步：{STAGES[STAGES.index(stage) + 1]}"
     return "03 已跑完，本会话结束"
@@ -440,9 +492,38 @@ def cmd_session(args) -> int:
         result = pipeline.run_initial_research(
             run_paths, force=args.force, progress=_session_progress(use_color),
         )
+        print(f"research: {result['status']}")
+        narrative_result = pipeline.run_narrative(run_paths, force=args.force)
+        print(f"narrative: {narrative_result['status']}")
+        candidates = narrative_result.get("candidates") or []
+        if narrative_result["status"] == "unavailable":
+            print(f"- reason: {narrative_result.get('reason', '')}")
+            return 1
+        print(tui.render_narrative_candidates(candidates, color=use_color))
+        print()
+        st = state.read_state(run_paths)
+        if st.get("narrative_choice") and args.narrative_choice is None:
+            print(f"叙事已定：{st.get('narrative_title', '')}")
+        elif args.narrative_choice is not None:
+            chosen = narrative.record_choice(
+                run_paths, candidates, args.narrative_choice, args.extra_research
+            )
+            print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
+        else:
+            code = _require_interactive()
+            if code is not None:
+                return code
+            choice = tui.prompt_choice(len(candidates))
+            chosen = narrative.record_choice(
+                run_paths, candidates, choice, args.extra_research
+            )
+            print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
+        print()
+        print(_next_stage_hint("narrative", mode="live"))
+        return 0
     else:
         result = pipeline.run_research(run_paths, force=args.force)
-    print(f"research: {result['status']}")
+        print(f"research: {result['status']}")
     osint_path = run_paths.work_dir / "initial-osint.json"
     if osint_path.exists():
         data = json.loads(osint_path.read_text(encoding="utf-8"))
@@ -475,6 +556,7 @@ COMMANDS = {
     "run": cmd_run,
     "fetch": cmd_fetch,
     "session": cmd_session,
+    "narrative": cmd_narrative,
 }
 
 # Controlled domain errors: reported cleanly, exit 1 (never a traceback).

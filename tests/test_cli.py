@@ -290,17 +290,110 @@ class SessionCommandTests(CliBase):
             seen["progress"] = kwargs.get("progress")
             return {"status": "generated", "research_md": "md"}
 
+        def fake_narrative(run_paths, **kwargs):
+            return {
+                "status": "generated",
+                "candidates": [{
+                    "archetype": "decision_brief", "title": "叙事一",
+                    "hook": "h", "thesis": "t", "key_arguments": [],
+                    "decision_rule": "d",
+                    "platform_notes": {"linkedin": "l", "wechat": "w"},
+                    "evidence_audit": "e",
+                }],
+            }
+
         with mock.patch.object(cli.pipeline, "run_collect", side_effect=fake_collect), \
              mock.patch.object(cli.pipeline, "run_candidates", return_value=cands), \
-             mock.patch.object(cli.pipeline, "run_initial_research", side_effect=fake_initial):
+             mock.patch.object(cli.pipeline, "run_initial_research", side_effect=fake_initial), \
+             mock.patch.object(cli.pipeline, "run_narrative", side_effect=fake_narrative):
             code, out, err = self.run_cli(
                 "session", "--root", self.root, "--date", "2026-08-13",
-                "--mode", "live", "--choice", "1",
+                "--mode", "live", "--choice", "1", "--narrative-choice", "1",
             )
         self.assertEqual(code, 0, err)
         self.assertIn("本会话结束", out)
         self.assertNotIn("下一步：outline", out)
         self.assertTrue(callable(seen.get("progress")))
+
+    def test_live_session_runs_narrative_and_stops_at_04(self):
+        aihot_item = {
+            "title": "某热点", "summary": "", "source_name": "某源",
+            "score": 80, "links": {"aihot": "https://aihot.virxact.com/items/x"},
+        }
+        cands = [{
+            "title": "候选一", "thesis": "论点", "hook": "钩子",
+            "research_queries": ["查询"],
+            "sources": [{"url": "https://example.com/x"}],
+        }]
+        narrative_cands = [{
+            "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
+            "thesis": "t", "key_arguments": [], "decision_rule": "d",
+            "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "evidence_audit": "e",
+        }]
+        seen = {}
+
+        def fake_collect(run_paths, **kwargs):
+            run_paths.ensure_work_dir()
+            (run_paths.work_dir / "aihot-items.json").write_text(
+                json.dumps([aihot_item], ensure_ascii=False), encoding="utf-8"
+            )
+            return {"status": "collected"}
+
+        def fake_initial(run_paths, **kwargs):
+            seen["progress"] = kwargs.get("progress")
+            return {"status": "generated", "research_md": "md"}
+
+        def fake_narrative(run_paths, **kwargs):
+            return {"status": "generated", "candidates": narrative_cands}
+
+        with mock.patch.object(cli.pipeline, "run_collect", side_effect=fake_collect), \
+             mock.patch.object(cli.pipeline, "run_candidates", return_value=cands), \
+             mock.patch.object(cli.pipeline, "run_initial_research", side_effect=fake_initial), \
+             mock.patch.object(cli.pipeline, "run_narrative", side_effect=fake_narrative):
+            code, out, err = self.run_cli(
+                "session", "--root", self.root, "--date", "2026-08-13",
+                "--mode", "live", "--choice", "1", "--narrative-choice", "1",
+            )
+        self.assertEqual(code, 0, err)
+        self.assertIn("叙事一", out)
+        self.assertIn("04 已跑完", out)
+        self.assertIn("05", out)
+
+    def test_fixture_session_stops_at_03_without_narrative(self):
+        with mock.patch.object(
+            cli.pipeline, "run_narrative"
+        ) as run_narrative:
+            code, out, err = self.run_cli(*self._session_args(), "--choice", "1")
+        self.assertEqual(code, 0, err)
+        run_narrative.assert_not_called()
+        self.assertIn("03 已跑完", out)
+
+    def test_narrative_command_records_choice(self):
+        from ai_daily import paths, state
+
+        narrative_cands = [{
+            "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
+            "thesis": "t", "key_arguments": [], "decision_rule": "d",
+            "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "evidence_audit": "e",
+        }]
+        run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        run_paths.ensure_work_dir()
+        state.init_state(run_paths)
+        with mock.patch.object(
+            cli.pipeline, "run_narrative",
+            return_value={"status": "generated", "candidates": narrative_cands},
+        ):
+            code, out, err = self.run_cli(
+                "narrative", "--root", self.root, "--date", "2026-08-13",
+                "--choice", "1", "--extra-research", "补证：供应商访谈",
+            )
+        self.assertEqual(code, 0, err)
+        self.assertIn("叙事一", out)
+        st = state.read_state(run_paths)
+        self.assertEqual(st.get("narrative_choice"), "human")
+        self.assertEqual(st.get("narrative_title"), "叙事一")
 
     def _seed_stale_run(self, date, stale=False):
         import datetime as _dt
@@ -359,6 +452,12 @@ class SessionCommandTests(CliBase):
         run_paths = self._seed_stale_run(
             date, stale=True
         )
+        (run_paths.work_dir / "narrative-candidates.json").write_text(
+            json.dumps({"candidates": []}), encoding="utf-8"
+        )
+        (run_paths.work_dir / "selected-narrative.json").write_text(
+            json.dumps({"title": "旧叙事"}), encoding="utf-8"
+        )
         code, out, err = self.run_cli(
             "session", "--root", self.root, "--date", date,
             "--mode", "fixture", "--aihot-fixture", AIHOT_FIXTURE,
@@ -369,6 +468,8 @@ class SessionCommandTests(CliBase):
         st = state.read_state(run_paths)
         self.assertNotEqual(st.get("topic_title"), "昨天录的旧选题")
         self.assertEqual(st.get("stage"), "research")
+        self.assertFalse((run_paths.work_dir / "narrative-candidates.json").exists())
+        self.assertFalse((run_paths.work_dir / "selected-narrative.json").exists())
 
     def test_session_keeps_same_day_run(self):
         from ai_daily import state

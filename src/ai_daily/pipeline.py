@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import json
 
-from . import STAGES, aihot, assemble, cover, draft, outline, research
+from . import STAGES, aihot, assemble, cover, draft, narrative, outline, research
 from . import rss_catalog, rss_collect, state, topics
 
 AIHOT_EVIDENCE = "aihot-items.json"
@@ -216,8 +216,15 @@ def run_initial_research(
     )
 
 
+def run_narrative(run_paths, codex_runner=None, force: bool = False) -> dict:
+    """04 narrative candidates: evidence router + Codex generation."""
+    return narrative.run(run_paths, codex_runner=codex_runner, force=force)
+
+
 def run_outline(run_paths, force: bool = False) -> dict:
     topics.require_choice(run_paths)
+    if (run_paths.work_dir / narrative.NARRATIVE_CANDIDATES_JSON).exists():
+        narrative.require_narrative(run_paths)
     _require_stage_ready(run_paths, "research.json", "research")
     state.transition(run_paths, "outline")
     return outline.run(run_paths, force=force)
