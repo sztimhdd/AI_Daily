@@ -257,6 +257,35 @@ def render_narrative_candidates(candidates: list, color: bool = False) -> str:
     return "\n\n".join(blocks)
 
 
+def render_audit(audit: dict, color: bool = False) -> str:
+    """05 evidence-sufficiency audit: verdict, coverage, gaps, tasks."""
+    lines = [_paint("证据充分性审计", f"{ACCENT}{BOLD}", color)]
+    verdict = audit.get("verdict", "")
+    verdict_code = {
+        "sufficient": GREEN,
+        "needs_research": YELLOW,
+        "unsupported": RED,
+    }.get(verdict, BOLD)
+    lines.append(f"判定：{_paint(verdict, verdict_code, color)}")
+    if audit.get("reason"):
+        lines.append(_paint(f"原因：{audit['reason']}", YELLOW, color))
+    for cov in audit.get("claim_coverage") or []:
+        line = f"  - {cov.get('claim', '')}：{cov.get('coverage', '')}"
+        if cov.get("evidence"):
+            line += f"（{cov['evidence']}）"
+        lines.append(line)
+    if audit.get("evidence_gaps"):
+        lines.append(_paint("证据缺口：" + "；".join(
+            audit["evidence_gaps"]
+        ), YELLOW, color))
+    for task in audit.get("research_tasks") or []:
+        lines.append(
+            f"  · [{task.get('gap_type', '')}] {task.get('query', '')} → "
+            f"{task.get('direction', '')}"
+        )
+    return "\n".join(lines)
+
+
 def prompt_choice(count: int, input_fn=input) -> int:
     """Loop until a valid 1..count integer is entered.
 

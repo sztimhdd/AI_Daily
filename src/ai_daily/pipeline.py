@@ -19,7 +19,8 @@ from __future__ import annotations
 
 import json
 
-from . import STAGES, aihot, assemble, cover, draft, narrative, outline, research
+from . import STAGES, aihot, assemble, cover, draft, narrative, outline
+from . import research, sufficiency, targeted
 from . import rss_catalog, rss_collect, state, topics
 
 AIHOT_EVIDENCE = "aihot-items.json"
@@ -221,10 +222,32 @@ def run_narrative(run_paths, codex_runner=None, force: bool = False) -> dict:
     return narrative.run(run_paths, codex_runner=codex_runner, force=force)
 
 
+def run_sufficiency(run_paths, codex_runner=None, force: bool = False) -> dict:
+    """05 evidence-sufficiency audit for the chosen narrative."""
+    return sufficiency.run(run_paths, codex_runner=codex_runner, force=force)
+
+
+def run_targeted_loop(run_paths, audit_runner=None, discover_runner=None,
+                      http_fetcher=None, cdp_runner=None,
+                      force: bool = False, initial_audit: dict = None) -> dict:
+    """06 bounded supplementary research loop (max two rounds)."""
+    return targeted.run_loop(
+        run_paths,
+        audit_runner=audit_runner,
+        discover_runner=discover_runner,
+        http_fetcher=http_fetcher,
+        cdp_runner=cdp_runner,
+        force=force,
+        initial_audit=initial_audit,
+    )
+
+
 def run_outline(run_paths, force: bool = False) -> dict:
     topics.require_choice(run_paths)
     if (run_paths.work_dir / narrative.NARRATIVE_CANDIDATES_JSON).exists():
         narrative.require_narrative(run_paths)
+    if (run_paths.work_dir / sufficiency.AUDIT_JSON).exists():
+        sufficiency.require_sufficient(run_paths)
     _require_stage_ready(run_paths, "research.json", "research")
     state.transition(run_paths, "outline")
     return outline.run(run_paths, force=force)

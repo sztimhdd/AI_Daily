@@ -17,7 +17,8 @@ import datetime
 import json
 import sys
 
-from . import STAGES, assemble, draft, fetch, narrative, outline, pipeline, publish, state, topics, tui
+from . import STAGES, assemble, draft, fetch, narrative, outline, pipeline
+from . import publish, state, sufficiency, targeted, topics, tui
 from .paths import RunPaths
 
 
@@ -435,13 +436,21 @@ def _require_interactive():
 def _next_stage_hint(stage: str, mode: str = "fixture") -> str:
     if stage == "narrative":
         if mode == "live":
-            return "04 已跑完，本会话结束（下一步：05 证据充分性审计）"
-        return "04 已跑完，本会话结束（下一步：outline）"
+            return "04 已跑完（下一步：05 证据充分性审计）"
+        return "04 已跑完（下一步：outline）"
     if stage == "research" and mode == "fixture":
         return "03 已跑完（fixture 模式止步；live 模式继续叙事选择）"
     if stage in STAGES and stage != STAGES[-1]:
         return f"03 已跑完，下一步：{STAGES[STAGES.index(stage) + 1]}"
     return "03 已跑完，本会话结束"
+
+
+def _audit_hint(verdict: str, reason: str = "") -> str:
+    if verdict == "sufficient":
+        return "05/06 已跑完：证据充分，下一步 07 英文全文与编辑质量门"
+    if verdict == "unsupported":
+        return f"阻塞：核心叙事无法被证据支持——{reason or '无原因'}"
+    return f"两轮补证后仍不足，收口判定 needs_research——{reason or '无原因'}"
 
 
 def cmd_session(args) -> int:
@@ -520,7 +529,34 @@ def cmd_session(args) -> int:
             print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
         print()
         print(_next_stage_hint("narrative", mode="live"))
-        return 0
+        audit = pipeline.run_sufficiency(run_paths, force=args.force)
+        print(tui.render_audit(audit, color=use_color))
+        print()
+        if audit.get("status") == "unavailable":
+            print("05 审计不可用，会话终止（不伪造判定）。")
+            return 1
+        if audit.get("verdict") == "needs_research":
+            loop = pipeline.run_targeted_loop(
+                run_paths, force=args.force, initial_audit=audit
+            )
+            print(f"补证 {loop.get('rounds', 0)} 轮 → 最终判定："
+                  f"{loop.get('verdict')}")
+            if loop.get("status") == "unavailable":
+                print("06 补证循环不可用，会话终止。")
+                return 1
+            verdict = loop.get("verdict")
+            reason = loop.get("reason", "")
+            if verdict != "sufficient":
+                state.fail(run_paths, "audit",
+                           f"narrative {verdict}: {reason or '无原因'}")
+        else:
+            verdict = audit.get("verdict")
+            reason = audit.get("reason", "")
+            if verdict == "unsupported":
+                state.fail(run_paths, "audit",
+                           f"narrative unsupported: {reason or '无原因'}")
+        print(_audit_hint(verdict, reason))
+        return 0 if verdict == "sufficient" else 1
     else:
         result = pipeline.run_research(run_paths, force=args.force)
         print(f"research: {result['status']}")
@@ -567,6 +603,11 @@ _DOMAIN_ERRORS = (
     assemble.AssembleError,
     publish.PublishError,
     state.StateError,
+    narrative.NarrativeError,
+    narrative.NarrativeGateBlocked,
+    sufficiency.AuditError,
+    sufficiency.AuditGateBlocked,
+    targeted.TargetedError,
     draft.__class__ and RuntimeError,  # draft/outline/research raise RuntimeError subclasses
 )
 

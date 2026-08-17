@@ -303,5 +303,31 @@ class RenderNarrativeCandidatesTests(unittest.TestCase):
         )
 
 
+class RenderAuditTests(unittest.TestCase):
+    def test_verdict_states_render_with_coverage_and_tasks(self):
+        audit = {
+            "verdict": "needs_research",
+            "claim_coverage": [{"claim": "c1", "coverage": "supported",
+                                "evidence": "URL"}],
+            "evidence_gaps": ["gap1"],
+            "research_tasks": [{"gap_type": "单一来源", "query": "q",
+                                "direction": "d"}],
+            "reason": "",
+        }
+        out = tui.render_audit(audit, color=False)
+        self.assertIn("证据充分性审计", out)
+        self.assertIn("needs_research", out)
+        self.assertIn("c1：supported", out)
+        self.assertIn("单一来源", out)
+
+    def test_plain_rendering_never_emits_escape_sequences(self):
+        out = tui.render_audit(
+            {"verdict": "sufficient", "claim_coverage": [],
+             "evidence_gaps": [], "research_tasks": [], "reason": ""},
+            color=False,
+        )
+        self.assertNotIn("\033", out)
+
+
 if __name__ == "__main__":
     unittest.main()

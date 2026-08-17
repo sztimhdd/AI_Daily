@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ai_daily import aihot, narrative, pipeline, paths, state, topics
+from ai_daily import aihot, narrative, pipeline, paths, state, sufficiency, topics
 
 FIXTURES = pathlib.Path(__file__).resolve().parents[0] / "fixtures"
 AIHOT_FIXTURE = FIXTURES / "aihot_items.json"
@@ -168,6 +168,30 @@ class StageGateTests(PipelineBase):
         )
         result = pipeline.run_outline(self.rp)
         self.assertEqual(result["status"], "generated")
+
+    def test_outline_blocked_when_audit_exists_non_sufficient(self):
+        topics.choose_fixture(self.rp, TOPIC_FIXTURE)
+        self.rp.ensure_work_dir()
+        narrative.record_choice(
+            self.rp,
+            [{
+                "archetype": "cost_ledger", "title": "账本篇", "hook": "h",
+                "thesis": "t", "key_arguments": [], "decision_rule": "d",
+                "platform_notes": {"linkedin": "l", "wechat": "w"},
+                "evidence_audit": "e",
+            }],
+            1,
+        )
+        (self.rp.work_dir / "research.json").write_text(
+            json.dumps({"questions": []}), encoding="utf-8"
+        )
+        (self.rp.work_dir / sufficiency.AUDIT_JSON).write_text(
+            json.dumps({"verdict": "needs_research", "reason": "",
+                        "narrative_title": "账本篇"}),
+            encoding="utf-8",
+        )
+        with self.assertRaises(sufficiency.AuditGateBlocked):
+            pipeline.run_outline(self.rp)
 
     def test_draft_blocked_without_outline(self):
         topics.choose_fixture(self.rp, TOPIC_FIXTURE)
