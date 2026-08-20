@@ -24,9 +24,9 @@ import pathlib
 import re
 
 from . import cover as cover_mod
-from . import state, topics
+from . import paths, state, topics
 
-ARTICLE_FILE = "article.md"
+DRAFT_FILE = "article.md"
 RESEARCH_JSON = "research.json"
 SELECTED_TOPIC = "selected-topic.json"
 
@@ -148,9 +148,10 @@ def run(run_paths, force: bool = False) -> dict:
     slug = topic["slug"]
     package_dir = run_paths.package_dir(slug)
     final_path = run_paths.final_article_path(slug)
+    article_file = paths.article_file_name(slug)
 
     if (
-        (package_dir / ARTICLE_FILE).is_file()
+        (package_dir / article_file).is_file()
         and (package_dir / "metadata.json").is_file()
         and (package_dir / "sources.md").is_file()
         and final_path.is_file()
@@ -162,7 +163,7 @@ def run(run_paths, force: bool = False) -> dict:
             "final_article": final_path,
         }
 
-    draft_path = run_paths.work_dir / ARTICLE_FILE
+    draft_path = run_paths.work_dir / DRAFT_FILE
     if not draft_path.is_file():
         raise AssembleError(f"no draft to assemble: {draft_path} (run draft first)")
     text = draft_path.read_text(encoding="utf-8")
@@ -182,7 +183,7 @@ def run(run_paths, force: bool = False) -> dict:
             sources.append({"title": url, "url": url, "origin": "article"})
 
     package_dir.mkdir(parents=True, exist_ok=True)
-    (package_dir / ARTICLE_FILE).write_text(text, encoding="utf-8")
+    (package_dir / article_file).write_text(text, encoding="utf-8")
     (package_dir / "sources.md").write_text(
         _render_sources_md(topic, sources), encoding="utf-8"
     )

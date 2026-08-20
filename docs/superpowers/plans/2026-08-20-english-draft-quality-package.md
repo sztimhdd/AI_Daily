@@ -17,7 +17,7 @@
 - EN length 800–1200 words; ≤3 sentences per paragraph; cold kicker (no uplift ending).
 - Facts / inference / opinion must stay distinguishable; every sourced claim carries inline `[title](URL)`; walled sources (zhihu/mp.weixin) are downgraded by fetch status, never asserted as certain.
 - Quality gate only checks and rejects; it never silently rewrites.
-- Package filenames are language-suffixed for English (`-en`) so the Chinese package (`article.md`/`sources.md`/`metadata.json`) coexists without conflict.
+- Each edition is named by its own title slug: the Chinese package lives in `outputs/<date>/<zh-slug>/`, the English in `outputs/<date>/<en-slug>/`; the article file is `<slug>.md` (never `article.md`), and the final article maps to `articles/<date>-<slug>-<lang>.md`.
 
 ## File Structure
 

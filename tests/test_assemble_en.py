@@ -61,17 +61,22 @@ class AssembleEnBase(unittest.TestCase):
 
 
 class AssembleEnTests(AssembleEnBase):
+    def _en_slug(self):
+        return paths.slugify_title("The search budget is the hidden line item",
+                                   self.rp.date)
+
     def test_package_created_with_article_sources_metadata(self):
         self.write_article_en()
         self.write_evidence()
         result = assemble_en.run(self.rp)
-        pkg = self.rp.package_dir(self.topic["slug"])
+        pkg = self.rp.package_dir(self._en_slug())
         self.assertEqual(result["status"], "assembled")
-        self.assertTrue((pkg / "article-en.md").is_file())
-        self.assertTrue((pkg / "sources-en.md").is_file())
-        self.assertTrue((pkg / "metadata-en.json").is_file())
-        meta = json.loads((pkg / "metadata-en.json").read_text(encoding="utf-8"))
-        self.assertEqual(meta["slug"], self.topic["slug"])
+        self.assertTrue((pkg / f"{self._en_slug()}.md").is_file())
+        self.assertTrue((pkg / "sources.md").is_file())
+        self.assertTrue((pkg / "metadata.json").is_file())
+        meta = json.loads((pkg / "metadata.json").read_text(encoding="utf-8"))
+        self.assertEqual(meta["slug"], self._en_slug())
+        self.assertEqual(meta["title"], "The search budget is the hidden line item")
         self.assertEqual(meta["date"], "2026-08-12")
         self.assertEqual(meta["language"], "en")
         self.assertIn("topic_choice", meta)
@@ -80,7 +85,7 @@ class AssembleEnTests(AssembleEnBase):
         self.write_article_en()
         self.write_evidence()
         result = assemble_en.run(self.rp)
-        final = self.rp.final_article_en_path(self.topic["slug"])
+        final = self.rp.final_article_en_path(self._en_slug())
         self.assertTrue(final.is_file())
         self.assertEqual(
             final.read_text(encoding="utf-8"), EN_ARTICLE
@@ -111,7 +116,7 @@ class AssembleEnTests(AssembleEnBase):
         self.write_evidence()
         assemble_en.run(self.rp)
         sources = (
-            self.rp.package_dir(self.topic["slug"]) / "sources-en.md"
+            self.rp.package_dir(self._en_slug()) / "sources.md"
         ).read_text(encoding="utf-8")
         self.assertIn("https://source-a.example.com/1", sources)
         self.assertIn("initial", sources)

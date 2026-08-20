@@ -98,7 +98,9 @@ class AssemblyTests(AssembleBase):
         result = assemble.run(self.rp)
         pkg = self.rp.package_dir(self.topic["slug"])
         self.assertEqual(result["status"], "assembled")
-        self.assertTrue((pkg / "article.md").is_file())
+        self.assertTrue(
+            (pkg / paths.article_file_name(self.topic["slug"])).is_file()
+        )
         self.assertTrue((pkg / "metadata.json").is_file())
         self.assertTrue((pkg / "sources.md").is_file())
         meta = json.loads((pkg / "metadata.json").read_text(encoding="utf-8"))
@@ -123,7 +125,9 @@ class AssemblyTests(AssembleBase):
         sources_md = (pkg / "sources.md").read_text(encoding="utf-8")
         self.assertIn("https://source-a.example.com/posts/agent-search-cost", sources_md)
         self.assertIn("Agent search benchmarks", sources_md)
-        article = (pkg / "article.md").read_text(encoding="utf-8")
+        article = (pkg / paths.article_file_name(self.topic["slug"])).read_text(
+            encoding="utf-8"
+        )
         self.assertIn("](https://source-a.example.com/posts/agent-search-cost)", article)
 
     def test_placeholder_images_rejected(self):

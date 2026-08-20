@@ -21,6 +21,8 @@ FIELD_KEYS = [
     "slug",
     "topic_choice",
     "topic_title",
+    "en_title",
+    "en_slug",
     "narrative_choice",
     "narrative_title",
     "narrative_archetype",

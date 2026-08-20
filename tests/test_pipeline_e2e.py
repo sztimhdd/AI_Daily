@@ -108,7 +108,7 @@ class FullChainCliTests(E2EBase):
         self.assertIn("publish-mode: local-only", st)
         # nested package + final article + stable mapping
         pkg = self.root / "outputs" / "2026" / "08" / "12" / SLUG_A
-        self.assertTrue((pkg / "article.md").is_file())
+        self.assertTrue((pkg / f"{SLUG_A}.md").is_file())
         self.assertTrue((pkg / "metadata.json").is_file())
         self.assertTrue((pkg / "sources.md").is_file())
         final = self.root / "articles" / f"{DATE_A}-{SLUG_A}-zh.md"

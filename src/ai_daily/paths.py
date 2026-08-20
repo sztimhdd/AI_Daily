@@ -17,6 +17,26 @@ import re
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
+def slugify_title(title: str, date: str = "") -> str:
+    """Kebab-case slug from a title's ascii runs; date fallback when empty.
+
+    Titles carry identity: the Chinese edition keeps its Chinese-derived
+    slug and the English edition its English-derived slug, so each edition's
+    package and final article are named by their own title.
+    """
+    ascii_runs = re.findall(r"[a-z0-9]+", (title or "").lower())
+    slug = "-".join(ascii_runs)[:48].strip("-")
+    if not slug and date:
+        slug = f"topic-{date.replace('-', '')}"
+    return slug
+
+
+def article_file_name(slug: str) -> str:
+    """Package article filename: the title slug, never the generic 'article'."""
+    validate_slug(slug)
+    return f"{slug}.md"
+
+
 class RunPathError(ValueError):
     """Raised for invalid dates, slugs, or path requests."""
 

@@ -17,7 +17,7 @@ When adding a runtime, document install, test, lint, and run commands in `README
 
 ## Output Conventions
 
-Keep each article and its final media together. Use lowercase kebab-case article slugs. Standard filenames are `article.md`, `metadata.json`, `sources.md`, `images/cover.webp`, and numbered body images such as `images/01.webp`. Use PNG only when transparency or lossless fidelity is required. Store drafts, candidate images, raw responses, caches, logs, and temporary downloads under `.local/`, never in Git.
+Keep each article and its final media together. Use lowercase kebab-case article slugs. The article file is named by its title slug (`<slug>.md`, in the edition's own language — never the generic `article.md`); each edition's package also carries `metadata.json`, `sources.md`, and optional `images/cover.webp` plus numbered body images such as `images/01.webp`. Use PNG only when transparency or lossless fidelity is required. Store drafts, candidate images, raw responses, caches, logs, and temporary downloads under `.local/`, never in Git.
 
 ## Code and Tests
 

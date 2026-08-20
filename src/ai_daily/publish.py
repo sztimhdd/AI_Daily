@@ -23,7 +23,7 @@ import hashlib
 import pathlib
 import subprocess
 
-from . import state, topics
+from . import paths, state, topics
 
 PUBLISH_MESSAGE_PREFIX = "publish"
 
@@ -134,7 +134,7 @@ def _payload_files(run_paths, slug: str) -> dict:
     if not final.is_file():
         raise PublishError(f"no assembled article at {final}; run assemble first")
     files = {str(final.relative_to(root)): final.read_bytes()}
-    for name in ("article.md", "metadata.json", "sources.md"):
+    for name in (paths.article_file_name(slug), "metadata.json", "sources.md"):
         path = package / name
         if path.is_file():
             files[str(path.relative_to(root))] = path.read_bytes()

@@ -198,8 +198,10 @@ git diff --check
 ## Output package
 
 Each article belongs in `outputs/YYYY/MM/DD/<article-slug>/` containing
-`article.md`, `metadata.json`, `sources.md`, and (optionally)
-`images/cover.<png|jpg|webp>`. Only final or intentionally versioned
+`<article-slug>.md` (the article, named by its title slug), `metadata.json`,
+`sources.md`, and (optionally) `images/cover.<png|jpg|webp>`. The Chinese
+and English editions each get their own slug-named package directory.
+Only final or intentionally versioned
 deliverables belong in Git; raw responses, caches, and working state
 stay in `.local/`.
 

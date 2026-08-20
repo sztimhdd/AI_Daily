@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import json
 
-from . import narrative, quality, research, state, sufficiency, topics
+from . import narrative, paths, quality, research, state, sufficiency, topics
 
 EN_ARTICLE_MD = "article-en.md"
 QUALITY_REPORT_MD = "quality-en-report.md"
@@ -169,6 +169,8 @@ def run(run_paths, codex_runner=None, force: bool = False,
         raise DraftEnError(
             "english draft failed the quality gate:\n" + quality.report(gate)
         )
+    en_title = draft["title"].strip()
+    en_slug = paths.slugify_title(en_title, run_paths.date)
     article_path.write_text(article, encoding="utf-8")
     state.record_artifact(
         run_paths, "article-en",
@@ -180,11 +182,15 @@ def run(run_paths, codex_runner=None, force: bool = False,
     )
     state.update_fields(
         run_paths,
+        en_title=en_title,
+        en_slug=en_slug,
         note=f"english draft: {gate.verdict} ({gate.word_count} words)",
     )
     return {
         "status": "generated",
         "article": article_path,
+        "title": en_title,
+        "slug": en_slug,
         "verdict": gate.verdict,
         "word_count": gate.word_count,
         "quality_report": report_path,

@@ -1,13 +1,13 @@
-"""English package assembly: article-en.md + sources-en.md + metadata-en.json.
+"""English package assembly (English-first edition).
 
-Mirrors ``assemble.py`` for the English edition.  Outputs land alongside the
-Chinese package in the same slug directory, using ``-en`` file names so the
-two editions coexist without conflict:
+The English edition is named by its own English title, never the Chinese
+topic slug, and never the generic word "article".  Outputs land in an
+English-slugged package directory:
 
-- ``outputs/YYYY/MM/DD/<slug>/article-en.md``
-- ``outputs/YYYY/MM/DD/<slug>/sources-en.md``
-- ``outputs/YYYY/MM/DD/<slug>/metadata-en.json``
-- ``articles/<date>-<slug>-en.md`` — the final publishable English article
+- ``outputs/YYYY/MM/DD/<en-slug>/<en-slug>.md``
+- ``outputs/YYYY/MM/DD/<en-slug>/sources.md``
+- ``outputs/YYYY/MM/DD/<en-slug>/metadata.json``
+- ``articles/<date>-<en-slug>-en.md`` — the final publishable English article
 
 Cover handling stays optional: a missing or invalid cover never blocks
 assembly (the "images never block the body" rule).
@@ -18,17 +18,30 @@ from __future__ import annotations
 import json
 import re
 
-from . import assemble, draft_en, state, topics
-
-ARTICLE_EN_FILE = "article-en.md"
-SOURCES_EN_FILE = "sources-en.md"
-METADATA_EN_FILE = "metadata-en.json"
+from . import assemble, draft_en, paths, state, topics
 
 _LINK_RE = re.compile(r"\]\((https?://[^)\s]+)\)")
 
 
 class AssembleEnError(RuntimeError):
     """Raised when the English draft fails assembly validation."""
+
+
+def _en_title_slug(run_paths) -> tuple:
+    """English title + slug, from the draft stage's state, else the H1."""
+    st = state.read_state(run_paths)
+    en_title = st.get("en_title", "")
+    en_slug = st.get("en_slug", "")
+    if en_title and en_slug:
+        return en_title, en_slug
+    draft_path = run_paths.work_dir / draft_en.EN_ARTICLE_MD
+    if draft_path.is_file():
+        lines = draft_path.read_text(encoding="utf-8").splitlines()
+        if lines and lines[0].startswith("# "):
+            title = lines[0][2:].strip()
+            if title:
+                return title, paths.slugify_title(title, run_paths.date)
+    raise AssembleEnError("no english title; run draft-en first")
 
 
 def _read_evidence(run_paths) -> dict:
@@ -73,15 +86,16 @@ def _render_sources_md(topic_title: str, sources: list) -> str:
 
 def run(run_paths, force: bool = False) -> dict:
     """Validate, package, and map the final English article."""
-    topic = topics.require_choice(run_paths)
-    slug = topic["slug"]
-    package_dir = run_paths.package_dir(slug)
-    final_path = run_paths.final_article_en_path(slug)
+    topics.require_choice(run_paths)
+    en_title, en_slug = _en_title_slug(run_paths)
+    package_dir = run_paths.package_dir(en_slug)
+    final_path = run_paths.final_article_en_path(en_slug)
+    article_file = paths.article_file_name(en_slug)
 
     if (
-        (package_dir / ARTICLE_EN_FILE).is_file()
-        and (package_dir / SOURCES_EN_FILE).is_file()
-        and (package_dir / METADATA_EN_FILE).is_file()
+        (package_dir / article_file).is_file()
+        and (package_dir / "sources.md").is_file()
+        and (package_dir / "metadata.json").is_file()
         and final_path.is_file()
         and not force
     ):
@@ -113,17 +127,17 @@ def run(run_paths, force: bool = False) -> dict:
             sources.append({"title": url, "url": url, "origin": "article"})
 
     package_dir.mkdir(parents=True, exist_ok=True)
-    (package_dir / ARTICLE_EN_FILE).write_text(text, encoding="utf-8")
-    (package_dir / SOURCES_EN_FILE).write_text(
-        _render_sources_md(topic["title"], sources), encoding="utf-8"
+    (package_dir / article_file).write_text(text, encoding="utf-8")
+    (package_dir / "sources.md").write_text(
+        _render_sources_md(en_title, sources), encoding="utf-8"
     )
 
     cover_info = assemble._adopt_cover(run_paths, package_dir)
     metadata = {
         "run_id": run_paths.run_id,
         "date": run_paths.date,
-        "slug": slug,
-        "title": topic["title"],
+        "slug": en_slug,
+        "title": en_title,
         "language": "en",
         "topic_choice": state.read_state(run_paths).get("topic_choice", ""),
         "has_cover": cover_info is not None,
@@ -132,7 +146,7 @@ def run(run_paths, force: bool = False) -> dict:
         "final_article": str(final_path.relative_to(run_paths.root)),
         "package": str(package_dir.relative_to(run_paths.root)),
     }
-    (package_dir / METADATA_EN_FILE).write_text(
+    (package_dir / "metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

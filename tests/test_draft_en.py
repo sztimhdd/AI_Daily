@@ -167,6 +167,8 @@ class DraftEnRunTests(DraftEnBase):
             max_words=500,
         )
         self.assertEqual(result["status"], "generated")
+        self.assertEqual(result["title"], "The hidden search budget")
+        self.assertEqual(result["slug"], "the-hidden-search-budget")
         article = (self.run_paths.work_dir / "article-en.md").read_text(
             encoding="utf-8"
         )

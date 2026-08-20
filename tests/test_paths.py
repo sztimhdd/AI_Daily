@@ -60,6 +60,33 @@ class RunPathsTests(unittest.TestCase):
             self.root / "articles" / "2026-08-12-ai-search-budget-research-cost-zh.md",
         )
 
+    def test_final_article_en_path_convention(self):
+        p = paths.RunPaths.for_date(self.root, "2026-08-12")
+        final = p.final_article_en_path("the-search-budget")
+        self.assertEqual(
+            final,
+            self.root / "articles" / "2026-08-12-the-search-budget-en.md",
+        )
+
+    def test_slugify_title_is_kebab_case(self):
+        self.assertEqual(
+            paths.slugify_title("The search budget is the hidden line item"),
+            "the-search-budget-is-the-hidden-line-item",
+        )
+        self.assertEqual(
+            paths.slugify_title("OpenAI releases GPT-5.1"), "openai-releases-gpt-5-1"
+        )
+
+    def test_slugify_title_falls_back_to_date(self):
+        self.assertEqual(paths.slugify_title("全是中文标题", "2026-08-12"),
+                         "topic-20260812")
+
+    def test_article_file_name_uses_slug_not_article(self):
+        self.assertEqual(
+            paths.article_file_name("ai-search-budget-research-cost"),
+            "ai-search-budget-research-cost.md",
+        )
+
     def test_two_dates_do_not_share_directories(self):
         a = paths.RunPaths.for_date(self.root, "2026-08-12")
         b = paths.RunPaths.for_date(self.root, "2026-08-11")
