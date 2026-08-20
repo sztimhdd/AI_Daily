@@ -425,12 +425,16 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
     json_path = run_paths.work_dir / NARRATIVE_CANDIDATES_JSON
     md_path = run_paths.work_dir / NARRATIVE_CANDIDATES_MD
     if json_path.exists() and md_path.exists() and not force:
-        return {
-            "status": "resumed",
-            "candidates": json.loads(json_path.read_text(encoding="utf-8")).get(
-                "candidates", []
-            ),
-        }
+        try:
+            stored = json.loads(json_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            stored = {}
+        if stored.get("topic_title") == topic.get("title"):
+            return {
+                "status": "resumed",
+                "candidates": stored.get("candidates", []),
+            }
+        # stale candidates from another topic: fall through and regenerate
 
     osint_path = run_paths.work_dir / research.INITIAL_OSINT_JSON
     if not osint_path.exists():

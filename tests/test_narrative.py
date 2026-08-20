@@ -530,6 +530,31 @@ class NarrativeRunTests(unittest.TestCase):
         self.assertEqual(second["status"], "resumed")
         self.assertEqual(calls["n"], 1)
 
+    def test_resume_refuses_stale_candidates_for_a_different_topic(self):
+        # A leftover candidates file from another topic must not resume.
+        stale = {
+            "run_id": "AI-Daily/2026-08-15",
+            "topic_title": "别的选题：GLM-5.3 后训练",
+            "allowed_archetypes": ["cost_ledger"],
+            "tensions": [],
+            "candidates": [],
+        }
+        (self.run_paths.work_dir / "narrative-candidates.json").write_text(
+            json.dumps(stale, ensure_ascii=False), encoding="utf-8"
+        )
+        (self.run_paths.work_dir / "narrative-candidates.md").write_text(
+            "# stale\n", encoding="utf-8"
+        )
+
+        result = narrative.run(self.run_paths, codex_runner=self.make_runner())
+        self.assertNotEqual(result["status"], "resumed")
+        data = json.loads(
+            (self.run_paths.work_dir / "narrative-candidates.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(data["topic_title"], "AI 搜索预算与个人创作者的研究成本")
+
     def test_resume_records_narrative_stage(self):
         narrative.run(self.run_paths, codex_runner=self.make_runner(), force=True)
         self.assertEqual(

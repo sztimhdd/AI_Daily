@@ -511,6 +511,35 @@ class InitialResearchResumeTests(InitialResearchBase):
             (self.paths.work_dir / "initial-osint.json").read_bytes(), before
         )
 
+    def test_resume_refuses_stale_osint_for_a_different_topic(self):
+        # A leftover OSINT archive from another topic must never silently
+        # resume: it would feed the wrong topic's evidence downstream.
+        stale = {
+            "run_id": "AI-Daily/2026-08-14",
+            "date": "2026-08-14",
+            "topic_title": "别的选题：GLM-5.3 后训练",
+            "slug": "glm-53-post-train",
+            "analysis_status": "completed",
+            "analysis_reason": "",
+            "story_matrix": {},
+            "modules": [],
+            "evidence_gaps": [],
+            "research_queries": [],
+            "sources": [{"url": "https://example.com/glm", "title": "GLM",
+                         "status": "fetched"}],
+        }
+        (self.paths.work_dir / "initial-osint.json").write_text(
+            json.dumps(stale, ensure_ascii=False), encoding="utf-8"
+        )
+        (self.paths.work_dir / "initial-osint.md").write_text(
+            "# stale\n", encoding="utf-8"
+        )
+
+        result = self.run_initial()
+        self.assertNotEqual(result["status"], "resumed")
+        data = self.read_json("initial-osint.json")
+        self.assertEqual(data["topic_title"], "AI 搜索预算与个人创作者的研究成本")
+
     def test_force_regenerates_artifacts(self):
         calls = {"aihot": 0}
         original = make_aihot_fetch()

@@ -1054,12 +1054,21 @@ def run_initial(
     md_path = run_paths.work_dir / INITIAL_OSINT_MD
 
     if json_path.exists() and md_path.exists() and not force:
-        return {
-            "status": "resumed",
-            "research_md": md_path,
-            "research_json": json_path,
-            "analysis_status": "resumed",
-        }
+        # A same-day archive belongs to this run only when it records this
+        # topic.  A leftover archive for another topic is stale and must be
+        # regenerated, never silently resumed into the wrong topic.
+        try:
+            stored = json.loads(json_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            stored = {}
+        if stored.get("topic_title") == topic.get("title"):
+            return {
+                "status": "resumed",
+                "research_md": md_path,
+                "research_json": json_path,
+                "analysis_status": "resumed",
+            }
+        # fall through and regenerate for the current topic
 
     matrix = aihot.story_matrix_for_topic(
         topic["title"],
