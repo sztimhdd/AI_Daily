@@ -278,5 +278,53 @@ class DraftEnDowngradeTests(DraftEnBase):
                 max_words=500,
             )
 
+
+class DraftEnPromptTests(DraftEnBase):
+    """The prompt must carry the Round 1 precision + Round 1b craft rules."""
+
+    def _prompt(self, audit=None):
+        from ai_daily import topics
+
+        topic = topics.require_choice(self.run_paths)
+        return draft_en._compile_prompt(
+            topic,
+            sample_narrative_candidate(),
+            sample_evidence_package(),
+            audit=audit,
+        )
+
+    def test_prompt_carries_craft_rules(self):
+        prompt = self._prompt()
+        for phrase in (
+            "Conditional inference",
+            "Imagery before jargon",
+            "Rhythm variety",
+            "Crescendo",
+            "blockquotes",
+            "sentences 20 words or fewer",
+            "bolded lead-ins open at most half",
+        ):
+            self.assertIn(phrase, prompt)
+
+    def test_prompt_carries_precision_rules(self):
+        prompt = self._prompt()
+        for phrase in (
+            "never repeat the same link twice in one sentence",
+            "Hedge facts, keep the stance",
+            'no "HTTP',
+            "no repeated fence-sitting",
+            '"both companies confirmed" unless the cited link shows both',
+            "excerpt_truncated",
+        ):
+            self.assertIn(phrase, prompt)
+
+    def test_prompt_injects_downgrade_gaps(self):
+        prompt = self._prompt(
+            audit={"verdict": "needs_research", "evidence_gaps": ["gap-x"]}
+        )
+        self.assertIn("CONSERVATIVE DOWNGRADE", prompt)
+        self.assertIn("gap-x", prompt)
+
+
 if __name__ == "__main__":
     unittest.main()
