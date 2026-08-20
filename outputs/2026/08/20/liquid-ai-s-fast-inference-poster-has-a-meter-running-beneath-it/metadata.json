@@ -1,0 +1,115 @@
+{
+  "run_id": "AI-Daily/2026-08-20",
+  "date": "2026-08-20",
+  "slug": "liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it",
+  "title": "Liquid AI’s Fast-Inference Poster Has a Meter Running Beneath It",
+  "language": "en",
+  "topic_choice": "simulated",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 935,
+    "paragraph_count": 26,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "8 sentence(s) exceed 20 words",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 1
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "官方发布页虽抓取成功，但仅有标题级内容，无法证明 checkpoint 范围、机制、硬件/协议配置和输出等价条件。",
+    "性能数字缺少一手 benchmark、实验设置与可复现基线，无法判断适用边界。",
+    "“输出不变”缺少一手定义及回归证据。",
+    "两篇二手来源均围绕同一厂商发布，不能构成独立性能验证。",
+    "没有真实使用反馈、反例或冲突报道。",
+    "时间线仅由报道日期支持，官方发布日期和模型文件更新时间未核。"
+  ],
+  "source_count": 7,
+  "generated_at": "2026-08-20T22:35:49+00:00",
+  "seo_title": "Liquid AI’s 3.2x Claim Needs a Production Test",
+  "seo_summary": "Liquid AI touts up to 3.2x faster inference, but leaders should validate compatibility, real workloads, and output stability before capacity planning.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "Diagram showing one model proposing next tokens and another model deciding whether the guesses can stand, with the handoff highlighted.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "Comparison of long-context code-assistant traffic and short uneven chat prompts flowing through DSpark.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "Side-by-side illustration showing exact structured outputs versus semantic similarity causing a broken integration.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "04",
+      "filename": "04.webp",
+      "alt": "Acceptance-gate dashboard comparing a current baseline and DSpark across throughput, tail latency, rejection behavior, GPU utilization, and failure modes.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Liquid AI Ships LFM2.5-DSpark for Up to 3.2X Faster Inference",
+      "url": "https://www.unite.ai/liquid-ai-ships-lfm2-5-dspark-for-up-to-3-2x-faster-inference/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Up to 3.2x Faster Inference with LFM2.5-DSpark",
+      "url": "https://huggingface.co/blog/LiquidAI/lfm25-dspark",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Liquid AI Releases LFM2.5-DSpark Draft Models That Deliver Up to 3.18x Faster Decoding Without Changing Model Outputs",
+      "url": "https://www.marktechpost.com/2026/08/20/liquid-ai-releases-lfm2-5-dspark-draft-models-that-deliver-up-to-3-18x-faster-decoding/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/01.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/01.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/02.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/02.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/03.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/03.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/04.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it/images/04.webp",
+      "origin": "article"
+    }
+  ],
+  "final_article": "articles/2026-08-20-liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it-en.md",
+  "package": "outputs/2026/08/20/liquid-ai-s-fast-inference-poster-has-a-meter-running-beneath-it"
+}
