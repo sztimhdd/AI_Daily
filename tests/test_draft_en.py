@@ -236,6 +236,37 @@ class DraftEnRunTests(DraftEnBase):
                 max_words=500,
             )
 
+    def test_revise_retries_with_feedback(self):
+        calls = {"prompts": []}
+        bad = self._good_payload()
+        bad["body"] = "Too short ([post](https://example.com/1))."
+
+        def runner(prompt):
+            calls["prompts"].append(prompt)
+            return bad if len(calls["prompts"]) == 1 else self._good_payload()
+
+        result = draft_en.run(
+            self.run_paths,
+            codex_runner=runner,
+            min_words=10,
+            max_words=500,
+        )
+        self.assertEqual(result["status"], "generated")
+        self.assertEqual(len(calls["prompts"]), 2)
+        self.assertIn("REVISION REQUIRED", calls["prompts"][1])
+        self.assertIn("word-count", calls["prompts"][1])
+
+    def test_revise_raises_after_max_attempts(self):
+        bad = self._good_payload()
+        bad["body"] = "Too short ([post](https://example.com/1))."
+        with self.assertRaises(draft_en.DraftEnError):
+            draft_en.run(
+                self.run_paths,
+                codex_runner=lambda p: bad,
+                min_words=10,
+                max_words=500,
+            )
+
 
 class DraftEnDowngradeTests(DraftEnBase):
     """Conservative downgrade path: needs_research annotates and passes."""

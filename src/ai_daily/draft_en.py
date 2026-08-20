@@ -60,7 +60,7 @@ def _compact_sources(package: dict) -> list:
 
 
 def _compile_prompt(topic: dict, chosen: dict, package: dict,
-                    audit: dict = None) -> str:
+                    audit: dict = None, revision_feedback: str = None) -> str:
     compact = {
         "topic": {
             "title": topic.get("title"),
@@ -82,6 +82,13 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
             "conflict\", \"undisclosed\", or \"single source\". Never state "
             "any of them as certain. The article must contain at least one "
             "such hedge.\n"
+        )
+    revision = ""
+    if revision_feedback:
+        revision = (
+            "\nREVISION REQUIRED: your previous draft was rejected by the "
+            "editorial gate. Fix every listed check in your rewrite, and "
+            "change nothing else:\n" + revision_feedback + "\n"
         )
     return (
         "You are the Lead Tech Editor: a cold, sharp Silicon Valley voice, "
@@ -146,6 +153,7 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         "15. Cold kicker only; never \"time will tell\" or \"the future is "
         "bright\".\n"
         + downgrade +
+        revision +
         "Return a single JSON object (no preamble, no code fence, no "
         "trailing text):\n"
         '{"title":"<headline>","body":"<markdown body, no H1>"}\n'
@@ -200,33 +208,64 @@ def run(run_paths, codex_runner=None, force: bool = False,
             f"({package.get('narrative_title')!r}); re-run the 06 targeted loop"
         )
     runner = codex_runner or research._default_codex_runner
-    try:
-        draft = runner(_compile_prompt(topic, chosen, package, audit=audit))
-    except Exception as exc:
-        return {
-            "status": "unavailable",
-            "reason": f"draft runner failed: {type(exc).__name__}: {exc}",
-        }
-    if not isinstance(draft, dict) or draft.get("status") == "unavailable":
-        reason = (draft or {}).get("reason", "no output")
-        return {"status": "unavailable", "reason": reason}
-    errors = _validate(draft)
-    if errors:
-        return {
-            "status": "unavailable",
-            "reason": "draft fails the schema: " + "; ".join(errors),
-        }
-    article = _assemble_markdown(draft["title"], draft["body"])
-    gate = quality.check_en(article, package, min_words=min_words,
-                            max_words=max_words)
     report_path = run_paths.work_dir / QUALITY_REPORT_MD
-    report_path.write_text(quality.report(gate) + "\n", encoding="utf-8")
     quality_json_path = run_paths.work_dir / QUALITY_JSON
+    feedback = None
+    attempt = 0
+    max_attempts = 3
+    while True:
+        attempt += 1
+        try:
+            draft = runner(_compile_prompt(
+                topic, chosen, package, audit=audit, revision_feedback=feedback,
+            ))
+        except Exception as exc:
+            return {
+                "status": "unavailable",
+                "reason": f"draft runner failed: {type(exc).__name__}: {exc}",
+            }
+        if not isinstance(draft, dict) or draft.get("status") == "unavailable":
+            reason = (draft or {}).get("reason", "no output")
+            return {"status": "unavailable", "reason": reason}
+        errors = _validate(draft)
+        if errors:
+            return {
+                "status": "unavailable",
+                "reason": "draft fails the schema: " + "; ".join(errors),
+            }
+        article = _assemble_markdown(draft["title"], draft["body"])
+        gate = quality.check_en(article, package, min_words=min_words,
+                                max_words=max_words)
+        if gate.verdict in ("revise", "evidence_recovery"):
+            feedback = quality.report(gate)
+            if attempt >= max_attempts:
+                report_path.write_text(feedback + "\n", encoding="utf-8")
+                raise DraftEnError(
+                    "english draft failed the quality gate after "
+                    f"{max_attempts} attempts:\n" + feedback
+                )
+            continue
+        if downgraded and not quality.has_downgrade_marker(article):
+            feedback = (
+                "missing required uncertainty hedges for the accepted "
+                "conservative downgrade (unverified / second-hand / not "
+                "independently confirmed / conflicting figures)"
+            )
+            if attempt >= max_attempts:
+                raise DraftEnError(
+                    "english draft ignored the conservative-downgrade "
+                    "instruction after " + f"{max_attempts} attempts"
+                )
+            continue
+        break
+
+    report_path.write_text(quality.report(gate) + "\n", encoding="utf-8")
     quality_json_path.write_text(
         json.dumps(
             {
                 **gate.to_dict(),
                 "downgraded": downgraded,
+                "attempts": attempt,
             },
             ensure_ascii=False,
             indent=2,
@@ -234,17 +273,6 @@ def run(run_paths, codex_runner=None, force: bool = False,
         + "\n",
         encoding="utf-8",
     )
-    if gate.verdict in ("revise", "evidence_recovery"):
-        raise DraftEnError(
-            "english draft failed the quality gate:\n" + quality.report(gate)
-        )
-    if downgraded and not quality.has_downgrade_marker(article):
-        raise DraftEnError(
-            "english draft ignored the conservative-downgrade instruction: "
-            "needs_research was accepted but the article carries no explicit "
-            "uncertainty hedge (unverified / second-hand / not independently "
-            "confirmed / conflicting figures)"
-        )
     en_title = draft["title"].strip()
     en_slug = paths.slugify_title(en_title, run_paths.date)
     article_path.write_text(article, encoding="utf-8")
