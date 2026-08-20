@@ -30,3 +30,17 @@ Use imperative, scoped commit subjects, for example `archive legacy n8n assets` 
 ## Security
 
 Never commit tokens, credentials, private payloads, or unredacted model traces. Use environment variables or ignored files under `.local/`. Treat values found in Git history as exposed and rotate them; moving a file into `archive/` does not remove it from history.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs are local Markdown files under `.scratch/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the repository's five canonical triage role strings. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This is a single-context repository using root `CONTEXT.md` and `docs/adr/`. See `docs/agents/domain.md`.
