@@ -19,7 +19,7 @@ import sys
 
 from . import STAGES, assemble, assemble_en, claim_check, draft, draft_en, fetch
 from . import narrative, outline, pipeline, publish, state, sufficiency
-from . import targeted, topics, tui
+from . import targeted, topics, tui, visuals
 from .paths import RunPaths
 
 
@@ -80,6 +80,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true")
 
     p = sub.add_parser("claim-check", help="fact-check the English draft against the evidence")
+    common(p)
+    p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("illustrate", help="optional Gemini image generation and embedding (nonblocking)")
     common(p)
     p.add_argument("--force", action="store_true")
 
@@ -391,6 +395,18 @@ def cmd_claim_check(args) -> int:
     return 0
 
 
+def cmd_illustrate(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_illustrate(run_paths, force=args.force)
+    print(f"illustrate: {result['status']}")
+    if result.get("generated"):
+        print(f"- images: {result.get('generated')}")
+    if result.get("reason"):
+        print(f"- reason: {result['reason']}")
+    return 0  # illustration is optional and never fails the run
+
+
 def cmd_publish(args) -> int:
     run_paths = _paths(args)
     _ensure_state(run_paths)
@@ -681,6 +697,7 @@ COMMANDS = {
     "assemble": cmd_assemble,
     "assemble-en": cmd_assemble_en,
     "claim-check": cmd_claim_check,
+    "illustrate": cmd_illustrate,
     "publish": cmd_publish,
     "run": cmd_run,
     "fetch": cmd_fetch,

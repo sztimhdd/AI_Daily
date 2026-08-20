@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import json
 
-from . import STAGES, aihot, assemble, assemble_en, claim_check, cover, draft
+from . import STAGES, aihot, assemble, assemble_en, claim_check, cover, draft, visuals
 from . import draft_en
 from . import narrative, outline
 from . import research, sufficiency, targeted
@@ -328,6 +328,18 @@ def run_claim_check(run_paths, codex_runner=None, force: bool = False) -> dict:
     """Post-draft claim check: verify every assertion against the evidence."""
     _require_stage_ready(run_paths, draft_en.EN_ARTICLE_MD, "draft-en")
     return claim_check.run(run_paths, codex_runner=codex_runner, force=force)
+
+
+def run_illustrate(run_paths, codex_runner=None, gemini_runner=None,
+                   force: bool = False) -> dict:
+    """Optional illustration: plan -> generate -> embed.  Never blocks."""
+    _require_stage_ready(run_paths, draft_en.EN_ARTICLE_MD, "draft-en")
+    return visuals.run_illustrate(
+        run_paths,
+        codex_runner=codex_runner,
+        gemini_runner=gemini_runner,
+        force=force,
+    )
 
 
 def run_publish(run_paths, repo_dir, transport=None, **transport_kwargs):

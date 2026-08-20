@@ -20,7 +20,7 @@ import re
 import datetime
 from urllib.parse import urlsplit
 
-from . import assemble, claim_check, draft_en, paths, state, topics
+from . import assemble, claim_check, draft_en, paths, state, topics, visuals
 
 _LINK_RE = re.compile(r"\]\((https?://[^)\s]+)\)")
 
@@ -103,10 +103,47 @@ def _read_claim_check(run_paths) -> dict:
         return json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return {}
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
+
+
+def _adopt_images(run_paths, package_dir: pathlib.Path) -> dict:
+    """Copy generated images into the package; returns a manifest summary.
+
+    Never blocks: a missing manifest or missing images yields a degraded
+    summary, not an error.
+    """
+    manifest_path = run_paths.work_dir / visuals.IMAGES_MANIFEST_JSON
+    source_dir = run_paths.work_dir / visuals.IMAGES_DIR
+    images = []
+    if manifest_path.is_file():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            manifest = {"images": []}
+        for entry in manifest.get("images") or []:
+            if entry.get("status") != "generated":
+                continue
+            iid = entry.get("id")
+            ext = entry.get("format", "webp")
+            src = source_dir / f"{iid}.{ext}"
+            if not src.is_file():
+                continue
+            dest_dir = package_dir / visuals.IMAGES_DIR
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            dest = dest_dir / f"{iid}.{ext}"
+            dest.write_bytes(src.read_bytes())
+            images.append(
+                {
+                    "id": iid,
+                    "filename": f"{iid}.{ext}",
+                    "alt": entry.get("alt") or "",
+                    "width": entry.get("width", 0),
+                    "height": entry.get("height", 0),
+                    "format": ext,
+                }
+            )
+    if images:
+        return {"images_status": "complete", "images": images}
+    return {"images_status": "degraded", "images": []}
 
 
 _CJK_RE = re.compile(r"[\u4e00-\u9fff]")
@@ -197,6 +234,7 @@ def run(run_paths, force: bool = False) -> dict:
     )
 
     cover_info = assemble._adopt_cover(run_paths, package_dir)
+    images_info = _adopt_images(run_paths, package_dir)
     quality_record = _read_quality(run_paths)
     audit = _read_audit(run_paths)
     evidence_verdict = audit.get("verdict") or evidence.get("audit_verdict", "")
@@ -220,6 +258,8 @@ def run(run_paths, force: bool = False) -> dict:
         "seo_summary": "",
         "has_cover": cover_info is not None,
         "cover": cover_info,
+        "images_status": images_info["images_status"],
+        "images": images_info["images"],
         "sources": sources,
         "final_article": str(final_path.relative_to(run_paths.root)),
         "package": str(package_dir.relative_to(run_paths.root)),
@@ -247,4 +287,6 @@ def run(run_paths, force: bool = False) -> dict:
         "package_dir": package_dir,
         "final_article": final_path,
         "has_cover": cover_info is not None,
+        "images": images_info["images"],
+        "images_status": images_info["images_status"],
     }

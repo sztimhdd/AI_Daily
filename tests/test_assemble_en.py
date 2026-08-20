@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ai_daily import assemble_en, paths, state, topics
+from ai_daily import assemble_en, paths, state, topics, visuals
 
 FIXTURES = pathlib.Path(__file__).resolve().parents[0] / "fixtures"
 
@@ -92,6 +92,46 @@ class AssembleEnTests(AssembleEnBase):
         )
         self.assertEqual(result["final_article"], final)
         self.assertTrue(final.name.endswith("-en.md"))
+
+    def test_images_adopted_and_metadata_records_manifest(self):
+        self.write_article_en()
+        self.write_evidence()
+        images_dir = self.rp.work_dir / visuals.IMAGES_DIR
+        images_dir.mkdir(parents=True, exist_ok=True)
+        (images_dir / "01.webp").write_bytes(b"RIFF....WEBP")
+        (self.rp.work_dir / visuals.IMAGES_MANIFEST_JSON).write_text(
+            json.dumps(
+                {
+                    "images": [
+                        {
+                            "id": "01",
+                            "status": "generated",
+                            "format": "webp",
+                            "width": 2048,
+                            "height": 2048,
+                            "alt": "A meter.",
+                        }
+                    ]
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        result = assemble_en.run(self.rp)
+        self.assertEqual(result["images_status"], "complete")
+        self.assertEqual(len(result["images"]), 1)
+        pkg = self.rp.package_dir(self._en_slug())
+        self.assertTrue((pkg / "images" / "01.webp").is_file())
+        meta = json.loads((pkg / "metadata.json").read_text(encoding="utf-8"))
+        self.assertEqual(meta["images_status"], "complete")
+        self.assertEqual(meta["images"][0]["filename"], "01.webp")
+
+    def test_no_images_yields_degraded_not_blocking(self):
+        self.write_article_en()
+        self.write_evidence()
+        result = assemble_en.run(self.rp)
+        self.assertEqual(result["images_status"], "degraded")
+        self.assertEqual(result["images"], [])
 
     def test_resumes_when_package_exists(self):
         self.write_article_en()
