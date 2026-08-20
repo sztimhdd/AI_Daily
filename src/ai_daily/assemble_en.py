@@ -20,7 +20,7 @@ import re
 import datetime
 from urllib.parse import urlsplit
 
-from . import assemble, draft_en, paths, state, topics
+from . import assemble, claim_check, draft_en, paths, state, topics
 
 _LINK_RE = re.compile(r"\]\((https?://[^)\s]+)\)")
 
@@ -95,6 +95,20 @@ def _read_audit(run_paths) -> dict:
         return {}
 
 
+def _read_claim_check(run_paths) -> dict:
+    path = run_paths.work_dir / claim_check.CLAIM_CHECK_JSON
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
 _CJK_RE = re.compile(r"[\u4e00-\u9fff]")
 
 
@@ -131,6 +145,12 @@ def _render_sources_md(topic_title: str, sources: list) -> str:
 def run(run_paths, force: bool = False) -> dict:
     """Validate, package, and map the final English article."""
     topics.require_choice(run_paths)
+    cc = _read_claim_check(run_paths)
+    if cc and cc.get("verdict") not in ("ok", "resumed"):
+        raise AssembleEnError(
+            "assembly rejected: claim check verdict "
+            f"{cc.get('verdict')!r} — {(cc.get('reason') or '')[:200]}"
+        )
     en_title, en_slug = _en_title_slug(run_paths)
     package_dir = run_paths.package_dir(en_slug)
     final_path = run_paths.final_article_en_path(en_slug)

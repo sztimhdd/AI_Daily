@@ -19,7 +19,8 @@ from __future__ import annotations
 
 import json
 
-from . import STAGES, aihot, assemble, assemble_en, cover, draft, draft_en
+from . import STAGES, aihot, assemble, assemble_en, claim_check, cover, draft
+from . import draft_en
 from . import narrative, outline
 from . import research, sufficiency, targeted
 from . import rss_catalog, rss_collect, state, topics
@@ -321,6 +322,12 @@ def run_assemble_en(run_paths, force: bool = False) -> dict:
     if result["status"] in ("assembled", "resumed"):
         state.transition(run_paths, "completed", note="english assembly accepted")
     return result
+
+
+def run_claim_check(run_paths, codex_runner=None, force: bool = False) -> dict:
+    """Post-draft claim check: verify every assertion against the evidence."""
+    _require_stage_ready(run_paths, draft_en.EN_ARTICLE_MD, "draft-en")
+    return claim_check.run(run_paths, codex_runner=codex_runner, force=force)
 
 
 def run_publish(run_paths, repo_dir, transport=None, **transport_kwargs):

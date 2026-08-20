@@ -17,8 +17,9 @@ import datetime
 import json
 import sys
 
-from . import STAGES, assemble, assemble_en, draft, draft_en, fetch, narrative
-from . import outline, pipeline, publish, state, sufficiency, targeted, topics, tui
+from . import STAGES, assemble, assemble_en, claim_check, draft, draft_en, fetch
+from . import narrative, outline, pipeline, publish, state, sufficiency
+from . import targeted, topics, tui
 from .paths import RunPaths
 
 
@@ -75,6 +76,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true")
 
     p = sub.add_parser("assemble-en", help="package the English article")
+    common(p)
+    p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("claim-check", help="fact-check the English draft against the evidence")
     common(p)
     p.add_argument("--force", action="store_true")
 
@@ -374,6 +379,18 @@ def cmd_assemble_en(args) -> int:
     return 0
 
 
+def cmd_claim_check(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_claim_check(run_paths, force=args.force)
+    print(f"claim-check: {result['status']} (verdict: {result.get('verdict')})")
+    if result.get("reason"):
+        print(f"- reason: {result['reason']}")
+    if result.get("status") == "unavailable":
+        return 1
+    return 0
+
+
 def cmd_publish(args) -> int:
     run_paths = _paths(args)
     _ensure_state(run_paths)
@@ -663,6 +680,7 @@ COMMANDS = {
     "cover": cmd_cover,
     "assemble": cmd_assemble,
     "assemble-en": cmd_assemble_en,
+    "claim-check": cmd_claim_check,
     "publish": cmd_publish,
     "run": cmd_run,
     "fetch": cmd_fetch,
@@ -686,6 +704,7 @@ _DOMAIN_ERRORS = (
     targeted.TargetedError,
     draft_en.DraftEnError,
     assemble_en.AssembleEnError,
+    claim_check.ClaimCheckError,
     draft.__class__ and RuntimeError,  # draft/outline/research raise RuntimeError subclasses
 )
 
