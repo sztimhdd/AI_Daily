@@ -457,6 +457,23 @@ class SameEventTargetedTests(unittest.TestCase):
         # Versioned tokens (gpt-5, grok 4.6) carry identity and still cluster.
         self.assertTrue(topics.same_event("Grok 4.6 发布", "xAI 发布 Grok 4.6"))
 
+    def test_common_english_function_words_never_decide_a_merge(self):
+        # Regression (BISC false merge): "that"/"in"/"is" etc. are function
+        # words, not event identity.  A single content noun ("brain") plus a
+        # function word must never reach the two-shared-token merge rule.
+        bisc = "Scientists reveal a tiny brain chip that streams thoughts in real time"
+        unrelated = [
+            'Publisher of Axios Boasts That He Uses AI to "Read" Everything '
+            "For Him Now, Instead of Using His Brain",
+            "Remember the Publisher That Put Fake Writers in Sports Illustrated? "
+            "It Just Rebranded as an AI Company",
+        ]
+        for title in unrelated:
+            self.assertFalse(
+                topics.same_event(bisc, title),
+                f"false merge of BISC story with unrelated article: {title[:40]!r}",
+            )
+
     def test_cluster_merges_reordered_mixed_title(self):
         items = [
             {"title": "DeepSeek 发布新一代推理模型", "url": "https://x.example.com/1",

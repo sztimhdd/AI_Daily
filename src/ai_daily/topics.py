@@ -90,7 +90,26 @@ class TopicGateBlocked(RuntimeError):
 # ---------------------------------------------------------------------------
 
 _ASCII_TOKEN_RE = re.compile(r"[a-z0-9][a-z0-9.+#-]*")
-_STOP_TOKENS = {"ai", "the", "a", "an", "of", "for", "and", "to", "vs", "how", "why"}
+# Function words and short determiners are grammar, never event identity.
+# They must not count toward the two-shared-token merge rule, otherwise two
+# unrelated headlines that merely share a content noun plus a stopword
+# ("brain" + "that") collapse into one event (BISC regression).
+_STOP_TOKENS = {
+    "ai", "the", "a", "an", "of", "for", "and", "to", "vs", "how", "why",
+    "that", "this", "these", "those", "it", "its", "in", "on", "at", "by",
+    "from", "with", "without", "as", "is", "are", "was", "were", "be", "been",
+    "being", "has", "have", "had", "do", "does", "did", "will", "would",
+    "shall", "should", "can", "could", "may", "might", "must", "not", "no",
+    "nor", "so", "if", "then", "than", "but", "or", "because", "while",
+    "although", "though", "when", "where", "which", "who", "whom", "what",
+    "we", "you", "they", "he", "she", "him", "his", "her", "them", "their",
+    "there", "here", "out", "up", "down", "off", "over", "under", "again",
+    "once", "also", "just", "very", "too", "more", "most", "some", "any",
+    "all", "each", "other", "another", "into", "onto", "about", "after",
+    "before", "between", "during", "through", "against", "until", "above",
+    "below", "own", "same", "such", "only", "get", "got", "make", "made",
+    "say", "said", "see", "use", "used", "via", "than", "into",
+}
 
 # Vocabulary that appears across unrelated stories; it must never count
 # toward the two-shared-token merge rule (false-merge guard).
