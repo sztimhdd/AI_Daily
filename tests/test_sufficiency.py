@@ -119,6 +119,39 @@ class SufficiencyRunTests(SufficiencyBase):
         self.assertEqual(result["status"], "unavailable")
         self.assertIn("reason", result["reason"])
 
+
+class WritableGateTests(SufficiencyBase):
+    """require_writable: sufficient + needs_research pass; unsupported blocks."""
+
+    def _audit(self, verdict):
+        (self.run_paths.work_dir / "sufficiency-audit.json").write_text(
+            json.dumps(
+                {
+                    "narrative_title": "账本篇",
+                    "verdict": verdict,
+                    "reason": "r",
+                    "evidence_gaps": ["gap"],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
+    def test_sufficient_is_writable_without_downgrade(self):
+        self._audit("sufficient")
+        audit = sufficiency.require_writable(self.run_paths)
+        self.assertEqual(audit["verdict"], "sufficient")
+
+    def test_needs_research_is_writable(self):
+        self._audit("needs_research")
+        audit = sufficiency.require_writable(self.run_paths)
+        self.assertEqual(audit["verdict"], "needs_research")
+
+    def test_unsupported_blocks(self):
+        self._audit("unsupported")
+        with self.assertRaises(sufficiency.AuditGateBlocked):
+            sufficiency.require_writable(self.run_paths)
+
     def test_invalid_verdict_rejected(self):
         payload = self.audit_payload("maybe")
         payload["reason"] = "x"

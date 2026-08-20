@@ -327,6 +327,8 @@ def cmd_draft_en(args) -> int:
         print(f"- article: {result['article']}")
     if result.get("verdict"):
         print(f"- quality: {result['verdict']} ({result.get('word_count')} words)")
+    if result.get("downgraded"):
+        print("- conservative downgrade: needs_research accepted, weak claims annotated")
     if result.get("status") == "unavailable":
         print(f"- reason: {result.get('reason', '')}")
         return 1

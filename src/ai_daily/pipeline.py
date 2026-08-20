@@ -265,7 +265,7 @@ def run_draft(run_paths, force: bool = False) -> dict:
 
 def run_draft_en(run_paths, codex_runner=None, force: bool = False) -> dict:
     """07 English full draft: gated on a sufficient audit, then quality-gated."""
-    sufficiency.require_sufficient(run_paths)
+    sufficiency.require_writable(run_paths)
     _require_stage_ready(
         run_paths, targeted.EVIDENCE_PACKAGE_JSON, "targeted_research"
     )

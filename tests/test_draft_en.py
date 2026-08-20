@@ -121,14 +121,21 @@ class DraftEnBase(unittest.TestCase):
     def _runner(self, payload):
         return lambda prompt: payload
 
+    def _good_payload(self):
+        return {
+            "status": "completed",
+            "title": "The hidden search budget",
+            "body": clean_draft_body(),
+        }
+
 
 class DraftEnGateTests(DraftEnBase):
     def test_missing_audit_blocks_draft(self):
         with self.assertRaises(sufficiency.AuditGateBlocked):
             draft_en.run(self.run_paths)
 
-    def test_insufficient_audit_blocks_draft(self):
-        self._write_audit(verdict="needs_research")
+    def test_unsupported_audit_blocks_draft(self):
+        self._write_audit(verdict="unsupported")
         with self.assertRaises(sufficiency.AuditGateBlocked):
             draft_en.run(self.run_paths)
 
@@ -151,13 +158,6 @@ class DraftEnRunTests(DraftEnBase):
     def setUp(self):
         super().setUp()
         self._write_audit()
-
-    def _good_payload(self):
-        return {
-            "status": "completed",
-            "title": "The hidden search budget",
-            "body": clean_draft_body(),
-        }
 
     def test_draft_writes_article_en(self):
         result = draft_en.run(
@@ -222,6 +222,47 @@ class DraftEnRunTests(DraftEnBase):
         )
         self.assertIn("PASS", report)
 
+
+class DraftEnDowngradeTests(DraftEnBase):
+    """Conservative downgrade path: needs_research annotates and passes."""
+
+    def setUp(self):
+        super().setUp()
+        self._write_audit(verdict="needs_research")
+
+    def _downgraded_payload(self):
+        body = (
+            "Three providers moved pricing this week, per a vendor post "
+            "([announcement](https://example.com/1)). The reported deal "
+            "price is second-hand and not independently verified. Token "
+            "figures conflict across sources, so the exact volume is "
+            "unconfirmed."
+        )
+        return {
+            "status": "completed",
+            "title": "The hidden search budget",
+            "body": body,
+        }
+
+    def test_needs_research_writes_annotated_draft(self):
+        result = draft_en.run(
+            self.run_paths,
+            codex_runner=self._runner(self._downgraded_payload()),
+            min_words=1,
+            max_words=500,
+        )
+        self.assertEqual(result["status"], "generated")
+        self.assertTrue(result["downgraded"])
+
+    def test_needs_research_rejects_unannotated_draft(self):
+        payload = self._good_payload()  # no downgrade markers
+        with self.assertRaises(draft_en.DraftEnError):
+            draft_en.run(
+                self.run_paths,
+                codex_runner=self._runner(payload),
+                min_words=1,
+                max_words=500,
+            )
 
 if __name__ == "__main__":
     unittest.main()

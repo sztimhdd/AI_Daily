@@ -57,7 +57,8 @@ def _compact_sources(package: dict) -> list:
     return out
 
 
-def _compile_prompt(topic: dict, chosen: dict, package: dict) -> str:
+def _compile_prompt(topic: dict, chosen: dict, package: dict,
+                    audit: dict = None) -> str:
     compact = {
         "topic": {
             "title": topic.get("title"),
@@ -66,6 +67,20 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict) -> str:
         "narrative": _compact_narrative(chosen),
         "evidence": _compact_sources(package),
     }
+    downgrade = ""
+    if audit is not None and audit.get("verdict") == "needs_research":
+        gaps = "\n".join(f"- {g}" for g in (audit.get("evidence_gaps") or []))
+        downgrade = (
+            "\nCONSERVATIVE DOWNGRADE (editor accepted): the evidence is "
+            "needs_research, so the following are NOT independently "
+            "verified:\n" + (gaps or "- (none)") + "\n"
+            "For EACH gap above: either drop the claim entirely, or keep it "
+            "but hedge it explicitly with words like \"unverified\", "
+            "\"second-hand\", \"not independently confirmed\", \"figures "
+            "conflict\", \"undisclosed\", or \"single source\". Never state "
+            "any of them as certain. The article must contain at least one "
+            "such hedge.\n"
+        )
     return (
         "You are the Lead Tech Editor: a cold, sharp Silicon Valley voice, "
         "professional business English, writing for CTOs and architects. "
@@ -96,6 +111,7 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict) -> str:
         "bright\".\n"
         "7. Claims that failed the audit stay out; weak claims are softened "
         "or dropped.\n"
+        + downgrade +
         "Return a single JSON object (no preamble, no code fence, no "
         "trailing text):\n"
         '{"title":"<headline>","body":"<markdown body, no H1>"}\n'
@@ -126,7 +142,8 @@ def run(run_paths, codex_runner=None, force: bool = False,
         min_words: int = quality.EN_MIN_WORDS,
         max_words: int = quality.EN_MAX_WORDS) -> dict:
     """Write the English draft and gate it.  Raises on a gate rejection."""
-    sufficiency.require_sufficient(run_paths)
+    audit = sufficiency.require_writable(run_paths)
+    downgraded = audit.get("verdict") == "needs_research"
     chosen = narrative.require_narrative(run_paths)
     topic = topics.require_choice(run_paths)
     article_path = run_paths.work_dir / EN_ARTICLE_MD
@@ -145,7 +162,7 @@ def run(run_paths, codex_runner=None, force: bool = False,
         ) from exc
     runner = codex_runner or research._default_codex_runner
     try:
-        draft = runner(_compile_prompt(topic, chosen, package))
+        draft = runner(_compile_prompt(topic, chosen, package, audit=audit))
     except Exception as exc:
         return {
             "status": "unavailable",
@@ -169,6 +186,13 @@ def run(run_paths, codex_runner=None, force: bool = False,
         raise DraftEnError(
             "english draft failed the quality gate:\n" + quality.report(gate)
         )
+    if downgraded and not quality.has_downgrade_marker(article):
+        raise DraftEnError(
+            "english draft ignored the conservative-downgrade instruction: "
+            "needs_research was accepted but the article carries no explicit "
+            "uncertainty hedge (unverified / second-hand / not independently "
+            "confirmed / conflicting figures)"
+        )
     en_title = draft["title"].strip()
     en_slug = paths.slugify_title(en_title, run_paths.date)
     article_path.write_text(article, encoding="utf-8")
@@ -184,7 +208,10 @@ def run(run_paths, codex_runner=None, force: bool = False,
         run_paths,
         en_title=en_title,
         en_slug=en_slug,
-        note=f"english draft: {gate.verdict} ({gate.word_count} words)",
+        note=(
+            f"english draft: {gate.verdict} ({gate.word_count} words)"
+            + (" (conservative downgrade accepted)" if downgraded else "")
+        ),
     )
     return {
         "status": "generated",
@@ -192,6 +219,7 @@ def run(run_paths, codex_runner=None, force: bool = False,
         "title": en_title,
         "slug": en_slug,
         "verdict": gate.verdict,
+        "downgraded": downgraded,
         "word_count": gate.word_count,
         "quality_report": report_path,
     }

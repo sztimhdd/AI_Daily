@@ -72,6 +72,26 @@ _WALLED_DOWNGRADE_MARKERS = [
     re.compile(r"unable to (?:fetch|verify|confirm)", re.I),
 ]
 
+# Broader uncertainty markers for the conservative-downgrade path: a draft
+# that opts into downgrading must carry at least one explicit hedge so it
+# never asserts a weak claim as certain.
+DOWNGRADE_MARKERS = [
+    re.compile(r"unverified", re.I),
+    re.compile(r"not (?:yet |independently )?(?:verified|confirmed)", re.I),
+    re.compile(r"could not (?:be )?(?:fetched|verify|verified|confirm)", re.I),
+    re.compile(r"unable to (?:fetch|verify|confirm)", re.I),
+    re.compile(r"second[ -]hand", re.I),
+    re.compile(r"unconfirmed", re.I),
+    re.compile(r"uncorroborated", re.I),
+    re.compile(r"conflicting (?:reports|figures|accounts|numbers)", re.I),
+    re.compile(r"reported but not (?:independently )?(?:verified|confirmed)", re.I),
+    re.compile(r"not disclosed", re.I),
+    re.compile(r"undisclosed", re.I),
+    re.compile(r"single (?:community )?source", re.I),
+    re.compile(r"self[ -]reported", re.I),
+    re.compile(r"vendor[ -]claimed", re.I),
+]
+
 _MARKDOWN_LINK_TARGET_RE = re.compile(r"\]\(https?://[^)\s]+\)")
 _BARE_URL_RE = re.compile(r"https?://\S+")
 
@@ -112,6 +132,11 @@ def _body_words(text: str) -> int:
     stripped = _MARKDOWN_LINK_TARGET_RE.sub("]", text or "")
     stripped = _BARE_URL_RE.sub(" ", stripped)
     return word_count(stripped)
+
+
+def has_downgrade_marker(text: str) -> bool:
+    """True when the draft carries at least one explicit uncertainty hedge."""
+    return any(m.search(text or "") for m in DOWNGRADE_MARKERS)
 
 
 def _count_sentences(paragraph: str) -> int:

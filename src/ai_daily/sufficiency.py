@@ -200,3 +200,33 @@ def require_sufficient(run_paths) -> dict:
             f"{(audit.get('reason') or '')[:200]}"
         )
     return audit
+
+
+def require_writable(run_paths) -> dict:
+    """Gate for the writing stage with the conservative-downgrade default.
+
+    ``sufficient`` and ``needs_research`` both pass — a ``needs_research``
+    verdict means the core narrative holds but specific claims need hedging,
+    so the draft is annotated rather than blocked.  ``unsupported`` always
+    blocks: a core narrative the evidence cannot hold is never downgraded.
+    """
+    path = run_paths.work_dir / AUDIT_JSON
+    if not path.exists():
+        raise AuditGateBlocked(
+            f"no sufficiency audit for run {run_paths.run_id}; "
+            "run the audit stage first"
+        )
+    audit = json.loads(path.read_text(encoding="utf-8"))
+    chosen = narrative.require_narrative(run_paths)
+    if audit.get("narrative_title") != chosen.get("title"):
+        raise AuditGateBlocked(
+            "audit artifact was produced for a different narrative "
+            f"({audit.get('narrative_title')!r}); re-run the audit"
+        )
+    verdict = audit.get("verdict")
+    if verdict in ("sufficient", "needs_research"):
+        return audit
+    raise AuditGateBlocked(
+        f"audit verdict {verdict!r}; "
+        f"{(audit.get('reason') or '')[:200]}"
+    )
