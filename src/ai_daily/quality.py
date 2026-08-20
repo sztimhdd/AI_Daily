@@ -58,7 +58,8 @@ _PIPELINE_LEAK_RE = re.compile(
 # A double-quoted phrase that closes without terminal punctuation and ends on
 # a function word is almost certainly a cut-off quote ("driven by what").
 _TRUNCATED_QUOTE_RE = re.compile(
-    r'"[^"\n]{0,80}\b(?:what|of|for|with|by|to|and|the|a|at|on|that)\s*"',
+    r'"[a-zA-Z][^"\n]{1,80}\s[^"\n]{1,80}\b'
+    r'(?:what|of|for|with|by|to|and|the|a|at|on|that)\s*"',
     re.I,
 )
 

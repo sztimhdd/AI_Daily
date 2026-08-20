@@ -258,6 +258,20 @@ class CraftGateTests(unittest.TestCase):
             result.to_dict(),
         )
 
+    def test_quote_comparison_construction_is_not_a_truncated_fragment(self):
+        # Regression: '"A" is the 2026 version of "B"' must not trip the
+        # truncated-quote heuristic.
+        text = (
+            "# Title\n\nHe called it the 2026 version of the gateway play, "
+            "per ([post](https://example.com/1)). A second sentence. A third."
+        )
+        result = self._run(text)
+        self.assertNotIn(
+            "quote-integrity",
+            [f.check for f in result.findings],
+            result.to_dict(),
+        )
+
     def test_pipeline_leak_is_revise(self):
         text = (
             "# Title\n\nBloomberg's own article returned an HTTP 403 when "
