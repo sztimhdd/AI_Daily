@@ -118,6 +118,89 @@ class CleanCorpusTests(unittest.TestCase):
             self.assertTrue(any(f.category == "corporate-bookish" for f in findings))
 
 
+class EnglishContractTests(unittest.TestCase):
+    """English de-AI checks mirror the 8 Chinese categories."""
+
+    # Written in the English author voice (Lead Tech Editor, cold kicker).
+    EN_CLEAN = (
+        "OpenRouter changed its pricing table again this week. Three "
+        "providers moved their token billing by 15% to 40%, each blog post "
+        "linked below ([announcement](https://example.com/announce)).\n\n"
+        "**The search budget is the hidden line item.** One deep research "
+        "task fires twenty-plus retrieval calls, and no vendor publishes a "
+        "per-call count, so the number has to be reverse-engineered from "
+        "public pricing.\n\n"
+        "The problem is not the unit price. Teams that lose control never "
+        "capped how deep the agent searches, so the bill compounds layer "
+        "by layer.\n\n"
+        "The risk is concrete: a team without a retrieval ceiling can double "
+        "its inference spend next quarter. Figures follow the vendor posts; "
+        "where they disagree, the gap is flagged."
+    )
+
+    def assertDetectsEn(self, text, category_id):
+        findings = deslop.check_text_en(text)
+        self.assertTrue(
+            any(f.category == category_id for f in findings),
+            f"expected {category_id} findings, got {findings}",
+        )
+
+    def test_en_clean_corpus_passes(self):
+        self.assertEqual(deslop.check_text_en(self.EN_CLEAN), [])
+
+    def test_en_empty_connectives_detected(self):
+        self.assertDetectsEn(
+            "Furthermore, the team cut the cache. In conclusion, it helped.",
+            "empty-connectives",
+        )
+
+    def test_en_template_opening_detected(self):
+        self.assertDetectsEn(
+            "In today's rapidly evolving world, teams ship agents. The bill changed.",
+            "template-opening",
+        )
+
+    def test_en_mechanical_enumeration_detected(self):
+        self.assertDetectsEn(
+            "Firstly, the cost. Secondly, the latency. Finally, the risk.",
+            "mechanical-enumeration",
+        )
+
+    def test_en_over_parallelism_detected(self):
+        self.assertDetectsEn(
+            "This is not only cheaper but also faster.", "over-parallelism"
+        )
+
+    def test_en_corporate_bookish_detected(self):
+        self.assertDetectsEn(
+            "The platform leverages a robust, cutting-edge, seamless stack.",
+            "corporate-bookish",
+        )
+
+    def test_en_marketing_hype_detected(self):
+        self.assertDetectsEn(
+            "The release is revolutionary and groundbreaking.", "marketing-hype"
+        )
+
+    def test_en_unsupported_certainty_detected(self):
+        self.assertDetectsEn(
+            "This will undoubtedly reshape the industry.", "unsupported-certainty"
+        )
+
+    def test_en_stiff_ending_uplift_detected(self):
+        self.assertDetectsEn(
+            "Prices are still moving.\n\nOnly time will tell. The future is bright.",
+            "stiff-ending-uplift",
+        )
+
+    def test_en_url_content_does_not_trigger_false_positives(self):
+        text = (
+            "The post is here: https://example.com/track?word=leverage. "
+            "Figures follow the vendor."
+        )
+        self.assertEqual(deslop.check_text_en(text), [])
+
+
 class ReportTests(unittest.TestCase):
     def test_report_marks_clean_text_as_pass(self):
         self.assertIn("PASS", deslop.report(deslop.check_text(CLEAN_CORPUS)))

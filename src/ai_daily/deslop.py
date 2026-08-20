@@ -124,8 +124,9 @@ def _mask_urls(text: str) -> str:
     return text
 
 
-def _scan_phrases(text: str, phrases: list, category: str) -> list:
+def _scan_phrases(text: str, phrases: list, category: str, names=None) -> list:
     """Find phrase occurrences, deduping overlaps in favor of longer hits."""
+    names = _NAMES if names is None else names
     matches = []  # (start, end, phrase)
     for phrase in phrases:
         start = 0
@@ -142,19 +143,21 @@ def _scan_phrases(text: str, phrases: list, category: str) -> list:
         if s >= last_end:
             kept.append((s, e, phrase))
             last_end = e
-    return _with_lines(text, kept, category)
+    return _with_lines(text, kept, category, names)
 
 
-def _scan_regexes(text: str, patterns: list, category: str) -> list:
+def _scan_regexes(text: str, patterns: list, category: str, names=None) -> list:
+    names = _NAMES if names is None else names
     kept = []
     for pat in patterns:
         for m in pat.finditer(text):
             kept.append((m.start(), m.end(), m.group(0)))
     kept.sort(key=lambda m: m[0])
-    return _with_lines(text, kept, category)
+    return _with_lines(text, kept, category, names)
 
 
-def _with_lines(text: str, spans: list, category: str) -> list:
+def _with_lines(text: str, spans: list, category: str, names=None) -> list:
+    names = _NAMES if names is None else names
     findings = []
     for s, e, phrase in spans:
         line_no = text.count("\n", 0, s) + 1
@@ -166,7 +169,7 @@ def _with_lines(text: str, spans: list, category: str) -> list:
         if len(excerpt) > 80:
             excerpt = excerpt[:77] + "..."
         findings.append(
-            Finding(category, _NAMES[category], phrase.strip(), line_no, excerpt)
+            Finding(category, names[category], phrase.strip(), line_no, excerpt)
         )
     return findings
 
@@ -180,44 +183,56 @@ def _last_paragraph(text: str) -> tuple:
     return stripped[idx + 2 :], idx + 2
 
 
-def check_text(text: str) -> list:
-    """Run all 8 category checks; returns a list of ``Finding``."""
-    masked = _mask_urls(text or "")
+def _check_categories(
+    masked: str,
+    *,
+    names: dict,
+    connectives: list,
+    template_res: list,
+    enum_markers: list,
+    absolute_parallel_res: list,
+    soft_parallel_res: list,
+    corporate: list,
+    hype: list,
+    certainty: list,
+    ending: list,
+) -> list:
+    """Run the 8 category checks against one pre-masked, pre-cased text."""
     findings: list = []
 
     # 1. empty connectives
-    findings += _scan_phrases(masked, _EMPTY_CONNECTIVES, "empty-connectives")
+    findings += _scan_phrases(masked, connectives, "empty-connectives", names)
 
     # 2. template opening (first 200 chars only)
     opening = masked[:200]
-    findings += _scan_regexes(opening, _TEMPLATE_OPENING_RES, "template-opening")
+    findings += _scan_regexes(opening, template_res, "template-opening", names)
 
     # 3. mechanical enumeration: >= 2 distinct markers present
-    present = [m for m in _ENUM_MARKERS if m in masked]
+    present = [m for m in enum_markers if m in masked]
     if len(present) >= 2:
-        findings += _scan_phrases(masked, present, "mechanical-enumeration")
+        findings += _scan_phrases(masked, present, "mechanical-enumeration", names)
 
     # 4. over-parallelism: absolute patterns once; soft patterns need >= 2
-    findings += _scan_regexes(masked, _ABSOLUTE_PARALLEL_RES, "over-parallelism")
+    findings += _scan_regexes(masked, absolute_parallel_res, "over-parallelism", names)
     soft_spans = []
-    for pat in _SOFT_PARALLEL_RES:
+    for pat in soft_parallel_res:
         soft_spans.extend((m.start(), m.end(), m.group(0)) for m in pat.finditer(masked))
     if len(soft_spans) >= 2:
         soft_spans.sort(key=lambda m: m[0])
-        findings += _with_lines(masked, soft_spans, "over-parallelism")
+        findings += _with_lines(masked, soft_spans, "over-parallelism", names)
 
     # 5. corporate bookish
-    findings += _scan_phrases(masked, _CORPORATE_BOOKISH, "corporate-bookish")
+    findings += _scan_phrases(masked, corporate, "corporate-bookish", names)
 
     # 6. marketing hype
-    findings += _scan_phrases(masked, _MARKETING_HYPE, "marketing-hype")
+    findings += _scan_phrases(masked, hype, "marketing-hype", names)
 
     # 7. unsupported certainty
-    findings += _scan_phrases(masked, _UNSUPPORTED_CERTAINTY, "unsupported-certainty")
+    findings += _scan_phrases(masked, certainty, "unsupported-certainty", names)
 
     # 8. stiff ending uplift (final paragraph only)
     last_para, offset = _last_paragraph(masked)
-    for f in _scan_phrases(last_para, _ENDING_UPLIFT, "stiff-ending-uplift"):
+    for f in _scan_phrases(last_para, ending, "stiff-ending-uplift", names):
         findings.append(
             Finding(f.category, f.name, f.phrase,
                     masked.count("\n", 0, offset) + f.line, f.excerpt)
@@ -225,6 +240,105 @@ def check_text(text: str) -> list:
 
     findings.sort(key=lambda f: (f.line, f.category))
     return findings
+
+
+def check_text(text: str) -> list:
+    """Run all 8 Chinese category checks; returns a list of ``Finding``."""
+    return _check_categories(
+        _mask_urls(text or ""),
+        names=_NAMES,
+        connectives=_EMPTY_CONNECTIVES,
+        template_res=_TEMPLATE_OPENING_RES,
+        enum_markers=_ENUM_MARKERS,
+        absolute_parallel_res=_ABSOLUTE_PARALLEL_RES,
+        soft_parallel_res=_SOFT_PARALLEL_RES,
+        corporate=_CORPORATE_BOOKISH,
+        hype=_MARKETING_HYPE,
+        certainty=_UNSUPPORTED_CERTAINTY,
+        ending=_ENDING_UPLIFT,
+    )
+
+
+# -- English de-AI contract (Lead Tech Editor; spec §4.2/§4.3) --------------
+
+_EN_NAMES = {
+    "empty-connectives": "Empty AI connectives",
+    "template-opening": "Template opening",
+    "mechanical-enumeration": "Mechanical enumeration",
+    "over-parallelism": "Over-parallelism",
+    "corporate-bookish": "Corporate bookish",
+    "marketing-hype": "Marketing hype",
+    "unsupported-certainty": "Unsupported certainty",
+    "stiff-ending-uplift": "Stiff ending uplift",
+}
+
+_EN_EMPTY_CONNECTIVES = [
+    "furthermore", "moreover", "in conclusion", "in summary", "to sum up",
+    "it is worth noting", "it's worth noting", "it is important to note",
+    "it's important to note", "additionally", "on the other hand", "nevertheless",
+]
+
+_EN_TEMPLATE_OPENING_RES = [
+    re.compile(r"in today'?s (?:rapidly evolving|digital|fast-paced|modern)\b"),
+    re.compile(r"in the era of\b"),
+    re.compile(r"as we all know\b"),
+    re.compile(r"it goes without saying\b"),
+    re.compile(r"with the (?:rapid|fast) (?:development|growth|rise) of\b"),
+    re.compile(r"in recent years,?\b"),
+]
+
+_EN_ENUM_MARKERS = ["firstly", "secondly", "thirdly", "finally", "lastly"]
+
+_EN_ABSOLUTE_PARALLEL_RES = [re.compile(r"not only.{0,40}?but also")]
+_EN_SOFT_PARALLEL_RES = [
+    re.compile(r"on (?:the )?one hand.{0,80}?on the other hand"),
+]
+
+_EN_CORPORATE_BOOKISH = [
+    "leverage", "robust", "delve", "utilize", "utilise", "synergy",
+    "paradigm shift", "cutting-edge", "best-in-class", "best of breed",
+    "seamless", "holistic", "empower", "streamline", "innovative",
+    "state-of-the-art", "revolutionize", "actionable", "frictionless",
+    "world-class", "bleeding-edge", "thought leadership", "circle back",
+    "move the needle",
+]
+
+_EN_MARKETING_HYPE = [
+    "revolutionary", "disruptive", "groundbreaking", "unprecedented",
+    "supercharge", "turbocharge", "unlock the power",
+    "unlock the full potential", "next-level", "game-changer",
+    "game-changing",
+]
+
+_EN_UNSUPPORTED_CERTAINTY = [
+    "undoubtedly", "invariably", "inevitably", "without a doubt", "no doubt",
+    "certainly will", "definitely", "bound to", "guaranteed to", "will surely",
+]
+
+_EN_ENDING_UPLIFT = [
+    "only time will tell", "time will tell", "the future is bright",
+    "stay tuned", "a new era", "new era", "the possibilities are endless",
+    "in the years to come", "let's wait and see", "the sky is the limit",
+]
+
+
+def check_text_en(text: str) -> list:
+    """Run all 8 English de-AI checks; returns a list of ``Finding``."""
+    masked = _mask_urls(text or "")
+    masked = masked.lower().replace("\u2019", "'")
+    return _check_categories(
+        masked,
+        names=_EN_NAMES,
+        connectives=_EN_EMPTY_CONNECTIVES,
+        template_res=_EN_TEMPLATE_OPENING_RES,
+        enum_markers=_EN_ENUM_MARKERS,
+        absolute_parallel_res=_EN_ABSOLUTE_PARALLEL_RES,
+        soft_parallel_res=_EN_SOFT_PARALLEL_RES,
+        corporate=_EN_CORPORATE_BOOKISH,
+        hype=_EN_MARKETING_HYPE,
+        certainty=_EN_UNSUPPORTED_CERTAINTY,
+        ending=_EN_ENDING_UPLIFT,
+    )
 
 
 def check_file(path) -> list:
