@@ -20,7 +20,7 @@ import re
 import datetime
 from urllib.parse import urlsplit
 
-from . import assemble, claim_check, draft_en, paths, state, topics, visuals
+from . import assemble, claim_check, draft_en, linkedin, paths, state, topics, visuals
 
 _LINK_RE = re.compile(r"\]\((https?://[^)\s]+)\)")
 
@@ -146,6 +146,29 @@ def _adopt_images(run_paths, package_dir: pathlib.Path) -> dict:
     return {"images_status": "degraded", "images": []}
 
 
+def _adopt_linkedin_kit(run_paths, package_dir: pathlib.Path) -> dict:
+    """Copy the LinkedIn kit into the package; return seo fields for metadata."""
+    kit_path = run_paths.work_dir / linkedin.LINKEDIN_KIT_JSON
+    if not kit_path.is_file():
+        return {"seo_title": "", "seo_description": ""}
+    try:
+        kit = json.loads(kit_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"seo_title": "", "seo_description": ""}
+    parsed = linkedin.parse_kit(kit)
+    if not parsed["ok"]:
+        return {"seo_title": "", "seo_description": ""}
+    md_path = run_paths.work_dir / linkedin.LINKEDIN_KIT_MD
+    if md_path.is_file():
+        (package_dir / linkedin.LINKEDIN_KIT_MD).write_text(
+            md_path.read_text(encoding="utf-8"), encoding="utf-8"
+        )
+    return {
+        "seo_title": parsed["seo_title"],
+        "seo_description": parsed["seo_description"],
+    }
+
+
 _CJK_RE = re.compile(r"[\u4e00-\u9fff]")
 
 
@@ -235,6 +258,7 @@ def run(run_paths, force: bool = False) -> dict:
 
     cover_info = assemble._adopt_cover(run_paths, package_dir)
     images_info = _adopt_images(run_paths, package_dir)
+    kit_info = _adopt_linkedin_kit(run_paths, package_dir)
     quality_record = _read_quality(run_paths)
     audit = _read_audit(run_paths)
     evidence_verdict = audit.get("verdict") or evidence.get("audit_verdict", "")
@@ -254,8 +278,8 @@ def run(run_paths, force: bool = False) -> dict:
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(
             timespec="seconds"
         ),
-        "seo_title": "",
-        "seo_summary": "",
+        "seo_title": kit_info["seo_title"],
+        "seo_summary": kit_info["seo_description"],
         "has_cover": cover_info is not None,
         "cover": cover_info,
         "images_status": images_info["images_status"],

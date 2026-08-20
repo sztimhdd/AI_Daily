@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ai_daily import assemble_en, paths, state, topics, visuals
+from ai_daily import assemble_en, linkedin, paths, state, topics, visuals
 
 FIXTURES = pathlib.Path(__file__).resolve().parents[0] / "fixtures"
 
@@ -132,6 +132,30 @@ class AssembleEnTests(AssembleEnBase):
         result = assemble_en.run(self.rp)
         self.assertEqual(result["images_status"], "degraded")
         self.assertEqual(result["images"], [])
+
+    def test_linkedin_kit_adopted_into_package_and_metadata(self):
+        self.write_article_en()
+        self.write_evidence()
+        (self.rp.work_dir / linkedin.LINKEDIN_KIT_JSON).write_text(
+            json.dumps(
+                {
+                    "seo_title": "The search budget is the hidden line item",
+                    "seo_description": "Token billing moved; reverse-engineer your cost.",
+                    "post": "Hook\n\n- bullet\n\nRead the full deep dive below 👇\n\n#AI",
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        (self.rp.work_dir / linkedin.LINKEDIN_KIT_MD).write_text(
+            "# 🚀 LinkedIn Distribution Kit\n", encoding="utf-8"
+        )
+        result = assemble_en.run(self.rp)
+        pkg = self.rp.package_dir(self._en_slug())
+        self.assertTrue((pkg / "linkedin-kit.md").is_file())
+        meta = json.loads((pkg / "metadata.json").read_text(encoding="utf-8"))
+        self.assertEqual(meta["seo_title"], "The search budget is the hidden line item")
+        self.assertEqual(meta["seo_summary"], "Token billing moved; reverse-engineer your cost.")
 
     def test_resumes_when_package_exists(self):
         self.write_article_en()

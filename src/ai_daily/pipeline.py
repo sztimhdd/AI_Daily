@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import json
 
-from . import STAGES, aihot, assemble, assemble_en, claim_check, cover, draft, visuals
+from . import STAGES, aihot, assemble, assemble_en, claim_check, cover, draft, visuals, linkedin
 from . import draft_en
 from . import narrative, outline
 from . import research, sufficiency, targeted
@@ -340,6 +340,11 @@ def run_illustrate(run_paths, codex_runner=None, gemini_runner=None,
         gemini_runner=gemini_runner,
         force=force,
     )
+
+
+def run_linkedin_kit(run_paths, codex_runner=None, force: bool = False) -> dict:
+    """Optional LinkedIn distribution kit.  Never blocks."""
+    return linkedin.run(run_paths, codex_runner=codex_runner, force=force)
 
 
 def run_publish(run_paths, repo_dir, transport=None, **transport_kwargs):
