@@ -1,0 +1,145 @@
+{
+  "run_id": "AI-Daily/2026-08-20",
+  "date": "2026-08-20",
+  "slug": "everyone-says-stripe-bet-on-the-singularity-the-receipt-says",
+  "title": "Everyone Says Stripe Bet on the Singularity. The Receipt Says Otherwise.",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 902,
+    "paragraph_count": 30,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "4 sentence(s) exceed 20 words",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 2
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "Bloomberg 一手页 403，超 $7B 口径全部为二手转引，无官方价格与动机确认",
+    "ARR~$50M、周 token 25T、8M 用户仅存 AIHOT 摘要不可核；用户量 8M vs 10M+、token 10T 日 vs 25T 周 vs 200T 月 量级冲突",
+    "「中立是幌子」与 OpenRouter 官方「same product/routing stays driven by...」中立承诺冲突，未解决",
+    "$10B 谈判价仅经 Kim 转述 WSJ，原始报道未抓取，单一来源",
+    "无第三方评测/基准实测（Ori Eval 仅为工具名）",
+    "整合/迁移、定价、高管留任、监管审查、完成日期均未披露",
+    "社区观点（Rohan Paul/Elvis Saravia/TestingCatalog）为用户经验与个人判断，非可推广事实"
+  ],
+  "source_count": 17,
+  "generated_at": "2026-08-20T19:29:33+00:00",
+  "seo_title": "",
+  "seo_summary": "",
+  "has_cover": false,
+  "cover": null,
+  "sources": [
+    {
+      "title": "Stripe agrees to buy OpenRouter as AI model routing expands",
+      "url": "https://www.artificialintelligence-news.com/news/stripe-openrouter-acquisition-ai-model-routing",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "支付巨头 Stripe 确认将收购 AI 路由平台 OpenRouter，消息称交易价格达 75 亿美元 - IT之家",
+      "url": "https://www.ithome.com/0/991/918.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Stripe didn't really buy OpenRouter because of the 'singularity' | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2090154779515510855",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenRouter is Joining Stripe — OpenRouter Blog",
+      "url": "https://openrouter.ai/blog/announcements/openrouter-is-joining-stripe",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenRouter & Stripe: The Intelligence Network",
+      "url": "https://www.a16z.news/p/openrouter-and-stripe-the-intelligence",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "elvis (@omarsar0) on X",
+      "url": "https://x.com/omarsar0/status/2090134310988681670",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenRouter (@OpenRouter) on X",
+      "url": "https://x.com/OpenRouter/status/2090127246430216403",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Deedy (@deedydas) on X",
+      "url": "https://x.com/deedydas/status/2090129029777224033",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://x.com/AYi_AInotes/status/2089307122358006218",
+      "url": "https://x.com/AYi_AInotes/status/2089307122358006218",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "Stripe is reportedly acquiring AI startup OpenRouter for more than $7 billion",
+      "url": "https://the-decoder.com/stripe-is-reportedly-acquiring-ai-startup-openrouter-for-more-than-7-billion",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion",
+      "url": "https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "彭博社称支付巨头 Stripe 敲定收购 AI 初创公司 OpenRouter，金额超 70 亿美元 - IT之家",
+      "url": "https://www.ithome.com/0/990/410.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2089103402739323289",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2089095191349137880",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Stripe will reportedly acquire AI gateway startup OpenRouter for $7B+ | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2089090435499331734",
+      "origin": "initial",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-08-20-everyone-says-stripe-bet-on-the-singularity-the-receipt-says-en.md",
+  "package": "outputs/2026/08/20/everyone-says-stripe-bet-on-the-singularity-the-receipt-says"
+}
