@@ -50,6 +50,34 @@ _HTML_TAG_RE = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*(?:\s[^<>]*)?>")
 # (``**Point.** text``) and inline ``**cost**`` are fine.
 _BOLD_ABUT_RE = re.compile(r"\w\*\*\w")
 
+_PIPELINE_LEAK_RE = re.compile(
+    r"HTTP\s+\d{3}|fetched text|evidence package|fetch (?:status|failed|lanes?)",
+    re.I,
+)
+
+# A double-quoted phrase that closes without terminal punctuation and ends on
+# a function word is almost certainly a cut-off quote ("driven by what").
+_TRUNCATED_QUOTE_RE = re.compile(
+    r'"[^"\n]{0,80}\b(?:what|of|for|with|by|to|and|the|a|at|on|that)\s*"',
+    re.I,
+)
+
+_FIGURE_RE = re.compile(
+    r"\$\s?\d+(?:[.,]\d+)?\s*(?:billion|million|trillion|bn|m)?"
+    r"|\b\d+(?:[.,]\d+)?\s*(?:%|x\b|tokens|users|models)"
+    r"|\b\d+T\b",
+    re.I,
+)
+_BOLD_SPAN_RE = re.compile(r"\*\*([^*\n]+)\*\*")
+
+_PASSIVE_RE = re.compile(
+    r"\b(?:is|are|was|were|be|been)\s+(?:not\s+)?[a-z]+(?:ed|en|ised)\b",
+    re.I,
+)
+_BOLD_LEAD_RE = re.compile(r"^\s*\*\*[^*\n]+\*\*")
+
+_LONG_SENTENCE_WORDS = 20
+
 _WORD_RE = re.compile(r"[\w'\u2019-]+")
 
 _ABBREV_RE = re.compile(
@@ -132,6 +160,22 @@ def _body_words(text: str) -> int:
     stripped = _MARKDOWN_LINK_TARGET_RE.sub("]", text or "")
     stripped = _BARE_URL_RE.sub(" ", stripped)
     return word_count(stripped)
+
+
+def _sentences(paragraph: str) -> list:
+    """Sentence texts of one paragraph (abbreviations protected)."""
+    protected = _ABBREV_RE.sub(lambda m: m.group(0).replace(".", "\u0000"),
+                               paragraph or "")
+    parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", protected) if p.strip()]
+    return [p.replace("\u0000", ".") for p in parts]
+
+
+def _figure_is_bolded(text: str, span) -> bool:
+    start, end = span
+    for m in _BOLD_SPAN_RE.finditer(text):
+        if m.start() <= start and end <= m.end():
+            return True
+    return False
 
 
 def has_downgrade_marker(text: str) -> bool:
@@ -246,10 +290,65 @@ def check_en(text: str, evidence: dict, min_words: int = EN_MIN_WORDS,
             findings.append(Finding("placeholder", f"unreplaced {m.group(0)!r}"))
             break
 
+    # -- quote integrity + pipeline leak (revise) ---------------------------
+    quotes = re.findall(r'"', text or "")
+    if len(quotes) % 2 == 1:
+        findings.append(Finding("quote-integrity", "unbalanced double quotes"))
+    m = _TRUNCATED_QUOTE_RE.search(text or "")
+    if m:
+        findings.append(
+            Finding("quote-integrity", f"truncated quote fragment {m.group(0)!r}")
+        )
+    m = _PIPELINE_LEAK_RE.search(text or "")
+    if m:
+        findings.append(
+            Finding("pipeline-leak", f"pipeline mechanics leaked: {m.group(0)!r}")
+        )
+
     # -- minor notes (pass_with_notes) --------------------------------------
     notes = []
     if _BOLD_ABUT_RE.search(text or ""):
         notes.append(Finding("bold-spacing", "bold marker abuts a word"))
+
+    # Key figures must be bolded (n8n visual-highlight rule).
+    figures = list(_FIGURE_RE.finditer(text or ""))
+    if figures and not any(_figure_is_bolded(text or "", m.span()) for m in figures):
+        notes.append(Finding(
+            "metric-bold",
+            f"{len(figures)} key figure(s) present but none bolded",
+        ))
+
+    # Rhythm: sentences over 20 words.
+    long_count = 0
+    for para in paragraphs:
+        for sentence in _sentences(para):
+            if _body_words(sentence) > _LONG_SENTENCE_WORDS:
+                long_count += 1
+    if long_count:
+        notes.append(Finding(
+            "sentence-rhythm",
+            f"{long_count} sentence(s) exceed {_LONG_SENTENCE_WORDS} words",
+        ))
+
+    # Passive voice: two or more be+participle constructions.
+    passive_hits = list(_PASSIVE_RE.finditer(text or ""))
+    if len(passive_hits) >= 2:
+        notes.append(Finding(
+            "passive-voice",
+            f"{len(passive_hits)} passive constructions "
+            f"(e.g. {passive_hits[0].group(0)!r})",
+        ))
+
+    # Bolded lead-in paragraphs must stay a minority (Kill the Formula).
+    body_paras = [p for p in paragraphs if not p.startswith("#")]
+    if body_paras:
+        lead_ins = sum(1 for p in body_paras if _BOLD_LEAD_RE.match(p))
+        if lead_ins / len(body_paras) > 0.5:
+            notes.append(Finding(
+                "lead-in-ratio",
+                f"{lead_ins}/{len(body_paras)} paragraphs open with a bolded "
+                "lead-in (formulaic rhythm)",
+            ))
 
     if hard:
         verdict = "evidence_recovery"

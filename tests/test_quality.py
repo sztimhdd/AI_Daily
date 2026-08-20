@@ -13,8 +13,9 @@ def _clean_article(paragraphs=4, sentences=3):
     """A clean English article in the Lead Tech Editor voice."""
     lines = ["# The search budget is the hidden line item", ""]
     for i in range(paragraphs):
+        lead = f"**Point {i + 1}.** " if i % 2 == 0 else ""
         lines.append(
-            f"**Point {i + 1}.** Vendors moved pricing by 15 percent this "
+            f"{lead}Vendors moved pricing by 15 percent this "
             f"week, and each change is on the public blog ([announcement]"
             f"(https://example.com/{i})). Teams that never capped agent "
             f"retrieval depth saw the bill compound."
@@ -216,6 +217,113 @@ class VerdictTests(unittest.TestCase):
         data = result.to_dict()
         self.assertEqual(data["verdict"], "pass")
         self.assertIn("word_count", data)
+
+
+class CraftGateTests(unittest.TestCase):
+    """Round 2 gate checks: quote integrity, bold metrics, rhythm, leaks."""
+
+    def _run(self, text, evidence=None):
+        return quality.check_en(text, evidence or {"sources": []},
+                                min_words=1, max_words=500)
+
+    def test_truncated_quote_fragment_is_revise(self):
+        text = (
+            "# Title\n\nThe blog says routing stays \"driven by what\". "
+            "([post](https://example.com/1))"
+        )
+        result = self._run(text)
+        self.assertEqual(result.verdict, "revise", result.to_dict())
+        self.assertTrue(
+            any(f.check == "quote-integrity" for f in result.findings),
+            result.to_dict(),
+        )
+
+    def test_unbalanced_quotes_is_revise(self):
+        text = (
+            "# Title\n\nA sentence with an \"unclosed quote and a source "
+            "([post](https://example.com/1))."
+        )
+        result = self._run(text)
+        self.assertEqual(result.verdict, "revise", result.to_dict())
+
+    def test_complete_quote_passes(self):
+        text = (
+            "# Title\n\n> same mission, same name, same product, same "
+            "roadmap.\n\nThe company said so ([post](https://example.com/1))."
+        )
+        result = self._run(text)
+        self.assertNotIn(
+            "quote-integrity",
+            [f.check for f in result.findings],
+            result.to_dict(),
+        )
+
+    def test_pipeline_leak_is_revise(self):
+        text = (
+            "# Title\n\nBloomberg's own article returned an HTTP 403 when "
+            "checked ([post](https://example.com/1))."
+        )
+        result = self._run(text)
+        self.assertEqual(result.verdict, "revise", result.to_dict())
+
+    def test_unbolded_figures_are_noted(self):
+        text = (
+            "# Title\n\nThe deal is worth $7 billion and 10T+ tokens daily, "
+            "per ([post](https://example.com/1)). A second sentence. A third."
+        )
+        result = self._run(text)
+        self.assertEqual(result.verdict, "pass_with_notes", result.to_dict())
+        self.assertTrue(
+            any(f.check == "metric-bold" for f in result.findings),
+            result.to_dict(),
+        )
+
+    def test_bolded_figures_are_clean(self):
+        text = (
+            "# Title\n\nThe deal is worth **$7 billion**, per "
+            "([post](https://example.com/1)). A second sentence. A third."
+        )
+        result = self._run(text)
+        self.assertNotIn(
+            "metric-bold", [f.check for f in result.findings], result.to_dict()
+        )
+
+    def test_long_sentence_is_noted(self):
+        text = (
+            "# Title\n\n" + ("word " * 25) + "([post](https://example.com/1)). "
+            "A second sentence. A third."
+        )
+        result = self._run(text)
+        self.assertEqual(result.verdict, "pass_with_notes", result.to_dict())
+        self.assertTrue(
+            any(f.check == "sentence-rhythm" for f in result.findings),
+            result.to_dict(),
+        )
+
+    def test_passive_voice_is_noted(self):
+        text = (
+            "# Title\n\nThe figure was not disclosed and the source was not "
+            "fetched ([post](https://example.com/1)). A second sentence. A third."
+        )
+        result = self._run(text)
+        self.assertTrue(
+            any(f.check == "passive-voice" for f in result.findings),
+            result.to_dict(),
+        )
+
+    def test_lead_in_ratio_is_noted(self):
+        paras = []
+        for i in range(4):
+            paras.append(
+                f"**Lead {i}.** A sourced sentence "
+                f"([post](https://example.com/{i})). A second. A third."
+            )
+        text = "# Title\n\n" + "\n\n".join(paras) + "\n"
+        result = self._run(text)
+        self.assertTrue(
+            any(f.check == "lead-in-ratio" for f in result.findings),
+            result.to_dict(),
+        )
 
 
 if __name__ == "__main__":
