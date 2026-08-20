@@ -266,6 +266,44 @@ class EvidenceTextNormalizationTests(unittest.TestCase):
         )
 
 
+class EvidenceExcerptBoundaryTests(unittest.TestCase):
+    """Fetched-page excerpts must end at a sentence boundary, never mid-phrase."""
+
+    def _long_markdown(self):
+        sentence = (
+            "OpenRouter's blog promises that routing stays driven by what "
+            "pricing customers actually choose. "
+        )
+        return sentence * 12  # far beyond the 300-char limit
+
+    def test_excerpt_ends_at_sentence_boundary_not_mid_phrase(self):
+        text = self._long_markdown()
+        excerpt = research._evidence_excerpt(text, "fallback")
+        self.assertTrue(
+            excerpt.rstrip().endswith((".", "!", "?")),
+            f"excerpt ends mid-sentence: {excerpt[-60:]!r}",
+        )
+        self.assertNotIn("what\n", excerpt[-40:])
+
+    def test_excerpt_never_cuts_a_quote_phrase(self):
+        # Regression: the published draft quoted "stays driven by what" —
+        # a mid-phrase cut must be impossible now.
+        text = self._long_markdown()
+        excerpt = research._evidence_excerpt(text, "fallback")
+        last_word = excerpt.rstrip().rstrip(".!?").split()[-1].lower()
+        self.assertNotEqual(last_word, "what")
+
+    def test_truncated_flag_true_when_source_continues(self):
+        text, flag = research._excerpt_with_flag(self._long_markdown(), "fallback")
+        self.assertTrue(flag)
+        self.assertTrue(text)
+
+    def test_truncated_flag_false_for_short_source(self):
+        text, flag = research._excerpt_with_flag("One short sentence.", "fallback")
+        self.assertFalse(flag)
+        self.assertEqual(text, "One short sentence.")
+
+
 DIRTY_RSS_ITEMS = [
     {
         "title": "Deep research agent search budget pricing",

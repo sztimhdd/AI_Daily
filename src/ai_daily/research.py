@@ -509,15 +509,41 @@ def _evidence_view(ev: dict) -> dict:
     }
 
 
-def _evidence_excerpt(markdown: str, title: str) -> str:
-    """First 300 chars of normalized markdown; title stands in when empty."""
+def _excerpt_with_flag(markdown: str, title: str, limit: int = 300) -> tuple:
+    """First ~limit chars cut at a complete sentence boundary.
+
+    Returns ``(excerpt, truncated)``.  ``truncated`` is True when the
+    source continues past the excerpt, so downstream writers know the
+    material is incomplete and must never quote it as a full sentence.
+    """
     text = normalize_evidence_text(markdown)
     if not text:
-        return normalize_evidence_text(title)
-    return text[:300]
+        return normalize_evidence_text(title), False
+    if len(text) <= limit:
+        return text, False
+    window = text[:limit]
+    last_end = 0
+    for m in _SENTENCE_END_RE.finditer(window):
+        last_end = m.end()
+    if last_end:
+        return window[:last_end].strip(), True
+    # No sentence end inside the window: extend to the next one so the
+    # excerpt still closes a sentence instead of cutting mid-phrase.
+    m = _SENTENCE_END_RE.search(text, limit, limit + 500)
+    if m:
+        return text[: m.end()].strip(), True
+    return window.strip(), True
+
+
+def _evidence_excerpt(markdown: str, title: str, limit: int = 300) -> str:
+    """First ~limit chars of normalized markdown, cut at a complete
+    sentence boundary; title stands in when empty."""
+    excerpt, _ = _excerpt_with_flag(markdown, title, limit=limit)
+    return excerpt
 
 
 def _evidence_entry(result) -> dict:
+    excerpt, truncated = _excerpt_with_flag(result.markdown, result.title)
     return {
         "url": result.url,
         "title": result.title,
@@ -526,7 +552,8 @@ def _evidence_entry(result) -> dict:
         "sha256": result.sha256,
         "error": result.error,
         "fetched_at": result.fetched_at,
-        "excerpt": _evidence_excerpt(result.markdown, result.title),
+        "excerpt": excerpt,
+        "excerpt_truncated": truncated,
     }
 
 

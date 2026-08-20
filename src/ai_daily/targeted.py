@@ -45,13 +45,17 @@ def _execute_tasks(run_paths, tasks: list, discover_runner=None,
                 url, run_paths,
                 http_fetcher=http_fetcher, cdp_runner=cdp_runner,
             )
+            excerpt, truncated = research._excerpt_with_flag(
+                result.markdown, result.title
+            )
             entries.append({
                 "url": result.url,
                 "title": result.title,
                 "status": result.status,
                 "source_lane": result.source_lane,
                 "sha256": result.sha256,
-                "excerpt": research._evidence_excerpt(result.markdown, result.title),
+                "excerpt": excerpt,
+                "excerpt_truncated": truncated,
                 "gap_type": gap_type,
             })
     return entries
