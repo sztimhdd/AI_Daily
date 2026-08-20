@@ -466,6 +466,9 @@ def _reset_run(run_paths) -> None:
         "initial-osint.json", "initial-osint.md",
         "narrative-candidates.json", "narrative-candidates.md",
         "selected-narrative.json",
+        "sufficiency-audit.json", "sufficiency-audit.md",
+        "targeted-evidence.json", "evidence-package.json",
+        "article-en.md", "quality-en-report.md",
     ):
         path = run_paths.work_dir / name
         if path.exists():

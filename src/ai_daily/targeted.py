@@ -61,20 +61,23 @@ def run_loop(run_paths, audit_runner=None, discover_runner=None,
              http_fetcher=None, cdp_runner=None, force: bool = False,
              initial_audit: dict = None, progress=None) -> dict:
     """Audit -> targeted rounds (max 2) -> final verdict + evidence package."""
-    narrative.require_narrative(run_paths)
+    chosen = narrative.require_narrative(run_paths)
     package_path = run_paths.work_dir / EVIDENCE_PACKAGE_JSON
     if package_path.exists() and not force:
         package = json.loads(package_path.read_text(encoding="utf-8"))
-        targeted_data = json.loads(
-            (run_paths.work_dir / TARGETED_JSON).read_text(encoding="utf-8")
-        )
-        return {
-            "status": "resumed",
-            "verdict": package.get("audit_verdict"),
-            "reason": package.get("reason", ""),
-            "rounds": len(targeted_data.get("rounds", [])),
-            "evidence_package": package_path,
-        }
+        if package.get("narrative_title") == chosen.get("title"):
+            targeted_data = json.loads(
+                (run_paths.work_dir / TARGETED_JSON).read_text(encoding="utf-8")
+            )
+            return {
+                "status": "resumed",
+                "verdict": package.get("audit_verdict"),
+                "reason": package.get("reason", ""),
+                "rounds": len(targeted_data.get("rounds", [])),
+                "evidence_package": package_path,
+            }
+        # A package for a different narrative is stale: fall through and
+        # regenerate it for the current narrative.
     osint_path = run_paths.work_dir / research.INITIAL_OSINT_JSON
     if not osint_path.exists():
         raise TargetedError(

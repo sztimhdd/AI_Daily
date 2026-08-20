@@ -226,6 +226,31 @@ class LoopTests(TargetedBase):
         self.assertEqual(second["verdict"], "sufficient")
         self.assertEqual(calls["n"], calls_before)
 
+    def test_loop_regenerates_stale_package_from_other_narrative(self):
+        # A stale package for a different narrative must never be reused.
+        (self.run_paths.work_dir / "evidence-package.json").write_text(
+            json.dumps({"narrative_title": "别的叙事", "audit_verdict": "sufficient"}),
+            encoding="utf-8",
+        )
+        (self.run_paths.work_dir / "targeted-evidence.json").write_text(
+            json.dumps({"rounds": []}), encoding="utf-8",
+        )
+        audit_runner, calls = self._audit_sequence(["sufficient"])
+        result = targeted.run_loop(
+            self.run_paths,
+            audit_runner=audit_runner,
+            discover_runner=lambda t, w: [],
+            http_fetcher=lambda u, t: b"x",
+            cdp_runner=None,
+        )
+        self.assertEqual(result["status"], "completed")
+        package = json.loads(
+            (self.run_paths.work_dir / "evidence-package.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(package["narrative_title"], "账本篇")
+
     def test_loop_caps_urls_per_task(self):
         def fake_discover(topic, wait_ms):
             return [{"title": f"t{i}", "url": f"https://example.com/{i}"}

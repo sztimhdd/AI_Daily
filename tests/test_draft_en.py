@@ -222,6 +222,20 @@ class DraftEnRunTests(DraftEnBase):
         )
         self.assertIn("PASS", report)
 
+    def test_mismatched_evidence_package_raises(self):
+        # A stale package for another narrative must not drive the draft.
+        (self.run_paths.work_dir / "evidence-package.json").write_text(
+            json.dumps({"narrative_title": "别的叙事", "sources": []}),
+            encoding="utf-8",
+        )
+        with self.assertRaises(draft_en.DraftEnError):
+            draft_en.run(
+                self.run_paths,
+                codex_runner=self._runner(self._good_payload()),
+                min_words=1,
+                max_words=500,
+            )
+
 
 class DraftEnDowngradeTests(DraftEnBase):
     """Conservative downgrade path: needs_research annotates and passes."""

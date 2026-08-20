@@ -160,6 +160,11 @@ def run(run_paths, codex_runner=None, force: bool = False,
         raise DraftEnError(
             f"evidence-package.json is unreadable: {type(exc).__name__}: {exc}"
         ) from exc
+    if package.get("narrative_title") != chosen.get("title"):
+        raise DraftEnError(
+            "evidence-package.json is for a different narrative "
+            f"({package.get('narrative_title')!r}); re-run the 06 targeted loop"
+        )
     runner = codex_runner or research._default_codex_runner
     try:
         draft = runner(_compile_prompt(topic, chosen, package, audit=audit))
