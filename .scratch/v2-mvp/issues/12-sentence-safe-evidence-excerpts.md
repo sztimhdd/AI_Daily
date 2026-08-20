@@ -4,7 +4,7 @@
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** completed
 
 - [ ] 回归用例：官方博客「stays driven by what pricing」类句子不再输出半句摘录
 - [ ] 摘录边界记录（excerpt_truncated 标记）供下游提示词判断是否可引用

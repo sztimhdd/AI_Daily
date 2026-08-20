@@ -4,7 +4,7 @@
 
 **Blocked by:** 09 — 补编译主编排版与节奏资产
 
-**Status:** ready-for-agent
+**Status:** completed
 
 - [ ] 提示词逐条对照 `docs/verification/results/2026-08-20-editorial-review-round-1.md` 问题 1/6/7/9/14 的修复措辞
 - [ ] 提示词逐条对照同一文档 Round 1b 的 7 项表达力问题的修复措辞

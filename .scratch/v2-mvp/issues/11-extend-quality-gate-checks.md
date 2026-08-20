@@ -4,7 +4,7 @@
 
 **Blocked by:** 09 — 补编译主编排版与节奏资产
 
-**Status:** ready-for-agent
+**Status:** completed
 
 - [ ] 引语完整性违例 → `revise`（评审问题 3 的确定性防线）
 - [ ] 关键数字未加粗、引导语占比 >50% → `revise` 或 `pass_with_notes`（按资产规则定）

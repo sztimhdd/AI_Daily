@@ -4,7 +4,7 @@
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** completed
 
 - [ ] metadata.quality 与 state 一致（verdict/word_count/downgraded）
 - [ ] slug 不再出现「didn-t」式截断与丢词；旧 slug 行为有回归测试

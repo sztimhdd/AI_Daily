@@ -4,7 +4,7 @@
 
 **Blocked by:** 10 — 修订 draft_en 提示词
 
-**Status:** ready-for-agent
+**Status:** completed
 
 - [ ] 输出 artifact：`.local/runs/<date>/claim-check.json`，每条 {claim, evidence_url, verdict: ok|mismatch|unsupported}
 - [ ] 「four words」数词、「both companies confirmed」单方链接、co-founder 身份三类错误有回归用例

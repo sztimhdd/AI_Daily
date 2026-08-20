@@ -4,7 +4,7 @@
 
 **Blocked by:** None — can start immediately
 
-**Status:** ready-for-agent
+**Status:** completed
 
 - [ ] `knowledge/en-author-style.md`（或新文件）补齐四条规则，每条与 n8n 原句一一对应可追溯（REF·Final Editor1/3、UDW·Final Editor1、UDW·去AI味）
 - [ ] 降级写作协议明确：fact 降级用 hedged 句式，opinion 仍须 take a stand（消解评审问题 7 的规则冲突）
