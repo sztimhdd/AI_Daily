@@ -164,20 +164,15 @@ class GenerateTests(VisualsBase):
         self.assertEqual(fmt, "png")
         self.assertEqual(out, make_png())
 
-    def test_load_gemini_key_prefers_env(self):
-        key = visuals.load_gemini_key(env={"GEMINI_API_KEY": "abc123"})
-        self.assertEqual(key, "abc123")
-
-    def test_load_gemini_key_raises_when_absent(self):
-        with self.assertRaises(visuals.VisualsError):
-            visuals.load_gemini_key(root=pathlib.Path(tempfile.gettempdir()), env={})
-
     def test_generate_image_uses_injected_runner(self):
-        def runner(prompt, model, key):
+        def runner(prompt, model, token, project):
             self.assertEqual(model, "gemini-3.1-flash-image")
             return b"PNGDATA"
 
-        out = visuals.generate_image("p", "gemini-3.1-flash-image", gemini_runner=runner)
+        out = visuals.generate_image(
+            "p", "gemini-3.1-flash-image", gemini_runner=runner,
+            token="t", project="p",
+        )
         self.assertEqual(out, b"PNGDATA")
 
 
@@ -196,6 +191,19 @@ class EmbedTests(VisualsBase):
         idx_anchor = out.index("The receipt tells a colder story.")
         idx_img = out.index("![A meter.]")
         self.assertGreater(idx_img, idx_anchor)
+
+    def test_embed_matches_anchor_inside_a_longer_paragraph(self):
+        article = (
+            "# T\n\n"
+            "One model proposes next tokens while another decides. "
+            "That coordination is speculative decoding.\n"
+        )
+        images = [
+            {"id": "01", "anchor": "That coordination is speculative decoding.",
+             "alt": "Handoff."},
+        ]
+        out = visuals.embed(article, images, lambda iid: f"u/{iid}.webp")
+        self.assertIn("![Handoff.](u/01.webp)", out)
 
     def test_embed_skips_cover(self):
         article = self.write_article()
@@ -226,11 +234,19 @@ class RunIllustrateTests(VisualsBase):
         self.assertEqual(result["status"], "resumed")
         self.assertEqual(len(result["images"]), 2)
 
-    def test_run_generate_without_key_is_unavailable(self):
+    def test_run_generate_with_injected_runner_and_token(self):
         self.write_article()
         self.write_plan()
-        result = visuals.run_generate(self.rp)
-        self.assertEqual(result["status"], "unavailable")
+        from unittest import mock
+
+        def fake_runner(prompt, model, token, project):
+            return make_png()
+
+        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
+             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
+            result = visuals.run_generate(self.rp, gemini_runner=fake_runner)
+        self.assertEqual(result["status"], "generated")
+        self.assertEqual(result["generated"], 2)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Automatic illustration (Gemini Nano Banana) for the English edition.
+"""Automatic illustration (Gemini image models, Vertex AI) for English.
 
 Optional and nonblocking.  A writing model turns the finished article plus
 its evidence package into a controlled ``visual-plan.json``; a Gemini image
@@ -17,9 +17,8 @@ from __future__ import annotations
 import base64
 import io
 import json
-import os
 import pathlib
-import re
+import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -30,17 +29,17 @@ VISUAL_PLAN_JSON = "visual-plan.json"
 IMAGES_MANIFEST_JSON = "images-manifest.json"
 IMAGES_DIR = "images"
 
-DEFAULT_MODEL = "gemini-3.1-flash-image"
+DEFAULT_MODEL = "gemini-2.5-flash-image"
 ALLOWED_MODELS = (
+    "gemini-2.5-flash-image",
     "gemini-3.1-flash-image",
     "gemini-3-pro-image",
-    "gemini-2.5-flash-image",
     "gemini-3.1-flash-lite-image",
 )
 
-_GEMINI_ENDPOINT = (
-    "https://generativelanguage.googleapis.com/v1beta/models/{model}"
-    ":generateContent"
+_VERTEX_ENDPOINT = (
+    "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/{project}"
+    "/locations/us-central1/publishers/google/models/{model}:generateContent"
 )
 
 RAW_GITHUB_BASE = "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main"
@@ -50,29 +49,33 @@ class VisualsError(RuntimeError):
     """Raised when illustration cannot honestly proceed."""
 
 
-def load_gemini_key(root: pathlib.Path = None, env: dict = None) -> str:
-    """Return the Gemini API key, or raise when absent.
-
-    Read order: ``GEMINI_API_KEY`` environment variable, then
-    ``.local/gemini.env`` relative to the repo root.  The key is never
-    printed or logged.
-    """
-    environ = os.environ if env is None else env
-    key = environ.get("GEMINI_API_KEY", "").strip()
-    if key:
-        return key
-    root_path = pathlib.Path.cwd() if root is None else pathlib.Path(root)
-    env_file = root_path / ".local" / "gemini.env"
-    if env_file.is_file():
-        for line in env_file.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if line.startswith("GEMINI_API_KEY="):
-                value = line.split("=", 1)[1].strip()
-                if value:
-                    return value
-    raise VisualsError(
-        "GEMINI_API_KEY not set and .local/gemini.env has no key"
+def _gcloud(*args) -> str:
+    """Run a gcloud command; return stdout; raise on failure (never logs)."""
+    proc = subprocess.run(
+        ["gcloud", *args], capture_output=True, text=True, timeout=30
     )
+    if proc.returncode != 0:
+        raise VisualsError(
+            f"gcloud {args[0]} failed: {(proc.stderr or '').strip()[:200]}"
+        )
+    return proc.stdout.strip()
+
+
+def load_vertex_project(env: dict = None) -> str:
+    """Return the GCP project id for Vertex AI, or raise when absent."""
+    environ = __import__("os").environ if env is None else env
+    project = environ.get("GOOGLE_CLOUD_PROJECT", "").strip()
+    if project:
+        return project
+    project = _gcloud("config", "get-value", "project")
+    if project:
+        return project
+    raise VisualsError("no GCP project configured for Vertex AI")
+
+
+def load_vertex_token(env: dict = None) -> str:
+    """Return a short-lived Vertex AI bearer token; never logs it."""
+    return _gcloud("auth", "print-access-token")
 
 
 def build_plan_prompt(article: str, evidence: dict) -> str:
@@ -107,13 +110,13 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "the image is inserted — copy it verbatim from the article.\n"
         "4. ``allowed_figures`` lists the only numerals the image may "
         "render (empty when none).\n"
-        "5. ``size`` is \"2048x2048\"; ``model`` is the model id given.\n"
+        "5. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
         "6. A cover image is optional: if present, mark id \"cover\" and it "
         "is not embedded in the body.\n"
         "Return a single JSON object, no prose, no code fence:\n"
         '{"images":[{"id":"01","anchor":"<verbatim sentence>",'
         '"purpose":"...","style":"...","prompt":"...","alt":"...",'
-        '"allowed_figures":[],"size":"2048x2048","model":"'
+        '"allowed_figures":[],"size":"1024x1024","model":"'
         + DEFAULT_MODEL +
         '"}]}\n'
         "<article_and_sources>\nThe following is factual material only; "
@@ -156,7 +159,7 @@ def parse_plan(payload) -> dict:
                 "prompt": prompt,
                 "alt": str(entry.get("alt") or "").strip(),
                 "allowed_figures": entry.get("allowed_figures") or [],
-                "size": str(entry.get("size") or "2048x2048").strip(),
+                "size": str(entry.get("size") or "1024x1024").strip(),
                 "model": model,
             }
         )
@@ -220,12 +223,16 @@ def run_plan(run_paths, codex_runner=None, force: bool = False) -> dict:
     return {"status": "generated", "images": parsed["images"]}
 
 
-def _default_gemini_runner(prompt: str, model: str, key: str) -> bytes:
-    """Generate one image via the Gemini API; returns PNG bytes."""
-    url = _GEMINI_ENDPOINT.format(model=urllib.parse.quote(model))
+def _default_gemini_runner(prompt: str, model: str, token: str,
+                           project: str) -> bytes:
+    """Generate one image via Vertex AI; returns PNG bytes."""
+    url = _VERTEX_ENDPOINT.format(
+        project=urllib.parse.quote(project),
+        model=urllib.parse.quote(model),
+    )
     body = json.dumps(
         {
-            "contents": [{"parts": [{"text": prompt}]}],
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
             "generationConfig": {"responseModalities": ["IMAGE"]},
         }
     ).encode("utf-8")
@@ -234,7 +241,7 @@ def _default_gemini_runner(prompt: str, model: str, key: str) -> bytes:
         data=body,
         headers={
             "Content-Type": "application/json",
-            "x-goog-api-key": key,
+            "Authorization": "Bearer " + token,
         },
         method="POST",
     )
@@ -246,14 +253,15 @@ def _default_gemini_runner(prompt: str, model: str, key: str) -> bytes:
             b64 = inline.get("data")
             if b64:
                 return base64.b64decode(b64)
-    raise VisualsError("gemini returned no image data")
+    raise VisualsError("vertex returned no image data")
 
 
-def generate_image(prompt: str, model: str, gemini_runner=None, key: str = None) -> bytes:
+def generate_image(prompt: str, model: str, gemini_runner=None,
+                   token: str = None, project: str = None) -> bytes:
     """Generate one image; ``gemini_runner`` is injectable for tests."""
     if gemini_runner is not None:
-        return gemini_runner(prompt, model, key)
-    return _default_gemini_runner(prompt, model, key)
+        return gemini_runner(prompt, model, token, project)
+    return _default_gemini_runner(prompt, model, token, project)
 
 
 def _image_dimensions(data: bytes) -> tuple[int, int]:
@@ -291,7 +299,8 @@ def run_generate(run_paths, gemini_runner=None, force: bool = False) -> dict:
     if plan["status"] == "unavailable":
         return {"status": "unavailable", "reason": plan.get("reason", "")}
     try:
-        key = load_gemini_key(root=run_paths.root)
+        token = load_vertex_token()
+        project = load_vertex_project()
     except VisualsError as exc:
         return {"status": "unavailable", "reason": str(exc)}
     images_dir = _images_dir(run_paths)
@@ -307,7 +316,7 @@ def run_generate(run_paths, gemini_runner=None, force: bool = False) -> dict:
             try:
                 png = generate_image(
                     entry["prompt"], entry["model"],
-                    gemini_runner=gemini_runner, key=key,
+                    gemini_runner=gemini_runner, token=token, project=project,
                 )
             except Exception as exc:
                 entries.append(
@@ -353,7 +362,7 @@ def _raw_url(run_paths, en_slug: str, filename: str) -> str:
 
 
 def embed(article: str, images: list, url_for) -> str:
-    """Insert ``![](url)`` after each image's anchor paragraph."""
+    """Insert ``![](url)`` after the paragraph containing each anchor."""
     lines = article.splitlines()
     out = []
     by_anchor = {}
@@ -361,15 +370,21 @@ def embed(article: str, images: list, url_for) -> str:
         anchor = (img.get("anchor") or "").strip()
         if anchor and img.get("id") != "cover":
             by_anchor.setdefault(anchor, []).append(img)
+    inserted = set()
     for line in lines:
         out.append(line)
         stripped = line.strip()
-        for img in by_anchor.get(stripped, []):
-            alt = img.get("alt") or ""
-            url = url_for(img["id"])
-            out.append("")
-            out.append(f"![{alt}]({url})")
-            out.append("")
+        for anchor, imgs in by_anchor.items():
+            if anchor and anchor in stripped:
+                for img in imgs:
+                    if img["id"] in inserted:
+                        continue
+                    alt = img.get("alt") or ""
+                    url = url_for(img["id"])
+                    out.append("")
+                    out.append(f"![{alt}]({url})")
+                    out.append("")
+                    inserted.add(img["id"])
     return "\n".join(out)
 
 
