@@ -121,6 +121,99 @@ class AssembleEnTests(AssembleEnBase):
         self.assertIn("https://source-a.example.com/1", sources)
         self.assertIn("initial", sources)
 
+    def test_metadata_carries_quality_and_evidence_fields(self):
+        self.write_article_en()
+        self.write_evidence()
+        (self.rp.work_dir / "quality-en.json").write_text(
+            json.dumps(
+                {
+                    "verdict": "pass",
+                    "word_count": 1109,
+                    "paragraph_count": 14,
+                    "downgraded": True,
+                    "findings": [],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        (self.rp.work_dir / "sufficiency-audit.json").write_text(
+            json.dumps(
+                {
+                    "verdict": "needs_research",
+                    "narrative_title": "narrative",
+                    "evidence_gaps": ["price figures are second-hand"],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        assemble_en.run(self.rp)
+        meta = json.loads(
+            (self.rp.package_dir(self._en_slug()) / "metadata.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(meta["quality"]["verdict"], "pass")
+        self.assertEqual(meta["quality"]["word_count"], 1109)
+        self.assertTrue(meta["downgraded"])
+        self.assertEqual(meta["evidence_verdict"], "needs_research")
+        self.assertIn("price figures are second-hand", meta["evidence_caveats"])
+        self.assertEqual(meta["source_count"], 1)
+        self.assertIn("generated_at", meta)
+        self.assertIn("seo_title", meta)
+
+    def test_sources_failed_source_gets_fallback_title(self):
+        self.write_article_en()
+        data = {
+            "run_id": self.rp.run_id,
+            "narrative_title": "narrative",
+            "audit_verdict": "sufficient",
+            "sources": [
+                {
+                    "url": "https://www.bloomberg.com/news/example",
+                    "title": "",
+                    "status": "failed",
+                    "source_lane": "http",
+                    "origin": "initial",
+                }
+            ],
+        }
+        (self.rp.work_dir / "evidence-package.json").write_text(
+            json.dumps(data, ensure_ascii=False), encoding="utf-8"
+        )
+        assemble_en.run(self.rp)
+        sources = (
+            self.rp.package_dir(self._en_slug()) / "sources.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("(fetch failed)", sources)
+        self.assertNotIn("[https://www.bloomberg.com", sources)
+
+    def test_sources_annotate_non_english_titles(self):
+        self.write_article_en()
+        data = {
+            "run_id": self.rp.run_id,
+            "narrative_title": "narrative",
+            "audit_verdict": "sufficient",
+            "sources": [
+                {
+                    "url": "https://www.ithome.com/0/991/918.htm",
+                    "title": "支付巨头 Stripe 确认将收购 AI 路由平台 OpenRouter",
+                    "status": "fetched",
+                    "source_lane": "http",
+                    "origin": "initial",
+                }
+            ],
+        }
+        (self.rp.work_dir / "evidence-package.json").write_text(
+            json.dumps(data, ensure_ascii=False), encoding="utf-8"
+        )
+        assemble_en.run(self.rp)
+        sources = (
+            self.rp.package_dir(self._en_slug()) / "sources.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("Chinese source", sources)
+
 
 if __name__ == "__main__":
     unittest.main()

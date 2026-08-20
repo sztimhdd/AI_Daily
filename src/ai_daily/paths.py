@@ -15,6 +15,7 @@ import pathlib
 import re
 
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SLUG_MAX_LEN = 64
 
 
 def slugify_title(title: str, date: str = "") -> str:
@@ -23,9 +24,17 @@ def slugify_title(title: str, date: str = "") -> str:
     Titles carry identity: the Chinese edition keeps its Chinese-derived
     slug and the English edition its English-derived slug, so each edition's
     package and final article are named by their own title.
+
+    The cut happens at a word boundary (never mid-word) and keeps the full
+    title when it fits, so a headline's punchline is not chopped off.
     """
-    ascii_runs = re.findall(r"[a-z0-9]+", (title or "").lower())
-    slug = "-".join(ascii_runs)[:48].strip("-")
+    tokens = re.findall(r"[a-z0-9]+", (title or "").lower().replace("'", ""))
+    slug = ""
+    for token in tokens:
+        candidate = f"{slug}-{token}" if slug else token
+        if len(candidate) > SLUG_MAX_LEN:
+            break
+        slug = candidate
     if not slug and date:
         slug = f"topic-{date.replace('-', '')}"
     return slug

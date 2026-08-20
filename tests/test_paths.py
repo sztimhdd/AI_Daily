@@ -77,6 +77,19 @@ class RunPathsTests(unittest.TestCase):
             paths.slugify_title("OpenAI releases GPT-5.1"), "openai-releases-gpt-5-1"
         )
 
+    def test_slugify_keeps_full_title_punchline_within_limit(self):
+        self.assertEqual(
+            paths.slugify_title(
+                "Stripe Didn't Buy the Singularity — It Bought the Meter"
+            ),
+            "stripe-didnt-buy-the-singularity-it-bought-the-meter",
+        )
+
+    def test_slugify_cuts_at_word_boundary_never_mid_word(self):
+        slug = paths.slugify_title("alpha beta " * 20)
+        self.assertLessEqual(len(slug), paths.SLUG_MAX_LEN)
+        self.assertNotIn(" ", slug)
+
     def test_slugify_title_falls_back_to_date(self):
         self.assertEqual(paths.slugify_title("全是中文标题", "2026-08-12"),
                          "topic-20260812")

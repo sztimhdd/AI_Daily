@@ -18,6 +18,7 @@ from . import narrative, paths, quality, research, state, sufficiency, topics
 
 EN_ARTICLE_MD = "article-en.md"
 QUALITY_REPORT_MD = "quality-en-report.md"
+QUALITY_JSON = "quality-en.json"
 EVIDENCE_PACKAGE_JSON = "evidence-package.json"
 
 
@@ -187,6 +188,19 @@ def run(run_paths, codex_runner=None, force: bool = False,
                             max_words=max_words)
     report_path = run_paths.work_dir / QUALITY_REPORT_MD
     report_path.write_text(quality.report(gate) + "\n", encoding="utf-8")
+    quality_json_path = run_paths.work_dir / QUALITY_JSON
+    quality_json_path.write_text(
+        json.dumps(
+            {
+                **gate.to_dict(),
+                "downgraded": downgraded,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     if gate.verdict in ("revise", "evidence_recovery"):
         raise DraftEnError(
             "english draft failed the quality gate:\n" + quality.report(gate)

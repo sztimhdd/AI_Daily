@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import json
 import re
+import datetime
+from urllib.parse import urlsplit
 
 from . import assemble, draft_en, paths, state, topics
 
@@ -73,13 +75,55 @@ def _collect_sources(evidence: dict) -> list:
     return sources
 
 
+def _read_quality(run_paths) -> dict:
+    path = run_paths.work_dir / draft_en.QUALITY_JSON
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+def _read_audit(run_paths) -> dict:
+    path = run_paths.work_dir / "sufficiency-audit.json"
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+_CJK_RE = re.compile(r"[\u4e00-\u9fff]")
+
+
+def _display_title(src: dict) -> str:
+    """A presentable source title: fallback for failed fetches, language tag."""
+    title = (src.get("title") or "").strip()
+    status = str(src.get("status") or "").lower()
+    if status != "fetched":
+        if not title or title.startswith("http"):
+            host = (urlsplit(src.get("url") or "").hostname or "").strip()
+            return f"{host or 'unknown source'} (fetch failed)"
+        return f"{title} (fetch failed)"
+    if not title or title.startswith("http"):
+        host = (urlsplit(src.get("url") or "").hostname or "").strip()
+        return host or "unknown source"
+    return title
+
+
 def _render_sources_md(topic_title: str, sources: list) -> str:
     lines = [f"# Sources and evidence: {topic_title}", ""]
     lines.append(f"{len(sources)} deduplicated source(s) from the evidence package.")
     lines.append("")
     for src in sources:
         status = f" · {src['status']}" if src.get("status") else ""
-        lines.append(f"- [{src['title']}]({src['url']})（{src['origin']}{status}）")
+        title = _display_title(src)
+        lang = " · Chinese source" if _CJK_RE.search(title) else ""
+        lines.append(
+            f"- [{title}]({src['url']})（{src['origin']}{status}{lang}）"
+        )
     lines.append("")
     return "\n".join(lines)
 
@@ -133,6 +177,9 @@ def run(run_paths, force: bool = False) -> dict:
     )
 
     cover_info = assemble._adopt_cover(run_paths, package_dir)
+    quality_record = _read_quality(run_paths)
+    audit = _read_audit(run_paths)
+    evidence_verdict = audit.get("verdict") or evidence.get("audit_verdict", "")
     metadata = {
         "run_id": run_paths.run_id,
         "date": run_paths.date,
@@ -140,6 +187,17 @@ def run(run_paths, force: bool = False) -> dict:
         "title": en_title,
         "language": "en",
         "topic_choice": state.read_state(run_paths).get("topic_choice", ""),
+        "quality": quality_record,
+        "evidence_verdict": evidence_verdict,
+        "downgraded": bool(quality_record.get("downgraded")
+                           or evidence_verdict == "needs_research"),
+        "evidence_caveats": audit.get("evidence_gaps") or [],
+        "source_count": len(sources),
+        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(
+            timespec="seconds"
+        ),
+        "seo_title": "",
+        "seo_summary": "",
         "has_cover": cover_info is not None,
         "cover": cover_info,
         "sources": sources,
