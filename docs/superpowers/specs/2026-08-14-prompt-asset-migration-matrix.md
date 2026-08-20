@@ -143,3 +143,14 @@ Browser Use 拦截仍是事实，但不再影响管线（抓取走用户自有�
 - **遗留限制**：EIC 的「信息差/情绪」维度在确定性关键词近似下很少触发（真实标题多为产品发布体），战略价值维度主导排序；完整 EIC 语义留给 Codex 判断层（04 叙事阶段继承）。
 
 验证：398 单测全绿 + 17 项 fixture UAT PASS + 真实数据回归（295 簇仅 5 簇被 VETO 命中；Top3 全部 ≥3 独立信源；08-20 live research 分析 completed，时间标注与 [标题](URL) 引用协议可见）。
+
+## 八、bilingual_draft / quality_layer / assembly 落地（2026-08-20，07+08）
+
+双语编辑质量层 spec 的 Python 可检查子集与英文优先闭环已落地：
+
+- **bilingual_draft**：`src/ai_daily/draft_en.py` 从 evidence package 写英文完整稿（Codex 可注入 `codex_runner`，从证据重写、永不翻译）；输入门禁 = 05 审计 `sufficient`（`sufficiency.require_sufficient`）。UDW·First Draft Writer1 的人设/框架与 REF·Final Editor1 的 EN 声线编译为 `knowledge/en-author-style.md`。
+- **quality_layer**：`src/ai_daily/quality.py` 实现确定性四道检查的可执行子集——证据边界（无链接/无依据确定性/墙内来源按 fetch 状态逐源降级 = `evidence_recovery`）、去 AI 味（`deslop.check_text_en` 8 类英文检查）、字数 800–1200、每段 ≤3 句、AI 痕迹标签/Markdown 纯度、占位符保护、加粗间距。结果四选一 `pass/pass_with_notes/revise/evidence_recovery`，只检查与打回、不静默改写。
+- **assembly**：`src/ai_daily/assemble_en.py` 产出 `outputs/YYYY/MM/DD/<slug>/article-en.md` + `sources-en.md` + `metadata-en.json`，最终文章映射 `articles/<date>-<slug>-en.md`，与中文包并存；封面沿用「图片不阻断正文」。CLI 增 `draft-en` / `assemble-en`。
+- **聚类误并修复（BISC）**：`topics.same_event` 的停用词表补齐英文虚词（that/in/is/... 等），消除「brain + that」双 token 误并；真实 BISC 三个无关标题回归全部为 False，合法跨源聚类（DeepSeek / Grok 4.6）保持 True。
+
+验证：546 单测全绿 + `git diff --check` 干净 + `scripts/uat_cli.sh` 17 项 PASS + 子代理 code-review（P1 墙内降级 per-source 与正则、word-count URL 膨胀等已修）。
