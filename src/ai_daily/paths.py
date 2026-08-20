@@ -4,7 +4,8 @@ A run is identified by a stable date-based id, ``AI-Daily/YYYY-MM-DD``.
 Before a topic is chosen the run lives under ``.local/runs/<date>/``
 (ignorable runtime state).  After the topic choice the durable article
 package lives under ``outputs/YYYY/MM/DD/<slug>/`` and the publishable
-article at ``articles/YYYY-MM-DD-<slug>-zh.md``.
+articles at ``articles/YYYY-MM-DD-<slug>-zh.md`` (Chinese) and
+``articles/YYYY-MM-DD-<slug>-en.md`` (English).
 """
 
 from __future__ import annotations
@@ -68,6 +69,10 @@ class RunPaths:
     def final_article_path(self, slug: str) -> pathlib.Path:
         validate_slug(slug)
         return self.root / "articles" / f"{self.date}-{slug}-zh.md"
+
+    def final_article_en_path(self, slug: str) -> pathlib.Path:
+        validate_slug(slug)
+        return self.root / "articles" / f"{self.date}-{slug}-en.md"
 
 
 def list_state_files(root) -> list:

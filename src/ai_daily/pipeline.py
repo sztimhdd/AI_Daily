@@ -19,7 +19,8 @@ from __future__ import annotations
 
 import json
 
-from . import STAGES, aihot, assemble, cover, draft, narrative, outline
+from . import STAGES, aihot, assemble, assemble_en, cover, draft, draft_en
+from . import narrative, outline
 from . import research, sufficiency, targeted
 from . import rss_catalog, rss_collect, state, topics
 
@@ -262,6 +263,16 @@ def run_draft(run_paths, force: bool = False) -> dict:
     return draft.run(run_paths, force=force)
 
 
+def run_draft_en(run_paths, codex_runner=None, force: bool = False) -> dict:
+    """07 English full draft: gated on a sufficient audit, then quality-gated."""
+    sufficiency.require_sufficient(run_paths)
+    _require_stage_ready(
+        run_paths, targeted.EVIDENCE_PACKAGE_JSON, "targeted_research"
+    )
+    state.transition(run_paths, "draft")
+    return draft_en.run(run_paths, codex_runner=codex_runner, force=force)
+
+
 def regenerate_outline_from_edit(run_paths) -> dict:
     """Rebuild the draft after a human edited the outline file.
 
@@ -298,6 +309,17 @@ def run_assemble(run_paths, force: bool = False) -> dict:
     result = assemble.run(run_paths, force=force)
     if result["status"] in ("assembled", "resumed"):
         state.transition(run_paths, "completed", note="assembly accepted")
+    return result
+
+
+def run_assemble_en(run_paths, force: bool = False) -> dict:
+    """08 English package: assemble the English draft into the durable package."""
+    topics.require_choice(run_paths)
+    _require_stage_ready(run_paths, draft_en.EN_ARTICLE_MD, "draft-en")
+    state.transition(run_paths, "assembly")
+    result = assemble_en.run(run_paths, force=force)
+    if result["status"] in ("assembled", "resumed"):
+        state.transition(run_paths, "completed", note="english assembly accepted")
     return result
 
 

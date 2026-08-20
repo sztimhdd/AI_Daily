@@ -17,8 +17,8 @@ import datetime
 import json
 import sys
 
-from . import STAGES, assemble, draft, fetch, narrative, outline, pipeline
-from . import publish, state, sufficiency, targeted, topics, tui
+from . import STAGES, assemble, assemble_en, draft, draft_en, fetch, narrative
+from . import outline, pipeline, publish, state, sufficiency, targeted, topics, tui
 from .paths import RunPaths
 
 
@@ -69,6 +69,14 @@ def build_parser() -> argparse.ArgumentParser:
         p = sub.add_parser(name, help=help_text)
         common(p)
         p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("draft-en", help="write and quality-gate the English draft")
+    common(p)
+    p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("assemble-en", help="package the English article")
+    common(p)
+    p.add_argument("--force", action="store_true")
 
     p = sub.add_parser("research", help="run targeted research")
     common(p)
@@ -310,6 +318,21 @@ def cmd_draft(args) -> int:
     return 0
 
 
+def cmd_draft_en(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_draft_en(run_paths, force=args.force)
+    print(f"draft-en: {result['status']}")
+    if result.get("article") is not None:
+        print(f"- article: {result['article']}")
+    if result.get("verdict"):
+        print(f"- quality: {result['verdict']} ({result.get('word_count')} words)")
+    if result.get("status") == "unavailable":
+        print(f"- reason: {result.get('reason', '')}")
+        return 1
+    return 0
+
+
 def cmd_regenerate_outline(args) -> int:
     run_paths = _paths(args)
     _ensure_state(run_paths)
@@ -334,6 +357,16 @@ def cmd_assemble(args) -> int:
     _ensure_state(run_paths)
     result = pipeline.run_assemble(run_paths, force=args.force)
     print(f"assemble: {result['status']}")
+    print(f"- package: {result['package_dir']}")
+    print(f"- final: {result['final_article']}")
+    return 0
+
+
+def cmd_assemble_en(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_assemble_en(run_paths, force=args.force)
+    print(f"assemble-en: {result['status']}")
     print(f"- package: {result['package_dir']}")
     print(f"- final: {result['final_article']}")
     return 0
@@ -620,9 +653,11 @@ COMMANDS = {
     "research": cmd_research,
     "outline": cmd_outline,
     "draft": cmd_draft,
+    "draft-en": cmd_draft_en,
     "regenerate-outline": cmd_regenerate_outline,
     "cover": cmd_cover,
     "assemble": cmd_assemble,
+    "assemble-en": cmd_assemble_en,
     "publish": cmd_publish,
     "run": cmd_run,
     "fetch": cmd_fetch,
@@ -644,6 +679,8 @@ _DOMAIN_ERRORS = (
     sufficiency.AuditError,
     sufficiency.AuditGateBlocked,
     targeted.TargetedError,
+    draft_en.DraftEnError,
+    assemble_en.AssembleEnError,
     draft.__class__ and RuntimeError,  # draft/outline/research raise RuntimeError subclasses
 )
 

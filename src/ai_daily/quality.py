@@ -65,12 +65,15 @@ _WALLED_HOST_SUFFIXES = (
 _WALLED_DOWNGRADE_MARKERS = [
     re.compile(r"unverified", re.I),
     re.compile(r"not (?:yet |independently )?verified", re.I),
-    re.compile(r"could not (?:be )?(?:fetch|verify)", re.I),
+    re.compile(r"could not (?:be )?(?:fetched|verify|verified)", re.I),
     re.compile(r"(?:single )?walled[ -]source", re.I),
     re.compile(r"unconfirmed", re.I),
     re.compile(r"uncorroborated", re.I),
     re.compile(r"unable to (?:fetch|verify|confirm)", re.I),
 ]
+
+_MARKDOWN_LINK_TARGET_RE = re.compile(r"\]\(https?://[^)\s]+\)")
+_BARE_URL_RE = re.compile(r"https?://\S+")
 
 
 @dataclass(frozen=True)
@@ -102,6 +105,13 @@ class QualityResult:
 def word_count(text: str) -> int:
     """Count English words (apostrophes and hyphens join, digits count)."""
     return len(_WORD_RE.findall(text or ""))
+
+
+def _body_words(text: str) -> int:
+    """Word count excluding URL/link targets, so URLs never inflate length."""
+    stripped = _MARKDOWN_LINK_TARGET_RE.sub("]", text or "")
+    stripped = _BARE_URL_RE.sub(" ", stripped)
+    return word_count(stripped)
 
 
 def _count_sentences(paragraph: str) -> int:
@@ -144,7 +154,7 @@ def check_en(text: str, evidence: dict, min_words: int = EN_MIN_WORDS,
     findings: list = []
     hard: list = []      # evidence-boundary problems -> evidence_recovery
     paragraphs = _paragraphs(text)
-    words = word_count(text)
+    words = _body_words(text)
 
     # -- evidence boundary (hard gate) --------------------------------------
     if not _LINK_RE.search(text or ""):
@@ -161,12 +171,17 @@ def check_en(text: str, evidence: dict, min_words: int = EN_MIN_WORDS,
         ))
 
     for src in _walled_failed_sources(evidence):
-        host = urlsplit(src.get("url") or "").hostname or "walled"
+        url = src.get("url") or ""
+        host = urlsplit(url).hostname or "walled"
+        # Only require a downgrade when the article actually cites the walled
+        # source; an unused failed-fetch URL in the package is not a claim.
+        if url not in (text or "") and host not in (text or ""):
+            continue
         if not any(m.search(text or "") for m in _WALLED_DOWNGRADE_MARKERS):
             hard.append(Finding(
                 "walled-downgrade",
-                f"walled source {host} was not fetched but the article "
-                "asserts it without a downgrade marker",
+                f"walled source {host} was not fetched and is cited "
+                "without a downgrade marker",
             ))
             break
 

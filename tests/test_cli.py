@@ -722,5 +722,52 @@ class SessionCommandTests(CliBase):
         )
 
 
+class EnglishEditionCliTests(CliBase):
+    def test_parser_registers_english_subcommands(self):
+        self.assertIn("draft-en", cli.COMMANDS)
+        self.assertIn("assemble-en", cli.COMMANDS)
+
+    def test_draft_en_command_invokes_pipeline(self):
+        result = {
+            "status": "generated",
+            "article": "article-en.md",
+            "verdict": "pass",
+            "word_count": 850,
+        }
+        with mock.patch.object(
+            cli.pipeline, "run_draft_en", return_value=result
+        ) as patched:
+            code, out, err = self.run_cli(
+                "draft-en", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 0, err)
+        patched.assert_called_once()
+        self.assertIn("pass", out)
+
+    def test_draft_en_unavailable_exits_1(self):
+        result = {"status": "unavailable", "reason": "down"}
+        with mock.patch.object(cli.pipeline, "run_draft_en", return_value=result):
+            code, out, err = self.run_cli(
+                "draft-en", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 1)
+
+    def test_assemble_en_command_invokes_pipeline(self):
+        result = {
+            "status": "assembled",
+            "package_dir": "outputs/2026/08/20/slug",
+            "final_article": "articles/2026-08-20-slug-en.md",
+        }
+        with mock.patch.object(
+            cli.pipeline, "run_assemble_en", return_value=result
+        ) as patched:
+            code, out, err = self.run_cli(
+                "assemble-en", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 0, err)
+        patched.assert_called_once()
+        self.assertIn("assemble-en: assembled", out)
+
+
 if __name__ == "__main__":
     unittest.main()

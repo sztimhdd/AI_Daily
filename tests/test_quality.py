@@ -39,6 +39,14 @@ class WordCountTests(unittest.TestCase):
         self.assertEqual(quality.EN_MAX_WORDS, 1200)
         self.assertEqual(quality.MAX_SENTENCES_PER_PARAGRAPH, 3)
 
+    def test_body_words_exclude_urls(self):
+        text = (
+            "A sentence with a link "
+            "([announcement](https://example.com/posts/one-two-three))."
+        )
+        # "A sentence with a link announcement" = 6 words; URL path excluded.
+        self.assertEqual(quality._body_words(text), 6)
+
 
 class VerdictTests(unittest.TestCase):
     def test_clean_article_passes(self):
@@ -98,6 +106,54 @@ class VerdictTests(unittest.TestCase):
         }
         result = quality.check_en(text, evidence, min_words=1, max_words=500)
         self.assertNotEqual(result.verdict, "evidence_recovery", result.to_dict())
+
+    def test_could_not_be_verified_marker_alone_passes(self):
+        # The natural downgrade phrasing, without any "walled source" words,
+        # must satisfy the gate on its own (regex regression).
+        text = (
+            "# Title\n\nThe feature reportedly shipped last week, but it "
+            "could not be verified ([post](https://mp.weixin.qq.com/s/abc))."
+        )
+        evidence = {
+            "sources": [
+                {
+                    "url": "https://mp.weixin.qq.com/s/abc",
+                    "title": "post",
+                    "status": "failed",
+                    "source_lane": "cdp",
+                }
+            ]
+        }
+        result = quality.check_en(text, evidence, min_words=1, max_words=500)
+        self.assertNotEqual(result.verdict, "evidence_recovery", result.to_dict())
+
+    def test_walled_failed_source_not_cited_does_not_force_recovery(self):
+        # A failed-fetch walled URL sitting unused in the package is not a
+        # claim, so it must not bounce a clean article back to research.
+        text = (
+            "# Title\n\nA clean sourced sentence about pricing "
+            "([post](https://example.com/1)). A second sentence. A third."
+        )
+        evidence = {
+            "sources": [
+                {
+                    "url": "https://mp.weixin.qq.com/s/unused",
+                    "title": "unused wechat",
+                    "status": "failed",
+                    "source_lane": "cdp",
+                }
+            ]
+        }
+        result = quality.check_en(text, evidence, min_words=1, max_words=500)
+        self.assertNotEqual(result.verdict, "evidence_recovery", result.to_dict())
+
+    def test_raw_html_is_revise(self):
+        text = (
+            "# Title\n\nA sourced sentence ([post](https://example.com/1)). "
+            "<div>raw html</div>"
+        )
+        result = quality.check_en(text, {"sources": []}, min_words=1, max_words=500)
+        self.assertEqual(result.verdict, "revise", result.to_dict())
 
     def test_short_article_is_revise(self):
         text = (
