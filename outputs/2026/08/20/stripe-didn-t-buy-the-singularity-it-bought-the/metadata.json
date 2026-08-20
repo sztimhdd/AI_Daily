@@ -1,0 +1,116 @@
+{
+  "run_id": "AI-Daily/2026-08-20",
+  "date": "2026-08-20",
+  "slug": "stripe-didn-t-buy-the-singularity-it-bought-the",
+  "title": "Stripe Didn't Buy the Singularity — It Bought the Meter",
+  "language": "en",
+  "topic_choice": "human",
+  "has_cover": false,
+  "cover": null,
+  "sources": [
+    {
+      "title": "Stripe agrees to buy OpenRouter as AI model routing expands",
+      "url": "https://www.artificialintelligence-news.com/news/stripe-openrouter-acquisition-ai-model-routing",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "支付巨头 Stripe 确认将收购 AI 路由平台 OpenRouter，消息称交易价格达 75 亿美元 - IT之家",
+      "url": "https://www.ithome.com/0/991/918.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Stripe didn't really buy OpenRouter because of the 'singularity' | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2090154779515510855",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenRouter is Joining Stripe — OpenRouter Blog",
+      "url": "https://openrouter.ai/blog/announcements/openrouter-is-joining-stripe",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenRouter & Stripe: The Intelligence Network",
+      "url": "https://www.a16z.news/p/openrouter-and-stripe-the-intelligence",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "elvis (@omarsar0) on X",
+      "url": "https://x.com/omarsar0/status/2090134310988681670",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenRouter (@OpenRouter) on X",
+      "url": "https://x.com/OpenRouter/status/2090127246430216403",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Deedy (@deedydas) on X",
+      "url": "https://x.com/deedydas/status/2090129029777224033",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://x.com/AYi_AInotes/status/2089307122358006218",
+      "url": "https://x.com/AYi_AInotes/status/2089307122358006218",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "Stripe is reportedly acquiring AI startup OpenRouter for more than $7 billion",
+      "url": "https://the-decoder.com/stripe-is-reportedly-acquiring-ai-startup-openrouter-for-more-than-7-billion",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion",
+      "url": "https://www.bloomberg.com/news/articles/2026-08-16/stripe-nears-deal-to-buy-ai-firm-openrouter-for-over-7-billion",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "彭博社称支付巨头 Stripe 敲定收购 AI 初创公司 OpenRouter，金额超 70 亿美元 - IT之家",
+      "url": "https://www.ithome.com/0/990/410.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2089103402739323289",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2089095191349137880",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Stripe will reportedly acquire AI gateway startup OpenRouter for $7B+ | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2089090435499331734",
+      "origin": "initial",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-08-20-stripe-didn-t-buy-the-singularity-it-bought-the-en.md",
+  "package": "outputs/2026/08/20/stripe-didn-t-buy-the-singularity-it-bought-the"
+}
