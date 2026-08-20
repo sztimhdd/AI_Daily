@@ -210,5 +210,105 @@ class OutlineEditRegressionTests(unittest.TestCase):
         self.assertTrue(set(URL_RE.findall(article)) & supported_urls)
 
 
+DIRTY_EXCERPT_HTML = (
+    '<p><strong><a href="https://dirty.example.com/muse-glimmer">'
+    "Deep research pricing report</a></strong></p>\n"
+    "Deep research agents now price every search call separately! "
+    "The pricing page lists 25 search calls per task and budgets keep gro"
+)
+DIRTY_EXCERPT_LONG = (
+    "Meta 超级智能实验室的首个开放权重模型已在 OpenRouter 上线并开放按量计费与免费额度"
+)
+_RESIDUE_HTML_RE = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*[\s>/]|<[a-zA-Z/][^<>\n]*$")
+
+
+class ShortClauseResidueTests(unittest.TestCase):
+    """_short must never emit raw HTML or ellipsis-truncated fragments."""
+
+    def test_short_keeps_first_sentence_whole_beyond_limit(self):
+        text = (
+            "Deep research agents now price every search call separately. "
+            "Budgets keep growing"
+        )
+        out = draft._short(text, 16)
+        self.assertNotIn("…", out)
+        self.assertEqual(
+            out, "Deep research agents now price every search call separately"
+        )
+
+    def test_short_cuts_at_first_clause_separator(self):
+        text = "搜索预算成了最贵的开销，个人创作者开始记账。"
+        self.assertEqual(draft._short(text, 48), "搜索预算成了最贵的开销")
+
+    def test_short_strips_html_and_drops_truncated_url_tag(self):
+        self.assertEqual(draft._short('<p><strong><a href="https://rese', 48), "")
+
+    def test_short_falls_back_to_title_when_excerpt_unusable(self):
+        out = draft._short(
+            '<p><strong><a href="https://rese', 48, fallback="Muse Glimmer 发布"
+        )
+        self.assertEqual(out, "Muse Glimmer 发布")
+
+    def test_short_unescapes_entities_and_never_ellipsis(self):
+        out = draft._short("Meta&#8217;s model ships today. Pricing pages follow", 16)
+        self.assertEqual(out, "Meta's model ships today")
+        self.assertNotIn("…", out)
+
+
+class DirtyResearchDraftTests(unittest.TestCase):
+    """Drafting over residue-laden research.json still emits clean prose."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self._tmp.name)
+        self.paths, self.calls = build_run(self.root)
+        self._inject_dirty_research()
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _inject_dirty_research(self):
+        path = self.paths.work_dir / "research.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        dirty = {
+            "title": "Introducing Muse Glimmer",
+            "url": "https://dirty.example.com/muse-glimmer",
+            "origin": "rss",
+            "excerpt": DIRTY_EXCERPT_HTML,
+        }
+        long_ev = {
+            "title": "Muse Glimmer 上线 OpenRouter",
+            "url": "https://dirty.example.com/openrouter",
+            "origin": "rss",
+            "excerpt": DIRTY_EXCERPT_LONG,
+        }
+        for q in data["questions"]:
+            if q["status"] == "supported":
+                q["evidence"] = [dirty, long_ev]
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=2),
+                        encoding="utf-8")
+
+    def article_text(self):
+        draft.run(self.paths, force=True)
+        return (self.paths.work_dir / "article.md").read_text(encoding="utf-8")
+
+    def test_draft_contains_no_raw_html(self):
+        article = self.article_text()
+        self.assertIsNone(_RESIDUE_HTML_RE.search(article), article)
+
+    def test_draft_contains_no_ellipsis_truncation(self):
+        article = self.article_text()
+        self.assertNotIn("…", article)
+        self.assertNotIn("...", article)
+
+    def test_dirty_draft_still_passes_slop_contract(self):
+        self.assertEqual(deslop.check_text(self.article_text()), [])
+
+    def test_dirty_draft_keeps_source_links(self):
+        urls = set(URL_RE.findall(self.article_text()))
+        self.assertIn("https://dirty.example.com/muse-glimmer", urls)
+        self.assertIn("https://dirty.example.com/openrouter", urls)
+
+
 if __name__ == "__main__":
     unittest.main()

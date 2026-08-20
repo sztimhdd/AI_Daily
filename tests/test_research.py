@@ -209,5 +209,280 @@ class ResumeAfterFailureTests(ResearchTestBase):
         self.assertEqual(calls["n"], 1, "failed attempt must not count as collected")
 
 
+
+class EvidenceTextNormalizationTests(unittest.TestCase):
+    """Evidence normalization: HTML and truncated fragments never survive."""
+
+    def test_html_tags_stripped_and_entities_unescaped(self):
+        raw = '<p>Meta&#8217;s model <a href="https://x.example.com/a">ships</a> today</p>'
+        self.assertEqual(
+            research.normalize_evidence_text(raw), "Meta's model ships today"
+        )
+
+    def test_block_tags_become_line_breaks(self):
+        raw = "<p>First line</p><p>Second line</p>"
+        self.assertEqual(
+            research.normalize_evidence_text(raw), "First line\nSecond line"
+        )
+
+    def test_truncated_unclosed_tag_is_removed(self):
+        raw = 'Agent pricing notes <a href="https://rese'
+        self.assertEqual(research.normalize_evidence_text(raw), "Agent pricing notes")
+
+    def test_first_complete_sentence_kept_with_terminator(self):
+        raw = "Budgets shrank fast. Costs kept growing"
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"), "Budgets shrank fast."
+        )
+
+    def test_ellipsis_fragment_is_dropped_not_repeated(self):
+        raw = "Search costs are exploding… full numbers coming soon."
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"), "full numbers coming soon."
+        )
+
+    def test_truncated_tail_without_terminator_is_dropped(self):
+        raw = (
+            "Deep research agents now price every search call separately! "
+            "The pricing page lists 25 calls per task and budgets keep gro"
+        )
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"),
+            "Deep research agents now price every search call separately!",
+        )
+
+    def test_no_complete_sentence_falls_back_to_title(self):
+        raw = "个人创作者的 AI 研究成本核算还没有公开口径，所有数字都来自零散的社区统"
+        self.assertEqual(
+            research.evidence_excerpt(raw, "Personal research cost notes"),
+            "Personal research cost notes",
+        )
+
+    def test_decimal_dots_do_not_end_sentences(self):
+        raw = "Costs rose 2.5x and budgets shrank."
+        self.assertEqual(
+            research.evidence_excerpt(raw, "fallback"),
+            "Costs rose 2.5x and budgets shrank.",
+        )
+
+
+DIRTY_RSS_ITEMS = [
+    {
+        "title": "Deep research agent search budget pricing",
+        "url": "https://dirty.example.com/deep-research-pricing",
+        "date_raw": "2026-08-12",
+        "summary": (
+            '<p><strong><a href="https://dirty.example.com/deep-research-pricing">'
+            "Deep research agent search budget pricing</a></strong></p>\n"
+            "Deep research agents now price every search call separately! "
+            "The pricing page lists 25 search calls per task and budgets keep gro"
+        ),
+        "feed": "https://feeds.example.com/dirty",
+        "origin": "rss",
+    },
+    {
+        "title": "Search budget benchmarks for solo builders",
+        "url": "https://dirty.example.com/search-budget-benchmarks",
+        "date_raw": "2026-08-12",
+        "summary": (
+            "Search budget benchmarks are exploding… full numbers coming soon."
+        ),
+        "feed": "https://feeds.example.com/dirty",
+        "origin": "rss",
+    },
+    {
+        "title": "Personal research cost notes",
+        "url": "https://dirty.example.com/personal-research-cost",
+        "date_raw": "2026-08-12",
+        "summary": "个人创作者的 AI 研究成本核算还没有公开口径，所有数字都来自零散的社区统",
+        "feed": "https://feeds.example.com/dirty",
+        "origin": "rss",
+    },
+]
+
+_RESIDUE_HTML_RE = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*[\s>/]")
+
+
+class DirtyEvidenceRunTests(ResearchTestBase):
+    """Research over HTML-littered, truncated summaries stays clean prose."""
+
+    def write_dirty_rss(self):
+        (self.paths.work_dir / "rss-items.json").write_text(
+            json.dumps(DIRTY_RSS_ITEMS, ensure_ascii=False), encoding="utf-8"
+        )
+
+    def test_research_md_contains_no_raw_html_or_ellipsis(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        md = (self.paths.work_dir / "research.md").read_text(encoding="utf-8")
+        self.assertIsNone(_RESIDUE_HTML_RE.search(md), md)
+        self.assertNotIn("…", md)
+        self.assertNotIn("...", md)
+
+    def test_research_json_excerpts_are_clean_prose(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        data = json.loads(
+            (self.paths.work_dir / "research.json").read_text(encoding="utf-8")
+        )
+        excerpts = [
+            ev["excerpt"]
+            for q in data["questions"]
+            for ev in q["evidence"]
+        ]
+        self.assertTrue(excerpts)
+        for excerpt in excerpts:
+            self.assertIsNone(_RESIDUE_HTML_RE.search(excerpt), excerpt)
+            self.assertNotIn("…", excerpt)
+            self.assertNotIn("...", excerpt)
+
+    def test_html_summary_excerpt_keeps_anchor_text_not_markup(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        data = json.loads(
+            (self.paths.work_dir / "research.json").read_text(encoding="utf-8")
+        )
+        q2 = next(
+            q for q in data["questions"]
+            if q["query"] == "deep research agent search budget pricing"
+        )
+        lead = q2["evidence"][0]
+        self.assertEqual(
+            lead["excerpt"],
+            "Deep research agents now price every search call separately!",
+        )
+
+    def test_truncated_summary_without_sentence_falls_back_to_title(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        data = json.loads(
+            (self.paths.work_dir / "research.json").read_text(encoding="utf-8")
+        )
+        q3 = next(q for q in data["questions"] if q["query"] == "个人创作者 AI 研究成本")
+        excerpts = {ev["excerpt"] for ev in q3["evidence"]}
+        self.assertIn("Personal research cost notes", excerpts)
+
+    def test_full_source_links_survive_normalization(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        md = (self.paths.work_dir / "research.md").read_text(encoding="utf-8")
+        cited = set(URL_RE.findall(md))
+        dirty_urls = {it["url"] for it in DIRTY_RSS_ITEMS}
+        self.assertTrue(dirty_urls <= cited, f"missing links: {dirty_urls - cited}")
+
+    def test_dirty_evidence_does_not_bump_collect(self):
+        self.write_dirty_rss()
+        research.run(self.paths)
+        self.assertEqual(
+            state.read_state(self.paths)["counters"].get("collect_runs", 0), 0
+        )
+
+
+class TopicEventPriorityTests(unittest.TestCase):
+    """The topic's own event must outrank lexically-related siblings.
+
+    A sibling story that merely mentions the topic's named entity (for
+    example another product launching on the same platform) must never
+    become the article's lead: the topic's own event is the hardest
+    fact, even when lexical ties and the per-question evidence cap would
+    otherwise push it out of the question entirely.
+    """
+
+    TOPIC_TITLE = "OpenRouter 推出实时网页搜索基准测试"
+    TOPIC_URL = "https://openrouter.ai/blog/announcements/web-search-benchmark"
+    SIBLING_URL = "https://offtopic.example.com/deepseek-v4-pro"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self._tmp.name)
+        self.paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        self.paths.ensure_work_dir()
+        state.init_state(self.paths)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def rss_item(self, title, summary, url):
+        return {
+            "title": title,
+            "summary": summary,
+            "url": url,
+            "origin": "rss",
+            "feed": "https://feeds.example.com/x",
+            "published": "",
+            "score": 5,
+        }
+
+    def write_pool(self):
+        # Three sibling stories merely mention OpenRouter mid-sentence;
+        # together with title-ascending tie-breaks they outrank the
+        # topic's own announcement, which the evidence cap then drops.
+        pool = [
+            self.rss_item(
+                "DeepSeek Ships V4 Pro as Its Flagship Model Leaves Preview",
+                "DeepSeek has released the production version of its "
+                "flagship model on OpenRouter, the company said.",
+                self.SIBLING_URL,
+            ),
+            self.rss_item(
+                "DeepSeek V4 Pro 0813 (on OpenRouter)",
+                "Simon reviews the new DeepSeek release hosted on "
+                "OpenRouter with benchmarks and pricing.",
+                "https://simonwillison.example.com/deepseek-v4-pro",
+            ),
+            self.rss_item(
+                "Meta 开源 Muse Glimmer 登陆 OpenRouter",
+                "Meta 的开源模型 Muse Glimmer 现已上线 OpenRouter 平台。",
+                "https://x.example.com/openrouter-muse-glimmer",
+            ),
+            self.rss_item(
+                self.TOPIC_TITLE,
+                "OpenRouter 发布实时网页搜索基准测试排行榜，系统评测搜索引擎。",
+                self.TOPIC_URL,
+            ),
+        ]
+        (self.paths.work_dir / "rss-items.json").write_text(
+            json.dumps(pool, ensure_ascii=False, indent=1), encoding="utf-8"
+        )
+
+    def choose(self):
+        cand = {
+            "title": self.TOPIC_TITLE,
+            "slug": "openrouter-web-search-benchmark",
+            "thesis": "OpenRouter 发布实时排行榜。",
+            "hook": "hook",
+            "evidence_gaps": ["目前只有 1 个来源报道，缺少独立的第二来源验证。"],
+            "research_queries": ["openrouter", self.TOPIC_TITLE],
+            "strategic_relevance": "影响模型选型。",
+            "sources": [
+                {"url": self.TOPIC_URL, "title": self.TOPIC_TITLE, "origin": "rss"}
+            ],
+        }
+        topics.record_human_choice(self.paths, [cand], choice=1)
+
+    def test_topics_own_event_ranks_first_in_matching_questions(self):
+        self.write_pool()
+        self.choose()
+        result = research.run(self.paths)
+        first = result["questions"][0]
+        self.assertEqual(first["status"], "supported")
+        self.assertEqual(first["evidence"][0]["url"], self.TOPIC_URL)
+
+    def test_draft_lead_cites_topics_own_event_not_sibling_story(self):
+        from ai_daily import draft, outline
+
+        self.write_pool()
+        self.choose()
+        research.run(self.paths)
+        outline.run(self.paths)
+        draft.run(self.paths)
+        marker = chr(10) + "## "
+        article = (self.paths.work_dir / "article.md").read_text(encoding="utf-8")
+        sections = article.split(marker)
+        lead = next(s for s in sections if s.startswith("导语"))
+        self.assertIn(self.TOPIC_URL, lead)
+        self.assertNotIn(self.SIBLING_URL, lead)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -298,6 +298,9 @@ class SessionCommandTests(CliBase):
                     "hook": "h", "thesis": "t", "key_arguments": [],
                     "decision_rule": "d",
                     "platform_notes": {"linkedin": "l", "wechat": "w"},
+                    "author_stance": "我的判断",
+                    "personal_scene": "凌晨三点被报警吵醒",
+                    "kicker": "先别急着上车。",
                     "evidence_audit": "e",
                 }],
             }
@@ -337,6 +340,9 @@ class SessionCommandTests(CliBase):
             "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
             "thesis": "t", "key_arguments": [], "decision_rule": "d",
             "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
             "evidence_audit": "e",
         }]
         seen = {}
@@ -394,6 +400,9 @@ class SessionCommandTests(CliBase):
             "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
             "thesis": "t", "key_arguments": [], "decision_rule": "d",
             "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
             "evidence_audit": "e",
         }]
         run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
@@ -434,6 +443,9 @@ class SessionCommandTests(CliBase):
             "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
             "thesis": "t", "key_arguments": [], "decision_rule": "d",
             "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
             "evidence_audit": "e",
         }]
 
@@ -482,6 +494,9 @@ class SessionCommandTests(CliBase):
             "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
             "thesis": "t", "key_arguments": [], "decision_rule": "d",
             "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
             "evidence_audit": "e",
         }]
 
@@ -530,6 +545,9 @@ class SessionCommandTests(CliBase):
             "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
             "thesis": "t", "key_arguments": [], "decision_rule": "d",
             "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
             "evidence_audit": "e",
         }]
 
@@ -573,6 +591,9 @@ class SessionCommandTests(CliBase):
             "archetype": "cost_ledger", "title": "叙事一", "hook": "h",
             "thesis": "t", "key_arguments": [], "decision_rule": "d",
             "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
             "evidence_audit": "e",
         }]
         with mock.patch.object(

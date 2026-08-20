@@ -29,6 +29,9 @@ def sample_narrative_candidate():
         "archetype": "cost_ledger", "title": "账本篇", "hook": "h",
         "thesis": "t", "key_arguments": [], "decision_rule": "d",
         "platform_notes": {"linkedin": "l", "wechat": "w"},
+        "author_stance": "我的判断",
+        "personal_scene": "凌晨三点被报警吵醒",
+        "kicker": "先别急着上车。",
         "evidence_audit": "e",
     }
 
