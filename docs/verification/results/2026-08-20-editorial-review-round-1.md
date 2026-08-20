@@ -49,3 +49,35 @@ Final Editor3 De-AI Protocol 硅谷老兵架构师 + 组装规则），原文提
 4. **打包层** → 问题 10、11、12、13：metadata 字段、slug、sources 归一、LinkedIn 套件。
 
 完整原始评审：`.local/review/deepseek-review.json`、`.local/review/gpt56-review.json`。
+
+---
+
+## Round 1b：表达力重评（按用户反馈补做）
+
+第一轮评审偏执于证据/逻辑/事实，忽略了主编 prompt 里对普通读者更重要的
+「high-burstiness、sensory detail、punchy、叙事爆发力」。用同一主编身份、
+同一篇稿，双模型只评文字表达力（修辞、节奏、张力、画面感、普通读者体感）：
+
+**共同裁定：`workable`——有杀手级意象，但被埋没。**
+
+**共同优点：**
+- 标题「Stripe Didn't Buy the Singularity — It Bought the Meter」：反题 + 具象，一眼记得住
+- 「The demand ledger, not the singularity, is what changed hands」：全文最强句（可惜提前花掉了）
+- meter / switch / ledger / toll booth 意象群：把一笔抽象的收购变成了可看见的物
+- 结尾有威胁感和前推力
+
+**合并表达力问题清单：**
+
+| # | 严重度 | 方面 | 问题 | 修法方向 |
+|---|---|---|---|---|
+| 1 | P1 | 钩子 | 标题刚钩住人，首段就用交易摘要 + HTTP 403 取证细节打断魔法；前 10 秒读到的是合规语言不是冲突【双】 | 第一句先给碰撞画面（Stripe 看得见账单，现在连每笔 prompt 成本也看得见）；403 细节移出正文 |
+| 2 | P1 | 节奏 | 14 段同构（加粗断言+限定+链接），节拍器式；没有单句成段、没有长短交替、没有加速【双】 | 拆模板：合并同类段、最好的一句单独成段、长短交替 |
+| 3 | P1 | 张力 | 中心冲突前 1/3 就讲完，后面换词重述；「opposite directions」出现 3 次成口头禅；峰值太早【双】 | 把冲突做成 crescendo：先埋事实，后收判断；只保留一次对仗 |
+| 4 | P1 | 声线 | 「demand-side telemetry / unit economics / spend visibility」咨询腔；全篇无具体的人、场景、五感【双】 | 画面先于术语：先「看得见每笔 prompt 的成本在闪」，再上术语 |
+| 5 | P2 | 可读性 | (*) 成本公式三个变量踩急刹车，普通读者直接跳过，而它是论点支点【双】 | 换成画面：「看得见哪个模型接了活、烧了多少 token、花了多少」 |
+| 6 | P2 | 结尾 | 收费站意象好，但结尾吊在抓取截断的半句引语上；最强句（demand ledger）开头就用掉【双】 | 结尾回扣标题意象「Stripe 买的不是奇点，是表——现在轮得到它决定收费站摆在哪」；截断引语留证据层 |
+| 7 | P2 | 修辞 | 「Which one wins / Which one survives」两次对仗、same reason 重复，只有回音没有推进【双】 | 保留一次最强对仗，其余换句式 |
+
+**对 ticket 的影响：** 表达力问题全部归因到 draft_en 提示词（叙事弧线、意象先于术语、
+节奏多样性、最强句压轴）+ knowledge 资产缺口（叙事节奏契约）。已并入 09/10 两张票，
+Round 2 复评（ticket 15）须同时验收「事实精度」与「表达力」两个维度。
