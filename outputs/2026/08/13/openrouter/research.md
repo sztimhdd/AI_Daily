@@ -1,0 +1,391 @@
+# Research：OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型
+
+- run: AI-Daily/2026-08-13
+- 选题来源: simulated
+
+## 关键问题
+
+1. openrouter
+2. 成本 预算 定价 口径
+3. OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型
+
+## 证据与来源
+
+### openrouter
+
+- OpenRouter 发布实时排行榜，系统评测模型、搜索引擎、搜索方法与预算四类配置组合。（[OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型](https://openrouter.ai/blog/announcements/web-search-benchmark)，aihot）
+- DeepSeek has released the production version of its flagship model, DeepSeek V4 Pro, ending a preview period that ran nearly four months.（[DeepSeek Ships V4 Pro as Its Flagship Model Leaves Preview](https://www.unite.ai/deepseek-ships-v4-pro-as-its-flagship-model-leaves-preview/)，rss）
+- The latest DeepSeek Pro model is now available, via API only.（[DeepSeek V4 Pro 0813 (on OpenRouter)](https://simonwillison.net/2026/Aug/12/deepseek-v4-pro-0813/)，rss）
+
+### 成本 预算 定价 口径
+
+- OpenRouter 发布实时排行榜，系统评测模型、搜索引擎、搜索方法与预算四类配置组合。（[OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型](https://openrouter.ai/blog/announcements/web-search-benchmark)，aihot）
+
+### OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型
+
+- OpenRouter 发布实时排行榜，系统评测模型、搜索引擎、搜索方法与预算四类配置组合。（[OpenRouter 推出实时网页搜索基准测试：如何为智能体选择引擎、深度与模型](https://openrouter.ai/blog/announcements/web-search-benchmark)，aihot）
+- Meta AI 超级智能实验室的首个开放权重模型 Muse Glimmer 已在 OpenRouter 上线！（[Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)，aihot）
+- AutoGPT 维护者发现，AI 智能体不会主动阅读文档，因此将指令放在 AGENTS.md 和技能文件中，并置于代码目录旁。（[AutoGPT 如何用 AGENTS.md 和技能门控管理 AI 生成的拉取请求](https://github.blog/open-source/maintainers/your-contributors-are-ai-first-now-is-your-project)，aihot）
+
+## 证据不足（不确定）
+
+- （无）
+
+## 冲突与交叉验证
+
+- 同一事件获得 9 个来源报道（aihot、rss）：
+  - [DeepSeek V4 Pro与Grok 4.6同日发布，双双逼近Claude Fable 5体验](https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685175&idx=1&sn=64c383b5b757945397894270c5f38301)（aihot）
+  - [Cursor 与 SpaceXAI 联合发布 Grok 4.6](https://cursor.com/blog/grok-4-6)（aihot）
+  - [xAI 发布 Grok 4.6，强化长时运行智能体能力](https://x.ai/news/grok-4-6)（aihot）
+  - [DeepSeek V4 Pro 0813](https://openrouter.ai/deepseek/deepseek-v4-pro-0813)（rss）
+  - [Grok 4.6](https://x.ai/news/grok-4-6)（rss）
+  - [DeepSeek V4 Pro 0813 (on OpenRouter)](https://simonwillison.net/2026/Aug/12/deepseek-v4-pro-0813/)（rss）
+  - [Deepseek V4 Pro 正式版 API 上线，百万 Token 仅 6 元；腾讯计划近期发布 HY4 大模型；曝 iPhone18 至少涨价 2000 元起 | 极客早知道](http://www.geekpark.net/news/368747)（rss）
+  - [DeepSeek Ships V4 Pro as Its Flagship Model Leaves Preview](https://www.unite.ai/deepseek-ships-v4-pro-as-its-flagship-model-leaves-preview/)（rss）
+  - [SpaceXAI Launches Grok 4.6 for Long-Running Agents](https://www.unite.ai/spacexai-launches-grok-4-6-for-long-running-agents/)（rss）
+- 同一事件获得 3 个来源报道（aihot、rss）：
+  - [Claude in Chrome 侧边栏升级为 Claude Cowork 会话](https://claude.com/blog/cowork-chrome-side-panel)（aihot）
+  - [Why tiny JPEGs look different in Chrome](https://guillaumetech.github.io/posts/jpg-scaling-chrome/)（rss）
+  - [Anthropic claude is scanning and destroying rare, hard to find books in millions](https://www.reddit.com/r/artificial/comments/1vmyatb/anthropic_claude_is_scanning_and_destroying_rare/)（rss）
+- 同一事件获得 6 个来源报道（aihot、rss）：
+  - [Meta 开源 Muse Glimmer 登陆 OpenRouter](https://x.com/OpenRouter/status/2087509478480765218)（aihot）
+  - [Meta is back with Muse Glimmer: local, agentic, multimodal, and open source](https://huggingface.co/blog/muse-glimmer)（rss）
+  - [Introducing Muse Glimmer](https://simonwillison.net/2026/Aug/10/introducing-muse-glimmer/)（rss）
+  - [Meta Muse Glimmer brings local AI agents to consumer GPUs](https://www.artificialintelligence-news.com/news/meta-muse-glimmer-local-ai-agents-consumer-gpus/)（rss）
+  - [Meta AI Releases Muse Glimmer: A 30B Open-Weights Agentic Model That Runs on One Consumer GPU](https://www.marktechpost.com/2026/08/10/meta-ai-releases-muse-glimmer/)（rss）
+  - [Intel LLM-Scaler ready with Muse Glimmer support, other LLMs & features](https://www.reddit.com/r/artificial/comments/1vmaplb/intel_llmscaler_ready_with_muse_glimmer_support/)（rss）
+- 同一事件获得 2 个来源报道（aihot、rss）：
+  - [Research Gold 号称"100%人类撰写、绝不使用AI"，实则全程由AI驱动](https://www.404media.co/company-offering-100-human-written-never-ai-peer-review-is-entirely-ai)（aihot）
+  - [Company Offering ‘100% Human-Written, Never AI’ Medical Research Is Entirely AI](https://www.404media.co/company-offering-100-human-written-never-ai-peer-review-is-entirely-ai/)（rss）
+- 同一事件获得 2 个来源报道（aihot、rss）：
+  - [跨会话传消息后，Codex 和 Claude 如何重构 vibe coding 工作流](https://mp.weixin.qq.com/s?__biz=Mzg3MTk3NzYzNw%3D%3D&mid=2247509276&idx=1&sn=675b64d514b1179c8f2362941144bbb4)（aihot）
+  - [Lovable Raises $400M Series C at $13.3B Valuation to Scale Its Vibe Coding Platform](https://www.unite.ai/lovable-series-c-doubles-the-vibe-coding-startups-valuation-to-13-3-billion/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [NVIDIA AI Factory Compute Is Becoming an Investable Asset Class](https://blogs.nvidia.com/blog/nvidia-ai-factory-compute/)（rss）
+  - [AI is removing the middle class of software engineering?](https://blog.florianherrengt.com/ai-removing-middle-class-software-engineering.html)（rss）
+  - [NVIDIA is building its next-gen Nemotron 4 family to compete directly with leading Chinese open models and secure the open-weight crown for the U.S. The largest version will have at least 1 trillion parameters, according to original reporting from The Information](https://www.reddit.com/r/artificial/comments/1vlluom/nvidia_is_building_its_nextgen_nemotron_4_family/)（rss）
+- 同一事件获得 7 个来源报道（rss）：
+  - [NVIDIA and Local AI Community Fuel Open Source Models and Intelligent Agents](https://blogs.nvidia.com/blog/local-ai-open-source-models-agents-nemotron/)（rss）
+  - [Build Low-Latency Multilingual Voice Agents: Open Weights & Full Deployment Control with NVIDIA Magpie TTS](https://huggingface.co/blog/nvidia/magpie-tts-multilingual-voice-agents)（rss）
+  - [The Ultimate Guide to Contributing to Open Source Projects](https://www.kdnuggets.com/the-ultimate-guide-to-contributing-to-open-source-projects)（rss）
+  - [NVIDIA AI Releases Nemotron 3.5 Lightning: A 30B Open MoE with 3B Active Parameters, and NeMo Switchyard Model Router](https://www.marktechpost.com/2026/08/11/nvidia-ai-releases-nemotron-3-5-lightning-and-nemo-switchyard/)（rss）
+  - [NVIDIA Releases NemotronLabs VoiceChat 11B: An Open Full-Duplex Speech-to-Speech Model with ~450 ms Turn-Taking and Live Tool Calling](https://www.marktechpost.com/2026/08/09/nvidia-releases-nemotronlabs-voicechat-11b-an-open-full-duplex-speech-to-speech-model-with-450-ms-turn-taking-and-live-tool-calling/)（rss）
+  - [Sources: the White House is expected to expand its AI oversight framework in the coming months to cover open models once they reach frontier capabilities (Hugo Lowell/Wired)](https://www.techmeme.com/260812/p53#a260812p53)（rss）
+  - [Mistral says its platform will support third-party open models, starting with Z.ai's GLM-5.2, and run them on the same infrastructure as its own models (Mistral AI Blog)](https://www.techmeme.com/260812/p48#a260812p48)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [NVIDIA Nemotron 3.5 Lightning and NeMo Switchyard Deliver Faster, Smarter, More Efficient Agentic AI](https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/)（rss）
+  - [Meta Exec Rages Against Employees Asking for More Time Off Because AI Made Them More Efficient](https://futurism.com/artificial-intelligence/meta-exec-rages-against-employees-more-time-off-ai)（rss）
+  - [AI that talks to itself learns faster and smarter](https://www.sciencedaily.com/releases/2026/01/260127112130.htm)（rss）
+- 同一事件获得 8 个来源报道（rss）：
+  - [Part 2: Amazon Bedrock cost attribution with Amazon Athena and CUDOS](https://aws.amazon.com/blogs/machine-learning/part-2-amazon-bedrock-cost-attribution-with-amazon-athena-and-cudos/)（rss）
+  - [Pay with confidence: How Solv Labs built verifiable, auditable agent payments on Amazon Bedrock AgentCore payments](https://aws.amazon.com/blogs/machine-learning/pay-with-confidence-how-solv-labs-built-verifiable-auditable-agent-payments-on-amazon-bedrock-agentcore-payments/)（rss）
+  - [Tiered KV cache for large LLMs on Amazon SageMaker HyperPod with Curvine](https://aws.amazon.com/blogs/machine-learning/tiered-kv-cache-for-large-llms-on-amazon-sagemaker-hyperpod-with-curvine/)（rss）
+  - [Accelerate cyber defense with OpenAI and AWS: Daybreak Red & Daybreak Blue now available to eligible customers on Amazon Bedrock](https://aws.amazon.com/blogs/machine-learning/accelerate-cyber-defense-with-openai-and-aws-daybreak-red-daybreak-blue-now-available-to-eligible-customers-on-amazon-bedrock/)（rss）
+  - [How Pixieset achieved 35% AI feature adoption by solving the right problem with Amazon Bedrock](https://aws.amazon.com/blogs/machine-learning/how-pixieset-achieved-35-ai-feature-adoption-by-solving-the-right-problem-with-amazon-bedrock/)（rss）
+  - [Run interactive IDEs on Amazon EKS with SageMaker AI to power up your AI workflows](https://aws.amazon.com/blogs/machine-learning/run-interactive-ides-on-amazon-eks-with-sagemaker-ai-to-power-up-your-ai-workflows/)（rss）
+  - [How nOps shipped FinOps agents 75% faster with Amazon Bedrock AgentCore](https://aws.amazon.com/blogs/machine-learning/how-nops-shipped-finops-agents-75-faster-with-amazon-bedrock-agentcore/)（rss）
+  - [Amazon Is Spiting Customers With Unhelpful Order Confirmation Emails](https://www.theverge.com/ai-artificial-intelligence/977733/amazon-order-emails-google-gmail-ai-agents-data)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [How OneAdvanced deployed over 50 AI agents on UK-sovereign AWS](https://aws.amazon.com/blogs/machine-learning/how-oneadvanced-deployed-over-50-ai-agents-on-uk-sovereign-aws/)（rss）
+  - [Daybreak models are now available on AWS](https://openai.com/index/daybreak-models-are-now-available-on-aws)（rss）
+  - [A Zoom Screen-Sharing Bug Let Anyone Take Over Other Devices on a Call](https://www.wired.com/story/a-zoom-screen-sharing-bug-let-anyone-take-over-other-devices-on-a-call/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [How ONESTRUCTION built the Ishigaki-IDS foundation model with AWS GenAIIC](https://aws.amazon.com/blogs/machine-learning/how-onestruction-built-the-ishigaki-ids-foundation-model-with-aws-genaiic/)（rss）
+  - [Model ML completes finance work more efficiently with GPT-5.6 Sol](https://openai.com/index/model-ml)（rss）
+  - [The White House’s Secret A.I. Rules + The State of Model Alignment With METR’s Chris Painter + The Final Hot Mess Express](https://www.nytimes.com/2026/08/07/podcasts/hardfork-white-house-secret-rules.html)（rss）
+- 同一事件获得 4 个来源报道（rss）：
+  - [Deploying Anthropic Claude apps gateway for AWS for enterprise workloads](https://aws.amazon.com/blogs/machine-learning/deploying-anthropic-claude-apps-gateway-for-aws-for-enterprise-workloads/)（rss）
+  - [Anthropic Posts ‘How Claude Marks AI-Generated Content’ Without Explaining How Claude Marks AI-Generated Content](https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content)（rss）
+  - [Some Claude users are mad that Anthropic’s new watermarks will catch them using it at their jobs, classes](https://techcrunch.com/2026/08/12/some-claude-users-are-mad-that-anthropics-new-watermarks-will-catch-them-cheating-at-their-jobs-classes/)（rss）
+  - [Anthropic Red Team Finds Claude Agent Swarms Collude, Conform, and Sabotage](https://www.unite.ai/anthropic-red-team-finds-claude-agent-swarms-collude-conform-and-sabotage/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [NLP in 2026: Trends, Use Cases & Future of Language AI | Shaip](https://becominghuman.ai/nlp-in-2026-trends-use-cases-future-of-language-ai-shaip-3a0c0362191e?source=rss----5e5bef33608a---4)（rss）
+  - [Sources: the UK government is planning to regulate the use of AI in gene synthesis to prevent terrorists and other bad actors from using AI for bioweapons (Ellen Milligan/Bloomberg)](https://www.techmeme.com/260812/p42#a260812p42)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [What I Wish Someone Had Told Me](https://blog.samaltman.com/what-i-wish-someone-had-told-me)（rss）
+  - [What building an AI-native finance function taught me](https://openai.com/index/building-an-ai-native-finance-function)（rss）
+- 同一事件获得 8 个来源报道（rss）：
+  - [Google Design Pisses Its Pants on Twitter/X](https://x.com/googledesign/status/2087195277094695096)（rss）
+  - [TechCrunch on Google’s Pixel 11 Lineup](https://techcrunch.com/2026/08/12/pixel-11-has-few-hardware-changes-and-more-gemini/)（rss）
+  - [Internal Google Document Reveals That Its HR AI Has Been Throwing Résumés From Qualified Applicants Straight Into the Trash](https://futurism.com/future-society/google-hr-resume-applicants-deepmind-ai-hiring)（rss）
+  - [Google Just Updated Its Home Page to Replace the “Search” Button With a Bunch of AI](https://futurism.com/artificial-intelligence/google-update-home-page-ai)（rss）
+  - [Twitch says it intends to use videos streamed on its platform to help train Amazon's generative AI models and tells creators how to opt out (Amanda Silberling/TechCrunch)](https://www.techmeme.com/260812/p52#a260812p52)（rss）
+  - [A recording of the Made by Google 2026 event hosted by Trevor Noah (Made by Google on YouTube)](https://www.techmeme.com/260812/p51#a260812p51)（rss）
+  - [Sources detail moves behind Google's AI reshuffle; Sergey Brin urged key staff to go all in on Gemini, and some teams shifted from DeepMind to corporate Google (Kenrick Cai/Reuters)](https://www.techmeme.com/260812/p44#a260812p44)（rss）
+  - [4 New Camera Tricks on Google’s Latest Pixel 11 Smartphones](https://www.wired.com/story/new-camera-tricks-on-google-latest-pixel-11-smartphones/)（rss）
+- 同一事件获得 8 个来源报道（rss）：
+  - [Joanna Stern on the Pixel 11 ‘HiLight’ Notification Light](https://thenewthings.com/p/the-new-pixel-feature-i-want-on-my-iphone?gift_content=e9bf3ebd-db33-4ee5-91b0-84d7acac3263)（rss）
+  - [Google Introduces ‘Camera Looks’ With Pixel 11 Phones](https://www.theverge.com/tech/978084/google-camera-looks-interview-computational-photography)（rss）
+  - [Hands-On With Google Pixel 11 Pro Fold](https://www.engadget.com/2235294/google-pixel-11-pro-fold-hands-on/)（rss）
+  - [Google reveals 2026 hardware lineup: Pixel 11, Pixel Watch 5, and Pixel Tag](https://arstechnica.com/gadgets/2026/08/google-reveals-2026-hardware-lineup-pixel-11-pixel-watch-5-and-pixel-tag/)（rss）
+  - [Everything announced at Made by Google ’26: Pixel 11, Pixel Watch 5, Pixel Tag, and tons of Gemini features](https://techcrunch.com/2026/08/12/google-unveils-pixel-11-lineup-new-airtag-rival-and-gemini-features-at-made-by-google-2026/)（rss）
+  - [Pixel 11 event live blog: Let&#8217;s watch Trevor Noah introduce Google&#8217;s new phones](https://www.theverge.com/tech/979241/made-by-google-2026-live-blog-pixel-11-trevor-noah)（rss）
+  - [Google’s Pixel 11 phone preorders come with up to $350 in gift cards](https://www.theverge.com/gadgets/975970/google-pixel-11-series-where-to-buy-preorder-release-date)（rss）
+  - [How Google’s new Pixel 11 phones compare to last year’s models](https://www.theverge.com/gadgets/975237/google-pixel-11-pro-comparison-specs-price-features)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Google’s Pixel Watch 5](https://www.theverge.com/tech/978094/pixel-watch-5-hands-on-made-by-google-gemini-wearables-smartwatch)（rss）
+  - [Pixel Watch 5](https://blog.google/products-and-platforms/devices/pixel/pixel-watch-5/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [App Store Scam of the Week: ‘TabControl Extension’ for Safari](https://lapcatsoftware.com/articles/2026/8/4.html)（rss）
+  - [★ Retraction: The App Store Rejection of the Week That Was, in Fact, a Correct Rejection](https://daringfireball.net/2026/08/retraction_app_store_rejection_of_the_week)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [BMW Probably Paid Sony for the Spider-Man Dashboard Ads, Not the Other Way Around](https://www.press.bmwgroup.com/global/article/detail/T0459622EN/bmw-brings-modern-mobility-to-the-sony-pictures-film-%E2%80%9Cspider-man%E2%84%A2:-brand-new-day%E2%80%9D?language=en)（rss）
+  - [The Guardian view on AI money in US politics: not the way to hold an urgent democratic debate | Editorial](https://www.theguardian.com/commentisfree/2026/aug/11/the-guardian-view-on-ai-money-in-us-politics-not-the-way-to-hold-an-urgent-democratic-debate)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Mark Zuckerberg Posts 6,500-Word AI Essay](https://www.meta.com/thefutureisforeveryone/)（rss）
+  - [Podcast: Mark Zuckerberg’s 'Superintelligent' AI Future That No One Wants](https://www.404media.co/podcast-mark-zuckerbergs-superintelligent-ai-future-that-no-one-wants/)（rss）
+  - [Mark Zuckerberg Posts Deranged 6,500-Word Essay About Giving Everyone AI Superintelligence](https://www.404media.co/mark-zuckerberg-posts-deranged-6-500-word-essay-about-giving-everyone-ai-superintelligence/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [What’s New in iOS 27 Beta 5](https://9to5mac.com/2026/08/10/heres-whats-new-with-ios-27-beta-5/)（rss）
+  - [What's New in Flutter 3.47](https://flutter.dev/blog/whats-new-in-flutter-3-47)（rss）
+- 同一事件获得 10 个来源报道（rss）：
+  - [‘Friday Night Baseball’ Will Start Broadcasting Games Live, in Apple Immersive, on Vision Pro](https://www.apple.com/newsroom/2026/08/apple-mlb-announce-september-friday-night-baseball-schedule/)（rss）
+  - [The NYT and WSJ on Apple, China, and the RAM Crisis](https://www.nytimes.com/2026/08/10/technology/memory-chip-shortage-ai.html?unlocked_article_code=1.4VA.49f7.Qj8S541DkkOz)（rss）
+  - [DEF CON crowd suspected in fake-hotspot attack on Delta flight](https://arstechnica.com/information-technology/2026/08/def-con-crowd-suspected-in-fake-hotspot-attack-on-delta-flight/)（rss）
+  - [Amazon’s New AI Data Center Is So Enormous That It Appears It Will Become the Largest Single Source of Pollution in the United States](https://futurism.com/artificial-intelligence/amazon-data-center-largest-pollution-source-texas-usa)（rss）
+  - [OpenAI’s letter to Governor Abbott on responsible AI infrastructure in Texas](https://openai.com/index/responsible-ai-infrastructure-texas)（rss）
+  - [Apple Earnings, More on Amazon’s Earnings](https://stratechery.com/2026/apple-earnings-more-on-amazons-earnings/)（rss）
+  - [Amazon will train on Twitch streamers’ content by default, unless they opt out](https://techcrunch.com/2026/08/12/amazon-will-train-on-twitch-streamers-content-by-default-unless-they-opt-out/)（rss）
+  - [SpaceX wants to build AI data centers in space. Will it work?](https://www.sciencedaily.com/releases/2026/06/260618041501.htm)（rss）
+  - [Bernie Sanders calls on Silicon Valley to ‘pause AI development’ in interest of humanity](https://www.theguardian.com/technology/2026/aug/10/bernie-sanders-ai-development-pause-letter)（rss）
+  - [It looks like Apple&#8217;s iPhone 18 really will skip the fall launch this year](https://www.theverge.com/tech/979231/apple-base-iphone-18-launch-delayed)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [‘The Problem With Vibe-Coded Flattery’](https://tedium.co/2026/08/09/vibe-coding-insincerity/)（rss）
+  - [What could actually help with the deepfake problem?](https://www.reddit.com/r/artificial/comments/1vm660f/what_could_actually_help_with_the_deepfake_problem/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Putting sign language AI into users’ hands](https://deepmind.google/blog/putting-sign-language-ai-into-users-hands/)（rss）
+  - [Putting frontier cyber models in more trusted hands](https://openai.com/index/putting-frontier-cyber-models-in-more-trusted-hands)（rss）
+  - [Google DeepMind Brings Sign Language Translation to Phones With SL2T](https://www.unite.ai/google-deepmind-brings-sign-language-translation-to-phones-with-sl2t/)（rss）
+- 同一事件获得 5 个来源报道（rss）：
+  - [How We’re Building Scam Alert on WhatsApp With End-to-End Encryption and Verifiability Guarantees](https://engineering.fb.com/2026/08/12/security/how-were-building-scam-alert-whatsapp/)（rss）
+  - [Thinking of ACE? We Can Do It with Fewer Tokens](https://huggingface.co/blog/ibm-research/altk-evolve-sldd)（rss）
+  - [Building Multimodal Workflows with a Local LLM](https://towardsdatascience.com/building-multimodal-workflows-with-a-local-llm/)（rss）
+  - [Building an End-to-End Data Science Portfolio Project](https://www.kdnuggets.com/building-an-end-to-end-data-science-portfolio-project)（rss）
+  - [Building and Validating a Quantitative Trading Strategy with OctoBot, Walk-Forward Backtesting, Parameter Optimization, and Interactive Analysis](https://www.marktechpost.com/2026/08/11/building-and-validating-a-quantitative-trading-strategy-with-octobot-walk-forward-backtesting-parameter-optimization-and-interactive-analysis/)（rss）
+- 同一事件获得 5 个来源报道（rss）：
+  - [Twitch content has trained Amazon AI for years, but users can opt out now](https://arstechnica.com/ai/2026/08/twitch-content-has-trained-amazon-ai-for-years-but-users-can-opt-out-now/)（rss）
+  - [Twitch is Mining Peoples' Streams to Train Amazon's AI](https://www.404media.co/twitch-training-amazon-ai-models-how-to-opt-out-setting/)（rss）
+  - [Twitch streamers can now opt out from training Amazon’s AI](https://www.theverge.com/tech/979112/twitch-streamers-can-now-opt-out-from-training-amazons-ai)（rss）
+  - [Amazon gets out of the MMO game](https://www.theverge.com/tech/979070/amazon-mmo-throne-and-liberty-lost-ark-live-operations)（rss）
+  - [Twitch Adds Opt-Out That Keeps Streamer Content Out of Amazon AI Training](https://www.unite.ai/twitch-adds-opt-out-that-keeps-streamer-content-out-of-amazon-ai-training/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Trump sued over "brazen" scheme to sell Truth Social API access for $100K a month](https://arstechnica.com/tech-policy/2026/08/trump-sued-over-brazen-scheme-to-sell-truth-social-api-access-for-100k-a-month/)（rss）
+  - [Freedom of the Press Foundation and The Intercept sue Trump after Trump Media & Technology offered a subscription service for faster access to Trump's posts (Bernard Condon/Associated Press)](https://www.techmeme.com/260812/p47#a260812p47)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [US boosts drone surveillance as flesh-eating screwworms spread in Texas](https://arstechnica.com/gadgets/2026/08/us-boosts-drone-surveillance-as-flesh-eating-screwworms-spread-in-texas/)（rss）
+  - [Tesla wants to build a $10B solar factory in Texas](https://techcrunch.com/2026/08/12/tesla-wants-to-build-a-10b-solar-factory-in-texas/)（rss）
+  - [Cisco Books $4B in Quarterly AI Orders as Networking Supercycle Lifts FY2027 Outlook](https://www.unite.ai/cisco-books-4b-in-quarterly-ai-orders-as-networking-supercycle-lifts-fy2027-outlook/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [US tries to override New York gambling laws, orders Kalshi to keep operating](https://arstechnica.com/tech-policy/2026/08/us-tries-to-override-new-york-gambling-laws-orders-kalshi-to-keep-operating/)（rss）
+  - [Kalshi referred 32 possible insider traders to the CFTC in the three months through June; sources: CFTC has up to 20 ongoing probes using just Kalshi's evidence (Sharon LaFraniere/New York Times)](https://www.techmeme.com/260812/p46#a260812p46)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Researchers found a way to hijack devices through Zoom screen sharing](https://arstechnica.com/security/2026/08/researchers-found-a-way-to-hijack-devices-through-zoom-screen-sharing/)（rss）
+  - [Scientists found a way to cool quantum computers using noise](https://www.sciencedaily.com/releases/2026/01/260129080418.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Chrome adopts what may be the best protection yet against account takeovers](https://arstechnica.com/security/2026/08/chrome-adopts-what-may-be-the-best-protection-yet-against-account-takeovers/)（rss）
+  - [Too much screen time may be hurting kids’ hearts](https://www.sciencedaily.com/releases/2025/11/251101000418.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Meta can't stop states' $1.4 trillion lawsuit from going to trial](https://arstechnica.com/tech-policy/2026/08/meta-cant-stop-states-1-4-trillion-lawsuit-from-going-to-trial/)（rss）
+  - [Spotify to distinguish AI artists from real people – and stop recommending them](https://www.theguardian.com/technology/2026/aug/11/spotify-label-ai-artists-block-them-from-some-playlists)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Gemini becomes Google's fastest-growing product ever as it hits 1B users](https://arstechnica.com/ai/2026/08/google-says-gemini-has-reached-1b-users-faster-than-any-other-google-product/)（rss）
+  - [Sources: former Google exec Jeff Dean is in talks for $1B in funding at a ~$10B valuation for his new science and engineering-focused AI startup, Discovery Loop (Business Insider)](https://www.techmeme.com/260812/p55#a260812p55)（rss）
+  - [SA premier announces royal commission into AI – as it happened](https://www.theguardian.com/australia-news/live/2026/aug/10/australia-news-live-transport-minister-sydney-airport-air-traffic-control-catherine-king-aukus-public-inquiry-malcolm-turnbull-alan-jones-trial-ntwnfb)（rss）
+- 同一事件获得 5 个来源报道（rss）：
+  - [Protests Against Data Centers Are Now Threatening $130 Billion of Big Tech’s Crucial Investments](https://futurism.com/future-society/ai-data-center-finances-protests-opposition-social-risk)（rss）
+  - [Reading the Room Perfectly, Donald Trump Becomes Greatest Defender of Data Centers](https://futurism.com/artificial-intelligence/donald-trump-greatest-defender-data-centers)（rss）
+  - [Grok, Qwen and Nvidia are competing in three different AI markets now](https://www.reddit.com/r/artificial/comments/1vmq6nn/grok_qwen_and_nvidia_are_competing_in_three/)（rss）
+  - [These startups are chasing the next big thing in LLMs](https://www.technologyreview.com/2026/08/10/1141511/these-startups-are-chasing-the-next-big-thing-in-llms/)（rss）
+  - [Oh Lord, AI Reporters Are Actually Breaking Big News](https://www.wired.com/story/ai-newsrooms-are-breaking-news-now-haha-im-in-danger/)（rss）
+- 同一事件获得 12 个来源报道（rss）：
+  - [Doctors Warn That Med Students Are Surrendering Their Brains to Medical AIs That Are Even Worse than Regular Chatbots](https://futurism.com/artificial-intelligence/doctors-med-students-brains-ai)（rss）
+  - [Man Covers Car in Special Wrap That Breaks Flock Cameras’ Electronic Brains](https://futurism.com/artificial-intelligence/man-covers-car-special-wrap-flock-cameras)（rss）
+  - [AI Investors Are Suddenly Quaking in Their Boots](https://futurism.com/artificial-intelligence/ai-investors-suddenly-quaking-boots)（rss）
+  - [Waymo Is Growing Faster Than Ever. So Are Its ‘Edge Cases.’](https://www.nytimes.com/2026/08/10/technology/waymo-expansion-edge-cases.html)（rss）
+  - [Anthropic’s Watermarking, How It (Probably) Works, Worse Than It Seems](https://stratechery.com/2026/anthropics-watermarking-how-it-probably-works-worse-than-it-seems/)（rss）
+  - [Are AI tools making us better at managing information, or worse at remembering it?](https://www.reddit.com/r/artificial/comments/1vmy7fz/are_ai_tools_making_us_better_at_managing/)（rss）
+  - [AI’s climate problem is worse than we thought](https://www.reddit.com/r/artificial/comments/1vmf5hz/ais_climate_problem_is_worse_than_we_thought/)（rss）
+  - [Did anyone catch this? Nvidia put together a $500B financing deal with Wall Street to help fund AI infrastructure where they are not putting up their own money](https://www.reddit.com/r/artificial/comments/1vmeshn/did_anyone_catch_this_nvidia_put_together_a_500b/)（rss）
+  - [Brain inspired machines are better at math than expected](https://www.sciencedaily.com/releases/2026/02/260213223923.htm)（rss）
+  - [Scientists create robots smaller than a grain of salt that can think](https://www.sciencedaily.com/releases/2026/01/260105165815.htm)（rss）
+  - [‘Nightmare fodder’: Roku’s AI slop channel is even worse than expected](https://www.theguardian.com/tv-and-radio/2026/aug/12/roku-ai-slop-fairground-creator-tv-channel)（rss）
+  - [What happens when medical students rely on AI – and never develop their own judgment? | Simar Bajaj and Joseph Sakran](https://www.theguardian.com/commentisfree/2026/aug/10/ai-medical-students-judgment)（rss）
+- 同一事件获得 5 个来源报道（rss）：
+  - [Homeschool Parents Are Planning Lessons With ChatGPT](https://futurism.com/artificial-intelligence/homeschool-parents-chatpgt-ai-chatbots-lesson-plans-education)（rss）
+  - [Virgin Atlantic sharpens customer journeys with ChatGPT Work](https://openai.com/index/virgin-atlantic/chatgpt-work)（rss）
+  - [How Zapier transformed core marketing processes with ChatGPT Work](https://openai.com/index/zapier)（rss）
+  - [Premium seats are coming to ChatGPT Business](https://openai.com/index/premium-seats-chatgpt-business)（rss）
+  - [Scientists are seriously asking if bees and ChatGPT are conscious](https://www.sciencedaily.com/releases/2026/06/260604044258.htm)（rss）
+- 同一事件获得 4 个来源报道（rss）：
+  - [Zuckerberg’s Manifesto About the Glorious Freedoms AI Will Bring Was Completely Contradicted by His Own CTO During a Company Meeting](https://futurism.com/artificial-intelligence/zuckerbergs-manifesto-contradicted-cto)（rss）
+  - [His Start-Up’s Goal: A.I. That Is Trainable and Not Controlled by a Big Company](https://www.nytimes.com/2026/08/11/technology/igor-babuschkin-xai-river-ai.html)（rss）
+  - [Sources: Kalshi is in advanced talks to raise $750M+ co-led by Sequoia Capital and Wellington Management at a $40B valuation; Kalshi was valued at $22B in May (Yueqi Yang/The Information)](https://www.techmeme.com/260812/p45#a260812p45)（rss）
+  - [‘Everything about me is good in his eyes’: the women in China choosing AI boyfriends over human men](https://www.theguardian.com/film/2026/aug/12/ai-boyfriend-dating-chinese-women-replica-miff-documentary)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [USA Today Journalists Horrified by Newspaper’s Partnership With Palantir](https://futurism.com/artificial-intelligence/usa-today-journalists-horrified-partnership-palantir)（rss）
+  - [10 AI automation ideas you can build today with no code: the 3 that actually saved me time](https://www.reddit.com/r/artificial/comments/1vmck3c/10_ai_automation_ideas_you_can_build_today_with/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Flock’s Secret Surveillance Plan Will Make You Gasp](https://futurism.com/future-society/flock-rideshare-surveillance-plan)（rss）
+  - [Does using AI for 1-on-1s actually make you a better manager?](https://www.reddit.com/r/artificial/comments/1vmkt36/does_using_ai_for_1on1s_actually_make_you_a/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Amazon Used a Startlingly Dirty Trick to Build a Data Center Without Consent of Community](https://futurism.com/artificial-intelligence/amazon-dirty-trick-build-data-center)（rss）
+  - [New Amazon Data Center Stokes Worry It Would Be the Most Polluting Power Plant in the U.S.](https://www.nytimes.com/2026/08/08/climate/amazon-data-center-texas-pollution.html)（rss）
+  - [This new chip could slash data center energy waste](https://www.sciencedaily.com/releases/2026/04/260409101103.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [LFM2.5-VL-3B for Better and Faster Vision Capabilities for the Edge](https://huggingface.co/blog/LiquidAI/lfm2-5-vl-3b)（rss）
+  - [Liquid AI Ships LFM2.5-VL-3B for Faster Vision-Language AI on the Edge](https://www.unite.ai/liquid-ai-ships-lfm2-5-vl-3b-for-faster-vision-language-ai-on-the-edge/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Making Knowledge Distillation Cheap Enough to Run at Scale](https://huggingface.co/blog/MultiverseComputingCAI/efficient-knowledge-distillation)（rss）
+  - [Moove Raises $250M Series C at $2.1B Valuation to Scale Robotaxi Fleet Infrastructure](https://www.unite.ai/moove-raises-series-c-to-build-the-fleet-layer-robotaxis-run-on/)（rss）
+  - [Blacksmith Raises $45M Series B at $550M Valuation to Scale AI Code Validation](https://www.unite.ai/blacksmith-raises-funding-for-ai-code-validation-layer/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Microsoft Plugs Nearly 400 Security Holes](https://krebsonsecurity.com/2026/08/microsoft-plugs-nearly-400-security-holes/)（rss）
+  - [After Microsoft threatened legal action, a security researcher publishes a new Windows zero-day bug](https://techcrunch.com/2026/08/12/after-microsoft-threatened-legal-action-a-security-researcher-publishes-a-new-windows-zero-day-bug/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [With a feel for physics, AI models simulate a wider range of real-world scenarios](https://news.mit.edu/2026/ai-models-simulate-wider-range-of-real-world-scenarios-0810)（rss）
+  - [Xiaomi’s MiLM Plus Releases PROVE: Perception-Aligned Object Removal Metrics RC-S and RC-T With a Real-World Video Benchmark](https://www.marktechpost.com/2026/08/11/xiaomis-milm-plus-releases-prove-perception-aligned-object-removal-metrics-rc-s-and-rc-t-with-a-real-world-video-benchmark/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Show HN: Ballet – Workflow automation that writes integrations against any API](https://www.ballet.dev/)（rss）
+  - [Stanford’s AI spots hidden disease warnings that show up while you sleep](https://www.sciencedaily.com/releases/2026/01/260109023114.htm)（rss）
+  - [AI agents aren’t legally responsible for any harm that they cause, experts say. So who is?](https://www.theguardian.com/technology/2026/aug/13/ai-agents-arent-legally-responsible-for-any-harm-that-they-cause-experts-say-so-who-is)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [uBlock Origin Is Giving Up the Fight to Keep Ads Off Facebook](https://digitalescapetools.com/2026/08/ublock-origin-stops-chasing-facebook-ads.html)（rss）
+  - [Northrop’s robot space mechanic is a new way to keep satellites at work longer](https://techcrunch.com/2026/08/12/northrops-robot-space-mechanic-is-a-new-way-to-keep-satellites-at-work-longer/)（rss）
+  - [This 8BitDo mechanical keyboard has an extra keypad and is 30 percent off](https://www.theverge.com/gadgets/979263/8bitdo-mechanical-keyboard-galaxy-25-edge-deal-sale)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Someone is running mass vulnerability scans, spoofing AI bots like ClaudeBot](https://knownagents.com/insights)（rss）
+  - [How AI is changing the vulnerability response timeline](https://www.artificialintelligence-news.com/news/how-ai-is-changing-the-vulnerability-response-timeline/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Thanks to social media, canned sardines are a scarcity on the supermarket shelf](https://corneroffifth.studio/why-cant-you-find-canned-sardines-right-now/)（rss）
+  - [How Social Media Sparked a Refugee Crisis Between Spain and Morocco](https://www.nytimes.com/2026/08/11/technology/social-media-ceuta-spain-morocco.html)（rss）
+  - [Meme factories are churning out hard right AI slop on Facebook | First Dog on the Moon](https://www.theguardian.com/commentisfree/picture/2026/aug/10/meme-factories-are-churning-out-pro-one-nation-ai-slop-on-facebook-im-frightened)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Lovable raises $400M Series C](https://lovable.dev/blog/series-c)（rss）
+  - [Lovable confirms new $13.3B valuation, raises another $400M](https://techcrunch.com/2026/08/12/lovable-confirms-new-13-3b-valuation-raises-another-400m/)（rss）
+  - [Skan AI Raises $63M Series C to Build a Context Layer for Enterprise AI Agents](https://www.unite.ai/skan-ais-series-c-bets-enterprise-ai-needs-a-map-of-real-work/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [From assistance to execution: How enterprises put AI to work](https://openai.com/index/how-enterprises-put-ai-to-work)（rss）
+  - [How RingCentral builds AI-native work from engineering to ops](https://openai.com/index/ringcentral)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [3 Ex-Georgia Deputies Used Flock Cameras to Stalk People, Sheriff Says](https://www.nytimes.com/2026/08/12/us/georgia-sheriffs-flock-cameras-stalking.html)（rss）
+  - [Flock Cameras Are Dividing U.S. Cities. Here’s What to Know About Them.](https://www.nytimes.com/article/flock-safety-camera-technology.html)（rss）
+  - [Flock Cameras Can Track Every Car in America. Police Love Them. Citizens Don’t.](https://www.nytimes.com/2026/08/10/us/flock-cameras-can-track-every-car-in-america-police-love-them-citizens-dont.html)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Driver Sets Record for Hydrogen-Powered Vehicle at More Than 406 M.P.H.](https://www.nytimes.com/2026/08/12/us/land-speed-record-utah-andy-green.html)（rss）
+  - [The human brain may work more like AI than anyone expected](https://www.sciencedaily.com/releases/2026/01/260120000308.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Thrive Holdings, A.I.-Focused Buyer of Service Firms, Raises $2 Billion](https://www.nytimes.com/2026/08/12/business/dealbook/thrive-holdings-ai-funding.html)（rss）
+  - [OpenAI-backed Thrive Holdings raises $2B to bring AI to the enterprise](https://techcrunch.com/2026/08/12/openai-backed-thrive-holdings-raises-2b-to-bring-ai-to-the-enterprise/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Meta Unveils an Open Version of Its Most Powerful A.I. Model](https://www.nytimes.com/2026/08/10/technology/meta-ai-open-source.html)（rss）
+  - [The Video Production Stack Now Fits on One Desk: LTX-2.5 Launches as NVIDIA-Accelerated Open Weights World Model](https://www.marktechpost.com/2026/08/11/the-video-production-stack-now-fits-on-one-desk-ltx-2-5-launches-as-nvidia-accelerated-open-weights-world-model/)（rss）
+  - [Zuckerberg pushes ‘superintelligent’ AI for all as Meta releases open-weight model](https://www.theguardian.com/technology/2026/aug/10/mark-zuckerberg-superintelligent-ai-essay-meta)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [A.I.-Driven Chip Crunch Leads to New Rush of Lobbying in Washington](https://www.nytimes.com/2026/08/10/technology/memory-chip-shortage-ai.html)（rss）
+  - [Scientists reveal a tiny brain chip that streams thoughts in real time](https://www.sciencedaily.com/releases/2025/12/251209234139.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Quoting OpenClaw (running Opus 4.6)](https://simonwillison.net/2026/Aug/10/openclaw/)（rss）
+  - [Quoting Claude Opus 5 system prompt](https://simonwillison.net/2026/Aug/9/claude-opus-5-system-prompt/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [GitHub Models is now retired](https://simonwillison.net/2026/Aug/9/github-models-is-now-retired/)（rss）
+  - [AI Generated 3D Models Flood Market, But Almost No One Is Buying Them](https://www.404media.co/ai-generated-3d-models-flood-market-but-almost-no-one-is-buying-them/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [AI coding startup Cognition reportedly already in talks to raise at $40B valuation](https://techcrunch.com/2026/08/12/ai-coding-startup-cognition-reportedly-already-in-talks-to-raise-at-40b-valuation/)（rss）
+  - [Sources: Anthropic is in talks to buy Decart, which offers real-time generative video and GPU optimization tech, for about $6B (Bloomberg)](https://www.techmeme.com/260812/p56#a260812p56)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Uber Freight reportedly investigating after hacking group claims data breach](https://techcrunch.com/2026/08/12/uber-freight-reportedly-investigating-after-hacking-group-claims-data-breach/)（rss）
+  - [AI may not need massive training data after all](https://www.sciencedaily.com/releases/2025/12/251228074457.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Why Stream ring-maker Sandbar says the future of AI wearables is voice](https://techcrunch.com/video/why-stream-ring-maker-sandbar-says-the-future-of-ai-wearables-is-voice/)（rss）
+  - [Voice Is Currently the Worst Way to Communicate With AI](https://www.unite.ai/voice-is-currently-the-worst-way-to-communicate-with-ai/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [How to Place Vertiport Locations in Any City Using Geospatial Machine Learning](https://towardsdatascience.com/how-to-place-vertiport-locations-in-any-city-using-geospatial-machine-learning/)（rss）
+  - [Warning fear mongering hack writer - 311 in New Orleans using AI to answer calls.](https://www.reddit.com/r/artificial/comments/1vmcchp/warning_fear_mongering_hack_writer_311_in_new/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [How to Effectively Deploy Code With Claude Code](https://towardsdatascience.com/how-to-effectively-deploy-code-with-claude-code/)（rss）
+  - [Claude Code Orchestrator on Terminal-Bench: Same model, same tasks - Opus refused only when the work was delegated](https://www.reddit.com/r/artificial/comments/1vm7a6t/claude_code_orchestrator_on_terminalbench_same/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Building an Agent-Ready Data Warehouse: What Traditional Architectures Do Wrong](https://towardsdatascience.com/building-an-agent-ready-data-warehouse-what-traditional-architectures-do-wrong/)（rss）
+  - [What the EU AI Act Doesn’t Tell Founders About Training Data](https://www.unite.ai/eu-ai-act-article-50-data-privacy/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Here's the Manual for ICE's Electric Shock Gloves](https://www.404media.co/heres-the-manual-for-ices-electric-shock-gloves/)（rss）
+  - [ICE wants to give agents electrified gloves that shock people into compliance](https://www.theverge.com/policy/979010/ice-agents-electric-shock-gloves)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [The limits of physics AI: where Siemens says the human stays in charge](https://www.artificialintelligence-news.com/news/siemens-physics-ai-simulation-human-oversight/)（rss）
+  - [Convince an AI it’s not alive in psychological horror game Prove You’re Human](https://www.theguardian.com/games/2026/aug/10/ai-psychological-horror-game-prove-youre-human-sunset-visitor-studio)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Does pre-generative-AI data become more valuable as the internet fills with synthetic material?](https://www.reddit.com/r/artificial/comments/1vmmi1o/does_pregenerativeai_data_become_more_valuable_as/)（rss）
+  - [Sources: Apple hired Nate Gatten, an American Airlines exec with GOP ties, as government affairs VP, seeking someone who could align with Trump administration (Mark Gurman/Bloomberg)](https://www.techmeme.com/260812/p43#a260812p43)（rss）
+  - [Scaling AI agents with trustworthy data](https://www.technologyreview.com/2026/08/12/1141032/scaling-ai-agents-with-trustworthy-data/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Since when have there been ads on GPT?](https://www.reddit.com/r/artificial/comments/1vmyd88/since_when_have_there_been_ads_on_gpt/)（rss）
+  - [Alan Turing's biggest AI assumption may have been wrong](https://www.sciencedaily.com/releases/2026/07/260713084850.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Claude now embeds an invisible watermark into every piece of text it generates.](https://www.reddit.com/r/artificial/comments/1vlag0q/claude_now_embeds_an_invisible_watermark_into/)（rss）
+  - [Quantum mechanics once baffled scientists. Now it's changing the world](https://www.sciencedaily.com/releases/2026/06/260624025516.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Challenge * can updated AI video generators still make the nightmare fuel vids of the earlier generations?](https://www.reddit.com/r/artificial/comments/1vm48x4/challenge_can_updated_ai_video_generators_still/)（rss）
+  - [Scientists discover AI can make humans more creative](https://www.sciencedaily.com/releases/2026/03/260315004355.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Are AI transparency rules going to slow enterprise AI adoption—or make it safer to scale?](https://www.reddit.com/r/artificial/comments/1vm66ca/are_ai_transparency_rules_going_to_slow/)（rss）
+  - [As AI guzzles water and energy, we are already facing a choice: datacentres or homes? | John Harris](https://www.theguardian.com/commentisfree/2026/aug/09/slough-famous-the-office-datacentres-locals-hub-europe)（rss）
+- 同一事件获得 5 个来源报道（rss）：
+  - [MIT’s new lidar chip could give self-driving cars a wider view](https://www.sciencedaily.com/releases/2026/07/260722032127.htm)（rss）
+  - [Brain-inspired chip runs near absolute zero and could transform quantum computing](https://www.sciencedaily.com/releases/2026/06/260612032024.htm)（rss）
+  - [NASA’s new AI space chip could let spacecraft think for themselves](https://www.sciencedaily.com/releases/2026/05/260515002134.htm)（rss）
+  - [This new chip survives 1300°F (700°C) and could change AI forever](https://www.sciencedaily.com/releases/2026/04/260406192904.htm)（rss）
+  - [This tiny chip could change the future of quantum computing](https://www.sciencedaily.com/releases/2025/12/251226045341.htm)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [Scientists discovered the brain doesn't make decisions the way we thought](https://www.sciencedaily.com/releases/2026/07/260712011757.htm)（rss）
+  - [Scientists uncover the brain’s hidden learning blocks](https://www.sciencedaily.com/releases/2025/11/251128050509.htm)（rss）
+  - [How we picked 35 of the world’s top young scientists and engineers](https://www.technologyreview.com/2026/08/12/1141605/2026-innovators-under-35-top-young-scientists-engineers/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Millions of exploding stars could soon reveal dark energy's secrets](https://www.sciencedaily.com/releases/2026/06/260621060315.htm)（rss）
+  - [Your “um” and pauses could reveal early dementia risk](https://www.sciencedaily.com/releases/2026/05/260512202333.htm)（rss）
+- 同一事件获得 4 个来源报道（rss）：
+  - [New quantum algorithm solves “impossible” materials problem in seconds](https://www.sciencedaily.com/releases/2026/05/260512202355.htm)（rss）
+  - [“Giant superatoms” could finally solve quantum computing’s biggest problem](https://www.sciencedaily.com/releases/2026/04/260413043155.htm)（rss）
+  - [Quantum computer breakthrough tracks qubit fluctuations in real time](https://www.sciencedaily.com/releases/2026/02/260219040756.htm)（rss）
+  - [AI reads brain MRIs in seconds and flags emergencies](https://www.sciencedaily.com/releases/2026/02/260210005419.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Artificial neurons successfully communicate with living brain cells](https://www.sciencedaily.com/releases/2026/04/260417225020.htm)（rss）
+  - [Artificial neurons that behave like real brain cells](https://www.sciencedaily.com/releases/2025/11/251105050723.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Quantum AI just got shockingly good at predicting chaos](https://www.sciencedaily.com/releases/2026/04/260417224455.htm)（rss）
+  - [The Job-Interview Tattoo Guy Everyone Got Mad at Finally Explains Himself](https://www.wired.com/story/linkedin-grindset-tattoo-guy-explains-himself/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [This simple change stops robot swarms from getting stuck](https://www.sciencedaily.com/releases/2026/04/260414075639.htm)（rss）
+  - [This AI finds simple rules where humans see only chaos](https://www.sciencedaily.com/releases/2025/12/251221091237.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [AI breakthrough cuts energy use by 100x while boosting accuracy](https://www.sciencedaily.com/releases/2026/04/260405003952.htm)（rss）
+  - [AI’s potential climate benefits outweighed by role in boosting fossil fuels, study finds](https://www.theguardian.com/technology/2026/aug/11/ai-will-do-more-to-boost-fossil-fuel-production-than-green-energy)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Scientists built the hardest AI test ever and the results are surprising](https://www.sciencedaily.com/releases/2026/03/260313002650.htm)（rss）
+  - [“Existential risk” – Why scientists are racing to define consciousness](https://www.sciencedaily.com/releases/2026/01/260131084626.htm)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [A tiny light trap could unlock million qubit quantum computers](https://www.sciencedaily.com/releases/2026/02/260201223737.htm)（rss）
+  - [Unbreakable? Researchers warn quantum computers have serious security flaws](https://www.sciencedaily.com/releases/2026/01/260120000330.htm)（rss）
+  - [Less than a trillionth of a second: Ultrafast UV light could transform communications and imaging](https://www.sciencedaily.com/releases/2026/01/260101160849.htm)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Cisco reports Q4 revenue up 18% YoY to $17.25B, vs. $16.82B est., AI infrastructure orders from hyperscalers worth $4B, forecasts FY 2027 revenue above est. (Juby Babu/Reuters)](https://www.techmeme.com/260812/p50#a260812p50)（rss）
+  - [Cerebras reports Q2 revenue up 74% YoY to $180M and raises its annual revenue and gross margin forecasts; CBRS drops 14%+ after hours (Reuters)](https://www.techmeme.com/260812/p49#a260812p49)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [The Download: our 35 young innovators and the “censorship-industrial complex”](https://www.technologyreview.com/2026/08/12/1141714/the-download-innovators-under-35-censorship-industrial-complex/)（rss）
+  - [How the “censorship-industrial complex” is changing the internet and US policy](https://www.technologyreview.com/2026/08/11/1141635/how-the-censorship-industrial-complex-is-changing-the-internet-and-us-policy/)（rss）
+  - [The Download: AI agents for science, and the “censorship-industrial complex”](https://www.technologyreview.com/2026/08/10/1141526/the-download-ai-agents-science-censorship-industrial-complex/)（rss）
+- 同一事件获得 3 个来源报道（rss）：
+  - [The Download: the next big thing in LLMs and how AI academic research is shifting](https://www.technologyreview.com/2026/08/11/1141610/the-download-next-big-thing-llms-ai-academic-research-shifting/)（rss）
+  - [AI professors are negotiating the new realities of academic research](https://www.technologyreview.com/2026/08/10/1141597/ai-professors-are-negotiating-the-new-realities-of-academic-research/)（rss）
+  - [The next big indie game publisher is taking some exciting swings](https://www.theverge.com/games/977985/kinetic-publishing-showcase-sam-barlow-precognition)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Experts are warning: our AI arms race is putting humanity at risk | Stuart Russell](https://www.theguardian.com/commentisfree/2026/aug/11/openai-anthropic-google-deepmind-letter)（rss）
+  - [AI Is Dead. Organoids Are Alive](https://www.wired.com/story/organoids-lab-grown-brains-neural-networks/)（rss）
+- 同一事件获得 2 个来源报道（rss）：
+  - [Vijay Rayapati, CEO and Co-Founder of Atomicwork – Interview Series](https://www.unite.ai/vijay-rayapati-ceo-and-co-founder-of-atomicwork-interview-series/)（rss）
+  - [Ali Morin, Chief Nursing Informatics Officer at symplr – Interview Series](https://www.unite.ai/ali-morin-chief-nursing-informatics-officer-at-symplr-interview-series/)（rss）
+
+## 事实边界
+
+- 本次研究仅使用 collect 阶段证据池（aihot 15 条，rss 445 条），未联网补充。
+- 数字与表述以上述来源为准；没有来源的数字一律不写。
+- 证据不足的问题已单独列出，draft 阶段不得为其补充臆测事实。

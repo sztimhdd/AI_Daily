@@ -8,7 +8,9 @@ external user acceptance testing.
 Run from the repository root:
 
 ```bash
-# 1. Full unit + integration suite (stdlib unittest, 208 tests)
+# 1. Full unit + integration suite (stdlib unittest, 254 tests in the
+#    local source workspace; the published tree runs the same suite
+#    with skips where the raw core-IP JSONs are intentionally absent)
 python3 -m unittest discover tests
 
 # 2. Deterministic fixture UAT through the real CLI (17 checks)
@@ -39,16 +41,35 @@ Saved results live in `docs/verification/results/`.
 - Publish verification logic against a real bare git remote
   (`tests/test_publish.py`) and honest `local-only` fallback.
 - Immutable core-IP JSONs still parse (`jq empty` on all five).
+- Unattended simulated topic choice: gate bypass, verbatim
+  title/slug preservation, default-empty direction, out-of-range
+  refusal, and resume without re-collect
+  (`tests/test_topics.py`, `tests/test_pipeline.py`,
+  `tests/test_cli.py`).
 
-## External UAT remaining (needs network / accounts / humans)
+## Unattended mode
+
+The topic gate has an unattended simulated path:
+`cli choose-topic --simulate [--choice N]` records
+`topic_choice: simulated`, keeps the ranked candidate's title/slug
+verbatim, defaults the direction to empty, and writes the stage_log
+note `topic choice: simulated (unattended mode, candidate N)`
+(`--simulate` without `--choice` auto-selects candidate 1, the
+top-ranked editorial candidate). `require_choice` accepts simulated
+choices, and resume never re-collects. Combining `--simulate` with
+`--fixture` is a usage error (exit 2). First real use: the
+2026-08-13 live unattended run
+([results](results/2026-08-13-unattended-uat.md)).
+
+## External UAT status (needs network / accounts / humans)
 
 | # | Item | How to verify | Status |
 |---|------|---------------|--------|
-| 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | pending |
-| 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote-verified` and `publish-sha256` in state.md | pending |
-| 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | pending |
-| 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | pending |
-| 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | pending |
+| 1 | Live AIHOT collection | `PYTHONPATH=src python3 -m ai_daily.cli collect --mode live --date <today>` | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), re-exercised live by the [2026-08-13 unattended run](results/2026-08-13-unattended-uat.md) |
+| 2 | Real GitHub publish + remote reread hash | `cli publish --repo-dir <clone> --remote-url <origin>` then check `publish-mode: remote`, `publish-verified: remote-reread`, and `publish-sha256` in state.md | COMPLETE — [GitHub publication](results/2026-08-12-github-publication.md) |
+| 3 | Real RSS catalog fetch | `cli collect --mode live` with catalog URLs; inspect `rss-stats.json` per-feed results | COMPLETE — [live integrations UAT](results/2026-08-12-live-integrations-uat.md), re-exercised live by the [2026-08-13 unattended run](results/2026-08-13-unattended-uat.md) |
+| 4 | Real ChatGPT cover export | drop the exported `ChatGPT Image*.png` into a dir, `cli cover --source-dir <dir>` | UNAVAILABLE / NONBLOCKING — [ChatGPT cover UAT](results/2026-08-12-chatgpt-cover-uat.md): no reachable logged-in ChatGPT Web session; not executed |
+| 5 | Human topic gate in real chat | `cli candidates`, then `cli choose-topic --choice N --direction ...` | COMPLETE — [desktop human-gate UAT](results/2026-08-12-desktop-human-gate-uat.md): choice 3 recorded as `topic_choice: human` (empty direction); resumed without re-collect to `completed`; article published + reread-verified |
 
 External UAT writes only into the run's own sandbox/root; it never
 modifies the five immutable JSONs or legacy artifacts.
