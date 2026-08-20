@@ -1,0 +1,176 @@
+# Desktop human topic gate UAT (2026-08-12)
+
+External UAT item 5: the mandatory human topic gate executed in a real
+desktop chat against the live run `AI-Daily/2026-08-12`, then the run
+resumed to `completed` and the article was published to GitHub with
+remote reread hash verification.
+
+## Conversation record
+
+- The three candidates for 2026-08-12 (generated from the live pool:
+  AIHOT 14 items + RSS 439 items kept, `collect_runs: 1`) were
+  presented in the real desktop conversation.
+- The user replied: 选择3 (choose candidate 3, no direction given).
+- Candidate 3: `Meta 开源 Muse Glimmer 登陆 OpenRouter` — the first
+  open-weights model from Meta AI's Superintelligence Labs, listed on
+  OpenRouter; the only candidate with multi-source coverage (6
+  sources: 1 AIHOT + 5 RSS).
+
+## CLI record (source workspace; every command exited 0)
+
+| Step | Command | Result |
+|---|---|---|
+| Verify | `PYTHONPATH=src python3 -m ai_daily.cli candidates --date 2026-08-12` | exit 0; index 3 confirmed = Meta Muse Glimmer event |
+| Choose | `PYTHONPATH=src python3 -m ai_daily.cli choose-topic --date 2026-08-12 --choice 3` | exit 0; state: `topic_choice: human`, `slug: meta-muse-glimmer-openrouter`, `topic_title` kept verbatim, `direction` empty |
+| Research | `cli research --date 2026-08-12` | exit 0, generated |
+| Outline | `cli outline --date 2026-08-12` | exit 0, generated |
+| Draft | `cli draft --date 2026-08-12` | exit 0, generated (remove-ai-slop contract clean) |
+| Cover | `cli cover --date 2026-08-12` (no `--source-dir`) | exit 0, skipped / not generated — no logged-in ChatGPT Web session exists; no ChatGPT export was located, adopted, or fabricated |
+| Assemble | `cli assemble --date 2026-08-12` | exit 0, `assembled`, stage `completed` |
+
+## Resume without re-collect
+
+`stage_log` proves resume: after the original collect entries
+(18:14–18:17 ADT) the log continues at 21:47:54 with `topic_choice`
+(note: human, candidate 3), then research, outline, draft,
+optional_cover, assembly, completed (21:48:14). No collect stage
+re-entry appears after the choice; `collect_runs` stayed `1`. Final
+state fields:
+
+- stage: `completed`
+- status: `completed`
+- slug: `meta-muse-glimmer-openrouter`
+- topic_choice: `human`
+- topic_title: `Meta 开源 Muse Glimmer 登陆 OpenRouter`
+- last_error: (empty)
+- counters: `collect_runs: 1`
+
+## Article and package
+
+- Final article: `articles/2026-08-12-meta-muse-glimmer-openrouter-zh.md`,
+  SHA-256 `f3e68b4d35f7ea5a2b779320a5cfedddced8f8dac0fa6e58a56b579fab54e01a`
+  (corrected 2026-08-12 after the evidence-residue fix; the
+  originally published bytes were
+  `4034a8e17d11bcbf1fb73c83b7cd9ba511e36c931a53057263462cc5d2613a1f`).
+- Package: `outputs/2026/08/12/meta-muse-glimmer-openrouter/` with
+  `state.md`, `topic-candidates.md`, `research.md`,
+  `article-outline.md`, `article.md`, `metadata.json`, `sources.md`.
+  Package `article.md` is byte-identical to the final article by
+  design.
+- Assembly validation: CLEAN under the strengthened gate (H1 title;
+  no placeholders/debug artifacts; no raw HTML tags; no ellipsis
+  sequences; no truncated URL fragments); remove-ai-slop (deslop)
+  check: CLEAN; 7 `https://` source links (3 unique URLs) preserved
+  into the publishable Markdown and listed in `sources.md`.
+- CORRECTION to the original record: the first-published article
+  (`4034a8e1…`) did carry evidence residue — raw HTML fragments and
+  ellipsis-truncated sentences copied from capped RSS summaries. The
+  assembly gate then checked placeholders/debug artifacts only, so
+  the original "no placeholders/debug artifacts" claim was literally
+  true but materially incomplete. See the residue-fix section below.
+
+## Evidence residue fix and regeneration (2026-08-12)
+
+A post-publication audit found the live article contained raw HTML
+fragments (`<p><strong><a href="https://rese…`) and truncated
+sentences ending in `…` (for example `OpenRou…`), copied verbatim
+from capped RSS summaries through research excerpts into the draft;
+assembly validation did not catch them.
+
+Fix (commit `641dfbf4572d87bfc69730a7c7ead3c77672f875`, pushed
+fast-forward onto `main`):
+
+- research: `normalize_evidence_text()` unescapes entities, converts
+  block tags to line breaks, strips all markup and trailing unclosed
+  tags; `evidence_excerpt()` returns the first complete sentence with
+  its terminator, drops ellipsis fragments and unterminated tails,
+  and falls back to the item title. `research.md` is clean prose with
+  full links.
+- draft: `_short()` routes excerpts through the same normalization
+  and never hard-cuts with `…`; over-long clauses stay whole and
+  unusable excerpts fall back to the evidence title.
+- assemble: `validate_article()` now rejects raw HTML tags, ellipsis
+  sequences, and truncated URL fragments.
+
+32 new positive/negative tests across `tests/test_research.py`,
+`tests/test_draft.py`, `tests/test_assemble.py`; no existing test
+weakened.
+
+The live run was regenerated by re-running only research, outline,
+draft, and assembly with `--force` over the unchanged evidence pool:
+`collect_runs` stayed `1`, cover stayed skipped, and `stage_log`
+shows only the four re-run stages (22:41:04–22:41:06 ADT). The
+regenerated article and package carry zero HTML/ellipsis residue,
+only complete sentences, and only real source links:
+`https://x.com/OpenRouter/status/2087509478480765218`,
+`https://simonwillison.net/2026/Aug/10/introducing-muse-glimmer/#atom-everything`,
+`https://www.ithome.com/0/989/001.htm`.
+- Cover: `has_cover: false`, `cover: null` — not generated (no
+  logged-in ChatGPT Web session); nonblocking by design. Legacy
+  untracked files directly under `outputs/2026/08/12/` root were left
+  untouched.
+
+## Publication (isolated worktree, fast-forward only)
+
+- Worktree: temporary branch `codex/desktop-human-gate-20260812`
+  rooted exactly at `origin/main`
+  `6affcc6c71149011ff63d8909823607f377f7fc1`; only the new article,
+  its package, and docs updates were staged. Source workspace HEAD and
+  index were never touched.
+- Pre-push verification in the worktree: `python3 -m unittest discover
+  tests` → `Ran 195 tests ... OK (skipped=4)`; `scripts/uat_cli.sh` →
+  17/17 PASS; `compileall`, stdlib-only grep, n8n/automation
+  prohibition grep, `git diff --check`, and a secret scan over the new
+  files: all clean.
+- Content commit: `b0070532c3297780c211c1fc20bf22420be2d505`
+  (parent `6affcc6c71149011ff63d8909823607f377f7fc1`), pushed as
+  `6affcc6..b007053  HEAD -> main` — fast-forward, never forced.
+
+## Remote reread at the exact commit (gh API)
+
+Method: `gh api repos/sztimhdd/AI_Daily/contents/<path>?ref=b0070532c3297780c211c1fc20bf22420be2d505`
+with `Accept: application/vnd.github.raw+json`, saved to scratch
+files, SHA-256 compared against the committed worktree copies.
+Browse form: `https://github.com/sztimhdd/AI_Daily/blob/b0070532c3297780c211c1fc20bf22420be2d505/<path>`
+
+| Path | SHA-256 (local == remote) | Result |
+|---|---|---|
+| `articles/2026-08-12-meta-muse-glimmer-openrouter-zh.md` | `4034a8e17d11bcbf1fb73c83b7cd9ba511e36c931a53057263462cc5d2613a1f` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/article.md` | `4034a8e17d11bcbf1fb73c83b7cd9ba511e36c931a53057263462cc5d2613a1f` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/state.md` | `0f4ad1c9793e58f15a8e09636108b0d2c2a3ce5bbf22d6730d605f01b0af312e` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/research.md` | `6b91e79c5b770b445910da25d11f5bd77624720776e3e278803a5138df659a20` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/article-outline.md` | `29afcf98dba14df3337fe76832a05a305c34cfe69d937951c61efa563665aefb` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/metadata.json` | `c4b882f8b77d316a83ac2e7845af1a61a8c2bac74b5b46c7d94feb01ed6da0b7` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/sources.md` | `7db21d1df259a63c8bc537269b516d1ba22103fde2849a4cd0e864c29c837303` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/topic-candidates.md` | `3fff0edc026ff7e40e2f38828cd012e426c2be4f049c9394e2bcdb53faa76d70` | EQUAL |
+
+Result: `READBACK_ALL_EQUAL` — 8/8 files byte-identical local vs
+remote at the exact content commit.
+
+This record itself is published in the follow-up docs commit on top of
+`b007053`; that commit's SHA is reported in the delivery message and
+its files are reread-verified at their own SHA.
+
+## Residue-fix reread at 641dfbf (gh API)
+
+Same method with `ref=641dfbf4572d87bfc69730a7c7ead3c77672f875`:
+
+| Path | SHA-256 (local == remote) | Result |
+|---|---|---|
+| `articles/2026-08-12-meta-muse-glimmer-openrouter-zh.md` | `f3e68b4d35f7ea5a2b779320a5cfedddced8f8dac0fa6e58a56b579fab54e01a` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/article.md` | `f3e68b4d35f7ea5a2b779320a5cfedddced8f8dac0fa6e58a56b579fab54e01a` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/research.md` | `ea5b8c688ec4dbe0eafe462df149430156847862733455ac9435b6548ea5367a` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/article-outline.md` | `e6c0eb19332c8fe2bd6c58027df498badc0227b5dd77fe34c4ef0d61f59a5f97` | EQUAL |
+| `outputs/2026/08/12/meta-muse-glimmer-openrouter/state.md` | `c74032348197ea6f1c0496078c3c100ef2d2fa2132b6ac5959cfded591a3d717` | EQUAL |
+| `src/ai_daily/research.py` | `9ce62825cd4c98a84c0e0d681a8956d57a997d010f94b0818eff725761c03d9d` | EQUAL |
+| `src/ai_daily/draft.py` | `ca8228fabbf81163fd964f82ea7ad8dfae41a206901a34dd474409d59857ecfd` | EQUAL |
+| `src/ai_daily/assemble.py` | `7bcbd823a436002aa705649d14f92c0576450e20e7fddf4077472cf99edc2850` | EQUAL |
+
+Result: `READBACK_ALL_EQUAL` — 8/8 files byte-identical local vs
+remote at the residue-fix commit (`metadata.json`, `sources.md`,
+`topic-candidates.md` are unchanged between `b007053` and
+`641dfbf` and stay covered by the table above).
+
+This corrected record is itself published in the follow-up docs
+commit on top of `641dfbf`; that commit's SHA is reported in the
+delivery message and its files are reread-verified at their own SHA.
