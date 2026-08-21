@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from . import assemble_en, claim_check, draft_en, linkedin, state, visuals
+from . import assemble_en, claim_check, draft_en, linkedin, publish, state, visuals
 
 
 SUMMARY_JSON = "delivery-en.json"
@@ -33,7 +33,8 @@ def _failed(run_paths, summary: dict, reason: str) -> dict:
     return _persist(run_paths, summary)
 
 
-def run(run_paths, *, codex_runner=None, gemini_runner=None, force: bool = False) -> dict:
+def run(run_paths, *, codex_runner=None, gemini_runner=None, repo_dir=None,
+        transport=None, force: bool = False, **transport_kwargs) -> dict:
     """Deliver an English package; soft review/enrichment failures are visible."""
     summary = {
         "run_id": run_paths.run_id,
@@ -84,6 +85,18 @@ def run(run_paths, *, codex_runner=None, gemini_runner=None, force: bool = False
     summary["assembly"] = _warning(assembly)
     summary["package_dir"] = str(assembly["package_dir"])
     summary["final_article"] = str(assembly["final_article"])
+    if repo_dir is not None:
+        try:
+            publication = publish.publish_en(
+                run_paths, repo_dir=repo_dir, transport=transport,
+                **transport_kwargs,
+            )
+            summary["publication"] = {
+                "status": publication.mode, "reason": publication.reason,
+                "article": publication.published_relpath,
+            }
+        except Exception as exc:
+            summary["publication"] = {"status": "failed", "reason": str(exc)}
     summary["status"] = "delivered"
     result = _persist(run_paths, summary)
     result["package_dir"] = assembly["package_dir"]

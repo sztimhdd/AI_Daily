@@ -348,11 +348,13 @@ def run_linkedin_kit(run_paths, codex_runner=None, force: bool = False) -> dict:
 
 
 def run_delivery_en(run_paths, codex_runner=None, gemini_runner=None,
-                    force: bool = False) -> dict:
+                    repo_dir=None, transport=None, force: bool = False,
+                    **transport_kwargs) -> dict:
     """Run the best-effort daily English delivery loop."""
     return delivery_en.run(
         run_paths, codex_runner=codex_runner, gemini_runner=gemini_runner,
-        force=force,
+        repo_dir=repo_dir, transport=transport, force=force,
+        **transport_kwargs,
     )
 
 

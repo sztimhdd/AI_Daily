@@ -146,6 +146,21 @@ def _payload_files(run_paths, slug: str) -> dict:
     return files
 
 
+def _payload_files_en(run_paths, slug: str) -> tuple[dict, str]:
+    """Complete English package payload and its English final article path."""
+    root = run_paths.root
+    final = run_paths.final_article_en_path(slug)
+    package = run_paths.package_dir(slug)
+    if not final.is_file():
+        raise PublishError(f"no assembled English article at {final}; run assemble-en first")
+    files = {str(final.relative_to(root)): final.read_bytes()}
+    if package.is_dir():
+        for path in sorted(package.rglob("*")):
+            if path.is_file():
+                files[str(path.relative_to(root))] = path.read_bytes()
+    return files, str(final.relative_to(root))
+
+
 # ---------------------------------------------------------------------------
 # Publish entry point
 # ---------------------------------------------------------------------------
@@ -203,6 +218,47 @@ def publish(run_paths, repo_dir, transport=None, **transport_kwargs) -> PublishR
     state.record_artifact(run_paths, "published-article", article_rel)
     if remote_ok:
         state.record_artifact(run_paths, "publish-verified", "remote-reread")
+    return result
+
+
+def publish_en(run_paths, repo_dir, transport=None, **transport_kwargs) -> PublishResult:
+    """Publish an assembled English package with the established honest semantics."""
+    en_slug = state.read_state(run_paths).get("en_slug", "")
+    if not en_slug:
+        raise PublishError("no English slug; run draft-en and assemble-en first")
+    files, article_rel = _payload_files_en(run_paths, en_slug)
+    local_sha = hashlib.sha256(files[article_rel]).hexdigest()
+    if transport is None:
+        transport = GitTransport(repo_dir, **transport_kwargs)
+    result = PublishResult(ok=True, mode="local-only", published_relpath=article_rel)
+    result.local_sha256 = local_sha
+    repo_root = pathlib.Path(repo_dir)
+    for rel, data in files.items():
+        dest = repo_root / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(data)
+    remote_ok = False
+    try:
+        if transport.available():
+            transport.push(files)
+            remote_sha = hashlib.sha256(transport.read_remote(article_rel)).hexdigest()
+            if remote_sha == local_sha:
+                result.mode, result.remote_sha256 = "remote", remote_sha
+                result.reason, remote_ok = "remote publish verified by re-read hash", True
+            else:
+                result.reason = "remote content hash mismatch after re-read"
+        else:
+            result.reason = "remote unavailable: local-only recovery commit"
+            _local_recovery_commit(transport, files)
+    except Exception as exc:
+        result.reason = f"remote publish failed ({exc}); local-only recovery commit"
+        _local_recovery_commit(transport, files)
+    state.update_fields(run_paths, note=f"English publish: {result.mode} ({result.reason})")
+    state.record_artifact(run_paths, "publish-en-mode", result.mode)
+    state.record_artifact(run_paths, "publish-en-sha256", result.remote_sha256 or local_sha)
+    state.record_artifact(run_paths, "published-article-en", article_rel)
+    if remote_ok:
+        state.record_artifact(run_paths, "publish-en-verified", "remote-reread")
     return result
 
 

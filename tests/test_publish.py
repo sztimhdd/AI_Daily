@@ -17,7 +17,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ai_daily import assemble, paths, publish, state, topics
+from ai_daily import assemble, assemble_en, linkedin, paths, publish, state, topics, visuals
 
 FIXTURES = pathlib.Path(__file__).resolve().parents[0] / "fixtures"
 
@@ -71,8 +71,42 @@ class PublishBase(unittest.TestCase):
         assemble.run(self.rp)
         return self.rp.final_article_path(self.topic["slug"])
 
+    def assemble_en_first(self):
+        slug = "the-english-delivery-is-ready"
+        (self.rp.work_dir / "article-en.md").write_text(
+            "# The English delivery is ready\n\nA sourced point ([source](https://example.com/1)).\n",
+            encoding="utf-8",
+        )
+        (self.rp.work_dir / "evidence-package.json").write_text(
+            json.dumps({"sources": [{"url": "https://example.com/1", "title": "source"}]}),
+            encoding="utf-8",
+        )
+        (self.rp.work_dir / linkedin.LINKEDIN_KIT_JSON).write_text(
+            json.dumps({"seo_title": "English delivery", "seo_description": "A delivery test.", "post": "Post"}),
+            encoding="utf-8",
+        )
+        (self.rp.work_dir / linkedin.LINKEDIN_KIT_MD).write_text("# Kit\n", encoding="utf-8")
+        images = self.rp.work_dir / visuals.IMAGES_DIR
+        images.mkdir()
+        (images / "01.webp").write_bytes(b"RIFF....WEBP")
+        (self.rp.work_dir / visuals.IMAGES_MANIFEST_JSON).write_text(
+            json.dumps({"images": [{"id": "01", "status": "generated", "format": "webp", "width": 1, "height": 1}]}),
+            encoding="utf-8",
+        )
+        state.update_fields(self.rp, en_title="The English delivery is ready", en_slug=slug)
+        assemble_en.run(self.rp)
+        return slug
+
 
 class FakeTransportTests(PublishBase):
+    def test_publish_en_uses_english_paths_and_full_package(self):
+        slug = self.assemble_en_first()
+        result = publish.publish_en(self.rp, repo_dir=self.repo_dir, transport=FakeTransport())
+        self.assertEqual(result.mode, "remote")
+        self.assertTrue(result.published_relpath.endswith("-en.md"))
+        package = self.repo_dir / "outputs" / "2026" / "08" / "12" / slug
+        self.assertTrue((package / "linkedin-kit.md").is_file())
+        self.assertTrue((package / "images" / "01.webp").is_file())
     def test_remote_publish_rereads_and_hashes_content(self):
         final = self.assemble_first()
         result = publish.publish(
