@@ -302,5 +302,44 @@ class TelegramAdapterTests(unittest.TestCase):
             "new candidates must be pushed to the bot",
         )
 
+    def test_run_once_does_not_reoffer_when_reply_resolves_decision(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        pipeline.run_human_choice(self.rp, 1)
+        _write_narrative_candidates(self.rp)
+        sent = []
+
+        def fake_http(url, payload):
+            data = json.loads(payload)
+            if url.endswith("/sendMessage"):
+                sent.append(data.get("text", ""))
+                return json.dumps(
+                    {"ok": True, "result": {"message_id": 1}}
+                ).encode()
+            return json.dumps(
+                {"ok": True, "result": [
+                    {"update_id": 400, "message": {
+                        "chat": {"id": "42"}, "text": "2"
+                    }}
+                ]}
+            ).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            result = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+        self.assertTrue(result["applied"]["ok"])
+        self.assertEqual(result["applied"]["chosen"], "B")
+        self.assertEqual(sent, [], "no duplicate question when the reply "
+                                  "resolves the decision")
+
 if __name__ == "__main__":
     unittest.main()

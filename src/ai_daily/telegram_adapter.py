@@ -216,7 +216,10 @@ def apply_reply(run_paths, reply: str) -> dict:
         if decision == "narrative":
             if not text:
                 return {"ok": False, "reason": "空回复；请发编号或编辑意见"}
-            result = narrative.apply_directive(run_paths, text)
+            try:
+                result = narrative.apply_directive(run_paths, text)
+            except narrative.NarrativeError as exc:
+                return {"ok": False, "reason": str(exc)}
             return {
                 "ok": True,
                 "decision": "narrative",
@@ -227,15 +230,18 @@ def apply_reply(run_paths, reply: str) -> dict:
     choice = int(match.group(1))
     extra = (match.group(2) or "").strip()
     decision = pending_decision(run_paths)
-    if decision == "topic":
-        chosen = pipeline.run_human_choice(run_paths, choice, extra)
-        return {"ok": True, "decision": "topic", "chosen": chosen["title"]}
-    if decision == "narrative":
-        candidates = _load_narrative_candidates(run_paths)
-        if not candidates:
-            return {"ok": False, "reason": "叙事候选尚未生成"}
-        chosen = narrative.record_choice(run_paths, candidates, choice, extra)
-        return {"ok": True, "decision": "narrative", "chosen": chosen["title"]}
+    try:
+        if decision == "topic":
+            chosen = pipeline.run_human_choice(run_paths, choice, extra)
+            return {"ok": True, "decision": "topic", "chosen": chosen["title"]}
+        if decision == "narrative":
+            candidates = _load_narrative_candidates(run_paths)
+            if not candidates:
+                return {"ok": False, "reason": "叙事候选尚未生成"}
+            chosen = narrative.record_choice(run_paths, candidates, choice, extra)
+            return {"ok": True, "decision": "narrative", "chosen": chosen["title"]}
+    except narrative.NarrativeError as exc:
+        return {"ok": False, "reason": str(exc)}
     return {"ok": False, "reason": "没有待处理的决策"}
 
 
@@ -251,7 +257,6 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
     ensure_status = _ensure_narrative_candidates(
         run_paths, codex_runner=codex_runner
     )
-    offered = offer(run_paths, token, chat_id, http=http)
     updates = get_updates(token, offset=offset, http=http)
     next_offset = offset
     for update in updates:
@@ -269,7 +274,7 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
     if applied and applied.get("ok") and applied.get("directive"):
         rebuilt = _ensure_narrative_candidates(run_paths, codex_runner)
         if rebuilt.get("status") == "generated":
-            offer(run_paths, token, chat_id, http=http)
+            offered = offer(run_paths, token, chat_id, http=http)
             after_directive = "generated"
         else:
             reason = (rebuilt.get("reason") or "unknown").strip()
@@ -280,8 +285,13 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
                 http=http,
             )
             after_directive = rebuilt.get("status") or "failed"
+    offered = None
+    if after_directive is None and pending_decision(run_paths) != "none":
+        # Push the pending request only when no reply resolved it this cycle;
+        # otherwise the user's answer triggers a duplicate question.
+        offered = offer(run_paths, token, chat_id, http=http)
     return {
-        "offered": offered.get("offered"),
+        "offered": offered.get("offered") if offered else None,
         "reply": reply or "",
         "applied": applied,
         "regenerated": ensure_status.get("status"),
