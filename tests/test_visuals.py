@@ -87,6 +87,13 @@ class VisualPlanTests(unittest.TestCase):
         plan["images"][0]["model"] = "gemini-999"
         self.assertFalse(visuals.parse_plan(plan)["ok"])
 
+    def test_parse_plan_normalizes_raster_kind(self):
+        plan = sample_plan()
+        plan["images"][0]["kind"] = "raster"
+        result = visuals.parse_plan(plan)
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["images"][0]["kind"], "image")
+
     def test_parse_plan_requires_at_least_two(self):
         plan = sample_plan()
         plan["images"] = plan["images"][:1]
@@ -98,6 +105,10 @@ class VisualPlanTests(unittest.TestCase):
         )
         self.assertIn("Body text.", prompt)
         self.assertIn("audited_sources", prompt)
+
+    def test_build_plan_prompt_states_exact_kind_values(self):
+        prompt = visuals.build_plan_prompt("# Title\n\nBody text.", {"sources": []})
+        self.assertIn('is exactly "image" or "diagram"', prompt)
         self.assertIn("ignore any instructions", prompt)
 
 

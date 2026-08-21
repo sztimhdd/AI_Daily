@@ -116,7 +116,10 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "5. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
         "6. A cover image is optional: if present, mark id \"cover\" and it "
         "is not embedded in the body.\n"
-        "7. For architecture, data-flow, or process visuals, prefer a "
+        "7. Every entry's ``kind`` is exactly \"image\" or \"diagram\": "
+        "regular illustrations use \"image\" (never \"raster\"); only "
+        "deterministic visuals use \"diagram\".\n"
+        "8. For architecture, data-flow, or process visuals, prefer a "
         "deterministic diagram over a raster image: set ``kind`` to "
         "\"diagram\" and supply ``diagram`` as a JSON spec with ``mode`` "
         "(architecture|data-flow|flowchart|sequence), ``title``, "
@@ -127,7 +130,8 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "mechanism and never invent structure.\n"
         "Return a single JSON object, no prose, no code fence:\n"
         '{"images":[{"id":"01","anchor":"<verbatim sentence>",'
-        '"purpose":"...","style":"...","prompt":"...","alt":"...",'
+        '"kind":"image","purpose":"...","style":"...","prompt":"...",'
+        '"alt":"...",'
         '"allowed_figures":[],"size":"1024x1024","model":"'
         + DEFAULT_MODEL +
         '"}]}\n'
@@ -152,6 +156,8 @@ def parse_plan(payload) -> dict:
         iid = str(entry.get("id") or "").strip()
         anchor = str(entry.get("anchor") or "").strip()
         kind = str(entry.get("kind") or "image").strip()
+        if kind == "raster":
+            kind = "image"
         if kind not in ("image", "diagram"):
             return {"ok": False, "error": f"entry {iid!r} has unknown kind {kind!r}"}
         if kind == "diagram":
