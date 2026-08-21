@@ -202,6 +202,39 @@ class GitTransportTests(PublishBase):
         self.assertEqual(shown.returncode, 0, shown.stderr)
         self.assertEqual(hashlib.sha256(shown.stdout).hexdigest(), expected)
 
+    def test_git_push_rebases_when_remote_moved_ahead(self):
+        remote = self.make_bare_remote()
+        self.assemble_first()
+        transport = publish.GitTransport(
+            self.repo_dir, remote_url=str(remote), branch="main"
+        )
+        publish.publish(self.rp, repo_dir=self.repo_dir, transport=transport)
+        # Someone else commits to the remote after our first publish.
+        other = self.root / "other"
+        subprocess.run(
+            ["git", "clone", str(remote), str(other)],
+            capture_output=True, check=True,
+        )
+        (other / "unrelated.txt").write_text("moved ahead\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(other), "add", "-A"],
+                       capture_output=True, check=True)
+        subprocess.run(
+            ["git", "-C", str(other), "-c", "user.name=t",
+             "-c", "user.email=t@t", "commit", "-m", "remote moved"],
+            capture_output=True, check=True,
+        )
+        subprocess.run(["git", "-C", str(other), "push", "origin", "main"],
+                       capture_output=True, check=True)
+        # Local payload changes; a second publish must still reach the remote.
+        (self.rp.work_dir / "article.md").write_text(
+            ARTICLE + "\nUpdated paragraph.\n", encoding="utf-8"
+        )
+        assemble.run(self.rp)
+        result = publish.publish(
+            self.rp, repo_dir=self.repo_dir, transport=transport
+        )
+        self.assertEqual(result.mode, "remote", result.reason)
+
     def test_git_unreachable_remote_is_local_only(self):
         self.assemble_first()
         transport = publish.GitTransport(

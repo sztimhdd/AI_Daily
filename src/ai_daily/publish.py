@@ -104,6 +104,17 @@ class GitTransport:
                 "-c", "user.email=ai-daily@localhost",
                 "commit", "-m", f"{PUBLISH_MESSAGE_PREFIX}: {len(files)} file(s)",
             )
+        fetch = self._git("fetch", self.remote, self.branch, check=False)
+        if fetch.returncode == 0:
+            rebase = self._git(
+                "rebase", "--autostash", f"{self.remote}/{self.branch}",
+                check=False,
+            )
+            if rebase.returncode != 0:
+                raise RuntimeError(
+                    "rebase before push failed: "
+                    f"{(rebase.stderr or rebase.stdout).strip()[:300]}"
+                )
         push = self._git("push", self.remote, f"HEAD:{self.branch}", check=False)
         if push.returncode != 0:
             raise RuntimeError(

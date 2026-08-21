@@ -19,9 +19,11 @@ import io
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -379,7 +381,7 @@ def _default_svg_to_png(svg_bytes: bytes) -> bytes:
     with tempfile.TemporaryDirectory() as tmp:
         svg_path = pathlib.Path(tmp) / "diagram.svg"
         png_path = pathlib.Path(tmp) / "diagram.png"
-        svg_path.write_bytes(svg_bytes)
+        svg_path.write_bytes(_fit_svg_canvas(svg_bytes))
         proc = subprocess.run(
             [_rsvg_bin(), "-o", str(png_path), str(svg_path)],
             capture_output=True,
@@ -389,6 +391,100 @@ def _default_svg_to_png(svg_bytes: bytes) -> bytes:
             detail = (proc.stderr or b"").decode("utf-8", "replace").strip()[:200]
             raise VisualsError(f"svg->png conversion failed: {detail}")
         return png_path.read_bytes()
+
+
+def _fit_svg_canvas(svg_bytes: bytes) -> bytes:
+    """Grow the SVG canvas to its content so nothing is ever clipped.
+
+    The diagram spec uses absolute coordinates that can exceed the default
+    canvas (a long title or a node near the bottom edge).  This computes a
+    conservative content bounding box, extends the canvas and its background
+    rect, and updates the viewBox/width/height accordingly.  Deterministic
+    and testable without a renderer.
+    """
+    text = svg_bytes.decode("utf-8", "replace")
+    vb = re.search(r'viewBox="([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)"', text)
+    if not vb:
+        return svg_bytes
+    _, _, canvas_w, canvas_h = (float(v) for v in vb.groups())
+    class_sizes = {
+        name: float(size)
+        for name, size in re.findall(
+            r'\.([\w-]+)\s*\{\s*font-size:\s*([\d.]+)px', text
+        )
+    }
+
+    def text_width(txt: str, font_size: float) -> float:
+        units = sum(
+            1.0 if unicodedata.east_asian_width(c) in {"W", "F"} else 0.58
+            for c in txt
+        )
+        return max(font_size * 1.5, units * font_size * 1.05)
+
+    lefts, rights, tops, bottoms = [], [], [], []
+    for m in re.finditer(
+        r'<rect[^>]*x="([\d.]+)"[^>]*y="([\d.]+)"[^>]*width="([\d.]+)"'
+        r'[^>]*height="([\d.]+)"',
+        text,
+    ):
+        if "data-graph-role=\"background\"" in m.group(0) or \
+           "data-graph-role=\"decoration\"" in m.group(0):
+            continue
+        x, y, w, h = (float(v) for v in m.groups())
+        lefts.append(x); rights.append(x + w); tops.append(y); bottoms.append(y + h)
+    for m in re.finditer(
+        r'<ellipse[^>]*cx="([\d.]+)"[^>]*cy="([\d.]+)"[^>]*rx="([\d.]+)"'
+        r'[^>]*ry="([\d.]+)"',
+        text,
+    ):
+        cx, cy, rx, ry = (float(v) for v in m.groups())
+        lefts.append(cx - rx); rights.append(cx + rx)
+        tops.append(cy - ry); bottoms.append(cy + ry)
+    for m in re.finditer(
+        r'<text([^>]*)>(.*?)</text>', text, re.S
+    ):
+        attrs, inner = m.group(1), m.group(2)
+        xm = re.search(r'x="([\d.]+)"', attrs)
+        ym = re.search(r'y="([\d.]+)"', attrs)
+        fm = re.search(r'font-size="([\d.]+)"', attrs)
+        cm = re.search(r'class="([\w-]+)"', attrs)
+        if not xm or not ym:
+            continue
+        x, y = float(xm.group(1)), float(ym.group(1))
+        cls = cm.group(1) if cm else ""
+        font_size = float(fm.group(1)) if fm else class_sizes.get(cls, 12.0)
+        txt = re.sub(r"<[^>]+>", "", inner)
+        width = text_width(txt, font_size)
+        anchor = "middle" if "text-anchor=\"middle\"" in attrs else "start"
+        left = x - width / 2 if anchor == "middle" else x
+        lefts.append(left); rights.append(left + width)
+        tops.append(y - font_size); bottoms.append(y + font_size * 0.25)
+    if not lefts:
+        return svg_bytes
+    pad = 32.0
+    fit_w = max(canvas_w, max(rights) - min(lefts) + pad * 2)
+    fit_h = max(canvas_h, max(bottoms) - min(tops) + pad * 2)
+    if fit_w <= canvas_w and fit_h <= canvas_h:
+        return svg_bytes
+    text = re.sub(
+        r'<rect([^>]*data-graph-role="background"[^>]*)width="[\d.]+"'
+        r'([^>]*)height="[\d.]+"',
+        lambda m: f'<rect{m.group(1)}width="{fit_w:.0f}"'
+        f'{m.group(2)}height="{fit_h:.0f}"',
+        text,
+    )
+    text = re.sub(
+        r'<svg([^>]*)width="[\d.]+"([^>]*)height="[\d.]+"',
+        lambda m: f'<svg{m.group(1)}width="{fit_w:.0f}"'
+        f'{m.group(2)}height="{fit_h:.0f}"',
+        text,
+    )
+    text = re.sub(
+        r'viewBox="[\d.]+ [\d.]+ [\d.]+ [\d.]+"',
+        f'viewBox="0 0 {fit_w:.0f} {fit_h:.0f}"',
+        text,
+    )
+    return text.encode("utf-8")
 
 
 def generate_diagram(spec: dict, generator=None, converter=None) -> tuple[bytes, str]:

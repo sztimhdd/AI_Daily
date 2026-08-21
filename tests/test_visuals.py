@@ -3,6 +3,7 @@
 import base64
 import json
 import pathlib
+import re
 import sys
 import tempfile
 import unittest
@@ -93,6 +94,34 @@ class VisualPlanTests(unittest.TestCase):
         result = visuals.parse_plan(plan)
         self.assertTrue(result["ok"])
         self.assertEqual(result["images"][0]["kind"], "image")
+
+    def test_fit_svg_canvas_grows_canvas_to_content(self):
+        svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="700" '
+            'viewBox="0 0 960 700">'
+            '<style>.title { font-size: 30px; }</style>'
+            '<rect data-graph-role="background" width="960" height="700" '
+            'fill="#ffffff"/>'
+            '<text x="480" y="56" text-anchor="middle" class="title">'
+            "Require logs that connect each scan to an identity, asset, "
+            "policy, and outcome.</text>"
+            '<rect x="744" y="622" width="184" height="104"/>'
+            "</svg>"
+        )
+        fitted = visuals._fit_svg_canvas(svg.encode("utf-8")).decode("utf-8")
+        m = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', fitted)
+        self.assertIsNotNone(m)
+        fit_w, fit_h = float(m.group(1)), float(m.group(2))
+        self.assertGreater(fit_w, 960)
+        self.assertGreater(fit_h, 700)
+        bg = re.search(
+            r'<rect([^>]*data-graph-role="background"[^>]*)width="([\d.]+)"'
+            r'([^>]*)height="([\d.]+)"',
+            fitted,
+        )
+        self.assertIsNotNone(bg)
+        self.assertEqual(float(bg.group(2)), fit_w)
+        self.assertEqual(float(bg.group(4)), fit_h)
 
     def test_parse_plan_requires_at_least_two(self):
         plan = sample_plan()
