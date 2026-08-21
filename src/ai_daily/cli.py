@@ -140,7 +140,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Telegram decision channel: offer pending decision + apply reply",
     )
     common(p)
-    p.add_argument("--offset", type=int, default=0,
+    p.add_argument("--offset", type=int, default=None,
                    help="getUpdates offset (track the last applied update id)")
     p.add_argument("--offer-only", action="store_true",
                    help="push the pending decision without applying replies")

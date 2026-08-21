@@ -35,8 +35,10 @@ def load_config(env: dict = None, env_path: str = None) -> dict:
     environ = os.environ if env is None else env
     token = (environ.get("AI_DAILY_TELEGRAM_TOKEN") or "").strip()
     chat = (environ.get("AI_DAILY_TELEGRAM_CHAT") or "").strip()
+    offset_raw = (environ.get("AI_DAILY_TELEGRAM_OFFSET") or "").strip()
     if token and chat:
-        return {"token": token, "chat": chat}
+        offset = int(offset_raw) if offset_raw.isdigit() else 0
+        return {"token": token, "chat": chat, "offset": offset}
     path = pathlib.Path(env_path or ENV_FILE)
     if path.is_file():
         for line in path.read_text(encoding="utf-8").splitlines():
@@ -47,11 +49,26 @@ def load_config(env: dict = None, env_path: str = None) -> dict:
                 token = value
             elif key == "AI_DAILY_TELEGRAM_CHAT" and not chat:
                 chat = value
+            elif key == "AI_DAILY_TELEGRAM_OFFSET" and not offset_raw:
+                offset_raw = value
     if not token:
         raise TelegramError("no Telegram bot token (AI_DAILY_TELEGRAM_TOKEN / .local/telegram.env)")
     if not chat:
         raise TelegramError("no Telegram chat id (AI_DAILY_TELEGRAM_CHAT / .local/telegram.env)")
-    return {"token": token, "chat": chat}
+    offset = int(offset_raw) if offset_raw.isdigit() else 0
+    return {"token": token, "chat": chat, "offset": offset}
+
+
+def save_config(config: dict, env_path: str = None) -> None:
+    """Persist token/chat/offset back to ``.local/telegram.env`` (gitignored)."""
+    path = pathlib.Path(env_path or ENV_FILE)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        f"AI_DAILY_TELEGRAM_TOKEN={config['token']}\n",
+        f"AI_DAILY_TELEGRAM_CHAT={config['chat']}\n",
+        f"AI_DAILY_TELEGRAM_OFFSET={config.get('offset', 0)}\n",
+    ]
+    path.write_text("".join(lines), encoding="utf-8")
 
 
 def _default_http_post(url: str, payload: bytes) -> bytes:
@@ -184,14 +201,24 @@ def apply_reply(run_paths, reply: str) -> dict:
 
 
 def run_once(run_paths, token: str = None, chat_id: str = None,
-             offset: int = 0, http=None, env: dict = None) -> dict:
+             offset: int = None, http=None, env: dict = None,
+             env_path: str = None) -> dict:
     """One adapter cycle: push pending + apply the latest reply."""
-    if token is None or chat_id is None:
+    if token is None or chat_id is None or offset is None:
         config = load_config(env=env)
         token = token or config["token"]
         chat_id = chat_id or config["chat"]
+        offset = config["offset"] if offset is None else offset
     offered = offer(run_paths, token, chat_id, http=http)
     updates = get_updates(token, offset=offset, http=http)
+    next_offset = offset
+    for update in updates:
+        next_offset = max(next_offset, int(update.get("update_id", 0)) + 1)
+    if next_offset > offset:
+        save_config(
+            {"token": token, "chat": chat_id, "offset": next_offset},
+            env_path=env_path,
+        )
     reply = latest_reply(updates, chat_id)
     applied = None
     if reply:

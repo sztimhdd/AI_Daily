@@ -121,17 +121,52 @@ class TelegramAdapterTests(unittest.TestCase):
         cfg = telegram_adapter.load_config(
             env={"AI_DAILY_TELEGRAM_TOKEN": "T", "AI_DAILY_TELEGRAM_CHAT": "C"}
         )
-        self.assertEqual(cfg, {"token": "T", "chat": "C"})
+        self.assertEqual(cfg, {"token": "T", "chat": "C", "offset": 0})
         with tempfile.TemporaryDirectory() as tmp:
             env_file = pathlib.Path(tmp) / "telegram.env"
             env_file.write_text(
-                "AI_DAILY_TELEGRAM_TOKEN=FILE_TOKEN\nAI_DAILY_TELEGRAM_CHAT=99\n",
+                "AI_DAILY_TELEGRAM_TOKEN=FILE_TOKEN\n"
+                "AI_DAILY_TELEGRAM_CHAT=99\n"
+                "AI_DAILY_TELEGRAM_OFFSET=7\n",
                 encoding="utf-8",
             )
             cfg = telegram_adapter.load_config(env={}, env_path=str(env_file))
-            self.assertEqual(cfg, {"token": "FILE_TOKEN", "chat": "99"})
+            self.assertEqual(cfg, {"token": "FILE_TOKEN", "chat": "99", "offset": 7})
         with self.assertRaises(telegram_adapter.TelegramError):
             telegram_adapter.load_config(env={}, env_path="/nonexistent/x.env")
+
+    def test_run_once_advances_and_persists_offset(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        captured = {}
+
+        def fake_http(url, payload):
+            captured["url"] = url
+            captured["payload"] = json.loads(payload)
+            if url.endswith("/getUpdates"):
+                return json.dumps(
+                    {"ok": True, "result": [
+                        {"update_id": 100, "message": {
+                            "chat": {"id": "42"}, "text": "1"}}
+                    ]}
+                ).encode()
+            return json.dumps({"ok": True, "result": {"message_id": 1}}).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            result = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"], http=fake_http,
+                env_path=env_path,
+            )
+            self.assertEqual(result["applied"]["decision"], "topic")
+            saved = telegram_adapter.load_config(env={}, env_path=env_path)
+            self.assertEqual(saved["offset"], 101)
 
 
 if __name__ == "__main__":
