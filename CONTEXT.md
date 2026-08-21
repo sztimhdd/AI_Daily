@@ -18,9 +18,17 @@ The durable, reviewable output of one editorial run: article body, metadata, sou
 
 The two audience-specific final articles produced by one editorial run: a Chinese deep-dive for AI practitioners on WeChat and an English analysis, observation, or essay for AI practitioners and industry CTOs on LinkedIn. The pair shares one topic, researched evidence base, selected narrative thesis, and approved illustration set. Each language has its own editorial treatment and final copy; the English edition is not a translation of the Chinese edition.
 
+## LinkedIn distribution kit
+
+The English edition carries a paste-ready LinkedIn distribution kit: SEO
+title, SEO description, hook, three or four business-leader bullets, a pivot,
+the established CTA, and three to five hashtags. It is a delivery asset, not
+an editorial acceptance gate: a failed kit is recorded as degraded and must
+not discard an otherwise usable English edition.
+
 ## Default editorial length
 
-The default bilingual edition pair contains a Chinese WeChat deep-dive of 3,500–6,000 Han characters and one English LinkedIn article of 800–1,200 words. No LinkedIn distribution-post bundle is part of the editorial run. Length is subordinate to information value: a shorter, sharp analysis is preferable to padded copy. A Chinese 6,000–8,000 character or English 1,200–1,500 word edition requires enough first-party material, case evidence, technical analysis, or original reporting to justify it and explicit editorial approval.
+The default bilingual edition pair contains a Chinese WeChat deep-dive of 3,500–6,000 Han characters and one English LinkedIn article of 800–1,200 words. The English edition includes a LinkedIn distribution kit. Length is subordinate to information value: a shorter, sharp analysis is preferable to padded copy. A Chinese 6,000–8,000 character or English 1,200–1,500 word edition requires enough first-party material, case evidence, technical analysis, or original reporting to justify it and explicit editorial approval.
 
 ## Editorial run
 
