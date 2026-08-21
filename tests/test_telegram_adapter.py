@@ -130,6 +130,24 @@ class TelegramAdapterTests(unittest.TestCase):
         self.assertEqual(captured["payload"]["text"], "Hello")
         self.assertNotIn("TOKEN123", json.dumps(captured["payload"]))
 
+    def test_send_message_falls_back_to_plain_text_on_400(self):
+        calls = []
+
+        def fake(url, payload):
+            calls.append(json.loads(payload))
+            if len(calls) == 1:
+                raise telegram_adapter.TelegramError(
+                    "telegram sendMessage failed: HTTPError: HTTP Error 400: Bad Request"
+                )
+            return json.dumps({"ok": True, "result": {"message_id": 2}}).encode()
+
+        result = telegram_adapter.send_message(
+            "TOKEN123", "42", "Mythos_5 is at the door", http=fake
+        )
+        self.assertEqual(result["message_id"], 2)
+        self.assertEqual(len(calls), 2)
+        self.assertNotIn("parse_mode", calls[1])
+
     def test_latest_reply_picks_chat_message(self):
         updates = [
             {"message": {"chat": {"id": 1}, "text": "ignored"}},

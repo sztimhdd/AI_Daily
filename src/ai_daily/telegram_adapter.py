@@ -102,11 +102,23 @@ def api_call(token: str, method: str, params: dict, http=None) -> dict:
 
 def send_message(token: str, chat_id: str, text: str, http=None) -> dict:
     """Send one message to the configured chat."""
-    return api_call(
-        token, "sendMessage",
-        {"chat_id": chat_id, "text": text, "parse_mode": "Markdown"},
-        http=http,
-    )
+    try:
+        return api_call(
+            token, "sendMessage",
+            {"chat_id": chat_id, "text": text, "parse_mode": "Markdown"},
+            http=http,
+        )
+    except TelegramError as exc:
+        # Markdown-incompatible text (e.g. a model name with underscores)
+        # is rejected with 400; retry once as plain text rather than
+        # dropping the message entirely.
+        if "400" not in str(exc):
+            raise
+        return api_call(
+            token, "sendMessage",
+            {"chat_id": chat_id, "text": text},
+            http=http,
+        )
 
 
 def get_updates(token: str, offset: int = 0, http=None) -> list:
