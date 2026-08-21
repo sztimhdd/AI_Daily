@@ -59,7 +59,7 @@ _ARCHETYPE_ANATOMY = {
     "workflow_playbook": "标题：不是工具排行榜，是约束条件下的一套可复制流程；骨架：约束条件→什么时候用谁→怎么切→失败怎么办→复现步骤；takeaway：确定性工作还给代码，模型只做它擅长的事。",
     "power_map": "标题：[人事变动]不是八卦，真正变化的是[资源/模型/产品]的控制权；骨架：确认事实→来源等级→调整前后组织图→control point→一阶/二阶影响→仍未知；每条敏感信息必须标Confirmed/Reported/Inferred/Unknown；核心人事事实至少双源。",
     "compliance_risk": "标题：从[日期]起，[角色]真正要做的不是[流行误读]而是[控制动作]；骨架：官方原文变化→日期→适用主体→常见误读→真实obligation→inventory→checklist→待guidance；法条primary source绝对优先。",
-    "decision_brief": "标题：[X just changed]，只有三件事值得工程负责人看；骨架：3个confirmed facts→相较昨天变了什么→谁受影响→一个二阶影响→至少一个Unknown→未来24/72小时看什么；每个事实段有source、每个数字可追溯。",
+    "decision_brief": "标题：[X] 刚变，别被热搜带节奏——真正要盯的就三处；骨架：3个confirmed facts→相较昨天变了什么→谁受影响→一个二阶影响→至少一个Unknown→未来24/72小时看什么；每个事实段有source、每个数字可追溯。",
 }
 
 _HOOK_PATTERNS = (
@@ -92,6 +92,7 @@ _ORG_ARTIFACT_KEYWORDS = (
 )
 _TECH_ARTIFACT_KEYWORDS = (
     "源码", "trace", "commit", "repo", "论文", "arxiv", "architecture",
+    "checkpoint", "model card", "speculative decoding",
 )
 _METHOD_KEYWORDS = ("方法", "协议", "prompt", "repo", "样本", "复现", "methodology")
 _SOCIAL_DOMAINS = (
@@ -124,7 +125,13 @@ def evidence_inventory(osint: dict) -> dict:
         ),
         "mechanism_signal": bool(
             _module_summary(osint, "tech_engineering") not in ("", "无")
-            or any(k in text for k in ("架构", "机制", "trace", "源码", "上下文"))
+            or any(
+                k in text
+                for k in (
+                    "架构", "机制", "trace", "源码", "上下文",
+                    "speculative decoding", "draft model", "decoding path",
+                )
+            )
         ),
         "community_signal": bool(
             _module_summary(osint, "community_voices") not in ("", "无")
@@ -364,6 +371,10 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> s
         "3. 禁止咨询腔与报告腔：综上所述、值得注意的是、一方面…另一方面、"
         "我们认为、从XX维度来看、需要指出的是，以及赋能/闭环/颗粒度等黑话。\n"
         "4. 态度不是口号：先亮判断，再用上面的证据纪律钉死它。\n\n"
+        "5. 标题必须是新闻式大白话 punchline：敢下判断、带钩子，像人写的"
+        "新闻标题，而不是咨询公司的条目。禁止咨询报告句式：『值得关注的"
+        "N件事』『工程负责人只需要看N件事』『一份决策简报/快讯』"
+        "『X just changed，只有三件事值得看』。可以直接下判断，也可以反着说。\n\n"
         "输出必须是单个 JSON 对象（禁止前言、Markdown 代码块或尾注）：\n"
         '{"candidates":[{"archetype":"<白名单 key>","title":"...","hook":"...",'
         '"narrative_focus":"一句大白话这个角度讲什么","thesis":"...",'

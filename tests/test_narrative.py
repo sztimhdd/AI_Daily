@@ -149,6 +149,21 @@ class RouteArchetypeTests(unittest.TestCase):
         allowed = narrative.route_archetypes(osint, set())
         self.assertNotIn("power_map", allowed)
 
+    def test_english_mechanism_evidence_opens_mechanism_teardown(self):
+        osint = sample_osint()
+        for m in osint["modules"]:
+            m["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://huggingface.co/blog/x", "status": "fetched",
+            "title": "Up to 3.2x Faster Inference with LFM2.5-DSpark",
+            "excerpt": ("We release DSpark draft model checkpoints for "
+                        "speculative decoding. Up to 3.18x throughput on "
+                        "H100, 2.87x on-device."),
+        }]
+        allowed = narrative.route_archetypes(osint, set())
+        self.assertIn("mechanism_teardown", allowed)
+        self.assertNotEqual(allowed, ["decision_brief"])
+
 
 class KillConditionTests(unittest.TestCase):
     def _real_shaped_osint(self, sources):
@@ -297,6 +312,18 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         prompt = self._prompt()
         self.assertIn("8000 字符", prompt)
         self.assertIn("2-4 条", prompt)
+
+    def test_prompt_bans_consulting_title_phrasing(self):
+        prompt = self._prompt(allowed=["decision_brief"])
+        self.assertIn("咨询报告", prompt)
+        self.assertIn("工程负责人只需要看", prompt)
+        self.assertIn("值得关注的N件事", prompt)
+
+    def test_decision_brief_anatomy_title_is_not_consulting(self):
+        self.assertNotIn(
+            "工程负责人只需要看", narrative._ARCHETYPE_ANATOMY["decision_brief"]
+        )
+        self.assertIn("别被热搜带节奏", narrative._ARCHETYPE_ANATOMY["decision_brief"])
 
 
 class CandidateScoreTests(unittest.TestCase):
