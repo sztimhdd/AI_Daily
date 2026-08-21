@@ -726,6 +726,29 @@ class EnglishEditionCliTests(CliBase):
     def test_parser_registers_english_subcommands(self):
         self.assertIn("draft-en", cli.COMMANDS)
         self.assertIn("assemble-en", cli.COMMANDS)
+        self.assertIn("run-en", cli.COMMANDS)
+
+    def test_run_en_prints_summary(self):
+        with mock.patch.object(
+            cli.pipeline, "run_delivery_en",
+            return_value={"status": "delivered", "summary": "delivery-en.json"},
+        ) as patched:
+            code, out, err = self.run_cli(
+                "run-en", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 0, err)
+        patched.assert_called_once()
+        self.assertIn("summary: delivery-en.json", out)
+
+    def test_run_en_returns_one_for_hard_failure(self):
+        with mock.patch.object(
+            cli.pipeline, "run_delivery_en",
+            return_value={"status": "failed", "reason": "draft unavailable"},
+        ):
+            code, _out, _err = self.run_cli(
+                "run-en", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 1)
 
     def test_draft_en_command_invokes_pipeline(self):
         result = {

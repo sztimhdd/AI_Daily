@@ -127,6 +127,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--cover-source", default=None)
     p.add_argument("--repo-dir", default=None)
 
+    p = sub.add_parser("run-en", help="deliver the prepared English edition")
+    common(p)
+    p.add_argument("--repo-dir", default=None)
+    p.add_argument("--remote-url", default=None)
+    p.add_argument("--branch", default="main")
+    p.add_argument("--force", action="store_true")
+
     p = sub.add_parser("fetch", help="fetch one URL via the unified three-lane primitive")
     common(p)
     p.add_argument("--lane", choices=("auto", "http", "cdp"), default="auto",
@@ -459,6 +466,21 @@ def cmd_run(args) -> int:
     return 0
 
 
+def cmd_run_en(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_delivery_en(
+        run_paths, repo_dir=args.repo_dir, remote_url=args.remote_url,
+        branch=args.branch, force=args.force,
+    )
+    print(f"run-en: {result['status']}")
+    if result.get("summary") is not None:
+        print(f"- summary: {result['summary']}")
+    if result.get("reason"):
+        print(f"- reason: {result['reason']}")
+    return 0 if result["status"] == "delivered" else 1
+
+
 def cmd_fetch(args) -> int:
     """Low-level fetch primitive: usable at any stage, no state.md needed."""
     run_paths = _paths(args)
@@ -717,6 +739,7 @@ COMMANDS = {
     "linkedin-kit": cmd_linkedin_kit,
     "publish": cmd_publish,
     "run": cmd_run,
+    "run-en": cmd_run_en,
     "fetch": cmd_fetch,
     "session": cmd_session,
     "narrative": cmd_narrative,
