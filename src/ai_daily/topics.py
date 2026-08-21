@@ -408,6 +408,9 @@ def independent_sources(cluster: list) -> int:
 
 def _first_sentence(text: str) -> str:
     plain = re.sub(r"<[^>]+>", "", text or "")
+    # A truncation can cut a tag mid-way (e.g. "<IMG WIDTH=1" with no ">");
+    # strip such unterminated fragments so they never leak into a thesis.
+    plain = re.sub(r"<[^>]*$", "", plain)
     for part in re.split(r"[。！？!?]", plain):
         part = part.strip()
         if part:

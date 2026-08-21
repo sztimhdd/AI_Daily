@@ -53,6 +53,44 @@ class CandidateGenerationTests(unittest.TestCase):
         self.assertNotIn("img", deepseek["thesis"])
         self.assertIn("8 月 13 日", deepseek["thesis"])
 
+    def test_candidate_thesis_strips_truncated_tag_fragment(self):
+        # A 300-char truncation can cut a tag mid-way: "<IMG WIDTH=1" has no
+        # closing ">", so a plain tag strip leaves the fragment behind.
+        self.assertEqual(topics._first_sentence(
+            '<A HREF="https://x/1"><IMG WIDTH=1 HEIGHT=1 BORDER=0 SRC="http://x/i.jpg">'
+            "</A><P><A HREF='https://x/2'><IMG WIDTH=1"
+        ), "")
+        fragment_item = {
+            "id": "t1",
+            "title": "The US DOJ and TikTok reach a $400M settlement",
+            "summary": '<A HREF="https://www.axios.com/1"><IMG WIDTH=1 HEIGHT=1 '
+                       'BORDER="0" SRC="http://www.techmeme.com/i.jpg"></A>'
+                       "\n<P><A HREF=\"https://www.techmeme.com/p20\" TITLE=\"x\">"
+                       "<IMG WIDTH=1",
+            "source_name": "Techmeme",
+            "links": {"aihot": "https://aihot.virxact.com/items/t1", "original": ""},
+            "score": 80,
+            "origin": "rss",
+            "feed": "Techmeme",
+        }
+        pool = [fragment_item] + [
+            {
+                "id": f"g{i}",
+                "title": f"补充事件{i}",
+                "summary": "普通新闻更新",
+                "source_name": f"S{i}",
+                "links": {"aihot": f"https://aihot.virxact.com/items/g{i}", "original": ""},
+                "score": 20,
+                "origin": "aihot",
+            }
+            for i in range(3)
+        ]
+        cands = topics.generate_candidates(pool, rss_items=[])
+        tiktok = next(c for c in cands if "TikTok" in c["title"])
+        self.assertNotIn("<", tiktok["thesis"])
+        self.assertNotIn("IMG", tiktok["thesis"])
+        self.assertIn("settlement", tiktok["thesis"])
+
     def test_exactly_three_candidates(self):
         cands = topics.generate_candidates(aihot_items(), rss_items=[])
         self.assertEqual(len(cands), 3)
