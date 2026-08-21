@@ -1,5 +1,6 @@
 """Tests for the automatic illustration module (Gemini Nano Banana)."""
 
+import base64
 import json
 import pathlib
 import sys
@@ -231,6 +232,42 @@ class EmbedTests(VisualsBase):
         m = visuals.build_manifest(images)
         self.assertEqual(m[0]["filename"], "01.webp")
         self.assertEqual(m[0]["width"], 2048)
+
+
+class DiagramLaneTests(VisualsBase):
+    TINY_PNG = base64.b64decode(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+    )
+
+    def test_generate_diagram_runs_generator_then_converter_to_webp(self):
+        spec = {"mode": "architecture", "nodes": [], "arrows": []}
+        calls = []
+
+        def gen(s):
+            calls.append(("gen", s))
+            return b"<svg xmlns='http://www.w3.org/2000/svg'/>"
+
+        def conv(svg):
+            calls.append(("conv", svg))
+            return self.TINY_PNG
+
+        webp, fmt = visuals.generate_diagram(spec, generator=gen, converter=conv)
+        self.assertEqual(fmt, "webp")
+        self.assertTrue(webp.startswith(b"RIFF"))
+        self.assertEqual(calls, [("gen", spec), ("conv", b"<svg xmlns='http://www.w3.org/2000/svg'/>")])
+
+    def test_generate_diagram_generator_failure_is_explicit(self):
+        def gen(s):
+            raise RuntimeError("generator down")
+
+        with self.assertRaises(visuals.VisualsError):
+            visuals.generate_diagram(
+                {"mode": "x"}, generator=gen, converter=lambda svg: b""
+            )
+
+    def test_generate_diagram_rejects_unknown_mode_in_default_generator(self):
+        with self.assertRaises(visuals.VisualsError):
+            visuals._default_diagram_generator({"mode": "not-a-mode"})
 
 
 class RunIllustrateTests(VisualsBase):

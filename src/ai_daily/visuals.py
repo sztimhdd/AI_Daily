@@ -17,8 +17,11 @@ from __future__ import annotations
 import base64
 import io
 import json
+import os
 import pathlib
 import subprocess
+import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -285,6 +288,81 @@ def to_webp(png_bytes: bytes) -> tuple[bytes, str]:
             return buf.getvalue(), "webp"
     except Exception:
         return png_bytes, "png"
+
+
+DIAGRAM_MODES = (
+    "architecture", "data-flow", "flowchart", "sequence", "class",
+    "state-machine", "er-diagram", "mind-map", "network-topology",
+)
+
+_FIREWORKS_ROOT = os.environ.get(
+    "AI_DAILY_FIREWORKS_ROOT",
+    "/Users/hai/.codex/skills/fireworks-tech-graph",
+)
+_FIREWORKS_GENERATOR = os.path.join(
+    _FIREWORKS_ROOT, "scripts", "generate-from-template.py"
+)
+
+
+def _rsvg_bin() -> str:
+    return os.environ.get("AI_DAILY_RSVG", "rsvg-convert")
+
+
+def _default_diagram_generator(spec: dict) -> bytes:
+    """Render a fireworks diagram spec to SVG bytes via the generator script."""
+    mode = str(spec.get("mode", "architecture"))
+    if mode not in DIAGRAM_MODES:
+        raise VisualsError(f"unsupported diagram mode {mode!r}")
+    script = pathlib.Path(_FIREWORKS_GENERATOR)
+    if not script.is_file():
+        raise VisualsError(f"fireworks generator missing at {script}")
+    with tempfile.TemporaryDirectory() as tmp:
+        svg_path = pathlib.Path(tmp) / "diagram.svg"
+        proc = subprocess.run(
+            [sys.executable, str(script), mode, str(svg_path)],
+            input=json.dumps(spec, ensure_ascii=False),
+            capture_output=True,
+            text=True,
+            timeout=90,
+        )
+        if proc.returncode != 0 or not svg_path.is_file():
+            detail = (proc.stderr or proc.stdout or "").strip()[:200]
+            raise VisualsError(f"diagram generator failed: {detail}")
+        return svg_path.read_bytes()
+
+
+def _default_svg_to_png(svg_bytes: bytes) -> bytes:
+    """Convert SVG bytes to PNG via rsvg-convert."""
+    with tempfile.TemporaryDirectory() as tmp:
+        svg_path = pathlib.Path(tmp) / "diagram.svg"
+        png_path = pathlib.Path(tmp) / "diagram.png"
+        svg_path.write_bytes(svg_bytes)
+        proc = subprocess.run(
+            [_rsvg_bin(), "-o", str(png_path), str(svg_path)],
+            capture_output=True,
+            timeout=60,
+        )
+        if proc.returncode != 0 or not png_path.is_file():
+            detail = (proc.stderr or b"").decode("utf-8", "replace").strip()[:200]
+            raise VisualsError(f"svg->png conversion failed: {detail}")
+        return png_path.read_bytes()
+
+
+def generate_diagram(spec: dict, generator=None, converter=None) -> tuple[bytes, str]:
+    """Render a diagram spec to WebP bytes; runners are injectable for tests."""
+    gen = generator or _default_diagram_generator
+    conv = converter or _default_svg_to_png
+    try:
+        svg = gen(spec)
+        png = conv(svg)
+    except VisualsError:
+        raise
+    except Exception as exc:
+        raise VisualsError(
+            f"diagram generation failed: {type(exc).__name__}: {exc}"
+        ) from exc
+    webp, fmt = to_webp(png)
+    return webp, fmt
 
 
 def _images_dir(run_paths) -> pathlib.Path:
