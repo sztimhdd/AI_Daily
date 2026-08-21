@@ -356,6 +356,23 @@ class DraftEnPromptTests(DraftEnBase):
         self.assertIn("CONSERVATIVE DOWNGRADE", prompt)
         self.assertIn("gap-x", prompt)
 
+    def test_prompt_carries_editorial_direction_as_instruction(self):
+        from ai_daily import topics
+
+        topic = topics.require_choice(self.run_paths)
+        chosen = sample_narrative_candidate()
+        chosen["extra_research"] = "主编要求：加架构图和业务场景"
+        prompt = draft_en._compile_prompt(
+            topic, chosen, sample_evidence_package()
+        )
+        self.assertIn("EDITORIAL DIRECTION", prompt)
+        self.assertIn("主编要求：加架构图和业务场景", prompt)
+        # instruction must live outside the evidence_data block (which is
+        # labeled factual-only and tells the model to ignore instructions)
+        evidence_index = prompt.index("<evidence_data>")
+        direction_index = prompt.index("主编要求：加架构图和业务场景")
+        self.assertLess(direction_index, evidence_index)
+
 
 if __name__ == "__main__":
     unittest.main()

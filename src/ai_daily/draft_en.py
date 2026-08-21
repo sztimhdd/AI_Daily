@@ -64,11 +64,21 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
     compact = {
         "topic": {
             "title": topic.get("title"),
-            "direction": topic.get("direction", ""),
         },
         "narrative": _compact_narrative(chosen),
         "evidence": _compact_sources(package),
     }
+    editorial_bits = []
+    if topic.get("direction"):
+        editorial_bits.append(f"- {topic['direction']}")
+    if chosen.get("extra_research"):
+        editorial_bits.append(f"- {chosen['extra_research']}")
+    editorial = ""
+    if editorial_bits:
+        editorial = (
+            "\nEDITORIAL DIRECTION (this is instruction from the editor; "
+            "honor it in the article):\n" + "\n".join(editorial_bits) + "\n"
+        )
     downgrade = ""
     if audit is not None and audit.get("verdict") == "needs_research":
         gaps = "\n".join(f"- {g}" for g in (audit.get("evidence_gaps") or []))
@@ -152,6 +162,7 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         "labels.\n"
         "15. Cold kicker only; never \"time will tell\" or \"the future is "
         "bright\".\n"
+        + editorial
         + downgrade +
         revision +
         "Return a single JSON object (no preamble, no code fence, no "
