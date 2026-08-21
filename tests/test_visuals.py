@@ -205,6 +205,17 @@ class EmbedTests(VisualsBase):
         out = visuals.embed(article, images, lambda iid: f"u/{iid}.webp")
         self.assertIn("![Handoff.](u/01.webp)", out)
 
+    def test_embed_emits_caption_line_after_image(self):
+        article = "# T\n\nThe receipt tells a colder story.\n"
+        images = [
+            {"id": "01", "anchor": "The receipt tells a colder story.",
+             "alt": "A meter."},
+        ]
+        out = visuals.embed(article, images, lambda iid: f"u/{iid}.webp")
+        self.assertIn("![A meter.](u/01.webp)", out)
+        self.assertIn("*A meter.*", out)
+        self.assertGreater(out.index("*A meter.*"), out.index("![A meter.]"))
+
     def test_embed_skips_cover(self):
         article = self.write_article()
         images = [

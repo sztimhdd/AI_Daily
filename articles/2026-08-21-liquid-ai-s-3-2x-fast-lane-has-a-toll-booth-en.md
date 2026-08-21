@@ -38,6 +38,9 @@ Streamed answer
 Speculative decoding usually places a smaller draft model beside the target model. The draft proposes tokens; the target checks them before streaming accepted output ([MarkTechPost report](https://www.marktechpost.com/2026/08/20/liquid-ai-releases-lfm2-5-dspark-draft-models-that-deliver-up-to-3-18x-faster-decoding/)). *The verifier still gets a vote.*
 
 ![A draft model sends token blocks to a target LFM2.5 model, which verifies them before accepted output streams onward.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/21/liquid-ai-s-3-2x-fast-lane-has-a-toll-booth/images/01.webp)
+*A draft model sends token blocks to a target LFM2.5 model, which verifies them before accepted output streams onward.*
+
+
 
 
 Standard autoregressive decoding asks the target model to select each next token. The speculative path tries several guesses during a target-model pass ([Unite.AI report](https://www.unite.ai/liquid-ai-ships-lfm2-5-dspark-for-up-to-3-2x-faster-inference/)). When enough guesses survive verification, more output leaves the server per pass.
@@ -51,6 +54,9 @@ Consider a realistic customer-support workload. At 10:14 p.m., an agent opens a 
 Assume the decoding phase lasts 9.5 seconds. If the reported **3.18x** transferred directly, that phase would fall near three seconds ([Unite.AI report](https://www.unite.ai/liquid-ai-ships-lfm2-5-dspark-for-up-to-3-2x-faster-inference/)). That arithmetic is illustrative; network, retrieval, prompt processing, and queueing remain outside it.
 
 ![Two answer paths show decoding compressed under a reported 3.18x case while network, retrieval, prompt processing, and queueing remain.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/21/liquid-ai-s-3-2x-fast-lane-has-a-toll-booth/images/02.webp)
+*Two answer paths show decoding compressed under a reported 3.18x case while network, retrieval, prompt processing, and queueing remain.*
+
+
 
 
 The agent could read the complete answer before the customer sends another message. The customer would see fewer awkward pauses and less blank-screen uncertainty. The operator might serve more conversations without adding another accelerator.
@@ -64,6 +70,9 @@ That distinction protects the roadmap from wishful arithmetic. Faster token gene
 The fast lane works only when the target accepts enough drafted tokens ([MarkTechPost report](https://www.marktechpost.com/2026/08/20/liquid-ai-releases-lfm2-5-dspark-draft-models-that-deliver-up-to-3-18x-faster-decoding/)). Rejected guesses consume draft work without producing equivalent output. Production traces therefore matter more than a launch-day maximum.
 
 ![Draft token blocks reach a verification gate, where accepted blocks stream onward and rejected guesses leave spent computation behind.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/21/liquid-ai-s-3-2x-fast-lane-has-a-toll-booth/images/03.webp)
+*Draft token blocks reach a verification gate, where accepted blocks stream onward and rejected guesses leave spent computation behind.*
+
+
 
 
 The available reports don’t provide raw benchmark tables or an independent reproduction ([Unite.AI report](https://www.unite.ai/liquid-ai-ships-lfm2-5-dspark-for-up-to-3-2x-faster-inference/); [MarkTechPost report](https://www.marktechpost.com/2026/08/20/liquid-ai-releases-lfm2-5-dspark-draft-models-that-deliver-up-to-3-18x-faster-decoding/)). The official page couldn’t be independently reviewed for configuration details ([official Hugging Face post](https://huggingface.co/blog/LiquidAI/lfm25-dspark)). Batch size, output length, precision, serving engine, and sampling settings can’t be reconstructed from the available material.
@@ -79,6 +88,9 @@ Then compare deterministic outputs where exact equivalence matters. Run semantic
 The published headline concerns throughput ([Unite.AI report](https://www.unite.ai/liquid-ai-ships-lfm2-5-dspark-for-up-to-3-2x-faster-inference/)). Your budget cares about completed, acceptable answers during peak load. A draft model adds computation, so teams must measure the net accelerator cost.
 
 ![A target model and added draft model share accelerator resources as acceptable answers emerge, revealing the cost behind higher throughput.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/21/liquid-ai-s-3-2x-fast-lane-has-a-toll-booth/images/04.webp)
+*A target model and added draft model share accelerator resources as acceptable answers emerge, revealing the cost behind higher throughput.*
+
+
 
 
 Track dollars per accepted answer, power use, memory pressure, and operational complexity. Watch failure recovery and tail behavior under concurrency. *Benchmarks remain surprisingly bad at carrying pagers.*

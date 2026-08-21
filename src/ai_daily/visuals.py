@@ -383,6 +383,7 @@ def embed(article: str, images: list, url_for) -> str:
                     url = url_for(img["id"])
                     out.append("")
                     out.append(f"![{alt}]({url})")
+                    out.append(f"*{alt}*")
                     out.append("")
                     inserted.add(img["id"])
     return "\n".join(out)
