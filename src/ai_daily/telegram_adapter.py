@@ -14,6 +14,7 @@ variables) and are never logged.  Network access is injectable
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import pathlib
 import re
@@ -231,6 +232,15 @@ def _receipt_text(applied: dict) -> str:
     return "已记录。"
 
 
+def _offer_fingerprint(run_paths) -> str:
+    """Stable id of the current pending offer; empty when nothing pending."""
+    decision, text = _offer_text(run_paths)
+    if decision is None:
+        return ""
+    digest = hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+    return f"{decision}:{digest}"
+
+
 def apply_reply(run_paths, reply: str) -> dict:
     """Apply a reply: ``1``..``3`` picks a candidate; free text at the
     narrative stage records an editor directive that rebuilds candidates."""
@@ -315,9 +325,16 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
             after_directive = rebuilt.get("status") or "failed"
     offered = None
     if after_directive is None and pending_decision(run_paths) != "none":
-        # Push the pending request only when no reply resolved it this cycle;
-        # otherwise the user's answer triggers a duplicate question.
-        offered = offer(run_paths, token, chat_id, http=http)
+        # Push the pending request only when it is new: never re-send the
+        # same open question on every poll, and never duplicate a question
+        # right after a reply resolved it.
+        from . import state as _state
+
+        fingerprint = _offer_fingerprint(run_paths)
+        st = _state.read_state(run_paths)
+        if st.get("last_offered") != fingerprint:
+            offered = offer(run_paths, token, chat_id, http=http)
+            _state.update_fields(run_paths, last_offered=fingerprint)
     return {
         "offered": offered.get("offered") if offered else None,
         "reply": reply or "",

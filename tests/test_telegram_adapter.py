@@ -430,5 +430,45 @@ class TelegramAdapterTests(unittest.TestCase):
             "the pending question is re-pushed after a rejected reply",
         )
 
+    def test_run_once_does_not_repush_same_pending_question(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        pipeline.run_human_choice(self.rp, 1)
+        _write_narrative_candidates(self.rp)
+        sent = []
+
+        def fake_http(url, payload):
+            data = json.loads(payload)
+            if url.endswith("/sendMessage"):
+                sent.append(data.get("text", ""))
+                return json.dumps(
+                    {"ok": True, "result": {"message_id": 1}}
+                ).encode()
+            return json.dumps({"ok": True, "result": []}).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            first = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+            second = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+        self.assertEqual(first["offered"], "narrative")
+        self.assertEqual(second["offered"], None)
+        self.assertEqual(
+            len([t for t in sent if "回复编号" in t]), 1,
+            "the same open question is only pushed once",
+        )
+
 if __name__ == "__main__":
     unittest.main()

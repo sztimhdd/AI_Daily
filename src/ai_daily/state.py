@@ -28,6 +28,7 @@ FIELD_KEYS = [
     "narrative_archetype",
     "narrative_extra_research",
     "narrative_directive",
+    "last_offered",
     "last_error",
     "updated_at",
 ]
