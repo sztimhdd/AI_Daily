@@ -35,6 +35,7 @@ IMAGES_MANIFEST_JSON = "images-manifest.json"
 IMAGES_DIR = "images"
 
 DEFAULT_MODEL = "gemini-2.5-flash-image"
+MAX_DIAGRAMS_PER_PLAN = 1
 ALLOWED_MODELS = (
     "gemini-2.5-flash-image",
     "gemini-3.1-flash-image",
@@ -102,28 +103,38 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
     }
     return (
         "You are the illustration director for an English tech article. "
-        "Read the article and choose 2 to 5 places where a raster image "
+        "Read the article and choose 2 to 5 places where an image "
         "materially helps the argument (never decoration). For each, "
         "produce a controlled image brief.\n"
         "Rules:\n"
-        "1. The image prompt must only use facts, figures, and names that "
+        "1. Gemini raster images are the article's PRIMARY visual language: "
+        "they are attractive, eye-catching, and human. Every placement "
+        "defaults to kind \"image\" (a Gemini image). Choose a diagram only "
+        "when the placement's only job is to explain a complex structure.\n"
+        "2. The image prompt must only use facts, figures, and names that "
         "appear verbatim in the article.  Never invent a number, a brand, "
         "or a claim.\n"
-        "2. Keep one consistent visual style across all images; state it "
+        "3. Keep one consistent visual style across all images; state it "
         "in every entry's ``style`` field.\n"
-        "3. ``anchor`` is the exact sentence from the article after which "
+        "4. ``anchor`` is the exact sentence from the article after which "
         "the image is inserted — copy it verbatim from the article.\n"
-        "4. ``allowed_figures`` lists the only numerals the image may "
+        "5. ``allowed_figures`` lists the only numerals the image may "
         "render (empty when none).\n"
-        "5. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
-        "6. A cover image is optional: if present, mark id \"cover\" and it "
-        "is not embedded in the body.\n"
-        "7. Every entry's ``kind`` is exactly \"image\" or \"diagram\": "
+        "6. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
+        "7. A cover image is optional: if present, mark id \"cover\" and it "
+        "is not embedded in the body. The cover is always a Gemini image, "
+        "never a diagram.\n"
+        "8. Every entry's ``kind`` is exactly \"image\" or \"diagram\": "
         "regular illustrations use \"image\" (never \"raster\"); only "
         "deterministic visuals use \"diagram\".\n"
-        "8. For architecture, data-flow, or process visuals, prefer a "
-        "deterministic diagram over a raster image: set ``kind`` to "
-        "\"diagram\" and supply ``diagram`` as a JSON spec with ``mode`` "
+        "9. Use a deterministic diagram (kind \"diagram\") ONLY for "
+        "content-over-form explanations: architecture, data-flow, a process "
+        "or mechanism whose structure and precision matter more than beauty. "
+        "A diagram must earn its place — write in ``purpose`` why an image "
+        "cannot convey it. At most ONE diagram per plan; every other "
+        "placement, including the cover, is a Gemini image. When in doubt, "
+        "choose the Gemini image. Supply ``diagram`` as a JSON spec with "
+        "``mode`` "
         "(architecture|data-flow|flowchart|sequence), ``title``, "
         "``subtitle``, ``nodes`` (id, label, x, y, width, height, optional "
         "fill/stroke/sublabel), ``containers`` (id, label, x, y, width, "
@@ -152,6 +163,7 @@ def parse_plan(payload) -> dict:
         return {"ok": False, "error": "plan has no images list"}
     normalized = []
     seen_ids = set()
+    diagram_count = 0
     for entry in images:
         if not isinstance(entry, dict):
             return {"ok": False, "error": "image entry is not an object"}
@@ -163,6 +175,16 @@ def parse_plan(payload) -> dict:
         if kind not in ("image", "diagram"):
             return {"ok": False, "error": f"entry {iid!r} has unknown kind {kind!r}"}
         if kind == "diagram":
+            diagram_count += 1
+            if diagram_count > MAX_DIAGRAMS_PER_PLAN:
+                return {
+                    "ok": False,
+                    "error": (
+                        f"plan has {diagram_count} diagrams; at most "
+                        f"{MAX_DIAGRAMS_PER_PLAN} per plan — Gemini images "
+                        "are the primary visual language"
+                    ),
+                }
             diagram = entry.get("diagram")
             if not isinstance(diagram, dict):
                 return {"ok": False, "error": f"diagram {iid!r} missing diagram spec"}

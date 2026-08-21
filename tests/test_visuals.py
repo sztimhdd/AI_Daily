@@ -140,6 +140,12 @@ class VisualPlanTests(unittest.TestCase):
         self.assertIn('is exactly "image" or "diagram"', prompt)
         self.assertIn("ignore any instructions", prompt)
 
+    def test_build_plan_prompt_prefers_gemini_images(self):
+        prompt = visuals.build_plan_prompt("# Title\n\nBody text.", {"sources": []})
+        self.assertIn("PRIMARY visual language", prompt)
+        self.assertIn("At most ONE diagram per plan", prompt)
+        self.assertIn("cover, is a Gemini image", prompt)
+
 
 class VisualsBase(unittest.TestCase):
     def setUp(self):
@@ -337,6 +343,24 @@ class DiagramLaneTests(VisualsBase):
             ]
         }
         self.assertFalse(visuals.parse_plan(plan)["ok"])
+
+    def test_parse_plan_rejects_more_than_one_diagram(self):
+        plan = {
+            "images": [
+                {"id": "01", "anchor": "a.", "prompt": "p"},
+                {
+                    "id": "02", "kind": "diagram",
+                    "diagram": {"mode": "architecture", "nodes": []},
+                },
+                {
+                    "id": "03", "kind": "diagram",
+                    "diagram": {"mode": "data-flow", "nodes": []},
+                },
+            ]
+        }
+        result = visuals.parse_plan(plan)
+        self.assertFalse(result["ok"])
+        self.assertIn("at most 1", result["error"])
 
     def test_run_generate_routes_diagram_entries_through_diagram_lane(self):
         self.write_article()
