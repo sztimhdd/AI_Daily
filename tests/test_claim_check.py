@@ -92,6 +92,19 @@ class ClaimCheckRunTests(ClaimCheckBase):
             claim_check.run(self.rp)
 
 
+class ClaimCheckPromptTests(unittest.TestCase):
+    def test_compile_prompt_carries_scope_rules(self):
+        prompt = claim_check._compile_prompt("article text", {"sources": []})
+        for phrase in (
+            "do NOT flag these as unsupported",
+            "conventional mechanism",
+            "could not be independently reviewed",
+            "vendor-reported",
+            "no independent reproduction",
+        ):
+            self.assertIn(phrase, prompt)
+
+
 class AssembleEnClaimGateTests(ClaimCheckBase):
     def test_assembly_records_mismatch_without_blocking_delivery(self):
         claim_check.run(

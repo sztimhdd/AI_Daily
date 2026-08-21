@@ -1,6 +1,6 @@
 # 22 — claim-check 把背景知识与自报的降级措辞误判为 unsupported
 
-**Status:** needs-triage
+**Status:** resolved
 
 ## 现象（2026-08-21 E2E 实测）
 
@@ -23,6 +23,12 @@ claim-check 的 prompt 让模型“逐条核对断言 vs 证据包”，但没�
 
 - claim-check prompt 增加三类豁免规则：领域常识、文章已声明的“未独立审阅/无复现”降级语、对来源等级的元陈述不算 unsupported。
 - 或将 claim-check 输出从 `unsupported` 细分为 `unsupported_fact`（真错误）/ `unverified_label`（正确降级）/ `background`（常识），让编辑信号可区分。
+
+## Answer（已修复）
+
+- `claim_check._compile_prompt` 新增 Scope rules 三类豁免：① 文章明确框定为背景/通用机制的句子（conventional mechanism / usually / typically）不算被审计的事件事实主张；② 文章自身的 “could not be independently reviewed / no independent reproduction / not independently confirmed” 降级语，只要与证据包实际状态相符（缺正文、二手、无该来源）就判 ok；③ 对来源等级的元陈述（vendor-reported / second-hand / relayed）是正确标注，不算错误。
+- 真实复核（对 E2E 同一篇文章用新提示词重跑 claim-check）：判定从 `unsupported`（21 条断言，10 条误判）变为 **`ok`（12 条断言全部 ok）**。
+- 回归测试：`ClaimCheckPromptTests.test_compile_prompt_carries_scope_rules`。
 
 ## 关联
 
