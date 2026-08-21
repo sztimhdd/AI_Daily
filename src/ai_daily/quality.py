@@ -263,10 +263,24 @@ def check_en(text: str, evidence: dict, min_words: int = EN_MIN_WORDS,
             f"de-ai:{f.category}", f"“{f.phrase}”", f.line
         ))
 
-    if words < min_words or words > max_words:
+    if words < min_words:
+        shortfall = min_words - words
         findings.append(Finding(
             "word-count",
-            f"{words} words outside [{min_words}, {max_words}]",
+            f"{words} words is {shortfall} short of the {min_words} minimum; "
+            "expand by roughly that many words: deepen the nut graf with one "
+            "concrete scene or example, expand the decision section, or add "
+            "one short 'what to watch' paragraph — without adding unsourced "
+            "claims or new figures",
+        ))
+    elif words > max_words:
+        over = words - max_words
+        findings.append(Finding(
+            "word-count",
+            f"{words} words exceeds the {max_words} maximum by {over}; "
+            f"trim roughly {over} words: cut repeated hedges, merge the two "
+            "weakest paragraphs, and tighten the body without dropping "
+            "source links",
         ))
 
     for i, para in enumerate(paragraphs, 1):

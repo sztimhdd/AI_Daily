@@ -170,6 +170,28 @@ class VerdictTests(unittest.TestCase):
         result = quality.check_en(text, {"sources": []}, min_words=1, max_words=10)
         self.assertEqual(result.verdict, "revise", result.to_dict())
 
+    def test_word_count_feedback_tells_the_model_how_to_fix(self):
+        short = quality.check_en(
+            "A short draft that never reaches the floor.",
+            {"sources": []}, min_words=50, max_words=500,
+        )
+        short_msg = next(
+            f.message for f in short.findings if f.check == "word-count"
+        )
+        self.assertIn("50 minimum", short_msg)
+        self.assertIn("expand", short_msg)
+        long = quality.check_en(
+            "This draft is far longer than the ceiling allows for a single "
+            "compact paragraph that keeps going and going and going without "
+            "ever stopping to breathe or reach a point.",
+            {"sources": []}, min_words=1, max_words=20,
+        )
+        long_msg = next(
+            f.message for f in long.findings if f.check == "word-count"
+        )
+        self.assertIn("20 maximum", long_msg)
+        self.assertIn("trim", long_msg)
+
     def test_four_sentence_paragraph_is_revise(self):
         text = (
             "# Title\n\nOne sentence here. Two sentences follow. A third "
