@@ -5,6 +5,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
@@ -213,6 +214,86 @@ class TelegramAdapterTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         st = state.read_state(self.rp)
         self.assertEqual(st.get("narrative_directive", ""), "")
+
+    def test_out_of_range_topic_reply_gets_failure_receipt(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        sent = []
+
+        def fake_http(url, payload):
+            data = json.loads(payload)
+            if url.endswith("/sendMessage"):
+                sent.append(data.get("text", ""))
+                return json.dumps(
+                    {"ok": True, "result": {"message_id": 1}}
+                ).encode()
+            return json.dumps(
+                {"ok": True, "result": [
+                    {"update_id": 700, "message": {
+                        "chat": {"id": "42"}, "text": "9"
+                    }}
+                ]}
+            ).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            result = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+        self.assertFalse(result["applied"]["ok"])
+        self.assertIn("out of range", result["applied"]["reason"])
+        self.assertTrue(
+            any("无法处理" in text for text in sent),
+            "an out-of-range reply must not be silently dropped",
+        )
+
+    def test_unexpected_apply_failure_keeps_offset(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+
+        def fake_http(url, payload):
+            if url.endswith("/getUpdates"):
+                return json.dumps(
+                    {"ok": True, "result": [
+                        {"update_id": 800, "message": {
+                            "chat": {"id": "42"}, "text": "2"
+                        }}
+                    ]}
+                ).encode()
+            return json.dumps(
+                {"ok": True, "result": {"message_id": 1}}
+            ).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            with mock.patch.object(
+                telegram_adapter, "apply_reply",
+                side_effect=RuntimeError("boom"),
+            ):
+                result = telegram_adapter.run_once(
+                    self.rp, offset=config["offset"],
+                    token=config["token"], chat_id=config["chat"],
+                    http=fake_http, env_path=env_path,
+                )
+            saved = telegram_adapter.load_config(env={}, env_path=env_path)
+        self.assertFalse(result["applied"]["ok"])
+        self.assertIn("apply failed", result["applied"]["reason"])
+        self.assertEqual(
+            saved["offset"], 90,
+            "a reply that fails to apply must stay in the queue",
+        )
 
     def test_load_config_from_env_and_file(self):
         cfg = telegram_adapter.load_config(

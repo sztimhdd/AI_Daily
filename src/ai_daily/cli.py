@@ -44,7 +44,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("collect", help="collect AIHOT (+ optional RSS)")
     common(p)
-    p.add_argument("--mode", choices=("fixture", "live"), default="fixture")
+    p.add_argument("--mode", choices=("fixture", "live"), default="live")
     p.add_argument("--aihot-fixture", default=None)
     p.add_argument("--rss-url", action="append", default=None,
                    help="explicit RSS URL (repeatable); default: none in fixture mode, catalog in live mode")
@@ -98,11 +98,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--mode",
         choices=("fixture", "live"),
-        default="fixture",
+        default="live",
         help=(
-            "fixture: closed-pool V1 research (default, compatible); "
             "live: active-search V2 initial research (story matrix + "
-            "real URL fetching)"
+            "real URL fetching; default); "
+            "fixture: closed-pool V1 research (tests/demos)"
         ),
     )
 

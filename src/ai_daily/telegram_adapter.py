@@ -21,7 +21,7 @@ import re
 import urllib.parse
 import urllib.request
 
-from . import narrative, pipeline, tui
+from . import narrative, pipeline, topics, tui
 
 API_BASE = "https://api.telegram.org"
 ENV_FILE = ".local/telegram.env"
@@ -287,7 +287,8 @@ def apply_reply(run_paths, reply: str) -> dict:
                 return {"ok": False, "reason": "叙事候选尚未生成"}
             chosen = narrative.record_choice(run_paths, candidates, choice, extra)
             return {"ok": True, "decision": "narrative", "chosen": chosen["title"]}
-    except narrative.NarrativeError as exc:
+    except (narrative.NarrativeError, topics.TopicError,
+            pipeline.PipelineError) as exc:
         return {"ok": False, "reason": str(exc)}
     return {"ok": False, "reason": "没有待处理的决策"}
 
@@ -305,19 +306,21 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
         run_paths, codex_runner=codex_runner
     )
     updates = get_updates(token, offset=offset, http=http)
-    next_offset = offset
-    for update in updates:
-        next_offset = max(next_offset, int(update.get("update_id", 0)) + 1)
-    if next_offset > offset:
-        save_config(
-            {"token": token, "chat": chat_id, "offset": next_offset},
-            env_path=env_path,
-        )
     reply = latest_reply(updates, chat_id)
     applied = None
     after_directive = None
+    apply_crashed = False
     if reply:
-        applied = apply_reply(run_paths, reply)
+        try:
+            applied = apply_reply(run_paths, reply)
+        except Exception as exc:
+            # Never lose a reply silently: keep the offset unchanged so the
+            # update is re-delivered next poll, and tell the user what broke.
+            apply_crashed = True
+            applied = {
+                "ok": False,
+                "reason": f"apply failed: {type(exc).__name__}: {exc}",
+            }
         receipt = _receipt_text(applied)
         if receipt:
             send_message(token, chat_id, receipt, http=http)
@@ -335,6 +338,14 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
                 http=http,
             )
             after_directive = rebuilt.get("status") or "failed"
+    next_offset = offset
+    for update in updates:
+        next_offset = max(next_offset, int(update.get("update_id", 0)) + 1)
+    if next_offset > offset and not apply_crashed:
+        save_config(
+            {"token": token, "chat": chat_id, "offset": next_offset},
+            env_path=env_path,
+        )
     offered = None
     if after_directive is None and pending_decision(run_paths) != "none":
         # Push the pending request only when it is new: never re-send the

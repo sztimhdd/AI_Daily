@@ -45,7 +45,6 @@ cli() {
     say "ABORT: ai_daily $* exited with code $rc"
     say ""
     say "RESULT: FAIL (command error)"
-    [ -n "${1_OUT:-}" ] || true
     if [ -n "${SUMMARY_OUT:-}" ]; then printf '%s\n' "$LOG" > "$SUMMARY_OUT"; fi
     exit 1
   fi
@@ -75,7 +74,7 @@ cli init
 cli collect --mode fixture --aihot-fixture "$AIHOT_FIXTURE"
 cli candidates
 cli choose-topic --fixture "$TOPIC_FIXTURE"
-cli research
+cli research --mode fixture
 cli outline
 cli draft
 cli cover

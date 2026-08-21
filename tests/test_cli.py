@@ -34,6 +34,13 @@ class CliBase(unittest.TestCase):
 
 
 class FixtureE2ETests(CliBase):
+    def test_collect_and_research_default_to_live_mode(self):
+        parser = cli.build_parser()
+        collect = parser.parse_args(["collect", "--root", self.root])
+        self.assertEqual(collect.mode, "live")
+        research = parser.parse_args(["research", "--root", self.root])
+        self.assertEqual(research.mode, "live")
+
     def test_run_fixture_e2e_exit_zero_and_completed(self):
         code, out, err = self.run_cli(
             "run", "--root", self.root, "--date", "2026-08-12",
@@ -67,10 +74,14 @@ class FixtureE2ETests(CliBase):
 class ResearchModeCliTests(CliBase):
     """CLI research routing: fixture (default) vs live (V2 initial)."""
 
-    def test_research_default_mode_stays_on_fixture_path(self):
+    def test_research_default_mode_is_live(self):
         with mock.patch.object(
-            cli.pipeline, "run_research",
-            return_value={"status": "generated", "research_md": pathlib.Path("/tmp/r.md")},
+            cli.pipeline, "run_initial_research",
+            return_value={
+                "status": "generated",
+                "research_md": pathlib.Path("/tmp/initial-osint.md"),
+                "analysis_status": "completed",
+            },
         ) as patched:
             code, out, err = self.run_cli(
                 "research", "--root", self.root, "--date", "2026-08-12"
@@ -114,7 +125,9 @@ class SteppedCliTests(CliBase):
         self.assertIn("选题候选", out)
         code, _, err = self.run_cli("choose-topic", *date_args, "--fixture", TOPIC_FIXTURE)
         self.assertEqual(code, 0, err)
-        for cmd in ("research", "outline", "draft", "assemble"):
+        code, _, err = self.run_cli("research", *date_args, "--mode", "fixture")
+        self.assertEqual(code, 0, err)
+        for cmd in ("outline", "draft", "assemble"):
             code, _, err = self.run_cli(cmd, *date_args)
             self.assertEqual(code, 0, f"{cmd}: {err}")
         code, out, err = self.run_cli("status", *date_args)
@@ -139,7 +152,9 @@ class SteppedCliTests(CliBase):
         state_text = state_path.read_text(encoding="utf-8")
         self.assertIn("- topic_choice: simulated", state_text)
         self.assertIn("topic choice: simulated (unattended mode, candidate 1)", state_text)
-        for cmd in ("research", "outline", "draft", "assemble"):
+        code, _, err = self.run_cli("research", *date_args, "--mode", "fixture")
+        self.assertEqual(code, 0, err)
+        for cmd in ("outline", "draft", "assemble"):
             code, _, err = self.run_cli(cmd, *date_args)
             self.assertEqual(code, 0, f"{cmd}: {err}")
         state_text = state_path.read_text(encoding="utf-8")

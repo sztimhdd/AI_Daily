@@ -80,7 +80,8 @@ class E2EBase(unittest.TestCase):
              "--mode", "fixture", "--aihot-fixture", AIHOT_FIXTURE],
             ["choose-topic", "--root", str(self.root), "--date", date,
              "--fixture", topic_fixture],
-            ["research", "--root", str(self.root), "--date", date],
+            ["research", "--root", str(self.root), "--date", date,
+             "--mode", "fixture"],
             ["outline", "--root", str(self.root), "--date", date],
             ["draft", "--root", str(self.root), "--date", date],
         ):
@@ -332,10 +333,16 @@ class ResumeStageTests(E2EBase):
         ):
             code, _, err = self.run_cli(*argv)
             self.assertEqual(code, 0, err)
-        code, out, err = self.run_cli("research", "--root", str(self.root), "--date", DATE_A)
+        code, out, err = self.run_cli(
+            "research", "--root", str(self.root), "--date", DATE_A,
+            "--mode", "fixture",
+        )
         self.assertEqual(code, 0, err)
         self.assertIn("generated", out)
-        code, out, err = self.run_cli("research", "--root", str(self.root), "--date", DATE_A)
+        code, out, err = self.run_cli(
+            "research", "--root", str(self.root), "--date", DATE_A,
+            "--mode", "fixture",
+        )
         self.assertEqual(code, 0, err)
         self.assertIn("resumed", out)
         self.run_cli("outline", "--root", str(self.root), "--date", DATE_A)
