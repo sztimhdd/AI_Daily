@@ -93,7 +93,7 @@ class ClaimCheckRunTests(ClaimCheckBase):
 
 
 class AssembleEnClaimGateTests(ClaimCheckBase):
-    def test_assembly_blocks_on_mismatch(self):
+    def test_assembly_records_mismatch_without_blocking_delivery(self):
         claim_check.run(
             self.rp,
             codex_runner=lambda p: {
@@ -103,8 +103,14 @@ class AssembleEnClaimGateTests(ClaimCheckBase):
                 "reason": "x",
             },
         )
-        with self.assertRaises(assemble_en.AssembleEnError):
-            assemble_en.run(self.rp)
+        result = assemble_en.run(self.rp)
+        self.assertEqual(result["status"], "assembled")
+        metadata = json.loads(
+            (self.rp.package_dir(paths.slugify_title(
+                "The search budget is the hidden line item", self.rp.date
+            )) / "metadata.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(metadata["claim_check"]["verdict"], "mismatch")
 
     def test_assembly_proceeds_on_ok(self):
         claim_check.run(

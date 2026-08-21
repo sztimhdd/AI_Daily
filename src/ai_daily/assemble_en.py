@@ -206,11 +206,6 @@ def run(run_paths, force: bool = False) -> dict:
     """Validate, package, and map the final English article."""
     topics.require_choice(run_paths)
     cc = _read_claim_check(run_paths)
-    if cc and cc.get("verdict") not in ("ok", "resumed"):
-        raise AssembleEnError(
-            "assembly rejected: claim check verdict "
-            f"{cc.get('verdict')!r} — {(cc.get('reason') or '')[:200]}"
-        )
     en_title, en_slug = _en_title_slug(run_paths)
     package_dir = run_paths.package_dir(en_slug)
     final_path = run_paths.final_article_en_path(en_slug)
@@ -270,6 +265,7 @@ def run(run_paths, force: bool = False) -> dict:
         "language": "en",
         "topic_choice": state.read_state(run_paths).get("topic_choice", ""),
         "quality": quality_record,
+        "claim_check": cc,
         "evidence_verdict": evidence_verdict,
         "downgraded": bool(quality_record.get("downgraded")
                            or evidence_verdict == "needs_research"),
