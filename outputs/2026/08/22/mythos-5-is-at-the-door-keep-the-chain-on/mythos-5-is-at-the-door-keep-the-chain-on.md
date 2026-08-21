@@ -42,6 +42,10 @@ Name an internal owner. That person should approve scope changes, review inciden
 
 Require logs that connect each scan to an identity, asset, policy, and outcome. If that chain breaks, the trial pauses.
 
+![A data-flow diagram connecting logs with each scan, identity, asset, policy, and outcome.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp)
+*A data-flow diagram connecting logs with each scan, identity, asset, policy, and outcome.*
+
+
 Set an exit path before integration work begins. Export findings, preserve audit records, revoke credentials, and document how another tool resumes coverage.
 
 These controls don't accuse **Anthropic** of misconduct. They prevent a procurement team from converting uncertainty into an undocumented dependency.
@@ -58,6 +62,10 @@ That sounds severe because procurement models create false precision easily. A l
 
 Soon the number decorates a slide no one can defend. The glow survives; the provenance disappears.
 
+![The glowing $35 million headline figure loses its provenance while remaining marked unknown in a diligence register and outside the vendor scorecard.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp)
+*The glowing $35 million headline figure loses its provenance while remaining marked unknown in a diligence register and outside the vendor scorecard.*
+
+
 ## Separate three decisions
 
 First, decide whether the capability deserves technical testing. The reported enterprise scans and broader defensive access provide enough reason for a controlled evaluation.
@@ -65,6 +73,10 @@ First, decide whether the capability deserves technical testing. The reported en
 Second, decide whether the operating model deserves trust. That requires evidence covering admission, oversight, revocation, review, and expiration.
 
 Third, decide whether the relationship deserves duration. Long commitments should follow verified controls and repeatable results, not precede them.
+
+![A flowchart separates technical testing, trust in the operating model, and duration of the relationship.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp)
+*A flowchart separates technical testing, trust in the operating model, and duration of the relationship.*
+
 
 *Procurement is applied threat modeling.*
 

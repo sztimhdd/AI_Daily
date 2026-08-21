@@ -108,14 +108,39 @@
     "没有独立一手来源交叉验证扩围的具体范围、对象和生效时间。",
     "缺少可复现实测、安全评估、定价和真实客户使用证据。"
   ],
-  "source_count": 3,
-  "generated_at": "2026-08-21T19:47:45+00:00",
+  "source_count": 6,
+  "generated_at": "2026-08-21T19:50:30+00:00",
   "seo_title": "Mythos 5 Is Here. Pilot It—Don’t Commit.",
   "seo_summary": "Mythos 5 is entering enterprise security. Test its capability, but require audit logs, review gates, revocation, and an exit plan before renewal.",
   "has_cover": false,
   "cover": null,
-  "images_status": "degraded",
-  "images": [],
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A data-flow diagram connecting logs with each scan, identity, asset, policy, and outcome.",
+      "width": 960,
+      "height": 700,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "The glowing $35 million headline figure loses its provenance while remaining marked unknown in a diligence register and outside the vendor scorecard.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A flowchart separates technical testing, trust in the operating model, and duration of the relationship.",
+      "width": 960,
+      "height": 700,
+      "format": "webp"
+    }
+  ],
   "sources": [
     {
       "title": "Anthropic Deploys Claude Mythos 5 in Security Tools, $35M Open-Source Fund",
@@ -134,6 +159,21 @@
       "url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
       "origin": "initial",
       "status": "fetched"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp",
+      "origin": "article"
     }
   ],
   "final_article": "articles/2026-08-22-mythos-5-is-at-the-door-keep-the-chain-on-en.md",
