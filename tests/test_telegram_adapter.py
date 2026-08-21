@@ -338,8 +338,97 @@ class TelegramAdapterTests(unittest.TestCase):
             )
         self.assertTrue(result["applied"]["ok"])
         self.assertEqual(result["applied"]["chosen"], "B")
-        self.assertEqual(sent, [], "no duplicate question when the reply "
-                                  "resolves the decision")
+        self.assertFalse(
+            any("回复编号" in text for text in sent),
+            "no duplicate question when the reply resolves the decision",
+        )
+        self.assertTrue(
+            any("已记录叙事" in text for text in sent),
+            "a status receipt must follow a resolved reply",
+        )
+
+    def test_run_once_sends_receipt_after_topic_choice(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        sent = []
+
+        def fake_http(url, payload):
+            data = json.loads(payload)
+            if url.endswith("/sendMessage"):
+                sent.append(data.get("text", ""))
+                return json.dumps(
+                    {"ok": True, "result": {"message_id": 1}}
+                ).encode()
+            return json.dumps(
+                {"ok": True, "result": [
+                    {"update_id": 500, "message": {
+                        "chat": {"id": "42"}, "text": "1"
+                    }}
+                ]}
+            ).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            result = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+        self.assertTrue(result["applied"]["ok"])
+        self.assertEqual(result["applied"]["decision"], "topic")
+        self.assertTrue(
+            any("已记录选题" in text for text in sent),
+            "a status receipt must follow a topic choice",
+        )
+
+    def test_run_once_sends_failure_receipt_for_bad_reply(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        pipeline.run_human_choice(self.rp, 1)
+        _write_narrative_candidates(self.rp)
+        sent = []
+
+        def fake_http(url, payload):
+            data = json.loads(payload)
+            if url.endswith("/sendMessage"):
+                sent.append(data.get("text", ""))
+                return json.dumps(
+                    {"ok": True, "result": {"message_id": 1}}
+                ).encode()
+            return json.dumps(
+                {"ok": True, "result": [
+                    {"update_id": 600, "message": {
+                        "chat": {"id": "42"}, "text": "99"
+                    }}
+                ]}
+            ).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            result = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+        self.assertFalse(result["applied"]["ok"])
+        self.assertTrue(
+            any("无法处理" in text for text in sent),
+            "a failure receipt must explain why the reply was rejected",
+        )
+        self.assertTrue(
+            any("回复编号" in text for text in sent),
+            "the pending question is re-pushed after a rejected reply",
+        )
 
 if __name__ == "__main__":
     unittest.main()

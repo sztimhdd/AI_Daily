@@ -206,6 +206,31 @@ def _ensure_narrative_candidates(run_paths, codex_runner=None) -> dict:
         return {"status": "unavailable", "reason": str(exc), "candidates": []}
 
 
+def _receipt_text(applied: dict) -> str:
+    """One-line status receipt the bot sends after applying a HITL reply."""
+    if not applied:
+        return ""
+    if not applied.get("ok"):
+        return (
+            "无法处理这条回复："
+            f"{applied.get('reason', '未知原因')}。"
+            "请回复编号 1/2，或直接发编辑意见。"
+        )
+    if applied.get("directive"):
+        return "已收到你的编辑意见。正在按它重写叙事候选，新候选稍后推送。"
+    if applied.get("decision") == "topic":
+        return (
+            f"已记录选题：{applied.get('chosen', '')}。"
+            "下一步：对该选题做多路研究，完成后推送叙事候选。"
+        )
+    if applied.get("decision") == "narrative":
+        return (
+            f"已记录叙事：{applied.get('chosen', '')}。"
+            "下一步：证据充分性审计与定向补证，通过后进入英文写作。"
+        )
+    return "已记录。"
+
+
 def apply_reply(run_paths, reply: str) -> dict:
     """Apply a reply: ``1``..``3`` picks a candidate; free text at the
     narrative stage records an editor directive that rebuilds candidates."""
@@ -271,6 +296,9 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
     after_directive = None
     if reply:
         applied = apply_reply(run_paths, reply)
+        receipt = _receipt_text(applied)
+        if receipt:
+            send_message(token, chat_id, receipt, http=http)
     if applied and applied.get("ok") and applied.get("directive"):
         rebuilt = _ensure_narrative_candidates(run_paths, codex_runner)
         if rebuilt.get("status") == "generated":
