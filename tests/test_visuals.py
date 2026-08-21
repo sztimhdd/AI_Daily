@@ -269,6 +269,80 @@ class DiagramLaneTests(VisualsBase):
         with self.assertRaises(visuals.VisualsError):
             visuals._default_diagram_generator({"mode": "not-a-mode"})
 
+    def test_parse_plan_accepts_diagram_entry(self):
+        plan = {
+            "images": [
+                {"id": "01", "anchor": "a.", "prompt": "p", "alt": "a."},
+                {
+                    "id": "02", "kind": "diagram", "anchor": "b.",
+                    "alt": "arch",
+                    "diagram": {
+                        "mode": "architecture", "title": "Stack",
+                        "nodes": [], "arrows": [],
+                    },
+                },
+            ]
+        }
+        parsed = visuals.parse_plan(plan)
+        self.assertTrue(parsed["ok"])
+        dia = parsed["images"][1]
+        self.assertEqual(dia["kind"], "diagram")
+        self.assertEqual(dia["diagram"]["mode"], "architecture")
+
+    def test_parse_plan_rejects_diagram_with_unknown_mode(self):
+        plan = {
+            "images": [
+                {"id": "01", "anchor": "a.", "prompt": "p"},
+                {"id": "02", "kind": "diagram", "diagram": {"mode": "nope"}},
+            ]
+        }
+        self.assertFalse(visuals.parse_plan(plan)["ok"])
+
+    def test_run_generate_routes_diagram_entries_through_diagram_lane(self):
+        self.write_article()
+        plan = {
+            "images": [
+                {"id": "01", "anchor": "a.", "prompt": "p", "alt": "a."},
+                {
+                    "id": "02", "kind": "diagram", "anchor": "b.",
+                    "alt": "arch",
+                    "diagram": {
+                        "mode": "architecture", "title": "Stack",
+                        "nodes": [], "arrows": [],
+                    },
+                },
+            ]
+        }
+        (self.rp.work_dir / visuals.VISUAL_PLAN_JSON).write_text(
+            json.dumps(plan), encoding="utf-8"
+        )
+        from unittest import mock
+
+        def fake_runner(prompt, model, token, project):
+            return make_png()
+
+        def fake_gen(spec):
+            return b"<svg xmlns='http://www.w3.org/2000/svg'/>"
+
+        def fake_conv(svg):
+            return make_png()
+
+        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
+             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
+            result = visuals.run_generate(
+                self.rp, gemini_runner=fake_runner,
+                diagram_generator=fake_gen, diagram_converter=fake_conv,
+            )
+        self.assertEqual(result["status"], "generated")
+        self.assertEqual(result["generated"], 2)
+        manifest = json.loads(
+            (self.rp.work_dir / visuals.IMAGES_MANIFEST_JSON).read_text(
+                encoding="utf-8"
+            )
+        )
+        kinds = {e["id"]: e.get("kind", "image") for e in manifest["images"]}
+        self.assertEqual(kinds["02"], "diagram")
+
 
 class RunIllustrateTests(VisualsBase):
     def test_run_plan_missing_article_raises(self):

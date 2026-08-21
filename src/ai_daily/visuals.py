@@ -116,6 +116,15 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "5. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
         "6. A cover image is optional: if present, mark id \"cover\" and it "
         "is not embedded in the body.\n"
+        "7. For architecture, data-flow, or process visuals, prefer a "
+        "deterministic diagram over a raster image: set ``kind`` to "
+        "\"diagram\" and supply ``diagram`` as a JSON spec with ``mode`` "
+        "(architecture|data-flow|flowchart|sequence), ``title``, "
+        "``subtitle``, ``nodes`` (id, label, x, y, width, height, optional "
+        "fill/stroke/sublabel), ``containers`` (id, label, x, y, width, "
+        "height), ``arrows`` (source, target, optional label/flow), and "
+        "optional ``legend``.  The diagram must describe the article's "
+        "mechanism and never invent structure.\n"
         "Return a single JSON object, no prose, no code fence:\n"
         '{"images":[{"id":"01","anchor":"<verbatim sentence>",'
         '"purpose":"...","style":"...","prompt":"...","alt":"...",'
@@ -142,6 +151,33 @@ def parse_plan(payload) -> dict:
             return {"ok": False, "error": "image entry is not an object"}
         iid = str(entry.get("id") or "").strip()
         anchor = str(entry.get("anchor") or "").strip()
+        kind = str(entry.get("kind") or "image").strip()
+        if kind not in ("image", "diagram"):
+            return {"ok": False, "error": f"entry {iid!r} has unknown kind {kind!r}"}
+        if kind == "diagram":
+            diagram = entry.get("diagram")
+            if not isinstance(diagram, dict):
+                return {"ok": False, "error": f"diagram {iid!r} missing diagram spec"}
+            mode = str(diagram.get("mode") or "architecture").strip()
+            if mode not in DIAGRAM_MODES:
+                return {
+                    "ok": False,
+                    "error": f"diagram {iid!r} mode {mode!r} not supported",
+                }
+            if iid in seen_ids:
+                return {"ok": False, "error": f"duplicate image id {iid!r}"}
+            seen_ids.add(iid)
+            normalized.append(
+                {
+                    "id": iid,
+                    "kind": "diagram",
+                    "anchor": anchor,
+                    "purpose": str(entry.get("purpose") or "").strip(),
+                    "alt": str(entry.get("alt") or "").strip(),
+                    "diagram": dict(diagram),
+                }
+            )
+            continue
         prompt = str(entry.get("prompt") or "").strip()
         if not iid:
             return {"ok": False, "error": "image entry missing id"}
@@ -156,6 +192,7 @@ def parse_plan(payload) -> dict:
         normalized.append(
             {
                 "id": iid,
+                "kind": "image",
                 "anchor": anchor,
                 "purpose": str(entry.get("purpose") or "").strip(),
                 "style": str(entry.get("style") or "").strip(),
@@ -371,20 +408,24 @@ def _images_dir(run_paths) -> pathlib.Path:
     return d
 
 
-def run_generate(run_paths, gemini_runner=None, force: bool = False) -> dict:
+def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
+                 diagram_converter=None, force: bool = False) -> dict:
     """Generate + validate + convert every plan image; never raises."""
     plan = run_plan(run_paths)
     if plan["status"] == "unavailable":
         return {"status": "unavailable", "reason": plan.get("reason", "")}
-    try:
-        token = load_vertex_token()
-        project = load_vertex_project()
-    except VisualsError as exc:
-        return {"status": "unavailable", "reason": str(exc)}
+    token = project = None
+    if any(e.get("kind", "image") == "image" for e in plan["images"]):
+        try:
+            token = load_vertex_token()
+            project = load_vertex_project()
+        except VisualsError as exc:
+            return {"status": "unavailable", "reason": str(exc)}
     images_dir = _images_dir(run_paths)
     entries = []
     for entry in plan["images"]:
         iid = entry["id"]
+        kind = entry.get("kind", "image")
         target_png = images_dir / f"{iid}.png"
         target_webp = images_dir / f"{iid}.webp"
         if (target_webp.exists() or target_png.exists()) and not force:
@@ -392,16 +433,26 @@ def run_generate(run_paths, gemini_runner=None, force: bool = False) -> dict:
             pass
         else:
             try:
-                png = generate_image(
-                    entry["prompt"], entry["model"],
-                    gemini_runner=gemini_runner, token=token, project=project,
-                )
+                if kind == "diagram":
+                    webp, fmt = generate_diagram(
+                        entry["diagram"],
+                        generator=diagram_generator,
+                        converter=diagram_converter,
+                    )
+                else:
+                    png = generate_image(
+                        entry["prompt"], entry["model"],
+                        gemini_runner=gemini_runner, token=token, project=project,
+                    )
+                    webp, fmt = to_webp(png)
             except Exception as exc:
                 entries.append(
-                    {"id": iid, "status": "failed", "reason": str(exc)[:200]}
+                    {
+                        "id": iid, "kind": kind, "status": "failed",
+                        "reason": str(exc)[:200],
+                    }
                 )
                 continue
-            webp, fmt = to_webp(png)
             dest = target_webp if fmt == "webp" else target_png
             dest.write_bytes(webp)
         w, h = _image_dimensions(
@@ -410,6 +461,7 @@ def run_generate(run_paths, gemini_runner=None, force: bool = False) -> dict:
         entries.append(
             {
                 "id": iid,
+                "kind": kind,
                 "status": "generated",
                 "format": "webp" if target_webp.exists() else "png",
                 "width": w,
