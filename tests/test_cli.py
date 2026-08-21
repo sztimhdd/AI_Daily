@@ -791,6 +791,41 @@ class EnglishEditionCliTests(CliBase):
         patched.assert_called_once()
         self.assertIn("assemble-en: assembled", out)
 
+    def test_telegram_command_invokes_adapter(self):
+        from ai_daily import telegram_adapter
+
+        result = {
+            "offered": "topic",
+            "reply": "1",
+            "applied": {"ok": True, "decision": "topic", "chosen": "T"},
+        }
+        with mock.patch.object(
+            cli.telegram_adapter, "run_once", return_value=result
+        ) as patched:
+            code, out, err = self.run_cli(
+                "telegram", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 0, err)
+        patched.assert_called_once()
+        self.assertIn("telegram: offered=topic", out)
+
+    def test_telegram_command_offer_only(self):
+        from ai_daily import telegram_adapter
+
+        with mock.patch.object(
+            cli.telegram_adapter, "load_config",
+            return_value={"token": "T", "chat": "C"},
+        ), mock.patch.object(
+            cli.telegram_adapter, "offer",
+            return_value={"ok": True, "offered": "narrative"},
+        ) as patched:
+            code, _out, err = self.run_cli(
+                "telegram", "--root", self.root, "--date", "2026-08-20",
+                "--offer-only",
+            )
+        self.assertEqual(code, 0, err)
+        patched.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

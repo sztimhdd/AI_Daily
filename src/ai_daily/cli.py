@@ -20,6 +20,7 @@ import sys
 from . import STAGES, assemble, assemble_en, claim_check, draft, draft_en, fetch
 from . import narrative, outline, pipeline, publish, state, sufficiency
 from . import targeted, topics, tui, visuals, linkedin
+from . import telegram_adapter
 from .paths import RunPaths
 
 
@@ -133,6 +134,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--remote-url", default=None)
     p.add_argument("--branch", default="main")
     p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser(
+        "telegram",
+        help="Telegram decision channel: offer pending decision + apply reply",
+    )
+    common(p)
+    p.add_argument("--offset", type=int, default=0,
+                   help="getUpdates offset (track the last applied update id)")
+    p.add_argument("--offer-only", action="store_true",
+                   help="push the pending decision without applying replies")
 
     p = sub.add_parser("fetch", help="fetch one URL via the unified three-lane primitive")
     common(p)
@@ -481,6 +492,29 @@ def cmd_run_en(args) -> int:
     return 0 if result["status"] == "delivered" else 1
 
 
+def cmd_telegram(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    if args.offer_only:
+        config = telegram_adapter.load_config()
+        result = telegram_adapter.offer(
+            run_paths, config["token"], config["chat"]
+        )
+        print(f"telegram: offered={result['offered']}")
+        return 0
+    result = telegram_adapter.run_once(run_paths, offset=args.offset)
+    print(f"telegram: offered={result['offered']}")
+    if result.get("reply"):
+        print(f"- reply: {result['reply']}")
+    applied = result.get("applied")
+    if applied:
+        if applied.get("ok"):
+            print(f"- applied {applied.get('decision')}: {applied.get('chosen')}")
+        else:
+            print(f"- not applied: {applied.get('reason', '')}")
+    return 0
+
+
 def cmd_fetch(args) -> int:
     """Low-level fetch primitive: usable at any stage, no state.md needed."""
     run_paths = _paths(args)
@@ -740,6 +774,7 @@ COMMANDS = {
     "publish": cmd_publish,
     "run": cmd_run,
     "run-en": cmd_run_en,
+    "telegram": cmd_telegram,
     "fetch": cmd_fetch,
     "session": cmd_session,
     "narrative": cmd_narrative,
@@ -762,6 +797,7 @@ _DOMAIN_ERRORS = (
     draft_en.DraftEnError,
     assemble_en.AssembleEnError,
     claim_check.ClaimCheckError,
+    telegram_adapter.TelegramError,
     draft.__class__ and RuntimeError,  # draft/outline/research raise RuntimeError subclasses
 )
 
