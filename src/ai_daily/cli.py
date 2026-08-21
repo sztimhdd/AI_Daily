@@ -504,12 +504,21 @@ def cmd_telegram(args) -> int:
         return 0
     result = telegram_adapter.run_once(run_paths, offset=args.offset)
     print(f"telegram: offered={result['offered']}")
+    if result.get("regenerated") and result["regenerated"] != "noop":
+        print(f"- narrative regenerated: {result['regenerated']}")
     if result.get("reply"):
         print(f"- reply: {result['reply']}")
     applied = result.get("applied")
     if applied:
         if applied.get("ok"):
-            print(f"- applied {applied.get('decision')}: {applied.get('chosen')}")
+            chosen = applied.get("chosen") or ""
+            if applied.get("directive"):
+                print("- applied narrative directive: "
+                      f"{applied['directive'][:80]}")
+            else:
+                print(f"- applied {applied.get('decision')}: {chosen}")
+            if result.get("after_directive"):
+                print(f"- narrative pushed: {result['after_directive']}")
         else:
             print(f"- not applied: {applied.get('reason', '')}")
     return 0

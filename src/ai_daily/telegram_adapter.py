@@ -155,7 +155,10 @@ def _offer_text(run_paths) -> tuple:
         if not candidates:
             return None, "叙事候选尚未生成；先跑 narrative 阶段再问。"
         text = tui.render_narrative_candidates(candidates, color=False)
-        return decision, text + "\n\n回复编号 1/2 选择叙事（可附补充方向）。"
+        return decision, text + (
+            "\n\n回复编号 1/2 选择叙事（可附补充方向）；"
+            "若两条都不满意，直接发你的编辑意见，我会重写候选再给你。"
+        )
     return None, ""
 
 
@@ -179,11 +182,47 @@ def offer(run_paths, token: str, chat_id: str, http=None) -> dict:
     return {"ok": True, "offered": decision}
 
 
+def _ensure_narrative_candidates(run_paths, codex_runner=None) -> dict:
+    """Regenerate narrative candidates when an editor directive is pending.
+
+    A free-text directive invalidates the old candidates; the next poll must
+    rebuild them (with the directive in the prompt) before offering again.
+    Returns ``noop`` when nothing is pending, ``generated`` after a rebuild.
+    """
+    if pending_decision(run_paths) != "narrative":
+        return {"status": "noop"}
+    from . import state
+
+    st = state.read_state(run_paths)
+    if not (st.get("narrative_directive") or "").strip():
+        return {"status": "noop"}
+    if (run_paths.work_dir / narrative.NARRATIVE_CANDIDATES_JSON).exists():
+        return {"status": "noop"}
+    try:
+        return pipeline.run_narrative(
+            run_paths, codex_runner=codex_runner, force=True
+        )
+    except narrative.NarrativeError as exc:
+        return {"status": "unavailable", "reason": str(exc), "candidates": []}
+
+
 def apply_reply(run_paths, reply: str) -> dict:
-    """Record a ``1``..``3`` reply through the same path the CLI uses."""
+    """Apply a reply: ``1``..``3`` picks a candidate; free text at the
+    narrative stage records an editor directive that rebuilds candidates."""
     text = (reply or "").strip()
     match = re.match(r"^(\d+)(?:\s+(.*))?$", text)
     if not match:
+        decision = pending_decision(run_paths)
+        if decision == "narrative":
+            if not text:
+                return {"ok": False, "reason": "空回复；请发编号或编辑意见"}
+            result = narrative.apply_directive(run_paths, text)
+            return {
+                "ok": True,
+                "decision": "narrative",
+                "directive": result["directive"],
+                "chosen": "",
+            }
         return {"ok": False, "reason": f"回复 {reply!r} 不是编号"}
     choice = int(match.group(1))
     extra = (match.group(2) or "").strip()
@@ -202,13 +241,16 @@ def apply_reply(run_paths, reply: str) -> dict:
 
 def run_once(run_paths, token: str = None, chat_id: str = None,
              offset: int = None, http=None, env: dict = None,
-             env_path: str = None) -> dict:
+             env_path: str = None, codex_runner=None) -> dict:
     """One adapter cycle: push pending + apply the latest reply."""
     if token is None or chat_id is None or offset is None:
         config = load_config(env=env)
         token = token or config["token"]
         chat_id = chat_id or config["chat"]
         offset = config["offset"] if offset is None else offset
+    ensure_status = _ensure_narrative_candidates(
+        run_paths, codex_runner=codex_runner
+    )
     offered = offer(run_paths, token, chat_id, http=http)
     updates = get_updates(token, offset=offset, http=http)
     next_offset = offset
@@ -221,10 +263,27 @@ def run_once(run_paths, token: str = None, chat_id: str = None,
         )
     reply = latest_reply(updates, chat_id)
     applied = None
+    after_directive = None
     if reply:
         applied = apply_reply(run_paths, reply)
+    if applied and applied.get("ok") and applied.get("directive"):
+        rebuilt = _ensure_narrative_candidates(run_paths, codex_runner)
+        if rebuilt.get("status") == "generated":
+            offer(run_paths, token, chat_id, http=http)
+            after_directive = "generated"
+        else:
+            reason = (rebuilt.get("reason") or "unknown").strip()
+            send_message(
+                token, chat_id,
+                "已收到退回意见；重写叙事暂不可用："
+                f"{reason[:300] or 'unknown'}",
+                http=http,
+            )
+            after_directive = rebuilt.get("status") or "failed"
     return {
         "offered": offered.get("offered"),
         "reply": reply or "",
         "applied": applied,
+        "regenerated": ensure_status.get("status"),
+        "after_directive": after_directive,
     }

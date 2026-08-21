@@ -305,7 +305,8 @@ def score_candidate(cand: dict, osint: dict) -> dict:
     }
 
 
-def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> str:
+def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
+                    directive: str = "") -> str:
     """Self-contained narrative-generation prompt from the v2026 contract."""
     compact = {
         "topic": {
@@ -337,7 +338,7 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> s
         f"- {_ARCHETYPE_TITLES[key]}（{key}）：{_ARCHETYPE_ANATOMY[key]}"
         for key in allowed
     )
-    return (
+    prompt = (
         "你是那篇专栏的作者本人：15 年科技大厂与 AI 架构老兵，冷峻、犀利、"
         "大白话、带专业傲慢，也爱看热闹；同时是 2026 年的 practitioner——"
         "I tested / we changed / here is the trade-off。你在为今天这个选题想"
@@ -346,6 +347,18 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> s
         "范式：热点 × 可验证冲突 × 证据资产 × 读者决策。\n"
         f"本轮可用原型白名单：{archetype_names}。禁止使用白名单之外的原型；"
         "证据不足的论据宁可放弃也不编造。\n"
+    )
+    if directive:
+        prompt += (
+            "\n【主编退回意见（最高优先级，必须正面回应）】\n"
+            "主编对上一轮两条候选都不满意，退回重写。以下是主编的原话：\n"
+            f"<editorial_directive>{directive}</editorial_directive>\n"
+            "要求：两个候选都要围绕主编意见重新立意，可以一正一反两种回应，"
+            "但不得同义重复；论证仍然只能来自 evidence_data；"
+            "意见中未被证据支持的部分必须显式标 Inferred/Unknown，"
+            "绝不能写成已证实事实。\n"
+        )
+    prompt += (
         "【结构纪律（必须执行）】\n"
         "1. 开头三段 = Observable（可观察事实）→ Conflict（与主流说法/发布会的"
         "冲突）→ Decision（改变读者的哪个决策）。\n"
@@ -395,6 +408,7 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set) -> s
         f"{json.dumps(compact, ensure_ascii=False)}\n"
         "</evidence_data>\n"
     )
+    return prompt
 
 
 def _validate_candidate(cand: dict, allowed: list) -> list:
@@ -432,6 +446,8 @@ def _validate_candidate(cand: dict, allowed: list) -> list:
 def run(run_paths, codex_runner=None, force: bool = False) -> dict:
     """Generate two narrative candidates from the 03 OSINT archive."""
     topic = topics.require_choice(run_paths)
+    st = state.read_state(run_paths)
+    directive = (st.get("narrative_directive") or "").strip()
     state.transition(run_paths, "narrative")
     json_path = run_paths.work_dir / NARRATIVE_CANDIDATES_JSON
     md_path = run_paths.work_dir / NARRATIVE_CANDIDATES_MD
@@ -461,7 +477,8 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
     allowed = route_archetypes(osint, tensions)
 
     runner = codex_runner or research._default_codex_runner
-    analysis = runner(_compile_prompt(topic, osint, allowed, tensions))
+    prompt = _compile_prompt(topic, osint, allowed, tensions, directive=directive)
+    analysis = runner(prompt)
     if (
         isinstance(analysis, dict)
         and analysis.get("status") == "unavailable"
@@ -470,7 +487,7 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
         # One bounded retry: truncated output is the common failure mode,
         # so ask once more with an explicit closure instruction.
         analysis = runner(
-            _compile_prompt(topic, osint, allowed, tensions)
+            prompt
             + "\n上一次输出不完整或截断。这次只输出单个 JSON 对象，"
             "保证完整闭合；放不下就把 key_arguments 减到 2 条。\n"
         )
@@ -588,6 +605,33 @@ def record_choice(run_paths, candidates: list, choice: int,
         narrative_extra_research=extra_research,
     )
     return cand
+
+
+def apply_directive(run_paths, directive: str) -> dict:
+    """Record an editor's free-text return: invalidate candidates + reset choice.
+
+    The next ``run()`` call regenerates candidates with the directive injected
+    into the prompt.  The directive is durable state so a later stage can
+    always tell *why* the current candidates exist.
+    """
+    text = (directive or "").strip()
+    if not text:
+        raise NarrativeError("empty editorial directive")
+    for name in (NARRATIVE_CANDIDATES_JSON, NARRATIVE_CANDIDATES_MD,
+                 SELECTED_NARRATIVE_JSON):
+        path = run_paths.work_dir / name
+        if path.exists():
+            path.unlink()
+    state.update_fields(
+        run_paths,
+        note="narrative directive: 主编退回重写",
+        narrative_directive=text,
+        narrative_choice="",
+        narrative_title="",
+        narrative_archetype="",
+        narrative_extra_research="",
+    )
+    return {"ok": True, "directive": text}
 
 
 def record_simulated_choice(run_paths, candidates: list, choice: int,

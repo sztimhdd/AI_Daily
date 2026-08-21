@@ -325,6 +325,19 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         )
         self.assertIn("别被热搜带节奏", narrative._ARCHETYPE_ANATOMY["decision_brief"])
 
+    def test_prompt_includes_editorial_directive_when_given(self):
+        directive = "两个叙事我都不喜欢；请深挖 AGI 前夜的准入与垄断"
+        prompt = narrative._compile_prompt(
+            {"title": "X 发布", "hook": "", "research_queries": []},
+            sample_osint(),
+            ["cost_ledger"],
+            set(),
+            directive=directive,
+        )
+        self.assertIn("主编退回意见", prompt)
+        self.assertIn(directive, prompt)
+        self.assertIn("Inferred/Unknown", prompt)
+
 
 class CandidateScoreTests(unittest.TestCase):
     def test_scores_within_unit_range(self):
@@ -556,6 +569,35 @@ class NarrativeRunTests(unittest.TestCase):
         self.assertEqual(first["status"], "generated")
         self.assertEqual(second["status"], "resumed")
         self.assertEqual(calls["n"], 1)
+
+    def test_apply_directive_records_and_invalidates_candidates(self):
+        narrative.run(self.run_paths, codex_runner=self.make_runner(), force=True)
+        result = narrative.apply_directive(
+            self.run_paths, "两个叙事我都不喜欢，重写"
+        )
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["directive"], "两个叙事我都不喜欢，重写")
+        st = state.read_state(self.run_paths)
+        self.assertEqual(st["narrative_directive"], "两个叙事我都不喜欢，重写")
+        self.assertFalse(
+            (self.run_paths.work_dir / narrative.NARRATIVE_CANDIDATES_JSON).exists()
+        )
+        self.assertFalse(
+            (self.run_paths.work_dir / narrative.NARRATIVE_CANDIDATES_MD).exists()
+        )
+
+    def test_run_injects_directive_into_regeneration_prompt(self):
+        narrative.apply_directive(self.run_paths, "AGI 前夜准入与垄断")
+        captured = {}
+
+        def runner(prompt):
+            captured["prompt"] = prompt
+            return self.make_runner()(prompt)
+
+        result = narrative.run(self.run_paths, codex_runner=runner)
+        self.assertEqual(result["status"], "generated")
+        self.assertIn("AGI 前夜准入与垄断", captured["prompt"])
+        self.assertIn("主编退回意见", captured["prompt"])
 
     def test_resume_refuses_stale_candidates_for_a_different_topic(self):
         # A leftover candidates file from another topic must not resume.
