@@ -109,6 +109,30 @@ _ELLIPSIS_RE = re.compile(r"\u2026|\.{3,}")
 _SENTENCE_END_RE = re.compile(r"[。！？!?]|\.(?=\s|$)")
 _CURLY_APOSTROPHES = {0x2018: "'", 0x2019: "'"}
 
+_BOILERPLATE_TOKENS = (
+    "sign up", "log in", "login", "menu", "navigation", "back to articles",
+    "upvote", "follow", "pricing", "enterprise", "documentation", "docs",
+    "community", "forgot password", "cookie", "privacy policy", "terms of",
+    "home", "search", "notifications", "settings", "account",
+)
+
+
+def _is_boilerplate(sentence: str) -> bool:
+    """True when a sentence reads like site chrome (nav/product labels)."""
+    low = sentence.lower()
+    return sum(1 for tok in _BOILERPLATE_TOKENS if tok in low) >= 2
+
+
+def _first_content_start(text: str) -> int:
+    """Index where substantive prose begins; 0 when none is found."""
+    pos = 0
+    for m in _SENTENCE_END_RE.finditer(text):
+        seg = text[pos:m.end()]
+        if len(seg.strip()) >= 20 and not _is_boilerplate(seg):
+            return pos
+        pos = m.end()
+    return 0
+
 
 def normalize_evidence_text(raw: str) -> str:
     """Turn messy feed evidence into clean prose.
@@ -519,9 +543,11 @@ def _excerpt_with_flag(markdown: str, title: str, limit: int = 300) -> tuple:
     text = normalize_evidence_text(markdown)
     if not text:
         return normalize_evidence_text(title), False
-    if len(text) <= limit:
-        return text, False
-    window = text[:limit]
+    start = _first_content_start(text)
+    source = text[start:]
+    if len(source) <= limit:
+        return source.strip(), False
+    window = source[:limit]
     last_end = 0
     for m in _SENTENCE_END_RE.finditer(window):
         last_end = m.end()
@@ -529,9 +555,9 @@ def _excerpt_with_flag(markdown: str, title: str, limit: int = 300) -> tuple:
         return window[:last_end].strip(), True
     # No sentence end inside the window: extend to the next one so the
     # excerpt still closes a sentence instead of cutting mid-phrase.
-    m = _SENTENCE_END_RE.search(text, limit, limit + 500)
+    m = _SENTENCE_END_RE.search(source, limit, limit + 500)
     if m:
-        return text[: m.end()].strip(), True
+        return source[: m.end()].strip(), True
     return window.strip(), True
 
 

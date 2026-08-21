@@ -303,6 +303,37 @@ class EvidenceExcerptBoundaryTests(unittest.TestCase):
         self.assertFalse(flag)
         self.assertEqual(text, "One short sentence.")
 
+    def test_excerpt_skips_navigation_boilerplate_prefix(self):
+        text = (
+            "A Blog post by Liquid AI on Hugging Face Models Datasets Spaces "
+            "Buckets new Docs Enterprise Pricing Website Tasks HuggingChat "
+            "Collections Languages Organizations Community Blog Posts Daily "
+            "Papers Hardware Learn Discord Forum GitHub Solutions Team "
+            "Enterprise Back to Articles Follow the authors. "
+            "These add a speculative decoding path that trades a minimal "
+            "memory increase for a large decoding speedup without changing "
+            "output quality: faster inference up to 3.18x on a GPU."
+        )
+        excerpt = research._evidence_excerpt(text, "fallback")
+        self.assertNotIn("Models Datasets Spaces", excerpt)
+        self.assertIn("speculative decoding", excerpt)
+
+    def test_excerpt_unchanged_when_body_starts_with_content(self):
+        text = (
+            "Liquid AI released draft checkpoints for three models on "
+            "August 20. These add a speculative decoding path."
+        )
+        excerpt = research._evidence_excerpt(text, "fallback")
+        self.assertTrue(excerpt.startswith("Liquid AI released"))
+
+    def test_excerpt_falls_back_when_body_is_all_boilerplate(self):
+        text = (
+            "Sign Up Log In Pricing Enterprise Docs Community Follow. "
+            "Sign Up Log In Pricing Enterprise Docs Community Follow."
+        )
+        excerpt = research._evidence_excerpt(text, "fallback")
+        self.assertTrue(excerpt)
+
 
 DIRTY_RSS_ITEMS = [
     {
