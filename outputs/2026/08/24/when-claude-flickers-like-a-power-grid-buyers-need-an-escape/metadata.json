@@ -1,0 +1,151 @@
+{
+  "run_id": "AI-Daily/2026-08-24",
+  "date": "2026-08-24",
+  "slug": "when-claude-flickers-like-a-power-grid-buyers-need-an-escape",
+  "title": "When Claude Flickers Like a Power Grid, Buyers Need an Escape Hatch",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 1119,
+    "paragraph_count": 34,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "5 sentence(s) exceed 20 words",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 3
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-08-24",
+    "verdict": "ok",
+    "items": [
+      {
+        "claim": "Anthropic opened an incident on August 20, 2026 after elevated errors affected some Claude models.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "Matches the supplied excerpt; Anthropic is identified as the company."
+      },
+      {
+        "claim": "The disruption reached nearly the entire Claude product line, including Claude.ai, the API, Claude Code, and Cowork.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "The excerpt supports nearly the entire product line, and the source title names the four listed surfaces."
+      },
+      {
+        "claim": "The report does not establish root cause, shared dependency, customer count, business loss, precise duration, compensation, or operational interruption.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "These are absence statements consistent with the supplied evidence package, which provides no such details."
+      },
+      {
+        "claim": "The report offers no official Anthropic status record, repair note, or independent cross-check.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "The package contains only the secondary Unite.AI report and no official or independent outage record."
+      },
+      {
+        "claim": "If Anthropic combines routes behind one control plane, a shared failure could spread.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "Explicitly phrased as an unverified hypothesis, not an incident finding."
+      },
+      {
+        "claim": "The supplied reporting does not establish an official timeline, independent scope confirmation, concrete customer accounts, or public mitigation explanation.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "Consistent with the evidence package."
+      },
+      {
+        "claim": "The article contains no externally attributed quotation requiring word-count verification.",
+        "evidence_url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+        "verdict": "ok",
+        "note": "Italicized lines are the article's own rhetoric, not presented as quotations."
+      }
+    ],
+    "reason": "All event-specific factual claims are supported by the supplied Unite.AI evidence or are accurately framed absence statements. Architectural and procurement conclusions are clearly presented as inference, advice, or hypothesis. No unsupported speaker role, dual-company confirmation, or misquoted source language appears.",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "缺少 Anthropic 官方事故公告、状态页记录或修复说明。",
+    "缺少独立来源对事件范围、时间线和受影响模型的交叉验证。",
+    "缺少开始、升级、缓解、恢复和关闭的精确时间线。",
+    "缺少错误码、根因、共享依赖、回滚及降级措施证据。",
+    "缺少客户影响、业务中断、补偿或真实使用反馈。"
+  ],
+  "source_count": 6,
+  "generated_at": "2026-08-23T22:47:24+00:00",
+  "seo_title": "Claude Flickers: Why AI Buyers Need an Escape Hatch",
+  "seo_summary": "When one AI platform flickers, critical workflows can stall. Map dependencies, test fallbacks, and define human takeover rules before failure strikes.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A support lead at a midnight desk watches chat, API, coding, and cowork windows flicker while an email waits, a code review stalls, and an assistant retries.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A human buyer studies a dark neighborhood beside an illuminated region of a connected power grid at night.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "04",
+      "filename": "04.webp",
+      "alt": "A human buyer reaches toward an emergency brake beside a glowing operations screen, with separate paths leading to another provider, a human queue, local rules, and manual work.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Claude Outage Hits Claude.ai, API, Claude Code and Cowork as Errors Spread Across Models",
+      "url": "https://www.unite.ai/claude-outage-hits-claude-ai-api-claude-code-and-cowork-as-errors-spread-across-models/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "How to Effectively Align Your Intent with Claude Code | Towards Data Science",
+      "url": "https://towardsdatascience.com/how-to-effectively-align-your-intents-with-claude-code/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "MiniMax，做视频领域的 Claude Code 的野心已经藏不住了 | 极客公园",
+      "url": "http://www.geekpark.net/news/369201",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape/images/01.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape/images/01.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape/images/02.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape/images/02.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape/images/03.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape/images/03.webp",
+      "origin": "article"
+    }
+  ],
+  "final_article": "articles/2026-08-24-when-claude-flickers-like-a-power-grid-buyers-need-an-escape-en.md",
+  "package": "outputs/2026/08/24/when-claude-flickers-like-a-power-grid-buyers-need-an-escape"
+}
