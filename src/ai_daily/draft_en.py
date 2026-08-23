@@ -60,7 +60,8 @@ def _compact_sources(package: dict) -> list:
 
 
 def _compile_prompt(topic: dict, chosen: dict, package: dict,
-                    audit: dict = None, revision_feedback: str = None) -> str:
+                    audit: dict = None, revision_feedback: str = None,
+                    kg_background: str = "") -> str:
     compact = {
         "topic": {
             "title": topic.get("title"),
@@ -99,6 +100,15 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
             "\nREVISION REQUIRED: your previous draft was rejected by the "
             "editorial gate. Fix every listed check in your rewrite, and "
             "change nothing else:\n" + revision_feedback + "\n"
+        )
+    primer = ""
+    if kg_background:
+        primer = (
+            "\nBACKGROUND PRIMER (knowledge graph, secondary — never cite "
+            "as event evidence; use it only to deepen your technical "
+            "understanding and craft):\n"
+            + kg_background[:6000]
+            + "\n"
         )
     return (
         "You are the Lead Tech Editor: a cold, sharp Silicon Valley voice, "
@@ -165,6 +175,7 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         + editorial
         + downgrade +
         revision +
+        primer +
         "Return a single JSON object (no preamble, no code fence, no "
         "trailing text):\n"
         '{"title":"<headline>","body":"<markdown body, no H1>"}\n'
@@ -224,11 +235,17 @@ def run(run_paths, codex_runner=None, force: bool = False,
     feedback = None
     attempt = 0
     max_attempts = 3
+    kg_path = run_paths.work_dir / "kg-background.md"
+    kg_background = (
+        kg_path.read_text(encoding="utf-8")
+        if kg_path.is_file() else ""
+    )
     while True:
         attempt += 1
         try:
             draft = runner(_compile_prompt(
-                topic, chosen, package, audit=audit, revision_feedback=feedback,
+                topic, chosen, package, audit=audit,
+                revision_feedback=feedback, kg_background=kg_background,
             ))
         except Exception as exc:
             return {

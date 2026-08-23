@@ -373,6 +373,25 @@ class DraftEnPromptTests(DraftEnBase):
         direction_index = prompt.index("主编要求：加架构图和业务场景")
         self.assertLess(direction_index, evidence_index)
 
+    def test_prompt_includes_kg_primer_when_present(self):
+        from ai_daily import topics
+
+        topic = topics.require_choice(self.run_paths)
+        prompt = draft_en._compile_prompt(
+            topic,
+            sample_narrative_candidate(),
+            sample_evidence_package(),
+            kg_background="## DRAFT\nmemory-bound insight",
+        )
+        self.assertIn("BACKGROUND PRIMER", prompt)
+        self.assertIn("memory-bound insight", prompt)
+        self.assertIn("knowledge graph", prompt)
+        self.assertIn("never cite as event evidence", prompt)
+
+    def test_prompt_omits_kg_primer_when_absent(self):
+        prompt = self._prompt()
+        self.assertNotIn("BACKGROUND PRIMER", prompt)
+
 
 if __name__ == "__main__":
     unittest.main()
