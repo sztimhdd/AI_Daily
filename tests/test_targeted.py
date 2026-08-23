@@ -5,10 +5,11 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ai_daily import narrative, paths, state, sufficiency, targeted
+from ai_daily import narrative, paths, state, sufficiency, targeted, zhihu_lane
 
 
 def sample_osint():
@@ -51,6 +52,10 @@ def needs_research_payload(tasks=None):
 
 class TargetedBase(unittest.TestCase):
     def setUp(self):
+        self._zhihu_bin = mock.patch.object(
+            zhihu_lane, "_binary", return_value=None
+        )
+        self._zhihu_bin.start()
         self._tmp = tempfile.TemporaryDirectory()
         self.root = pathlib.Path(self._tmp.name)
         self.run_paths = paths.RunPaths.for_date(self.root, "2026-08-20")
@@ -67,6 +72,7 @@ class TargetedBase(unittest.TestCase):
         )
 
     def tearDown(self):
+        self._zhihu_bin.stop()
         self._tmp.cleanup()
 
 
@@ -130,12 +136,15 @@ class TaskExecutionTests(TargetedBase):
 
         def fake_zhihu(args):
             return {
-                "ok": True,
-                "items": [{
-                    "Title": "真实回答", "AuthorName": "某用户",
-                    "ContentText": "实测翻车细节……",
-                    "Url": "https://www.zhihu.com/question/1/answer/1",
-                }],
+                "Code": 0,
+                "Message": "success",
+                "Data": {
+                    "Items": [{
+                        "Title": "真实回答", "AuthorName": "某用户",
+                        "ContentText": "实测翻车细节……",
+                        "Url": "https://www.zhihu.com/question/1/answer/1",
+                    }]
+                },
             }
 
         entries = targeted._execute_tasks(
@@ -161,8 +170,7 @@ class TaskExecutionTests(TargetedBase):
         ]
 
         def broken_zhihu(args):
-            return {"ok": False,
-                    "error": {"message": "AUTH_REQUIRED"}}
+            return {"Code": 401, "Message": "AUTH_REQUIRED"}
 
         entries = targeted._execute_tasks(
             self.run_paths, tasks,

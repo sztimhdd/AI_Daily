@@ -12,15 +12,22 @@ from ai_daily import zhihu_lane
 
 def ok_search_payload():
     return {
-        "ok": True,
-        "items": [
-            {
-                "Title": "真实经历：我用 DeepSeek 跑生产",
-                "AuthorName": "某工程师",
-                "ContentText": "跑分没输过，实战没赢过……",
-                "Url": "https://www.zhihu.com/question/1/answer/1",
-            }
-        ],
+        "Code": 0,
+        "Message": "success",
+        "Data": {
+            "HasMore": False,
+            "Items": [
+                {
+                    "Title": "真实经历：我用 DeepSeek 跑生产",
+                    "ContentType": "Answer",
+                    "AuthorName": "某工程师",
+                    "ContentText": "跑分没输过，实战没赢过……",
+                    "Url": "https://www.zhihu.com/question/1/answer/1",
+                    "VoteUpCount": 172,
+                    "CommentCount": 15,
+                }
+            ],
+        },
     }
 
 
@@ -35,13 +42,15 @@ class SearchZhihuTests(unittest.TestCase):
         self.assertEqual(item["author"], "某工程师")
         self.assertEqual(item["url"], "https://www.zhihu.com/question/1/answer/1")
         self.assertIn("跑分没输过", item["content"])
+        self.assertEqual(item["vote_up"], 172)
+        self.assertEqual(item["comment_count"], 15)
+        self.assertEqual(item["content_type"], "Answer")
 
     def test_auth_required_is_honest_unavailable(self):
         def runner(args):
             return {
-                "ok": False,
-                "error": {"code": "AUTH_REQUIRED",
-                          "message": "请登录知乎开放平台并获取 Access Secret"},
+                "Code": 401,
+                "Message": "请登录知乎开放平台并获取 Access Secret",
             }
 
         result = zhihu_lane.search_zhihu("q", runner=runner)
@@ -60,13 +69,47 @@ class SearchZhihuTests(unittest.TestCase):
         result = zhihu_lane.search_zhihu("q", runner=runner)
         self.assertEqual(result["status"], "unavailable")
 
+    def test_rate_limit_retries_once_then_succeeds(self):
+        calls = {"n": 0}
+
+        def runner(args):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return {"Code": 30001, "Message": "rate limit exceeded",
+                        "Data": None}
+            return ok_search_payload()
+
+        with mock.patch.object(zhihu_lane, "_RATE_LIMIT_RETRY_DELAY", 0.0):
+            result = zhihu_lane.search_zhihu("q", runner=runner)
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(calls["n"], 2)
+
+    def test_rate_limit_persists_after_retry_is_unavailable(self):
+        calls = {"n": 0}
+
+        def runner(args):
+            calls["n"] += 1
+            return {"Code": 30001, "Message": "rate limit exceeded",
+                    "Data": None}
+
+        with mock.patch.object(zhihu_lane, "_RATE_LIMIT_RETRY_DELAY", 0.0):
+            result = zhihu_lane.search_zhihu("q", runner=runner)
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(calls["n"], 2)
+
 
 class HotTopicsTests(unittest.TestCase):
     def test_hot_payload_normalizes(self):
         def runner(args):
             return {
-                "ok": True,
-                "items": [{"Title": "热点一", "Url": "https://www.zhihu.com/question/9"}],
+                "Code": 0,
+                "Message": "success",
+                "Data": {
+                    "Items": [
+                        {"Title": "热点一",
+                         "Url": "https://www.zhihu.com/question/9"},
+                    ]
+                },
             }
 
         result = zhihu_lane.hot_topics(limit=3, runner=runner)
