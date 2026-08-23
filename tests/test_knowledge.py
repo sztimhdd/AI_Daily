@@ -83,6 +83,46 @@ class KnowledgeClientTests(unittest.TestCase):
         self.assertTrue(result["secondary"])
         self.assertIn("refused", result["reason"])
 
+    def test_fetch_background_uses_query_override(self):
+        calls = {}
+
+        class FakeClient:
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                calls["fts"] = query
+                return "hit"
+
+            def synthesize(self, query, max_polls=8):
+                calls["kg"] = query
+                return {"status": "completed", "report": "report"}
+
+        result = knowledge.fetch_background(
+            {"title": "T", "research_queries": ["q1", "q2"]},
+            client=FakeClient(),
+            query="speculative decoding mechanism",
+        )
+        self.assertEqual(calls["fts"], "speculative decoding mechanism")
+        self.assertEqual(calls["kg"], "speculative decoding mechanism")
+        self.assertEqual(result["status"], "completed")
+
+    def test_fetch_background_defaults_to_first_research_query(self):
+        calls = {}
+
+        class FakeClient:
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                calls["fts"] = query
+                return "hit"
+
+            def synthesize(self, query, max_polls=8):
+                calls["kg"] = query
+                return {"status": "completed", "report": "r"}
+
+        knowledge.fetch_background(
+            {"title": "T", "research_queries": ["q1", "q2"]},
+            client=FakeClient(),
+        )
+        self.assertEqual(calls["fts"], "q1")
+        self.assertEqual(calls["kg"], "q1")
+
 
 if __name__ == "__main__":
     unittest.main()

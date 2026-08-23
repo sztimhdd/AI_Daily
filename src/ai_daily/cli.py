@@ -190,6 +190,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="fetch knowledge-graph background for the chosen topic",
     )
     common(p)
+    p.add_argument("--query", default=None,
+                   help="concept-level KG query (default: first research query)")
     p.add_argument("--force", action="store_true")
 
     return parser
@@ -343,7 +345,9 @@ def cmd_audit(args) -> int:
 def cmd_kg(args) -> int:
     run_paths = _paths(args)
     _ensure_state(run_paths)
-    result = pipeline.run_knowledge_background(run_paths, force=args.force)
+    result = pipeline.run_knowledge_background(
+        run_paths, query=args.query, force=args.force
+    )
     print(f"kg background: {result.get('status')}")
     if result.get("resumed"):
         print("- resumed (cached)")

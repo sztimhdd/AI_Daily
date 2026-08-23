@@ -227,14 +227,14 @@ def run_narrative(run_paths, codex_runner=None, force: bool = False) -> dict:
 
 
 def run_knowledge_background(run_paths, kg_client=None,
-                             force: bool = False) -> dict:
+                             query: str = None, force: bool = False) -> dict:
     """Optional KG background for the chosen topic; never blocks."""
     from . import knowledge, topics
 
     topic = topics.require_choice(run_paths)
     run_paths.ensure_work_dir()
     return knowledge.persist_background(
-        run_paths, topic, client=kg_client, force=force
+        run_paths, topic, client=kg_client, query=query, force=force
     )
 
 

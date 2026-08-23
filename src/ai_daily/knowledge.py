@@ -120,15 +120,29 @@ class MCPClient:
         return {"status": "pending", "job_id": started["job_id"]}
 
 
+def _kg_query(topic: dict, query: str = None) -> str:
+    """Concept-level KG query: explicit override, else first research query,
+    else the topic title (news-event titles rarely match the KG corpus)."""
+    if query and query.strip():
+        return query.strip()
+    queries = (topic or {}).get("research_queries") or []
+    for q in queries:
+        q = str(q).strip()
+        if q and q != (topic or {}).get("title"):
+            return q
+    return (topic or {}).get("title", "")
+
+
 def fetch_background(topic: dict, client: MCPClient = None,
-                     max_polls: int = 8) -> dict:
+                     query: str = None, max_polls: int = 8) -> dict:
     """Background digest for a topic; never raises."""
     title = (topic or {}).get("title", "")
     direction = (topic or {}).get("direction", "")
-    query = f"{title} ({direction})".strip() if direction else title
+    concept = _kg_query(topic, query=query)
+    query = f"{concept} ({direction})".strip() if direction else concept
     try:
         c = client or MCPClient(KG_ENDPOINT)
-        fts = c.fts_search(title, limit=5)
+        fts = c.fts_search(concept, limit=5)
         kg = c.synthesize(query, max_polls=max_polls)
         return {
             "status": "completed" if kg["status"] == "completed" else "degraded",
@@ -172,7 +186,7 @@ def render_background_md(data: dict) -> str:
 
 
 def persist_background(run_paths, topic: dict, client: MCPClient = None,
-                       force: bool = False) -> dict:
+                       query: str = None, force: bool = False) -> dict:
     """Fetch (or resume) the KG background for a run; never raises."""
     title = (topic or {}).get("title", "")
     if not force:
@@ -184,7 +198,7 @@ def persist_background(run_paths, topic: dict, client: MCPClient = None,
                 data = {}
             if data.get("topic") == title:
                 return {**data, "resumed": True}
-    data = fetch_background(topic, client=client)
+    data = fetch_background(topic, client=client, query=query)
     (run_paths.work_dir / KG_BACKGROUND_JSON).write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
