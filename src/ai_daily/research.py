@@ -18,7 +18,7 @@ import subprocess
 import unicodedata
 from zoneinfo import ZoneInfo
 
-from . import aihot, fetch, state, topics
+from . import aihot, fetch, knowledge, state, topics
 
 AIHOT_EVIDENCE = "aihot-items.json"
 RSS_EVIDENCE = "rss-items.json"
@@ -1060,6 +1060,7 @@ def run_initial(
     cdp_runner=None,
     discover_runner=None,
     codex_runner=None,
+    kg_client=None,
     progress=None,
     force: bool = False,
     timeout: float = 30.0,
@@ -1185,6 +1186,20 @@ def run_initial(
     state.record_artifact(
         run_paths, "initial-research", str(md_path.relative_to(run_paths.root))
     )
+    background = knowledge.fetch_background(topic, client=kg_client)
+    kg_json_path = run_paths.work_dir / knowledge.KG_BACKGROUND_JSON
+    kg_md_path = run_paths.work_dir / knowledge.KG_BACKGROUND_MD
+    kg_json_path.write_text(
+        json.dumps(background, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    kg_md_path.write_text(
+        knowledge.render_background_md(background), encoding="utf-8"
+    )
+    state.record_artifact(
+        run_paths, "kg-background",
+        str(kg_md_path.relative_to(run_paths.root)),
+    )
     if state.read_state(run_paths).get("last_error"):
         state.clear_error(run_paths)
     return {
@@ -1198,4 +1213,5 @@ def run_initial(
         "fetched": len(evidence),
         "modules": [m["key"] for m in modules],
         "evidence_gaps": gaps,
+        "kg": background,
     }

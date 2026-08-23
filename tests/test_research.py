@@ -553,5 +553,79 @@ class TopicEventPriorityTests(unittest.TestCase):
         self.assertNotIn(self.SIBLING_URL, lead)
 
 
+class KnowledgeBackgroundTests(unittest.TestCase):
+    """KG background is optional, labeled secondary, and never blocks."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self._tmp.name)
+        self.paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        self.paths.ensure_work_dir()
+        state.init_state(self.paths)
+        topics.choose_fixture(self.paths, FIXTURES / "topic_fixture.json")
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _run(self, kg_client):
+        return research.run_initial(
+            self.paths,
+            aihot_fetch=lambda url, timeout: json.dumps({"items": []}).encode(),
+            discover_runner=lambda q: [],
+            codex_runner=lambda prompt: {
+                "status": "completed",
+                "modules": [{"key": "tech_engineering", "summary": "机制"}],
+                "evidence_gaps": [],
+            },
+            kg_client=kg_client,
+        )
+
+    def test_kg_background_artifact_written_and_never_blocks(self):
+        from ai_daily import knowledge
+
+        class FakeClient:
+            def synthesize(self, query, max_polls=8):
+                return {"status": "completed", "report": "## DRAFT\nmemory-bound insight"}
+
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                return "draft model 机制"
+
+        result = self._run(FakeClient())
+        self.assertEqual(result["status"], "generated")
+        j = json.loads(
+            (self.paths.work_dir / knowledge.KG_BACKGROUND_JSON).read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(j["status"], "completed")
+        self.assertTrue(j["secondary"])
+        self.assertEqual(j["source_kind"], "knowledge_graph")
+        md = (self.paths.work_dir / knowledge.KG_BACKGROUND_MD).read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("memory-bound insight", md)
+        self.assertIn("二手背景", md)
+
+    def test_kg_failure_degrades_without_breaking_research(self):
+        from ai_daily import knowledge
+
+        class BoomClient:
+            def synthesize(self, query, max_polls=8):
+                raise OSError("down")
+
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                raise OSError("down")
+
+        result = self._run(BoomClient())
+        self.assertEqual(result["status"], "generated")
+        j = json.loads(
+            (self.paths.work_dir / knowledge.KG_BACKGROUND_JSON).read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(j["status"], "degraded")
+        self.assertIn("down", j["reason"])
+
+
 if __name__ == "__main__":
     unittest.main()
