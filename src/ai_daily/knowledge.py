@@ -7,6 +7,8 @@ best practices.  Never primary evidence; never feeds evidence gates.
 from __future__ import annotations
 
 import json
+import hashlib
+import pathlib
 import re
 import time
 import urllib.request
@@ -133,35 +135,125 @@ def _kg_query(topic: dict, query: str = None) -> str:
     return (topic or {}).get("title", "")
 
 
+def _mechanism_concept(topic: dict, tech_summary: str = "") -> str:
+    """Query seed from the OSINT tech summary (the article's mechanism
+    language); then the editor's thesis/hook angle; then the research
+    query; then the title."""
+    summary = re.sub(r"\[[^\]]*\]\([^)]*\)", "", tech_summary or "").strip()
+    if summary and summary != "无":
+        return summary[:160]
+    angle = " ".join([
+        str(topic.get("thesis") or ""),
+        str(topic.get("hook") or ""),
+    ]).strip()
+    if angle:
+        return angle[:160]
+    return _kg_query(topic)
+
+
+def _relevance(fts_text: str, report: str) -> bool:
+    """True when the KG synthesis carries substantive, on-topic material."""
+    fts = (fts_text or "").strip()
+    if not fts or "[no-results]" in fts:
+        return False
+    body = (report or "").strip()
+    if len(body) < 300:
+        return False
+    low = body.lower()
+    if any(
+        phrase in low
+        for phrase in (
+            "do not have enough information",
+            "i do not have",
+            "not have enough information",
+            "no information to answer",
+        )
+    ):
+        return False
+    return True
+
+
+def _cache_path(cache_dir: str, concept: str) -> pathlib.Path:
+    digest = hashlib.sha256(concept.encode("utf-8")).hexdigest()[:16]
+    return pathlib.Path(cache_dir) / f"{digest}.json"
+
+
+def _write_cache(cache_path: pathlib.Path, data: dict) -> None:
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    except OSError:
+        pass
+
+
 def fetch_background(topic: dict, client: MCPClient = None,
-                     query: str = None, max_polls: int = 8) -> dict:
+                     query: str = None, tech_summary: str = "",
+                     cache_dir: str = None, max_polls: int = 8) -> dict:
     """Background digest for a topic; never raises."""
     title = (topic or {}).get("title", "")
     direction = (topic or {}).get("direction", "")
-    concept = _kg_query(topic, query=query)
-    query = f"{concept} ({direction})".strip() if direction else concept
+    concept = query or _mechanism_concept(topic, tech_summary)
+    if direction:
+        concept = f"{concept} ({direction})".strip()
+    cache_path = _cache_path(cache_dir, concept) if cache_dir else None
+    if cache_path is not None and cache_path.exists():
+        try:
+            data = json.loads(cache_path.read_text(encoding="utf-8"))
+            return {**data, "cached": True}
+        except (OSError, json.JSONDecodeError):
+            pass
     try:
         c = client or MCPClient(KG_ENDPOINT)
         fts = c.fts_search(concept, limit=5)
-        kg = c.synthesize(query, max_polls=max_polls)
-        return {
+        if not (fts or "").strip() or "[no-results]" in (fts or ""):
+            data = {
+                "status": "degraded",
+                "relevant": False,
+                "source_kind": "knowledge_graph",
+                "secondary": True,
+                "topic": title,
+                "query": concept,
+                "fts": (fts or "")[:2000],
+                "report": "",
+                "reason": "KG fts 无覆盖，跳过合成",
+            }
+            if cache_path is not None:
+                _write_cache(cache_path, data)
+            return data
+        kg = c.synthesize(concept, max_polls=max_polls)
+        report = kg.get("report", "")
+        relevant = _relevance(fts, report)
+        data = {
             "status": "completed" if kg["status"] == "completed" else "degraded",
+            "relevant": relevant,
             "source_kind": "knowledge_graph",
             "secondary": True,
             "topic": title,
-            "query": query,
+            "query": concept,
             "fts": fts[:2000],
-            "report": kg.get("report", ""),
+            "report": report,
             "job_id": kg.get("job_id"),
-            "reason": "" if kg["status"] == "completed" else "kg synthesis still pending",
+            "reason": (
+                "" if kg["status"] == "completed"
+                else "kg synthesis still pending"
+            ),
         }
+        if not relevant and not data["reason"]:
+            data["reason"] = "KG 报告无有效覆盖"
+        if cache_path is not None:
+            _write_cache(cache_path, data)
+        return data
     except Exception as exc:  # noqa: BLE001 - never block the pipeline
         return {
             "status": "degraded",
+            "relevant": False,
             "source_kind": "knowledge_graph",
             "secondary": True,
             "topic": title,
-            "query": query,
+            "query": concept,
             "fts": "",
             "report": "",
             "reason": f"{type(exc).__name__}: {exc}",
@@ -186,7 +278,9 @@ def render_background_md(data: dict) -> str:
 
 
 def persist_background(run_paths, topic: dict, client: MCPClient = None,
-                       query: str = None, force: bool = False) -> dict:
+                       query: str = None, force: bool = False,
+                       tech_summary: str = "",
+                       cache_dir: str = None) -> dict:
     """Fetch (or resume) the KG background for a run; never raises."""
     title = (topic or {}).get("title", "")
     if not force:
@@ -198,7 +292,11 @@ def persist_background(run_paths, topic: dict, client: MCPClient = None,
                 data = {}
             if data.get("topic") == title:
                 return {**data, "resumed": True}
-    data = fetch_background(topic, client=client, query=query)
+    cache_dir = cache_dir or str(run_paths.root / ".local" / "knowledge-cache")
+    data = fetch_background(
+        topic, client=client, query=query,
+        tech_summary=tech_summary, cache_dir=cache_dir,
+    )
     (run_paths.work_dir / KG_BACKGROUND_JSON).write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

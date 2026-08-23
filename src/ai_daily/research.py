@@ -1247,7 +1247,20 @@ def run_initial(
     state.record_artifact(
         run_paths, "initial-research", str(md_path.relative_to(run_paths.root))
     )
-    background = knowledge.fetch_background(topic, client=kg_client)
+    tech_summary = next(
+        (
+            str(m.get("summary") or "")
+            for m in modules
+            if m.get("key") == "tech_engineering"
+        ),
+        "",
+    )
+    background = knowledge.fetch_background(
+        topic,
+        client=kg_client,
+        tech_summary=tech_summary,
+        cache_dir=str(run_paths.root / ".local" / "knowledge-cache"),
+    )
     kg_json_path = run_paths.work_dir / knowledge.KG_BACKGROUND_JSON
     kg_md_path = run_paths.work_dir / knowledge.KG_BACKGROUND_MD
     kg_json_path.write_text(

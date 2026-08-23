@@ -123,6 +123,75 @@ class KnowledgeClientTests(unittest.TestCase):
         self.assertEqual(calls["fts"], "q1")
         self.assertEqual(calls["kg"], "q1")
 
+    def test_mechanism_concept_prefers_tech_summary(self):
+        topic = {"title": "Claude 宕机", "research_queries": ["q1"]}
+        concept = knowledge._mechanism_concept(
+            topic, tech_summary="依赖拓扑、根因与回滚机制"
+        )
+        self.assertIn("依赖拓扑", concept)
+        self.assertNotIn("q1", concept)
+
+    def test_relevance_flags_no_data(self):
+        self.assertFalse(knowledge._relevance("[no-results]", ""))
+        self.assertFalse(
+            knowledge._relevance("hit", "I do not have enough information to answer.")
+        )
+        self.assertFalse(knowledge._relevance("hit", "short"))
+        self.assertTrue(
+            knowledge._relevance("hit", "## Deep\n" + "mechanism " * 60)
+        )
+
+    def test_fetch_skips_synthesis_when_fts_misses(self):
+        calls = {"synth": 0}
+
+        class C:
+            def fts_search(self, q, limit=5, lang="zh-CN"):
+                return "[no-results]"
+
+            def synthesize(self, q, max_polls=8):
+                calls["synth"] += 1
+                return {"status": "completed", "report": "x"}
+
+        result = knowledge.fetch_background({"title": "T"}, client=C())
+        self.assertEqual(result["status"], "degraded")
+        self.assertFalse(result["relevant"])
+        self.assertEqual(calls["synth"], 0)
+
+    def test_fetch_relevant_when_report_substantive(self):
+        class C:
+            def fts_search(self, q, limit=5, lang="zh-CN"):
+                return "draft model 机制"
+
+            def synthesize(self, q, max_polls=8):
+                return {"status": "completed", "report": "## Deep\n" + "mechanism " * 60}
+
+        result = knowledge.fetch_background({"title": "T"}, client=C())
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(result["relevant"])
+
+    def test_fetch_caches_by_query(self):
+        calls = {"n": 0}
+
+        class C:
+            def fts_search(self, q, limit=5, lang="zh-CN"):
+                calls["n"] += 1
+                return "hit"
+
+            def synthesize(self, q, max_polls=8):
+                return {"status": "completed", "report": "r" * 400}
+
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            result = knowledge.fetch_background(
+                {"title": "T"}, client=C(), cache_dir=tmp
+            )
+            result2 = knowledge.fetch_background(
+                {"title": "T"}, client=C(), cache_dir=tmp
+            )
+        self.assertEqual(calls["n"], 1)
+        self.assertTrue(result2.get("cached"))
+
 
 if __name__ == "__main__":
     unittest.main()

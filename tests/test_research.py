@@ -627,6 +627,37 @@ class KnowledgeBackgroundTests(unittest.TestCase):
         self.assertEqual(j["status"], "degraded")
         self.assertIn("down", j["reason"])
 
+    def test_kg_query_falls_back_to_editorial_angle_without_evidence(self):
+        recorded = {}
+
+        class RecordingClient:
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                recorded["query"] = query
+                return "依赖拓扑 hit"
+
+            def synthesize(self, query, max_polls=8):
+                return {"status": "completed", "report": "m" * 400}
+
+        result = research.run_initial(
+            self.paths,
+            aihot_fetch=lambda url, timeout: json.dumps({"items": []}).encode(),
+            discover_runner=lambda q: [],
+            codex_runner=lambda prompt: {
+                "status": "completed",
+                "modules": [
+                    {"key": "tech_engineering", "summary": "依赖拓扑、根因与回滚机制"}
+                ],
+                "evidence_gaps": [],
+            },
+            kg_client=RecordingClient(),
+            zhihu_runner=lambda args: {"Code": 401, "Message": "no auth"},
+        )
+        self.assertEqual(result["status"], "generated")
+        # No evidence -> the evidence-gated merge keeps tech summary empty,
+        # so the KG concept must come from the editor's thesis/hook angle.
+        self.assertNotIn("OpenRouter web search benchmark agent cost", recorded["query"])
+        self.assertIn("成本重心", recorded["query"])
+
 
 class ZhihuCommunityResearchTests(unittest.TestCase):
     """Zhihu community voice is a default, additive, never-blocking source."""
