@@ -185,6 +185,13 @@ def build_parser() -> argparse.ArgumentParser:
     common(p)
     p.add_argument("--force", action="store_true")
 
+    p = sub.add_parser(
+        "kg",
+        help="fetch knowledge-graph background for the chosen topic",
+    )
+    common(p)
+    p.add_argument("--force", action="store_true")
+
     return parser
 
 
@@ -331,6 +338,18 @@ def cmd_audit(args) -> int:
     run_paths = _paths(args)
     _ensure_state(run_paths)
     return _run_audit_flow(run_paths, args.force, tui.supports_color())
+
+
+def cmd_kg(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_knowledge_background(run_paths, force=args.force)
+    print(f"kg background: {result.get('status')}")
+    if result.get("resumed"):
+        print("- resumed (cached)")
+    if result.get("reason"):
+        print(f"- reason: {result['reason']}")
+    return 0
 
 
 def cmd_outline(args) -> int:
@@ -788,6 +807,7 @@ COMMANDS = {
     "session": cmd_session,
     "narrative": cmd_narrative,
     "audit": cmd_audit,
+    "kg": cmd_kg,
 }
 
 # Controlled domain errors: reported cleanly, exit 1 (never a traceback).

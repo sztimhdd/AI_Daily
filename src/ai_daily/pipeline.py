@@ -226,6 +226,18 @@ def run_narrative(run_paths, codex_runner=None, force: bool = False) -> dict:
     return narrative.run(run_paths, codex_runner=codex_runner, force=force)
 
 
+def run_knowledge_background(run_paths, kg_client=None,
+                             force: bool = False) -> dict:
+    """Optional KG background for the chosen topic; never blocks."""
+    from . import knowledge, topics
+
+    topic = topics.require_choice(run_paths)
+    run_paths.ensure_work_dir()
+    return knowledge.persist_background(
+        run_paths, topic, client=kg_client, force=force
+    )
+
+
 def run_sufficiency(run_paths, codex_runner=None, force: bool = False) -> dict:
     """05 evidence-sufficiency audit for the chosen narrative."""
     return sufficiency.run(run_paths, codex_runner=codex_runner, force=force)

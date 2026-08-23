@@ -169,3 +169,27 @@ def render_background_md(data: dict) -> str:
     if data.get("report"):
         lines += ["", "## Synthesis", data["report"].strip()[:6000]]
     return "\n".join(lines) + "\n"
+
+
+def persist_background(run_paths, topic: dict, client: MCPClient = None,
+                       force: bool = False) -> dict:
+    """Fetch (or resume) the KG background for a run; never raises."""
+    title = (topic or {}).get("title", "")
+    if not force:
+        existing = run_paths.work_dir / KG_BACKGROUND_JSON
+        if existing.exists():
+            try:
+                data = json.loads(existing.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                data = {}
+            if data.get("topic") == title:
+                return {**data, "resumed": True}
+    data = fetch_background(topic, client=client)
+    (run_paths.work_dir / KG_BACKGROUND_JSON).write_text(
+        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (run_paths.work_dir / KG_BACKGROUND_MD).write_text(
+        render_background_md(data), encoding="utf-8",
+    )
+    return data

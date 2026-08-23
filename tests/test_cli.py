@@ -41,6 +41,18 @@ class FixtureE2ETests(CliBase):
         research = parser.parse_args(["research", "--root", self.root])
         self.assertEqual(research.mode, "live")
 
+    def test_kg_command_prints_background_status(self):
+        with mock.patch.object(
+            cli.pipeline, "run_knowledge_background",
+            return_value={"status": "completed", "reason": ""},
+        ) as patched:
+            code, out, _ = self.run_cli(
+                "kg", "--root", self.root, "--date", "2026-08-12"
+            )
+        self.assertEqual(code, 0, out)
+        self.assertIn("kg background: completed", out)
+        patched.assert_called_once()
+
     def test_run_fixture_e2e_exit_zero_and_completed(self):
         code, out, err = self.run_cli(
             "run", "--root", self.root, "--date", "2026-08-12",
