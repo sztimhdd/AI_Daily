@@ -109,13 +109,19 @@
   "has_cover": false,
   "cover": null,
   "images_status": "complete",
+  "visual_qa": {
+    "status": "passed",
+    "retained_images": ["01", "03"],
+    "rejected_from_article": ["02"],
+    "note": "Final Chief Editor visually inspected the retained publication images. Image 01 was replaced for legibility and diagram clarity; image 02 remains an archived generated asset but is not published because its premise became stale after factual correction."
+  },
   "images": [
     {
       "id": "01",
       "filename": "01.webp",
-      "alt": "A data-flow diagram connecting logs with each scan, identity, asset, policy, and outcome.",
-      "width": 960,
-      "height": 700,
+      "alt": "A diagram showing every scan linked to identity, asset, policy, and outcome through an immutable audit trail.",
+      "width": 640,
+      "height": 373,
       "format": "webp"
     },
     {

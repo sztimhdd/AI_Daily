@@ -44,7 +44,7 @@ The second is containment: who can start a scan, which repositories are in scope
 
 Require a trail that connects identity, asset, scan, finding, approval, and outcome. If that trail breaks, the pilot pauses.
 
-![A data-flow diagram connecting logs with each scan, identity, asset, policy, and outcome.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp)
+![A diagram showing every scan linked to identity, asset, policy, and outcome through an immutable audit trail.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp)
 
 *The test is not whether Mythos finds a bug. It is whether your audit trail survives the bug hunt.*
 
