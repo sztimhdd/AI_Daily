@@ -25,6 +25,17 @@ SEVEN_MODULES = (
 )
 
 
+class _FakeKgClient:
+    def synthesize(self, query, max_polls=8):
+        return {"status": "completed", "report": "background"}
+
+    def fts_search(self, query, limit=5, lang="zh-CN"):
+        return "hit"
+
+
+_FAKE_KG = _FakeKgClient()
+
+
 def hot_topics_payload():
     return {
         "schemaVersion": 1,
@@ -168,11 +179,19 @@ class InitialResearchBase(unittest.TestCase):
         self._tmp.cleanup()
 
     def run_initial(self, **kwargs):
+        class _FakeKgClient:
+            def synthesize(self, query, max_polls=8):
+                return {"status": "completed", "report": "background"}
+
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                return "hit"
+
         defaults = dict(
             aihot_fetch=make_aihot_fetch(),
             http_fetcher=make_http_fetcher(),
             cdp_runner=make_cdp_runner(),
             codex_runner=make_codex_runner(),
+            kg_client=_FakeKgClient(),
         )
         defaults.update(kwargs)
         return research.run_initial(self.paths, **defaults)
@@ -328,6 +347,7 @@ class InitialResearchHappyPathTests(InitialResearchBase):
             http_fetcher=make_http_fetcher(),
             cdp_runner=make_cdp_runner(),
             codex_runner=make_codex_runner(),
+            kg_client=_FAKE_KG,
         )
         self.assertEqual(result["status"], "generated")
         self.assertEqual(
@@ -362,6 +382,7 @@ class InitialResearchHappyPathTests(InitialResearchBase):
             cdp_runner=make_cdp_runner(),
             codex_runner=make_codex_runner(),
             progress=progress,
+            kg_client=_FAKE_KG,
         )
         self.assertEqual(events, ["matrix", "evidence", "analysis_start", "analysis_done"])
 
