@@ -34,6 +34,7 @@ class _FakeKgClient:
 
 
 _FAKE_KG = _FakeKgClient()
+_NO_ZHIHU = lambda args: {"Code": 401, "Message": "no auth"}
 
 
 def hot_topics_payload():
@@ -192,6 +193,7 @@ class InitialResearchBase(unittest.TestCase):
             cdp_runner=make_cdp_runner(),
             codex_runner=make_codex_runner(),
             kg_client=_FakeKgClient(),
+            zhihu_runner=_NO_ZHIHU,
         )
         defaults.update(kwargs)
         return research.run_initial(self.paths, **defaults)
@@ -348,6 +350,7 @@ class InitialResearchHappyPathTests(InitialResearchBase):
             cdp_runner=make_cdp_runner(),
             codex_runner=make_codex_runner(),
             kg_client=_FAKE_KG,
+            zhihu_runner=_NO_ZHIHU,
         )
         self.assertEqual(result["status"], "generated")
         self.assertEqual(
@@ -383,6 +386,7 @@ class InitialResearchHappyPathTests(InitialResearchBase):
             codex_runner=make_codex_runner(),
             progress=progress,
             kg_client=_FAKE_KG,
+            zhihu_runner=_NO_ZHIHU,
         )
         self.assertEqual(events, ["matrix", "evidence", "analysis_start", "analysis_done"])
 

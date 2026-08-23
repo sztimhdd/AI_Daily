@@ -18,7 +18,7 @@ import subprocess
 import unicodedata
 from zoneinfo import ZoneInfo
 
-from . import aihot, fetch, knowledge, state, topics
+from . import aihot, fetch, knowledge, state, topics, zhihu_lane
 
 AIHOT_EVIDENCE = "aihot-items.json"
 RSS_EVIDENCE = "rss-items.json"
@@ -29,6 +29,9 @@ INITIAL_EVIDENCE_JSON = "initial-evidence.json"
 INITIAL_OSINT_JSON = "initial-osint.json"
 INITIAL_OSINT_MD = "initial-osint.md"
 MAX_EVIDENCE_PER_QUESTION = 3
+ZHIHU_RESEARCH_BUDGET = 1  # zhihu community searches per research run
+ZHIHU_COMMUNITY_JSON = "zhihu-community.json"
+ZHIHU_COMMUNITY_MD = "zhihu-community.md"
 
 _STOP_TOKENS = {"ai", "the", "a", "an", "of", "for", "and", "to", "how", "with"}
 _ASCII_RE = re.compile(r"[a-z0-9][a-z0-9.+#-]*")
@@ -926,6 +929,35 @@ def _run_codex_analysis(run_paths, codex_runner, topic, matrix, evidence) -> dic
     return analysis
 
 
+def _zhihu_community_block(run_paths, topic, runner=None) -> dict:
+    """Bounded, cached Zhihu community-voice fetch; never raises."""
+    title = (topic or {}).get("title", "")
+    json_path = run_paths.work_dir / ZHIHU_COMMUNITY_JSON
+    if json_path.exists():
+        try:
+            stored = json.loads(json_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            stored = {}
+        if stored.get("topic") == title:
+            return {**stored, "resumed": True}
+    if ZHIHU_RESEARCH_BUDGET <= 0:
+        return {
+            "status": "unavailable",
+            "reason": "zhihu research budget exhausted",
+            "topic": title,
+        }
+    data = zhihu_lane.community_voice(topic, runner=runner)
+    data = {**data, "topic": title}
+    json_path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (run_paths.work_dir / ZHIHU_COMMUNITY_MD).write_text(
+        zhihu_lane.render_community_md(data), encoding="utf-8",
+    )
+    return data
+
+
 def _merge_analysis(modules: list, gaps: list, analysis: dict) -> None:
     """Merge a completed analysis into the base archive (best effort)."""
     analysis_modules = analysis.get("modules")
@@ -1061,6 +1093,7 @@ def run_initial(
     discover_runner=None,
     codex_runner=None,
     kg_client=None,
+    zhihu_runner=None,
     progress=None,
     force: bool = False,
     timeout: float = 30.0,
@@ -1158,6 +1191,34 @@ def run_initial(
     if analysis_status == "completed":
         _merge_analysis(modules, gaps, analysis)
 
+    zhihu = _zhihu_community_block(run_paths, topic, runner=zhihu_runner)
+    if zhihu.get("status") == "ok":
+        for it in (zhihu.get("items") or [])[:5]:
+            url = str(it.get("url") or "").strip()
+            if not url.startswith("http"):
+                continue
+            evidence.append({
+                "url": url,
+                "title": it.get("title", ""),
+                "author": it.get("author", ""),
+                "vote_up": it.get("vote_up", 0),
+                "comment_count": it.get("comment_count", 0),
+                "content_type": it.get("content_type", ""),
+                "status": "found",
+                "source_lane": "zhihu-cli",
+                "community": True,
+                "sha256": "",
+                "excerpt": it.get("content", "")[:300],
+                "excerpt_truncated": len(it.get("content", "")) > 300,
+            })
+        for mod in modules:
+            if mod.get("key") == "community_voices":
+                note = "；知乎社区声量（zhihu-cli 二手社区证据）：" + " / ".join(
+                    str(it.get("title", "")) for it in (zhihu.get("items") or [])[:3]
+                )
+                mod["summary"] = ((mod.get("summary") or "").strip() + note).strip()
+                break
+
     data = {
         "run_id": run_paths.run_id,
         "date": run_paths.date,
@@ -1214,4 +1275,5 @@ def run_initial(
         "modules": [m["key"] for m in modules],
         "evidence_gaps": gaps,
         "kg": background,
+        "zhihu": zhihu,
     }

@@ -578,6 +578,7 @@ class KnowledgeBackgroundTests(unittest.TestCase):
                 "evidence_gaps": [],
             },
             kg_client=kg_client,
+            zhihu_runner=lambda args: {"Code": 401, "Message": "no auth"},
         )
 
     def test_kg_background_artifact_written_and_never_blocks(self):
@@ -625,6 +626,93 @@ class KnowledgeBackgroundTests(unittest.TestCase):
         )
         self.assertEqual(j["status"], "degraded")
         self.assertIn("down", j["reason"])
+
+
+class ZhihuCommunityResearchTests(unittest.TestCase):
+    """Zhihu community voice is a default, additive, never-blocking source."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self._tmp.name)
+        self.paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        self.paths.ensure_work_dir()
+        state.init_state(self.paths)
+        topics.choose_fixture(self.paths, FIXTURES / "topic_fixture.json")
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _run(self, zhihu_runner):
+        class _FakeKgClient:
+            def synthesize(self, query, max_polls=8):
+                return {"status": "completed", "report": "bg"}
+
+            def fts_search(self, query, limit=5, lang="zh-CN"):
+                return "hit"
+
+        return research.run_initial(
+            self.paths,
+            aihot_fetch=lambda url, timeout: json.dumps({"items": []}).encode(),
+            discover_runner=lambda q: [],
+            codex_runner=lambda prompt: {
+                "status": "completed",
+                "modules": [{"key": "community_voices", "summary": ""}],
+                "evidence_gaps": [],
+            },
+            kg_client=_FakeKgClient(),
+            zhihu_runner=zhihu_runner,
+        )
+
+    @staticmethod
+    def _zhihu_ok_runner():
+        return lambda args: {
+            "Code": 0,
+            "Message": "ok",
+            "Data": {"Items": [{
+                "Title": "真实经历：跑分没输过，实战没赢过",
+                "AuthorName": "某工程师",
+                "ContentText": "生产环境一跑就现原形……",
+                "Url": "https://www.zhihu.com/question/1/answer/1",
+                "VoteUpCount": 172,
+                "CommentCount": 15,
+                "ContentType": "Answer",
+            }]},
+        }
+
+    def test_zhihu_items_merge_into_osint_sources(self):
+        result = self._run(self._zhihu_ok_runner())
+        self.assertEqual(result["status"], "generated")
+        osint = json.loads(
+            (self.paths.work_dir / research.INITIAL_OSINT_JSON).read_text(
+                encoding="utf-8"
+            )
+        )
+        urls = [s["url"] for s in osint["sources"]]
+        self.assertIn("https://www.zhihu.com/question/1/answer/1", urls)
+        zh = json.loads(
+            (self.paths.work_dir / "zhihu-community.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(zh["status"], "ok")
+        self.assertEqual(zh["items"][0]["vote_up"], 172)
+        md = (self.paths.work_dir / "zhihu-community.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("二手社区证据", md)
+
+    def test_zhihu_failure_degrades_without_breaking_research(self):
+        def runner(args):
+            return {"Code": 401, "Message": "no auth"}
+
+        result = self._run(runner)
+        self.assertEqual(result["status"], "generated")
+        zh = json.loads(
+            (self.paths.work_dir / "zhihu-community.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(zh["status"], "unavailable")
 
 
 if __name__ == "__main__":

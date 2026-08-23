@@ -197,6 +197,7 @@ def run_initial_research(
     discover_runner=None,
     codex_runner=None,
     kg_client=None,
+    zhihu_runner=None,
     progress=None,
     force: bool = False,
 ) -> dict:
@@ -216,6 +217,7 @@ def run_initial_research(
         discover_runner=discover_runner,
         codex_runner=codex_runner,
         kg_client=kg_client,
+        zhihu_runner=zhihu_runner,
         progress=progress,
         force=force,
     )
