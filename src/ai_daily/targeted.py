@@ -10,12 +10,14 @@ from __future__ import annotations
 
 import json
 
-from . import fetch, narrative, research, state, sufficiency
+from . import fetch, narrative, research, state, sufficiency, zhihu_lane
 
 TARGETED_JSON = "targeted-evidence.json"
 EVIDENCE_PACKAGE_JSON = "evidence-package.json"
 MAX_ROUNDS = 2
 MAX_URLS_PER_TASK = 3
+
+_ZHIHU_GAP_TYPES = ("缺真实使用反馈", "缺社区原声", "单一来源", "来源冲突")
 
 
 class TargetedError(RuntimeError):
@@ -23,11 +25,32 @@ class TargetedError(RuntimeError):
 
 
 def _execute_tasks(run_paths, tasks: list, discover_runner=None,
-                   http_fetcher=None, cdp_runner=None) -> list:
+                   http_fetcher=None, cdp_runner=None,
+                   zhihu_runner=None) -> list:
     """Execute atomic research tasks through the 01 lane seam."""
     entries, seen = [], set()
     for task in tasks or []:
         gap_type = task.get("gap_type", "")
+        if gap_type in _ZHIHU_GAP_TYPES and task.get("query"):
+            result = zhihu_lane.search_zhihu(
+                task["query"], count=5, runner=zhihu_runner
+            )
+            if result.get("status") == "ok":
+                for item in result.get("items", []):
+                    url = item.get("url", "")
+                    if not url.startswith("http") or url in seen:
+                        continue
+                    seen.add(url)
+                    entries.append({
+                        "url": url,
+                        "title": item.get("title", ""),
+                        "author": item.get("author", ""),
+                        "status": "found",
+                        "source_lane": "zhihu-cli",
+                        "sha256": "",
+                        "excerpt": item.get("content", "")[:300],
+                        "gap_type": gap_type,
+                    })
         urls = []
         if task.get("url"):
             urls = [task["url"]]
@@ -63,7 +86,8 @@ def _execute_tasks(run_paths, tasks: list, discover_runner=None,
 
 def run_loop(run_paths, audit_runner=None, discover_runner=None,
              http_fetcher=None, cdp_runner=None, force: bool = False,
-             initial_audit: dict = None, progress=None) -> dict:
+             initial_audit: dict = None, progress=None,
+             zhihu_runner=None) -> dict:
     """Audit -> targeted rounds (max 2) -> final verdict + evidence package."""
     chosen = narrative.require_narrative(run_paths)
     package_path = run_paths.work_dir / EVIDENCE_PACKAGE_JSON
@@ -109,6 +133,7 @@ def run_loop(run_paths, audit_runner=None, discover_runner=None,
                 discover_runner=discover_runner,
                 http_fetcher=http_fetcher,
                 cdp_runner=cdp_runner,
+                zhihu_runner=zhihu_runner,
             )
             rounds.append(entries)
             extra.extend(entries)

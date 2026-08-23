@@ -124,6 +124,56 @@ class TaskExecutionTests(TargetedBase):
         urls = [e["url"] for e in entries]
         self.assertEqual(len(urls), len(set(urls)))
 
+    def test_community_gap_tasks_use_zhihu_lane(self):
+        tasks = [{"gap_type": "缺真实使用反馈", "query": "实测 GLM",
+                  "direction": "zhihu"}]
+
+        def fake_zhihu(args):
+            return {
+                "ok": True,
+                "items": [{
+                    "Title": "真实回答", "AuthorName": "某用户",
+                    "ContentText": "实测翻车细节……",
+                    "Url": "https://www.zhihu.com/question/1/answer/1",
+                }],
+            }
+
+        entries = targeted._execute_tasks(
+            self.run_paths, tasks,
+            discover_runner=lambda t, w: [],
+            http_fetcher=lambda u, t: b"x",
+            cdp_runner=None,
+            zhihu_runner=fake_zhihu,
+        )
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["source_lane"], "zhihu-cli")
+        self.assertEqual(entries[0]["url"],
+                         "https://www.zhihu.com/question/1/answer/1")
+        self.assertEqual(entries[0]["status"], "found")
+        self.assertIn("实测翻车", entries[0]["excerpt"])
+
+    def test_zhihu_lane_failure_does_not_block_other_tasks(self):
+        tasks = [
+            {"gap_type": "缺真实使用反馈", "query": "实测 GLM",
+             "direction": "zhihu"},
+            {"gap_type": "缺官方数据", "query": "", "direction": "official",
+             "url": "https://example.com/doc"},
+        ]
+
+        def broken_zhihu(args):
+            return {"ok": False,
+                    "error": {"message": "AUTH_REQUIRED"}}
+
+        entries = targeted._execute_tasks(
+            self.run_paths, tasks,
+            discover_runner=lambda t, w: [],
+            http_fetcher=lambda u, t: b"x",
+            cdp_runner=None,
+            zhihu_runner=broken_zhihu,
+        )
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["url"], "https://example.com/doc")
+
 
 class LoopTests(TargetedBase):
     def _audit_sequence(self, verdicts):
