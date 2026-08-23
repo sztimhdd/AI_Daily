@@ -182,6 +182,53 @@ class TaskExecutionTests(TargetedBase):
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0]["url"], "https://example.com/doc")
 
+    def test_zhihu_search_results_cached_across_rounds(self):
+        calls = {"n": 0}
+
+        def fake_zhihu(args):
+            calls["n"] += 1
+            return {
+                "Code": 0, "Message": "success",
+                "Data": {"Items": [{
+                    "Title": "答案", "AuthorName": "a",
+                    "ContentText": "正文", "Url": "https://www.zhihu.com/q/1",
+                }]},
+            }
+
+        tasks = [{"gap_type": "缺真实使用反馈", "query": "同一问题",
+                  "direction": "zhihu"}]
+        targeted._execute_tasks(
+            self.run_paths, tasks, zhihu_runner=fake_zhihu,
+        )
+        targeted._execute_tasks(
+            self.run_paths, tasks, zhihu_runner=fake_zhihu,
+        )
+        self.assertEqual(calls["n"], 1)
+
+    def test_zhihu_search_budget_is_enforced_per_run(self):
+        calls = {"n": 0}
+
+        def fake_zhihu(args):
+            calls["n"] += 1
+            return {
+                "Code": 0, "Message": "success",
+                "Data": {"Items": [{
+                    "Title": f"答案{calls['n']}", "AuthorName": "a",
+                    "ContentText": "正文", "Url": f"https://www.zhihu.com/q/{calls['n']}",
+                }]},
+            }
+
+        tasks = [
+            {"gap_type": "缺真实使用反馈", "query": f"q{i}",
+             "direction": "zhihu"}
+            for i in range(6)
+        ]
+        entries = targeted._execute_tasks(
+            self.run_paths, tasks, zhihu_runner=fake_zhihu,
+        )
+        self.assertLessEqual(calls["n"], 4)  # per-run budget cap
+        self.assertEqual(len(entries), calls["n"])
+
 
 class LoopTests(TargetedBase):
     def _audit_sequence(self, verdicts):

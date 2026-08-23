@@ -9,6 +9,7 @@ verdict closes as one of the three audit states, never left hanging.
 from __future__ import annotations
 
 import json
+import hashlib
 
 from . import fetch, narrative, research, state, sufficiency, zhihu_lane
 
@@ -16,6 +17,8 @@ TARGETED_JSON = "targeted-evidence.json"
 EVIDENCE_PACKAGE_JSON = "evidence-package.json"
 MAX_ROUNDS = 2
 MAX_URLS_PER_TASK = 3
+ZHIHU_SEARCH_BUDGET = 4  # per run; free-tier quota is ~10/窗口
+ZHIHU_CACHE_JSON = "zhihu-search-cache.json"
 
 _ZHIHU_GAP_TYPES = ("缺真实使用反馈", "缺社区原声", "单一来源", "来源冲突")
 
@@ -29,12 +32,28 @@ def _execute_tasks(run_paths, tasks: list, discover_runner=None,
                    zhihu_runner=None) -> list:
     """Execute atomic research tasks through the 01 lane seam."""
     entries, seen = [], set()
+    cache_path = run_paths.work_dir / ZHIHU_CACHE_JSON
+    try:
+        cache = json.loads(cache_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        cache = {}
+    zhihu_budget = ZHIHU_SEARCH_BUDGET
     for task in tasks or []:
         gap_type = task.get("gap_type", "")
         if gap_type in _ZHIHU_GAP_TYPES and task.get("query"):
-            result = zhihu_lane.search_zhihu(
-                task["query"], count=5, runner=zhihu_runner
-            )
+            query = task["query"]
+            if query in cache:
+                result = {"status": "ok", "items": cache[query]}
+            elif zhihu_budget > 0:
+                zhihu_budget -= 1
+                result = zhihu_lane.search_zhihu(
+                    query, count=5, runner=zhihu_runner
+                )
+                if result.get("status") == "ok":
+                    cache[query] = result["items"]
+            else:
+                result = {"status": "unavailable",
+                          "reason": "zhihu search budget exhausted for this run"}
             if result.get("status") == "ok":
                 for item in result.get("items", []):
                     url = item.get("url", "")
@@ -45,10 +64,14 @@ def _execute_tasks(run_paths, tasks: list, discover_runner=None,
                         "url": url,
                         "title": item.get("title", ""),
                         "author": item.get("author", ""),
+                        "vote_up": item.get("vote_up", 0),
+                        "comment_count": item.get("comment_count", 0),
+                        "content_type": item.get("content_type", ""),
                         "status": "found",
                         "source_lane": "zhihu-cli",
                         "sha256": "",
                         "excerpt": item.get("content", "")[:300],
+                        "excerpt_truncated": len(item.get("content", "")) > 300,
                         "gap_type": gap_type,
                     })
         urls = []
@@ -81,6 +104,11 @@ def _execute_tasks(run_paths, tasks: list, discover_runner=None,
                 "excerpt_truncated": truncated,
                 "gap_type": gap_type,
             })
+    if cache:
+        cache_path.write_text(
+            json.dumps(cache, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
     return entries
 
 
