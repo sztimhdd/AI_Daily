@@ -79,7 +79,7 @@
     "缺少客户影响、业务中断、补偿或真实使用反馈。"
   ],
   "source_count": 6,
-  "generated_at": "2026-08-23T22:47:24+00:00",
+  "generated_at": "2026-08-23T22:52:03+00:00",
   "seo_title": "Claude Flickers: Why AI Buyers Need an Escape Hatch",
   "seo_summary": "When one AI platform flickers, critical workflows can stall. Map dependencies, test fallbacks, and define human takeover rules before failure strikes.",
   "has_cover": false,
@@ -98,6 +98,14 @@
       "id": "02",
       "filename": "02.webp",
       "alt": "A human buyer studies a dark neighborhood beside an illuminated region of a connected power grid at night.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "An architecture map connects chat, code, and API traffic to different systems and possible shared services, with alternate routes and manual checkpoints.",
       "width": 1024,
       "height": 1024,
       "format": "webp"
