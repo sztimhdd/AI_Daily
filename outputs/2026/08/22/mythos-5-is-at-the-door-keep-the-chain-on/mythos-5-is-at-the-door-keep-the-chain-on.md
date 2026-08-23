@@ -44,7 +44,7 @@ The second is containment: who can start a scan, which repositories are in scope
 
 Require a trail that connects identity, asset, scan, finding, approval, and outcome. If that trail breaks, the pilot pauses.
 
-![A diagram showing every scan linked to identity, asset, policy, and outcome through an immutable audit trail.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp)
+![Diagram showing a central audit log linking each scan to identity, asset, policy, and outcome, with broken-chain callouts marking failure points.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp)
 
 *The test is not whether Mythos finds a bug. It is whether your audit trail survives the bug hunt.*
 
@@ -59,6 +59,10 @@ A demo proves the model works. **A pilot should prove that stopping it works too
 The original evidence package treated the **$35 million** open-source fund as second-hand. Anthropic's August 21 announcement now confirms it directly.
 
 The **Defender Advantage Fund (0xDAF)** is **$35 million in Claude credits**, not a $35 million cash grant pool. Anthropic says the credits will support vulnerability patching, automated scanning and patching, and more ambitious open-source security work. It plans to start with a small number of larger pilot grants and publish initial recipients later. [1](https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders)
+
+![Comparison graphic showing what the $35M Defender Advantage Fund does signal—vendor commitment, pilot funding, and open-source focus—and what it does not prove, including production readiness, strong controls, low false positives, or operational fit.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp)
+
+*A confirmed fund can show commitment. It cannot substitute for evidence that the product fits your control plane.*
 
 That is useful evidence of commitment. It tells you almost nothing about whether Claude Security belongs in your production control plane.
 
@@ -76,9 +80,9 @@ There are really three decisions hiding inside one purchase.
 
 **Duration:** After the novelty and integration cost are gone, do the measured benefits still justify the dependency?
 
-![A flowchart separates technical testing, trust in the operating model, and duration of the relationship.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp)
+![Three-column decision graphic comparing capability, control, and duration, each with the questions buyers should answer before expanding an enterprise pilot.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp)
 
-*Model quality can earn access quickly. Control quality has to earn duration.*
+*Capability can earn a pilot. Control quality has to earn renewal.*
 
 Anthropic has already done something important by separating defensive output from direct Mythos access. AISI has supplied the uncomfortable counterweight: under a deliberately weakened safety setup, Mythos 5 showed exactly why those boundaries deserve attention. [1](https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders) [3](https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing)
 

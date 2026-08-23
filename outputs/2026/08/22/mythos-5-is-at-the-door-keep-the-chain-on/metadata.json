@@ -7,8 +7,8 @@
   "topic_choice": "human",
   "quality": {
     "verdict": "pass_with_notes",
-    "word_count": 1271,
-    "paragraph_count": 39,
+    "word_count": 1229,
+    "paragraph_count": 49,
     "findings": [],
     "downgraded": false,
     "attempts": 1
@@ -109,35 +109,29 @@
   "has_cover": false,
   "cover": null,
   "images_status": "complete",
-  "visual_qa": {
-    "status": "passed",
-    "retained_images": ["01", "03"],
-    "rejected_from_article": ["02"],
-    "note": "Final Chief Editor visually inspected the retained publication images. Image 01 was replaced for legibility and diagram clarity; image 02 remains an archived generated asset but is not published because its premise became stale after factual correction."
-  },
   "images": [
     {
       "id": "01",
       "filename": "01.webp",
-      "alt": "A diagram showing every scan linked to identity, asset, policy, and outcome through an immutable audit trail.",
-      "width": 640,
-      "height": 373,
+      "alt": "Diagram showing a central audit log linking each scan to identity, asset, policy, and outcome, with broken-chain callouts marking failure points.",
+      "width": 900,
+      "height": 675,
       "format": "webp"
     },
     {
       "id": "02",
       "filename": "02.webp",
-      "alt": "The glowing $35 million headline figure loses its provenance while remaining marked unknown in a diligence register and outside the vendor scorecard.",
-      "width": 1024,
-      "height": 1024,
+      "alt": "Comparison graphic showing what the $35M Defender Advantage Fund does signal—vendor commitment, pilot funding, and open-source focus—and what it does not prove, including production readiness, strong controls, low false positives, or operational fit.",
+      "width": 900,
+      "height": 675,
       "format": "webp"
     },
     {
       "id": "03",
       "filename": "03.webp",
-      "alt": "A flowchart separates technical testing, trust in the operating model, and duration of the relationship.",
-      "width": 960,
-      "height": 700,
+      "alt": "Three-column decision graphic comparing capability, control, and duration, each with the questions buyers should answer before expanding an enterprise pilot.",
+      "width": 900,
+      "height": 675,
       "format": "webp"
     }
   ],
@@ -174,5 +168,15 @@
     }
   ],
   "final_article": "articles/2026-08-22-mythos-5-is-at-the-door-keep-the-chain-on-en.md",
-  "package": "outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on"
+  "package": "outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on",
+  "visual_qa": {
+    "status": "passed",
+    "retained_images": [
+      "01",
+      "02",
+      "03"
+    ],
+    "rejected_from_article": [],
+    "note": "Final Chief Editor visually inspected all three replacement WebP assets at 900x675. Image 01 is the audit-chain diagram; image 02 reflects the corrected $35M-in-Claude-credits fact and separates commitment from product fit; image 03 presents the capability/control/duration decision gates. All passed legibility, semantic, factual, and mobile-readability checks."
+  }
 }
