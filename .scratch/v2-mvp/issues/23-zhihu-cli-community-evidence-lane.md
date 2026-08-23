@@ -16,3 +16,11 @@
 
 - 真实探针：`search zhihu` / `hot` 均返回 `AUTH_REQUIRED`（需 Access Secret），未配置时管线按 `unavailable` 如实降级，不伪造社区证据。
 - 待用户动作：到 https://developer.zhihu.com/profile 生成 Access Secret 后，通过 stdin 传入（`auth set --secret-stdin`，不回显）；之后即可 live 验证并跑 03/06 真实回归。
+
+升级（2026-08-24，ADR 0002 + 计划 2026-08-24-zhihu-default-community-lane.md）：
+
+- [x] `zhihu_lane.community_voice()` + `render_community_md()`（标注"二手社区证据，非一手事实"）
+- [x] 03 live research 默认社区证据源：`run_initial(zhihu_runner=…)` 每次研究跑 1 次有界+缓存社区搜索（`ZHIHU_RESEARCH_BUDGET=1`），条目并入 OSINT sources（`source_lane=zhihu-cli`、`community=true`），`community_voices` 模块补一行声量注记；失败降级不阻塞
+- [x] CLI `zhihu` 子命令（`--force`），对齐 `kg`
+- [x] 测试：zhihu_lane 10 例、research zhihu 2 例、cli 1 例；全量 708 tests 绿
+- [ ] 待配额（实名认证或窗口重置）后：放宽 `ZHIHU_RESEARCH_BUDGET` → 跑 03/06 真实社区证据回归，验证 `community_voices` 与"共识有传播证据"缺口闭合 → 据结果决定是否提升证据等级
