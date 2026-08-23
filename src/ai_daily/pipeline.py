@@ -240,6 +240,23 @@ def run_knowledge_background(run_paths, kg_client=None,
     )
 
 
+def run_zhihu_community(run_paths, zhihu_runner=None,
+                        force: bool = False) -> dict:
+    """Bounded, cached Zhihu community voice for the topic; never blocks."""
+    from . import research, topics
+
+    topic = topics.require_choice(run_paths)
+    run_paths.ensure_work_dir()
+    if force:
+        for name in (research.ZHIHU_COMMUNITY_JSON, research.ZHIHU_COMMUNITY_MD):
+            path = run_paths.work_dir / name
+            if path.exists():
+                path.unlink()
+    return research._zhihu_community_block(
+        run_paths, topic, runner=zhihu_runner
+    )
+
+
 def run_sufficiency(run_paths, codex_runner=None, force: bool = False) -> dict:
     """05 evidence-sufficiency audit for the chosen narrative."""
     return sufficiency.run(run_paths, codex_runner=codex_runner, force=force)

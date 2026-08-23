@@ -194,6 +194,13 @@ def build_parser() -> argparse.ArgumentParser:
                    help="concept-level KG query (default: first research query)")
     p.add_argument("--force", action="store_true")
 
+    p = sub.add_parser(
+        "zhihu",
+        help="fetch Zhihu community voice for the chosen topic",
+    )
+    common(p)
+    p.add_argument("--force", action="store_true")
+
     return parser
 
 
@@ -349,6 +356,18 @@ def cmd_kg(args) -> int:
         run_paths, query=args.query, force=args.force
     )
     print(f"kg background: {result.get('status')}")
+    if result.get("resumed"):
+        print("- resumed (cached)")
+    if result.get("reason"):
+        print(f"- reason: {result['reason']}")
+    return 0
+
+
+def cmd_zhihu(args) -> int:
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = pipeline.run_zhihu_community(run_paths, force=args.force)
+    print(f"zhihu community: {result.get('status')}")
     if result.get("resumed"):
         print("- resumed (cached)")
     if result.get("reason"):
@@ -812,6 +831,7 @@ COMMANDS = {
     "narrative": cmd_narrative,
     "audit": cmd_audit,
     "kg": cmd_kg,
+    "zhihu": cmd_zhihu,
 }
 
 # Controlled domain errors: reported cleanly, exit 1 (never a traceback).

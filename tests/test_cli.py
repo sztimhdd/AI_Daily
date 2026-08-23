@@ -53,6 +53,18 @@ class FixtureE2ETests(CliBase):
         self.assertIn("kg background: completed", out)
         patched.assert_called_once()
 
+    def test_zhihu_command_prints_community_status(self):
+        with mock.patch.object(
+            cli.pipeline, "run_zhihu_community",
+            return_value={"status": "ok", "reason": ""},
+        ) as patched:
+            code, out, _ = self.run_cli(
+                "zhihu", "--root", self.root, "--date", "2026-08-12"
+            )
+        self.assertEqual(code, 0, out)
+        self.assertIn("zhihu community: ok", out)
+        patched.assert_called_once()
+
     def test_run_fixture_e2e_exit_zero_and_completed(self):
         code, out, err = self.run_cli(
             "run", "--root", self.root, "--date", "2026-08-12",
