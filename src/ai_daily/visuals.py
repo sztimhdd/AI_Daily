@@ -114,20 +114,24 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "2. The image prompt must only use facts, figures, and names that "
         "appear verbatim in the article.  Never invent a number, a brand, "
         "or a claim.\n"
-        "3. Keep one consistent visual style across all images; state it "
+        "3. ``caption`` must express the article's argument or analogy at "
+        "that point — an editorial line that could stand inside the article "
+        "(e.g. a metaphor or the takeaway), NOT a description of the image. "
+        "``alt`` remains the literal visual description for accessibility.\n"
+        "4. Keep one consistent visual style across all images; state it "
         "in every entry's ``style`` field.\n"
-        "4. ``anchor`` is the exact sentence from the article after which "
+        "5. ``anchor`` is the exact sentence from the article after which "
         "the image is inserted — copy it verbatim from the article.\n"
-        "5. ``allowed_figures`` lists the only numerals the image may "
+        "6. ``allowed_figures`` lists the only numerals the image may "
         "render (empty when none).\n"
-        "6. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
-        "7. A cover image is optional: if present, mark id \"cover\" and it "
+        "7. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
+        "8. A cover image is optional: if present, mark id \"cover\" and it "
         "is not embedded in the body. The cover is always a Gemini image, "
         "never a diagram.\n"
-        "8. Every entry's ``kind`` is exactly \"image\" or \"diagram\": "
+        "9. Every entry's ``kind`` is exactly \"image\" or \"diagram\": "
         "regular illustrations use \"image\" (never \"raster\"); only "
         "deterministic visuals use \"diagram\".\n"
-        "9. Use a deterministic diagram (kind \"diagram\") ONLY for "
+        "10. Use a deterministic diagram (kind \"diagram\") ONLY for "
         "content-over-form explanations: architecture, data-flow, a process "
         "or mechanism whose structure and precision matter more than beauty. "
         "A diagram must earn its place — write in ``purpose`` why an image "
@@ -144,7 +148,8 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "Return a single JSON object, no prose, no code fence:\n"
         '{"images":[{"id":"01","anchor":"<verbatim sentence>",'
         '"kind":"image","purpose":"...","style":"...","prompt":"...",'
-        '"alt":"...",'
+        '"alt":"<literal visual description>","caption":"<editorial line / '
+        'analogy for the reader>",'
         '"allowed_figures":[],"size":"1024x1024","model":"'
         + DEFAULT_MODEL +
         '"}]}\n'
@@ -204,6 +209,9 @@ def parse_plan(payload) -> dict:
                     "anchor": anchor,
                     "purpose": str(entry.get("purpose") or "").strip(),
                     "alt": str(entry.get("alt") or "").strip(),
+                    "caption": str(
+                        entry.get("caption") or entry.get("alt") or ""
+                    ).strip(),
                     "diagram": dict(diagram),
                 }
             )
@@ -228,6 +236,9 @@ def parse_plan(payload) -> dict:
                 "style": str(entry.get("style") or "").strip(),
                 "prompt": prompt,
                 "alt": str(entry.get("alt") or "").strip(),
+                "caption": str(
+                    entry.get("caption") or entry.get("alt") or ""
+                ).strip(),
                 "allowed_figures": entry.get("allowed_figures") or [],
                 "size": str(entry.get("size") or "1024x1024").strip(),
                 "model": model,
@@ -591,6 +602,7 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
                 "width": w,
                 "height": h,
                 "alt": entry["alt"],
+                "caption": entry.get("caption") or entry.get("alt") or "",
             }
         )
     manifest = {"images": entries}
@@ -634,10 +646,11 @@ def embed(article: str, images: list, url_for) -> str:
                     if img["id"] in inserted:
                         continue
                     alt = img.get("alt") or ""
+                    caption = img.get("caption") or alt
                     url = url_for(img["id"])
                     out.append("")
                     out.append(f"![{alt}]({url})")
-                    out.append(f"*{alt}*")
+                    out.append(f"*{caption}*")
                     out.append("")
                     inserted.add(img["id"])
     return "\n".join(out)
@@ -650,6 +663,7 @@ def build_manifest(images: list) -> list:
             "id": img.get("id"),
             "filename": f"{img.get('id')}.{img.get('format', 'webp')}",
             "alt": img.get("alt") or "",
+            "caption": img.get("caption") or "",
             "width": img.get("width", 0),
             "height": img.get("height", 0),
             "format": img.get("format", "webp"),

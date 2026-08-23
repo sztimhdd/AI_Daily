@@ -13,6 +13,7 @@ outside this module).  Unaudited claims never enter the body.
 from __future__ import annotations
 
 import json
+import re
 
 from . import narrative, paths, quality, research, state, sufficiency, topics
 
@@ -149,9 +150,11 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         "half sentence — drop the quote and paraphrase instead; short "
         "phrases under five words may stay inline.\n"
         "Evidence rules:\n"
-        "8. Every fact, number, and quote carries an inline [title](URL); "
-        "never repeat the same link twice in one sentence; separate "
-        "adjacent sources with punctuation.\n"
+        "8. Cite inline as [n](URL) — a running number whose link text is "
+        "only the number, never the article title. The first citation of a "
+        "URL assigns its number; reuse that number for every later citation "
+        "of the same URL, and never renumber a URL. Do not append a sources "
+        "list in the body — the pipeline builds it.\n"
         "9. Hedge facts, keep the stance: second-hand figures are labeled "
         "(second-hand / not independently confirmed), but you still take a "
         "defensible position — no repeated fence-sitting (\"unresolved\", "
@@ -196,6 +199,37 @@ def _validate(draft: dict) -> list:
     if not isinstance(body, str) or not body.strip():
         errors.append("draft has no non-empty body")
     return errors
+
+
+def _append_sources(article: str, package: dict) -> str:
+    """Append a numbered ``## Sources`` list built from inline ``[n](url)``.
+
+    Deterministic: scans the body for ``[n](url)`` in order of appearance,
+    keeps the first number each distinct URL was cited with, and renders the
+    list with titles from the evidence package (URL fallback when missing).
+    """
+    titles = {
+        str(s.get("url") or ""): str(s.get("title") or "")
+        for s in (package or {}).get("sources") or []
+        if isinstance(s, dict) and s.get("url")
+    }
+    ordered = []
+    seen = set()
+    for m in re.finditer(r"\[(\d+)\]\((https?://[^)\s]+)\)", article):
+        number = int(m.group(1))
+        url = m.group(2)
+        if url in seen:
+            continue
+        seen.add(url)
+        ordered.append((number, url))
+    if not ordered:
+        return article
+    ordered.sort(key=lambda item: item[0])
+    lines = ["", "## Sources", ""]
+    for number, url in ordered:
+        label = titles.get(url) or url
+        lines.append(f"{number}. [{label}]({url})")
+    return article.rstrip() + "\n\n" + "\n".join(lines) + "\n"
 
 
 def _assemble_markdown(title: str, body: str) -> str:
@@ -287,6 +321,7 @@ def run(run_paths, codex_runner=None, force: bool = False,
             continue
         break
 
+    article = _append_sources(article, package)
     report_path.write_text(quality.report(gate) + "\n", encoding="utf-8")
     quality_json_path.write_text(
         json.dumps(

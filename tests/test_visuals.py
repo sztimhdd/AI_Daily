@@ -95,6 +95,21 @@ class VisualPlanTests(unittest.TestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(result["images"][0]["kind"], "image")
 
+    def test_parse_plan_carries_caption_and_defaults_to_alt(self):
+        plan = sample_plan()
+        plan["images"][0]["caption"] = "一个观点：城市停摆不是灯坏了，是没人看得见总闸。"
+        result = visuals.parse_plan(plan)
+        self.assertEqual(result["images"][0]["caption"], plan["images"][0]["caption"])
+        # diagram entries and missing captions fall back to alt
+        plan2 = sample_plan()
+        plan2["images"].append({
+            "id": "03", "kind": "diagram", "anchor": "c.",
+            "alt": "arch diagram", "diagram": {"mode": "architecture", "nodes": []},
+        })
+        parsed = visuals.parse_plan(plan2)
+        self.assertEqual(parsed["images"][2]["caption"], "arch diagram")
+        self.assertEqual(parsed["images"][1]["caption"], parsed["images"][1]["alt"])
+
     def test_fit_svg_canvas_grows_canvas_to_content(self):
         svg = (
             '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="700" '
@@ -262,6 +277,18 @@ class EmbedTests(VisualsBase):
         self.assertIn("![A meter.](u/01.webp)", out)
         self.assertIn("*A meter.*", out)
         self.assertGreater(out.index("*A meter.*"), out.index("![A meter.]"))
+
+    def test_embed_uses_caption_not_alt_for_the_visible_line(self):
+        article = "# T\n\nThe receipt tells a colder story.\n"
+        images = [
+            {"id": "01", "anchor": "The receipt tells a colder story.",
+             "alt": "A dark city block at night.",
+             "caption": "停摆不是灯坏了，是没人看得见总闸。"},
+        ]
+        out = visuals.embed(article, images, lambda iid: f"u/{iid}.webp")
+        self.assertIn("![A dark city block at night.](u/01.webp)", out)
+        self.assertIn("*停摆不是灯坏了，是没人看得见总闸。*", out)
+        self.assertNotIn("*A dark city block at night.*", out)
 
     def test_embed_skips_cover(self):
         article = self.write_article()

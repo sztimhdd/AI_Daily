@@ -340,7 +340,7 @@ class DraftEnPromptTests(DraftEnBase):
     def test_prompt_carries_precision_rules(self):
         prompt = self._prompt()
         for phrase in (
-            "never repeat the same link twice in one sentence",
+            "reuse that number for every later citation",
             "Hedge facts, keep the stance",
             'no "HTTP',
             "no repeated fence-sitting",
@@ -391,6 +391,41 @@ class DraftEnPromptTests(DraftEnBase):
     def test_prompt_omits_kg_primer_when_absent(self):
         prompt = self._prompt()
         self.assertNotIn("BACKGROUND PRIMER", prompt)
+
+    def test_prompt_uses_numbered_inline_citations(self):
+        prompt = self._prompt()
+        self.assertIn("[n](URL)", prompt)
+        self.assertIn("never the article title", prompt)
+        self.assertIn("first citation of a URL assigns its number", prompt)
+
+
+class SourcesAppendTests(unittest.TestCase):
+    def test_append_sources_builds_numbered_list_from_package_titles(self):
+        from ai_daily import draft_en
+
+        article = (
+            "Body with a claim [1](https://a.example.com/x) and another "
+            "[2](https://b.example.com/y), then the first again [1](https://a.example.com/x)."
+        )
+        package = {"sources": [
+            {"url": "https://a.example.com/x", "title": "Source A"},
+            {"url": "https://b.example.com/y", "title": "Source B"},
+        ]}
+        out = draft_en._append_sources(article, package)
+        self.assertIn("## Sources", out)
+        self.assertIn("1. [Source A](https://a.example.com/x)", out)
+        self.assertIn("2. [Source B](https://b.example.com/y)", out)
+        self.assertLess(out.index("## Sources"), out.index("1. [Source A]"))
+        # each distinct URL appears exactly once in the sources list
+        self.assertEqual(out.count("1. [Source A](https://a.example.com/x)"), 1)
+        self.assertEqual(out.count("2. [Source B](https://b.example.com/y)"), 1)
+
+    def test_append_sources_falls_back_to_url_without_title(self):
+        from ai_daily import draft_en
+
+        article = "Claim [3](https://c.example.com/z)."
+        out = draft_en._append_sources(article, {"sources": []})
+        self.assertIn("3. [https://c.example.com/z](https://c.example.com/z)", out)
 
 
 if __name__ == "__main__":
