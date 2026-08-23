@@ -648,12 +648,16 @@ def embed(article: str, images: list, url_for) -> str:
                     alt = img.get("alt") or ""
                     caption = img.get("caption") or alt
                     url = url_for(img["id"])
+                    if url in article:
+                        # already embedded by an earlier run; never duplicate
+                        inserted.add(img["id"])
+                        continue
                     out.append("")
                     out.append(f"![{alt}]({url})")
                     out.append(f"*{caption}*")
                     out.append("")
                     inserted.add(img["id"])
-    return "\n".join(out)
+    return "\n".join(out).rstrip() + "\n"
 
 
 def build_manifest(images: list) -> list:
@@ -695,7 +699,9 @@ def run_illustrate(run_paths, codex_runner=None, gemini_runner=None,
         return _raw_url(run_paths, en_slug, f"{iid}.{ext}")
 
     generated = [e for e in gen["manifest"]["images"] if e["status"] == "generated"]
-    embedded = embed(article, plan["images"], url_for)
+    generated_ids = {e["id"] for e in generated}
+    embed_plan = [e for e in plan["images"] if e["id"] in generated_ids]
+    embedded = embed(article, embed_plan, url_for)
     article_path.write_text(embedded, encoding="utf-8")
     state.record_artifact(
         run_paths, "images-manifest",

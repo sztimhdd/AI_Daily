@@ -290,6 +290,17 @@ class EmbedTests(VisualsBase):
         self.assertIn("*停摆不是灯坏了，是没人看得见总闸。*", out)
         self.assertNotIn("*A dark city block at night.*", out)
 
+    def test_embed_is_idempotent_on_repeat(self):
+        article = "# T\n\nThe receipt tells a colder story.\n"
+        images = [
+            {"id": "01", "anchor": "The receipt tells a colder story.",
+             "alt": "A meter.", "caption": "观点行。"},
+        ]
+        first = visuals.embed(article, images, lambda iid: f"u/{iid}.webp")
+        second = visuals.embed(first, images, lambda iid: f"u/{iid}.webp")
+        self.assertEqual(first, second)
+        self.assertEqual(second.count("![A meter.](u/01.webp)"), 1)
+
     def test_embed_skips_cover(self):
         article = self.write_article()
         images = [
@@ -460,6 +471,33 @@ class RunIllustrateTests(VisualsBase):
             result = visuals.run_generate(self.rp, gemini_runner=fake_runner)
         self.assertEqual(result["status"], "generated")
         self.assertEqual(result["generated"], 2)
+
+    def test_illustrate_embeds_only_generated_images(self):
+        self.write_article()
+        from unittest import mock
+
+        plan = {"status": "ok", "images": [
+            {"id": "01", "anchor": "The receipt tells a colder story.",
+             "alt": "a1", "caption": "c1"},
+            {"id": "03", "anchor": "The receipt tells a colder story.",
+             "alt": "a3", "caption": "c3"},
+        ]}
+        manifest = {"images": [
+            {"id": "01", "status": "generated", "format": "webp"},
+            {"id": "03", "status": "failed", "format": "webp", "reason": "down"},
+        ]}
+        with mock.patch.object(visuals, "run_plan", return_value=plan), \
+             mock.patch.object(
+                 visuals, "run_generate",
+                 return_value={"status": "generated", "manifest": manifest},
+             ):
+            result = visuals.run_illustrate(self.rp)
+        article = (self.rp.work_dir / draft_en.EN_ARTICLE_MD).read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("images/01.webp", article)
+        self.assertNotIn("images/03.webp", article)
+        self.assertEqual(result["status"], "illustrated")
 
 
 if __name__ == "__main__":
