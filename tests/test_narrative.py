@@ -338,6 +338,28 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         self.assertIn(directive, prompt)
         self.assertIn("Inferred/Unknown", prompt)
 
+    def test_prompt_includes_kg_background_when_present(self):
+        prompt = narrative._compile_prompt(
+            {"title": "X 发布", "hook": "", "research_queries": []},
+            sample_osint(),
+            ["cost_ledger"],
+            set(),
+            kg_background="## DRAFT\nmemory-bound insight",
+        )
+        self.assertIn("知识图谱背景", prompt)
+        self.assertIn("memory-bound insight", prompt)
+        self.assertIn("二手", prompt)
+        self.assertIn("不得作为事件证据", prompt)
+
+    def test_prompt_omits_kg_background_when_absent(self):
+        prompt = narrative._compile_prompt(
+            {"title": "X 发布", "hook": "", "research_queries": []},
+            sample_osint(),
+            ["cost_ledger"],
+            set(),
+        )
+        self.assertNotIn("Knowledge-Graph Background", prompt)
+
 
 class CandidateScoreTests(unittest.TestCase):
     def test_scores_within_unit_range(self):

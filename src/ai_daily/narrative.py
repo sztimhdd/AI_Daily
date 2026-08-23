@@ -13,7 +13,7 @@ import json
 import re
 import datetime
 
-from . import research, state, topics
+from . import knowledge, research, state, topics
 
 NARRATIVE_CANDIDATES_JSON = "narrative-candidates.json"
 NARRATIVE_CANDIDATES_MD = "narrative-candidates.md"
@@ -306,7 +306,7 @@ def score_candidate(cand: dict, osint: dict) -> dict:
 
 
 def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
-                    directive: str = "") -> str:
+                    directive: str = "", kg_background: str = "") -> str:
     """Self-contained narrative-generation prompt from the v2026 contract."""
     compact = {
         "topic": {
@@ -357,6 +357,14 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
             "但不得同义重复；论证仍然只能来自 evidence_data；"
             "意见中未被证据支持的部分必须显式标 Inferred/Unknown，"
             "绝不能写成已证实事实。\n"
+        )
+    if kg_background:
+        prompt += (
+            "\n【知识图谱背景（二手，仅作理解，不得作为事件证据）】\n"
+            "以下是知识图谱对相关机制/技术背景的合成说明，用于加深理解和"
+            "写出有深度的论证；它是二手背景，任何事件事实仍必须以 "
+            "evidence_data 为准。\n"
+            f"<kg_background>\n{kg_background[:6000]}\n</kg_background>\n"
         )
     prompt += (
         "【结构纪律（必须执行）】\n"
@@ -448,6 +456,11 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
     topic = topics.require_choice(run_paths)
     st = state.read_state(run_paths)
     directive = (st.get("narrative_directive") or "").strip()
+    kg_path = run_paths.work_dir / knowledge.KG_BACKGROUND_MD
+    kg_background = (
+        kg_path.read_text(encoding="utf-8")
+        if kg_path.is_file() else ""
+    )
     state.transition(run_paths, "narrative")
     json_path = run_paths.work_dir / NARRATIVE_CANDIDATES_JSON
     md_path = run_paths.work_dir / NARRATIVE_CANDIDATES_MD
@@ -477,7 +490,10 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
     allowed = route_archetypes(osint, tensions)
 
     runner = codex_runner or research._default_codex_runner
-    prompt = _compile_prompt(topic, osint, allowed, tensions, directive=directive)
+    prompt = _compile_prompt(
+        topic, osint, allowed, tensions,
+        directive=directive, kg_background=kg_background,
+    )
     analysis = runner(prompt)
     if (
         isinstance(analysis, dict)
