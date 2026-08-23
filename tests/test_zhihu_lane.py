@@ -84,6 +84,47 @@ class SearchZhihuTests(unittest.TestCase):
         self.assertEqual(result["status"], "ok")
         self.assertEqual(calls["n"], 2)
 
+
+class CommunityVoiceTests(unittest.TestCase):
+    def test_community_voice_builds_topic_query_and_normalizes(self):
+        topic = {
+            "title": "Claude 多入口报错",
+            "research_queries": ["Claude 宕机 企业影响"],
+        }
+        result = zhihu_lane.community_voice(topic, runner=lambda args: ok_search_payload())
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["query"], "Claude 多入口报错 Claude 宕机 企业影响")
+        self.assertEqual(result["items"][0]["author"], "某工程师")
+        self.assertEqual(result["items"][0]["vote_up"], 172)
+
+    def test_community_voice_unavailable_never_raises(self):
+        topic = {"title": "T"}
+        result = zhihu_lane.community_voice(
+            topic, runner=lambda args: {"Code": 401, "Message": "no auth"}
+        )
+        self.assertEqual(result["status"], "unavailable")
+
+    def test_render_community_md_marks_secondary(self):
+        data = {
+            "topic": "T",
+            "query": "q",
+            "items": [{
+                "title": "真实经历",
+                "author": "某工程师",
+                "vote_up": 172,
+                "comment_count": 15,
+                "content": "跑分没输过",
+                "url": "https://www.zhihu.com/q/1/a/1",
+                "content_type": "Answer",
+            }],
+            "reason": "",
+        }
+        md = zhihu_lane.render_community_md(data)
+        self.assertIn("二手社区证据", md)
+        self.assertIn("某工程师", md)
+        self.assertIn("172", md)
+        self.assertIn("zhihu.com", md)
+
     def test_rate_limit_persists_after_retry_is_unavailable(self):
         calls = {"n": 0}
 

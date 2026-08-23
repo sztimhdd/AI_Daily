@@ -124,3 +124,41 @@ def hot_topics(limit: int = 30, runner=None) -> dict:
                              or payload.get("Message") or "zhihu hot unavailable")}
     data = payload.get("Data") or {}
     return {"status": "ok", "items": _normalize_items(data.get("Items"))}
+
+
+def community_voice(topic: dict, runner=None, count: int = 5) -> dict:
+    """Bounded community search for a topic; community-voice evidence only."""
+    title = (topic or {}).get("title", "")
+    queries = (topic or {}).get("research_queries") or []
+    extra = next(
+        (str(q) for q in queries if str(q).strip() and str(q) != title),
+        "",
+    )
+    query = f"{title} {extra}".strip() if extra else title
+    result = search_zhihu(query, count=count, runner=runner)
+    if result.get("status") != "ok":
+        return result
+    return {**result, "query": query, "topic": title}
+
+
+def render_community_md(data: dict) -> str:
+    """Markdown digest labeled as secondary community evidence."""
+    lines = [
+        "# Zhihu Community Voice（二手社区证据，非一手事实）",
+        "",
+        f"- topic: {data.get('topic', '')}",
+        f"- query: {data.get('query', '')}",
+        "- source: zhihu-cli (community voice / propagation evidence only)",
+    ]
+    if data.get("reason"):
+        lines.append(f"- reason: {data['reason']}")
+    for item in (data.get("items") or [])[:8]:
+        lines += [
+            "",
+            f"- **{item.get('title', '')}**（作者 {item.get('author', '?')} · "
+            f"赞同 {item.get('vote_up', 0)} · 评论 {item.get('comment_count', 0)}"
+            f" · {item.get('content_type', '')}）",
+            f"  {item.get('content', '')[:200]}",
+            f"  <{item.get('url', '')}>",
+        ]
+    return "\n".join(lines) + "\n"
