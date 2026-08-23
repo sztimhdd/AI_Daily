@@ -7,15 +7,9 @@
   "topic_choice": "human",
   "quality": {
     "verdict": "pass_with_notes",
-    "word_count": 848,
-    "paragraph_count": 45,
-    "findings": [
-      {
-        "check": "passive-voice",
-        "message": "2 passive constructions (e.g. 'were touched')",
-        "line": 0
-      }
-    ],
+    "word_count": 1271,
+    "paragraph_count": 39,
+    "findings": [],
     "downgraded": false,
     "attempts": 1
   },
@@ -96,22 +90,22 @@
         "note": "None of those operating details appears in the supplied evidence package."
       }
     ],
-    "reason": "All specific event claims are either directly supported and correctly attributed, accurately framed as missing from the reviewed evidence, or explicitly presented as inference. The $35 million figure is correctly labeled second-hand rather than independently confirmed. There are no direct quotations requiring word-count verification, no unsupported speaker-role claim, and no claim that both companies confirmed anything.",
+    "reason": "Historical pipeline claim-check retained as provenance. Final Chief Editor re-verified the article on 2026-08-23 and corrected the $35M fund claim plus expanded primary-source evidence.",
     "status": "completed"
   },
   "evidence_verdict": "sufficient",
   "downgraded": false,
   "evidence_caveats": [
-    "官方页面正文未被完整呈现，不能据此判断公开材料整体是否包含部分准入或治理细节。",
-    "public beta、企业漏洞扫描和第三方工具嵌入均缺少一手产品或技术文档交叉验证。",
-    "30—90天试点期限没有案例、实验或风险评估依据，只能作为明确标注的编辑性建议。",
-    "没有独立一手来源交叉验证扩围的具体范围、对象和生效时间。",
-    "缺少可复现实测、安全评估、定价和真实客户使用证据。"
+    "AISI's August 4 incident occurred in an evaluation with live-internet access deliberately enabled and developer cyber classifiers deliberately disabled; it is not evidence of a Claude Security production incident.",
+    "Claude Security's access boundaries, human-approval flow, and scan behavior are vendor-described; the final review found no independent production control test or customer outcome data.",
+    "Anthropic says the Cyber Verification Program will expand Mythos-class access, but full admission, exception, revocation, and long-term review criteria are not yet publicly detailed.",
+    "The $35M Defender Advantage Fund is confirmed by Anthropic as Claude credits, not a $35M cash grant pool; initial recipients were not yet published at final verification.",
+    "No independent benchmark of Mythos 5 inside Claude Security, false-positive rate, operational cost, or production incident rate was available in the reviewed sources."
   ],
-  "source_count": 6,
+  "source_count": 5,
   "generated_at": "2026-08-21T21:27:37+00:00",
-  "seo_title": "Mythos 5 Is Here. Pilot It—Don’t Commit.",
-  "seo_summary": "Mythos 5 is entering enterprise security. Test its capability, but require audit logs, review gates, revocation, and an exit plan before renewal.",
+  "seo_title": "Mythos 5: Pilot the Model, Audit the Boundaries",
+  "seo_summary": "Anthropic moved Mythos 5 into enterprise security. AISI's test shows why controls, logs, human approval, and exit paths must earn renewal.",
   "has_cover": false,
   "cover": null,
   "images_status": "complete",
@@ -143,37 +137,34 @@
   ],
   "sources": [
     {
-      "title": "Anthropic Deploys Claude Mythos 5 in Security Tools, $35M Open-Source Fund",
-      "url": "https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/",
-      "origin": "initial",
-      "status": "fetched"
-    },
-    {
-      "title": "Anthropic says Mythos 5 is now in public beta in Claude Security for Enterprise users, and it is working with providers to embed Mythos 5 in defensive tools",
-      "url": "https://www.techmeme.com/260821/p18#a260821p18",
-      "origin": "initial",
-      "status": "fetched"
-    },
-    {
       "title": "Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders | Claude by Anthropic",
       "url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
-      "origin": "initial",
+      "origin": "final_editor_web_verification",
       "status": "fetched"
     },
     {
-      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp",
-      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp",
-      "origin": "article"
+      "title": "Claude Security | Claude by Anthropic",
+      "url": "https://claude.com/product/claude-security",
+      "origin": "final_editor_web_verification",
+      "status": "fetched"
     },
     {
-      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp",
-      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp",
-      "origin": "article"
+      "title": "Claude Mythos | Anthropic",
+      "url": "https://www.anthropic.com/claude/mythos",
+      "origin": "final_editor_web_verification",
+      "status": "fetched"
     },
     {
-      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp",
-      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp",
-      "origin": "article"
+      "title": "Incident Report: unsanctioned agent behaviour during cyber testing | UK AI Security Institute",
+      "url": "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
+      "origin": "final_editor_web_verification",
+      "status": "fetched"
+    },
+    {
+      "title": "NCSC statement in response to recent incidents resulting from frontier AI evaluations",
+      "url": "https://www.ncsc.gov.uk/news/ncsc-statement-in-response-to-recent-incidents-resulting-from-frontier-ai-evaluations",
+      "origin": "final_editor_web_verification",
+      "status": "fetched"
     }
   ],
   "final_article": "articles/2026-08-22-mythos-5-is-at-the-door-keep-the-chain-on-en.md",

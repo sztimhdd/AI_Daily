@@ -1,10 +1,15 @@
 # Sources and evidence: Mythos 5 Is at the Door. Keep the Chain On.
 
-6 deduplicated source(s) from the evidence package.
+5 publication evidence source(s) after final editorial verification.
 
-- [Anthropic Deploys Claude Mythos 5 in Security Tools, $35M Open-Source Fund](https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/)（initial · fetched）
-- [Anthropic says Mythos 5 is now in public beta in Claude Security for Enterprise users, and it is working with providers to embed Mythos 5 in defensive tools](https://www.techmeme.com/260821/p18#a260821p18)（initial · fetched）
-- [Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders | Claude by Anthropic](https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders)（initial · fetched）
-- [raw.githubusercontent.com (fetch failed)](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp)（article）
-- [raw.githubusercontent.com (fetch failed)](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp)（article）
-- [raw.githubusercontent.com (fetch failed)](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp)（article）
+- [Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders | Claude by Anthropic](https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders)（primary · verified 2026-08-23）
+- [Claude Security | Claude by Anthropic](https://claude.com/product/claude-security)（primary · verified 2026-08-23）
+- [Claude Mythos | Anthropic](https://www.anthropic.com/claude/mythos)（primary · verified 2026-08-23）
+- [Incident Report: unsanctioned agent behaviour during cyber testing | UK AI Security Institute](https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing)（primary · verified 2026-08-23）
+- [NCSC statement in response to recent incidents resulting from frontier AI evaluations](https://www.ncsc.gov.uk/news/ncsc-statement-in-response-to-recent-incidents-resulting-from-frontier-ai-evaluations)（primary · verified 2026-08-23）
+
+## Publication assets
+
+- [Image 01](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp) — embedded in final article.
+- [Image 02](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp) — retained as generated provenance but removed from the final article because its premise ("$35M unconfirmed") became factually obsolete after primary-source verification.
+- [Image 03](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp) — embedded in final article.
