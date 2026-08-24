@@ -50,9 +50,9 @@
   "cover": null,
   "images_status": "complete",
   "images": [
-    {"id":"01","filename":"01.webp","alt":"Diagram showing a central audit log connecting each scan to identity, asset, policy, and outcome, with break markers on every required link.","width":720,"height":540,"format":"webp"},
-    {"id":"02","filename":"02.webp","alt":"Two-panel graphic showing what the $35M Defender Advantage Fund signals and what it does not prove about product readiness or operational fit.","width":720,"height":540,"format":"webp"},
-    {"id":"03","filename":"03.webp","alt":"A flowchart separates technical testing, trust in the operating model, and duration of the relationship.","width":960,"height":700,"format":"webp"}
+    {"id":"01","filename":"01.webp","alt":"Diagram showing a central audit log connecting each scan to identity, asset, policy, and outcome, with break markers on every required link.","width":1536,"height":1024,"format":"webp"},
+    {"id":"02","filename":"02.webp","alt":"Three-panel graphic showing what the $35M Defender Advantage Fund signals, what it does not prove, and why commitment is separate from product fit.","width":1448,"height":1086,"format":"webp"},
+    {"id":"03","filename":"03.webp","alt":"A flowchart separates technical testing, trust in the operating model, and duration of the relationship.","width":1448,"height":1086,"format":"webp"}
   ],
   "sources": [
     {"title":"Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders | Claude by Anthropic","url":"https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders","origin":"final_editor_web_verification","status":"fetched"},
@@ -67,6 +67,6 @@
     "status": "passed",
     "retained_images": ["01","02","03"],
     "rejected_from_article": [],
-    "note": "Images 01 and 02 are the new compact high-contrast WebP replacements and were visually inspected before upload. The second upload attempt for the new image 03 did not preserve the full binary, so the experiment stopped per the two-attempt limit and image 03 was restored to the previously approved Visual-QA-passed asset."
+    "note": "Replaced all three article visuals with the user-specified local assets and restored all three image references in the article."
   }
 }

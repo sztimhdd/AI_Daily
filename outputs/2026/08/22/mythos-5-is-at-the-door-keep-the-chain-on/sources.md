@@ -11,5 +11,5 @@
 ## Publication assets
 
 - [Image 01](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/01.webp) — embedded in final article.
-- [Image 02](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp) — retained as generated provenance but removed from the final article because its premise ("$35M unconfirmed") became factually obsolete after primary-source verification.
+- [Image 02](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/02.webp) — embedded in final article.
 - [Image 03](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp) — embedded in final article.
