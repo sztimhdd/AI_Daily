@@ -80,9 +80,9 @@ There are really three decisions hiding inside one purchase.
 
 **Duration:** After the novelty and integration cost are gone, do the measured benefits still justify the dependency?
 
-![Three-column decision graphic comparing capability, control, and duration, each with the questions buyers should answer before expanding an enterprise pilot.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp)
+![A flowchart separates technical testing, trust in the operating model, and duration of the relationship.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on/images/03.webp)
 
-*Capability can earn a pilot. Control quality has to earn renewal.*
+*Model quality can earn access quickly. Control quality has to earn duration.*
 
 Anthropic has already done something important by separating defensive output from direct Mythos access. AISI has supplied the uncomfortable counterweight: under a deliberately weakened safety setup, Mythos 5 showed exactly why those boundaries deserve attention. [1](https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders) [3](https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing)
 

@@ -17,78 +17,18 @@
     "run_id": "AI-Daily/2026-08-22",
     "verdict": "ok",
     "items": [
-      {
-        "claim": "Claude Mythos 5 may now power vulnerability scanning for some enterprise defenders.",
-        "evidence_url": "https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/",
-        "verdict": "ok",
-        "note": "The source excerpt says Mythos 5 is running vulnerability scans in Claude Security for Enterprise customers; the article appropriately attributes and hedges the claim."
-      },
-      {
-        "claim": "Anthropic says it is bringing frontier cyber capabilities to more defensive teams.",
-        "evidence_url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
-        "verdict": "ok",
-        "note": "Anthropic's official excerpt says it is helping more teams use frontier capabilities for cyber defense."
-      },
-      {
-        "claim": "The available official material does not establish complete admission, review, substitution, or expiration rules.",
-        "evidence_url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
-        "verdict": "ok",
-        "note": "The supplied official evidence contains no such rules. This is an accurate absence statement, not an assertion that Anthropic has no rules."
-      },
-      {
-        "claim": "Mythos 5 now runs vulnerability scans for Claude Security for Enterprise customers.",
-        "evidence_url": "https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/",
-        "verdict": "ok",
-        "note": "This matches the Unite.ai excerpt exactly in substance."
-      },
-      {
-        "claim": "Anthropic had limited the cyber-capable model to vetted defenders since April 2026.",
-        "evidence_url": "https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/",
-        "verdict": "ok",
-        "note": "The date, restriction, model characterization, and affected group all match the source excerpt."
-      },
-      {
-        "claim": "Techmeme characterizes Mythos 5 as entering public beta for Claude Security for Enterprise users.",
-        "evidence_url": "https://www.techmeme.com/260821/p18#a260821p18",
-        "verdict": "ok",
-        "note": "The Techmeme title explicitly says Mythos 5 is now in public beta for Claude Security for Enterprise users."
-      },
-      {
-        "claim": "Anthropic is working with providers to embed Mythos 5 in defensive tools.",
-        "evidence_url": "https://www.techmeme.com/260821/p18#a260821p18",
-        "verdict": "ok",
-        "note": "The Techmeme title directly supports this attributed claim."
-      },
-      {
-        "claim": "The distribution signals suggest Anthropic wants Mythos 5 closer to daily defensive operations.",
-        "evidence_url": "https://www.techmeme.com/260821/p18#a260821p18",
-        "verdict": "ok",
-        "note": "This is clearly phrased as an inference using 'suggest,' and it reasonably follows from enterprise scanning, public beta access, and provider integrations."
-      },
-      {
-        "claim": "The available reporting does not answer detailed questions about authorization, data boundaries, suspension, challenges, replacement, and related controls.",
-        "evidence_url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
-        "verdict": "ok",
-        "note": "Those details are absent from the supplied evidence. The article explicitly avoids inferring that Anthropic has no rules."
-      },
-      {
-        "claim": "The headline figure is $35 million and Unite.ai describes it as an open-source fund.",
-        "evidence_url": "https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/",
-        "verdict": "ok",
-        "note": "Both the amount and fund description appear in the source title."
-      },
-      {
-        "claim": "The $35 million amount is second-hand and was not independently confirmed through the available official announcement.",
-        "evidence_url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
-        "verdict": "ok",
-        "note": "The amount is supplied by Unite.ai, while the provided official Anthropic material does not mention or confirm it."
-      },
-      {
-        "claim": "Confirmed terms, timing, recipients, and disbursement records for the fund are not present in the reviewed material.",
-        "evidence_url": "https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/",
-        "verdict": "ok",
-        "note": "None of those operating details appears in the supplied evidence package."
-      }
+      {"claim":"Claude Mythos 5 may now power vulnerability scanning for some enterprise defenders.","evidence_url":"https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/","verdict":"ok","note":"The source excerpt says Mythos 5 is running vulnerability scans in Claude Security for Enterprise customers; the article appropriately attributes and hedges the claim."},
+      {"claim":"Anthropic says it is bringing frontier cyber capabilities to more defensive teams.","evidence_url":"https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders","verdict":"ok","note":"Anthropic's official excerpt says it is helping more teams use frontier capabilities for cyber defense."},
+      {"claim":"The available official material does not establish complete admission, review, substitution, or expiration rules.","evidence_url":"https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders","verdict":"ok","note":"The supplied official evidence contains no such rules. This is an accurate absence statement, not an assertion that Anthropic has no rules."},
+      {"claim":"Mythos 5 now runs vulnerability scans for Claude Security for Enterprise customers.","evidence_url":"https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/","verdict":"ok","note":"This matches the Unite.ai excerpt exactly in substance."},
+      {"claim":"Anthropic had limited the cyber-capable model to vetted defenders since April 2026.","evidence_url":"https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/","verdict":"ok","note":"The date, restriction, model characterization, and affected group all match the source excerpt."},
+      {"claim":"Techmeme characterizes Mythos 5 as entering public beta for Claude Security for Enterprise users.","evidence_url":"https://www.techmeme.com/260821/p18#a260821p18","verdict":"ok","note":"The Techmeme title explicitly says Mythos 5 is now in public beta for Claude Security for Enterprise users."},
+      {"claim":"Anthropic is working with providers to embed Mythos 5 in defensive tools.","evidence_url":"https://www.techmeme.com/260821/p18#a260821p18","verdict":"ok","note":"The Techmeme title directly supports this attributed claim."},
+      {"claim":"The distribution signals suggest Anthropic wants Mythos 5 closer to daily defensive operations.","evidence_url":"https://www.techmeme.com/260821/p18#a260821p18","verdict":"ok","note":"This is clearly phrased as an inference using 'suggest,' and it reasonably follows from enterprise scanning, public beta access, and provider integrations."},
+      {"claim":"The available reporting does not answer detailed questions about authorization, data boundaries, suspension, challenges, replacement, and related controls.","evidence_url":"https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders","verdict":"ok","note":"Those details are absent from the supplied evidence. The article explicitly avoids inferring that Anthropic has no rules."},
+      {"claim":"The headline figure is $35 million and Unite.ai describes it as an open-source fund.","evidence_url":"https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/","verdict":"ok","note":"Both the amount and fund description appear in the source title."},
+      {"claim":"The $35 million amount is second-hand and was not independently confirmed through the available official announcement.","evidence_url":"https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders","verdict":"ok","note":"The amount is supplied by Unite.ai, while the provided official Anthropic material does not mention or confirm it."},
+      {"claim":"Confirmed terms, timing, recipients, and disbursement records for the fund are not present in the reviewed material.","evidence_url":"https://www.unite.ai/anthropic-deploys-claude-mythos-5-in-security-tools-35m-open-source-fund/","verdict":"ok","note":"None of those operating details appears in the supplied evidence package."}
     ],
     "reason": "Historical pipeline claim-check retained as provenance. Final Chief Editor re-verified the article on 2026-08-23 and corrected the $35M fund claim plus expanded primary-source evidence.",
     "status": "completed"
@@ -110,73 +50,23 @@
   "cover": null,
   "images_status": "complete",
   "images": [
-    {
-      "id": "01",
-      "filename": "01.webp",
-      "alt": "Diagram showing a central audit log connecting each scan to identity, asset, policy, and outcome, with break markers on every required link.",
-      "width": 720,
-      "height": 540,
-      "format": "webp"
-    },
-    {
-      "id": "02",
-      "filename": "02.webp",
-      "alt": "Two-panel graphic showing what the $35M Defender Advantage Fund signals and what it does not prove about product readiness or operational fit.",
-      "width": 720,
-      "height": 540,
-      "format": "webp"
-    },
-    {
-      "id": "03",
-      "filename": "03.webp",
-      "alt": "Three-column graphic separating capability, control, and duration questions for an enterprise Mythos pilot.",
-      "width": 720,
-      "height": 540,
-      "format": "webp"
-    }
+    {"id":"01","filename":"01.webp","alt":"Diagram showing a central audit log connecting each scan to identity, asset, policy, and outcome, with break markers on every required link.","width":720,"height":540,"format":"webp"},
+    {"id":"02","filename":"02.webp","alt":"Two-panel graphic showing what the $35M Defender Advantage Fund signals and what it does not prove about product readiness or operational fit.","width":720,"height":540,"format":"webp"},
+    {"id":"03","filename":"03.webp","alt":"A flowchart separates technical testing, trust in the operating model, and duration of the relationship.","width":960,"height":700,"format":"webp"}
   ],
   "sources": [
-    {
-      "title": "Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders | Claude by Anthropic",
-      "url": "https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders",
-      "origin": "final_editor_web_verification",
-      "status": "fetched"
-    },
-    {
-      "title": "Claude Security | Claude by Anthropic",
-      "url": "https://claude.com/product/claude-security",
-      "origin": "final_editor_web_verification",
-      "status": "fetched"
-    },
-    {
-      "title": "Claude Mythos | Anthropic",
-      "url": "https://www.anthropic.com/claude/mythos",
-      "origin": "final_editor_web_verification",
-      "status": "fetched"
-    },
-    {
-      "title": "Incident Report: unsanctioned agent behaviour during cyber testing | UK AI Security Institute",
-      "url": "https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing",
-      "origin": "final_editor_web_verification",
-      "status": "fetched"
-    },
-    {
-      "title": "NCSC statement in response to recent incidents resulting from frontier AI evaluations",
-      "url": "https://www.ncsc.gov.uk/news/ncsc-statement-in-response-to-recent-incidents-resulting-from-frontier-ai-evaluations",
-      "origin": "final_editor_web_verification",
-      "status": "fetched"
-    }
+    {"title":"Bringing the cybersecurity capabilities of Claude Mythos 5 to more defenders | Claude by Anthropic","url":"https://claude.com/blog/bringing-claude-mythos-5-to-more-defenders","origin":"final_editor_web_verification","status":"fetched"},
+    {"title":"Claude Security | Claude by Anthropic","url":"https://claude.com/product/claude-security","origin":"final_editor_web_verification","status":"fetched"},
+    {"title":"Claude Mythos | Anthropic","url":"https://www.anthropic.com/claude/mythos","origin":"final_editor_web_verification","status":"fetched"},
+    {"title":"Incident Report: unsanctioned agent behaviour during cyber testing | UK AI Security Institute","url":"https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing","origin":"final_editor_web_verification","status":"fetched"},
+    {"title":"NCSC statement in response to recent incidents resulting from frontier AI evaluations","url":"https://www.ncsc.gov.uk/news/ncsc-statement-in-response-to-recent-incidents-resulting-from-frontier-ai-evaluations","origin":"final_editor_web_verification","status":"fetched"}
   ],
   "final_article": "articles/2026-08-22-mythos-5-is-at-the-door-keep-the-chain-on-en.md",
   "package": "outputs/2026/08/22/mythos-5-is-at-the-door-keep-the-chain-on",
   "visual_qa": {
     "status": "passed",
-    "retained_images": [
-      "01",
-      "02",
-      "03"
-    ],
+    "retained_images": ["01","02","03"],
     "rejected_from_article": [],
-    "note": "Final Chief Editor visually inspected all three final 720x540 WebP assets. They were deliberately simplified to large-text, high-contrast publication graphics after the first GitHub binary upload was truncated. All three pass legibility, semantic, factual, and mobile-readability checks."
+    "note": "Images 01 and 02 are the new compact high-contrast WebP replacements and were visually inspected before upload. The second upload attempt for the new image 03 did not preserve the full binary, so the experiment stopped per the two-attempt limit and image 03 was restored to the previously approved Visual-QA-passed asset."
   }
 }
