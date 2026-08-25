@@ -336,6 +336,9 @@ class DraftEnPromptTests(DraftEnBase):
             "bolded lead-ins open at most half",
         ):
             self.assertIn(phrase, prompt)
+        self.assertIn("Target 950-1050 words", prompt)
+        self.assertIn("every paragraph has at most 3 sentences", prompt)
+        self.assertIn("frictionless", prompt)
 
     def test_prompt_carries_precision_rules(self):
         prompt = self._prompt()
@@ -346,6 +349,7 @@ class DraftEnPromptTests(DraftEnBase):
             "no repeated fence-sitting",
             '"both companies confirmed" unless the cited link shows both',
             "excerpt_truncated",
+            "must not cite or rely on it",
         ):
             self.assertIn(phrase, prompt)
 
@@ -397,6 +401,23 @@ class DraftEnPromptTests(DraftEnBase):
         self.assertIn("[n](URL)", prompt)
         self.assertIn("never the article title", prompt)
         self.assertIn("first citation of a URL assigns its number", prompt)
+
+    def test_prompt_carries_narrative_intent_into_full_draft(self):
+        chosen = sample_narrative_candidate()
+        chosen.update(
+            {
+                "narrative_form": "strategic_outlook",
+                "reader_move": "imagine",
+                "ending_mode": "forecast",
+            }
+        )
+        prompt = draft_en._compile_prompt(
+            sample_topic(), chosen, sample_evidence_package()
+        )
+        self.assertIn('"narrative_form": "strategic_outlook"', prompt)
+        self.assertIn('"reader_move": "imagine"', prompt)
+        self.assertIn('"ending_mode": "forecast"', prompt)
+        self.assertIn("Do not force a decision rule", prompt)
 
 
 class SourcesAppendTests(unittest.TestCase):

@@ -675,12 +675,12 @@ def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
     if audit.get("status") == "unavailable":
         print("05 审计不可用，会话终止（不伪造判定）。")
         return 1
-    if audit.get("verdict") == "needs_research":
+    if audit.get("verdict") in ("sufficient", "needs_research"):
         loop = pipeline.run_targeted_loop(
             run_paths, force=force, initial_audit=audit,
             progress=_audit_progress,
         )
-        print(f"补证 {loop.get('rounds', 0)} 轮 → 最终判定："
+        print(f"06 补证 {loop.get('rounds', 0)} 轮 → 最终判定："
               f"{loop.get('verdict')}")
         if loop.get("status") == "unavailable":
             print("06 补证循环不可用，会话终止。")

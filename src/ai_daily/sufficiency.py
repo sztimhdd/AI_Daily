@@ -36,6 +36,9 @@ def _compile_prompt(chosen: dict, osint: dict, extra_evidence: list,
     compact = {
         "narrative": {
             "archetype": chosen.get("archetype"),
+            "narrative_form": chosen.get("narrative_form"),
+            "reader_move": chosen.get("reader_move"),
+            "ending_mode": chosen.get("ending_mode"),
             "title": chosen.get("title"),
             "hook": chosen.get("hook"),
             "thesis": chosen.get("thesis"),
@@ -67,6 +70,8 @@ def _compile_prompt(chosen: dict, osint: dict, extra_evidence: list,
         "是否有独立来源交叉验证；是否存在反例或冲突报道；社区内容是用户经验"
         "还是可推广事实；引用页面是否实际抓取成功；时间线是否仍有效。\n"
         "规则：\n"
+        "selected narrative_form/reader_move/ending_mode define the article's "
+        "endpoint; decision_rule is only required for action forms.\n"
         "1. needs_research 必须给出 research_tasks 原子任务清单，每条含 "
         "gap_type（缺官方数据/缺真实使用反馈/缺具体实验/来源冲突/单一来源）、"
         "query（具体搜索词）与 direction（补证方向）。\n"

@@ -89,7 +89,13 @@ def _valid_candidates(first_title="新候选：AGI 前夜的闸门"):
     }
     return [
         {**base, "archetype": "cost_ledger", "title": first_title},
-        {**base, "archetype": "decision_brief", "title": "新候选：可及性代价"},
+        {
+            **base,
+            "archetype": "mechanism_teardown",
+            "title": "新候选：可及性代价",
+            "thesis": "准入机制会改变谁能使用前沿能力",
+            "decision_rule": "先拆开准入机制，再决定是否调整部署",
+        },
     ]
 
 

@@ -212,6 +212,7 @@ def render_osint(modules: list, gaps: list, analysis_status: str = "",
 
 
 _ARCHETYPE_TITLES = {
+    "reported_story": "新闻报道",
     "first_hand_test": "一手实测翻车",
     "contrarian_audit": "反共识拆台",
     "mechanism_teardown": "工程机制拆解",
@@ -219,6 +220,18 @@ _ARCHETYPE_TITLES = {
     "workflow_playbook": "工作流配方",
     "power_map": "生态权力图",
     "compliance_risk": "政策合规风险",
+    "decision_brief": "决策快讯",
+}
+
+_NARRATIVE_FORM_TITLES = {
+    "reported_story": "新闻报道",
+    "contrarian_audit": "反共识拆台",
+    "mechanism_explainer": "机制深拆",
+    "cost_story": "成本账本",
+    "workflow_story": "工作流故事",
+    "power_map": "权力与利益图",
+    "compliance_explainer": "合规解释",
+    "strategic_outlook": "战略展望",
     "decision_brief": "决策快讯",
 }
 
@@ -250,6 +263,15 @@ def render_narrative_candidates(candidates: list, color: bool = False) -> str:
             lines.append(f"   LinkedIn：{notes['linkedin']}")
         if notes.get("wechat"):
             lines.append(f"   微信公众号：{notes['wechat']}")
+        if cand.get("narrative_form"):
+            form = _NARRATIVE_FORM_TITLES.get(
+                cand["narrative_form"], cand["narrative_form"]
+            )
+            lines.append(f"   叙事形式：{form}")
+        if cand.get("reader_move"):
+            lines.append(f"   读者变化：{cand['reader_move']}")
+        if cand.get("ending_mode"):
+            lines.append(f"   结尾方式：{cand['ending_mode']}")
         if cand.get("decision_rule"):
             line = f"   决策规则：{cand['decision_rule']}"
             lines.append(_paint(line, GREEN, color))

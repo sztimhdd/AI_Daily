@@ -189,13 +189,21 @@ class WritableGateTests(SufficiencyBase):
             sufficiency.require_sufficient(self.run_paths)
 
     def test_prompt_includes_narrative_thesis_and_evidence(self):
+        candidate = sample_narrative_candidate()
+        candidate.update({
+            "narrative_form": "reported_story",
+            "reader_move": "understand",
+            "ending_mode": "open_tension",
+        })
         prompt = sufficiency._compile_prompt(
-            sample_narrative_candidate(), sample_osint(), [], 1
+            candidate, sample_osint(), [], 1
         )
         self.assertIn("账本篇", prompt)
         self.assertIn("t", prompt)
         self.assertIn("https://example.com/a", prompt)
         self.assertIn("sufficient", prompt)
+        self.assertIn('"narrative_form": "reported_story"', prompt)
+        self.assertIn("decision_rule is only required for action forms", prompt)
 
     def test_resume_with_different_narrative_reruns(self):
         calls = {"n": 0}

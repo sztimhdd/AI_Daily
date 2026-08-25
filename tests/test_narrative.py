@@ -103,7 +103,7 @@ class RouteArchetypeTests(unittest.TestCase):
         allowed = narrative.route_archetypes(osint, {"consensus_vs_data"})
         self.assertIn("cost_ledger", allowed)
         self.assertNotIn("power_map", allowed)
-        self.assertIn("decision_brief", allowed)
+        self.assertNotIn("decision_brief", allowed)
         self.assertNotIn("compliance_risk", allowed)
 
     def test_empty_evidence_kills_generation(self):
@@ -298,7 +298,7 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
     def test_prompt_keeps_evidence_discipline_rules(self):
         prompt = self._prompt()
         self.assertIn("Observable", prompt)
-        self.assertIn("Conflict", prompt)
+        self.assertIn("central tension", prompt)
         self.assertIn("Claim → Observable → Source → Limitation", prompt)
         self.assertIn("decision_rule", prompt)
 
@@ -359,6 +359,125 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
             set(),
         )
         self.assertNotIn("Knowledge-Graph Background", prompt)
+
+    def test_prompt_declares_reader_move_and_form_specific_endings(self):
+        prompt = self._prompt(allowed=["reported_story"])
+        self.assertIn("narrative_form", prompt)
+        self.assertIn("reader_move", prompt)
+        self.assertIn("ending_mode", prompt)
+        self.assertIn("decision_rule 只对行动型叙事必填", prompt)
+        self.assertNotIn("开头三段 = Observable（可观察事实）→ Conflict（与主流说法/发布会的冲突）→ Decision", prompt)
+
+
+class NarrativeV2RegressionTests(unittest.TestCase):
+    def test_valuation_rumor_does_not_unlock_cost_route(self):
+        osint = sample_osint()
+        for module in osint["modules"]:
+            module["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/report",
+            "status": "fetched",
+            "title": "Hugging Face explores a $13 billion acquisition offer",
+            "excerpt": "The valuation is discussed in acquisition talks.",
+        }]
+        self.assertFalse(narrative.evidence_inventory(osint)["cost_data"])
+
+    def test_chinese_financing_round_does_not_unlock_cost_route(self):
+        osint = sample_osint()
+        for module in osint["modules"]:
+            module["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/funding",
+            "status": "fetched",
+            "title": "完成新一轮融资，估值达到150亿美元",
+            "excerpt": "公司正在接触投资人，融资轮与估值仍未披露交易条款。",
+        }]
+        self.assertFalse(narrative.evidence_inventory(osint)["cost_data"])
+
+    def test_cost_keyword_arr_requires_a_word_boundary(self):
+        osint = sample_osint()
+        for module in osint["modules"]:
+            module["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/story",
+            "status": "fetched",
+            "title": "The narrative is shifting",
+            "excerpt": "The narrative is shifting, but no operating figures were disclosed.",
+        }]
+        self.assertFalse(narrative.evidence_inventory(osint)["cost_data"])
+
+    def test_acquisition_rumor_does_not_unlock_control_signal(self):
+        osint = sample_osint()
+        for module in osint["modules"]:
+            module["summary"] = "无"
+        osint["sources"] = [{
+            "url": "https://example.com/report",
+            "status": "fetched",
+            "title": "Hugging Face 接触潜在收购方",
+            "excerpt": "报道没有披露买方、条款或公告。",
+        }]
+        self.assertFalse(narrative.evidence_inventory(osint)["org_source"])
+
+    def test_non_action_candidate_can_omit_decision_rule(self):
+        candidate = {
+            "archetype": "decision_brief",
+            "narrative_form": "reported_story",
+            "reader_move": "reframe",
+            "ending_mode": "open_tension",
+            "title": "传闻还没有变成事实",
+            "hook": "新闻已经跑在事实前面。",
+            "thesis": "交易接触不是成交，真正的故事是生态为何提前恐慌。",
+            "key_arguments": [{
+                "claim": "报道只确认接触",
+                "observable": "买方和条款仍未知",
+                "source": "example.com",
+                "limitation": "没有官方公告",
+            }],
+            "platform_notes": {"linkedin": "my take", "wechat": "事件拆解"},
+            "evidence_audit": "reported, not confirmed",
+            "author_stance": "我不接受把传闻写成讣告。",
+            "personal_scene": "我把报道和公告两栏并排放在屏幕上。",
+            "kicker": "新闻先到了，事实还在路上。",
+        }
+        self.assertEqual(
+            narrative._validate_candidate(candidate, ["decision_brief"]), []
+        )
+
+    def test_same_advice_pair_is_rejected(self):
+        first = {
+            "title": "别急着迁移",
+            "thesis": "传闻未证实，先做依赖盘点。",
+            "reader_move": "prepare",
+            "decision_rule": "先做依赖盘点，再决定是否迁移。",
+        }
+        second = {
+            "title": "今天先查依赖账本",
+            "thesis": "收购未证实，先做依赖盘点。",
+            "reader_move": "prepare",
+            "decision_rule": "先做依赖盘点，再决定是否迁移。",
+        }
+        errors = narrative.validate_candidate_pair([first, second])
+        self.assertTrue(errors)
+        self.assertIn("same-advice", errors[0])
+
+    def test_identical_thesis_is_rejected_even_when_reader_move_differs(self):
+        first = {
+            "thesis": "交易未证实，真正未知的是治理条款。",
+            "reader_move": "understand",
+        }
+        second = {
+            "thesis": "交易未证实，真正未知的是治理条款。",
+            "reader_move": "imagine",
+        }
+        errors = narrative.validate_candidate_pair([first, second])
+        self.assertTrue(errors)
+        self.assertIn("same-advice", errors[0])
+
+    def test_non_action_form_does_not_invent_decision_rule_ending(self):
+        self.assertEqual(
+            narrative._default_ending("reported_story", "act", ""),
+            "open_tension",
+        )
 
 
 class CandidateScoreTests(unittest.TestCase):
@@ -440,7 +559,7 @@ class CandidateScoreTests(unittest.TestCase):
         valid = {
             "candidates": [
                 {
-                    "archetype": "decision_brief", "title": "标题",
+                    "archetype": "reported_story", "title": "标题",
                     "hook": "h", "thesis": "t",
                     "key_arguments": [{
                         "claim": "c", "observable": "o", "source": "s",
@@ -454,13 +573,13 @@ class CandidateScoreTests(unittest.TestCase):
                     "evidence_audit": "e",
                 },
                 {
-                    "archetype": "decision_brief", "title": "标题2",
-                    "hook": "h", "thesis": "t",
+                    "archetype": "reported_story", "title": "标题2",
+                    "hook": "h2", "thesis": "t2",
                     "key_arguments": [{
                         "claim": "c", "observable": "o", "source": "s",
                         "limitation": "l", "decision": "d",
                     }],
-                    "decision_rule": "r",
+                    "decision_rule": "r2",
                     "platform_notes": {"linkedin": "l", "wechat": "w"},
                     "author_stance": "我的判断",
                     "personal_scene": "凌晨三点被报警吵醒",
@@ -534,7 +653,7 @@ class NarrativeRunTests(unittest.TestCase):
                         "evidence_audit": "EO 充足",
                     },
                     {
-                        "archetype": "decision_brief",
+                        "archetype": "reported_story",
                         "title": "标题二",
                         "hook": "事实。冲突。决策。",
                         "thesis": "论点二",
@@ -702,7 +821,7 @@ class NarrativeRunTests(unittest.TestCase):
             "url": "https://example.com/x", "status": "fetched", "title": "发布",
         }]
         allowed = narrative.route_archetypes(osint, set())
-        self.assertEqual(allowed, ["decision_brief"])
+        self.assertEqual(allowed, ["reported_story"])
 
     def test_candidate_missing_author_stance_rejected(self):
         def runner(prompt):
@@ -758,6 +877,23 @@ class NarrativeGateTests(unittest.TestCase):
         self.assertEqual(st["narrative_title"], "账本篇")
         self.assertEqual(st["narrative_archetype"], "cost_ledger")
         self.assertEqual(narrative.require_narrative(self.run_paths)["title"], "账本篇")
+
+    def test_record_choice_persists_narrative_intent(self):
+        candidate = {
+            "archetype": "power_map", "title": "谁在看见需求",
+            "hook": "h", "thesis": "t", "key_arguments": [],
+            "author_stance": "我的判断", "personal_scene": "凌晨三点",
+            "kicker": "看见本身就是力量。", "evidence_audit": "e",
+            "narrative_form": "strategic_outlook",
+            "reader_move": "imagine",
+            "ending_mode": "forecast",
+        }
+        narrative.record_choice(self.run_paths, [candidate], 1)
+        st = state.read_state(self.run_paths)
+        self.assertEqual(st["narrative_form"], "strategic_outlook")
+        self.assertEqual(st["narrative_reader_move"], "imagine")
+        self.assertEqual(st["narrative_ending_mode"], "forecast")
+        self.assertEqual(narrative.require_narrative(self.run_paths)["title"], "谁在看见需求")
 
     def test_record_choice_rejects_out_of_range(self):
         with self.assertRaises(narrative.NarrativeError):

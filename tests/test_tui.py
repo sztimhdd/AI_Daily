@@ -274,6 +274,21 @@ class RenderOsintTests(unittest.TestCase):
 
 
 class RenderNarrativeCandidatesTests(unittest.TestCase):
+    def test_renders_narrative_intent_without_fake_decision_rule(self):
+        cand = sample_narrative_candidate("新闻篇")
+        cand.pop("decision_rule")
+        cand.update({
+            "archetype": "reported_story",
+            "narrative_form": "reported_story",
+            "reader_move": "reframe",
+            "ending_mode": "open_tension",
+        })
+        out = tui.render_narrative_candidates([cand], color=False)
+        self.assertIn("叙事形式：新闻报道", out)
+        self.assertIn("读者变化：reframe", out)
+        self.assertIn("结尾方式：open_tension", out)
+        self.assertNotIn("决策规则：", out)
+
     def test_shows_two_candidates_with_archetype_and_anatomy(self):
         cands = [
             sample_narrative_candidate("账本篇"),

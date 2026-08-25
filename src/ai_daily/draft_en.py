@@ -31,6 +31,9 @@ def _compact_narrative(chosen: dict) -> dict:
     notes = chosen.get("platform_notes") or {}
     return {
         "archetype": chosen.get("archetype"),
+        "narrative_form": chosen.get("narrative_form"),
+        "reader_move": chosen.get("reader_move"),
+        "ending_mode": chosen.get("ending_mode"),
         "title": chosen.get("title"),
         "thesis": chosen.get("thesis"),
         "key_arguments": chosen.get("key_arguments") or [],
@@ -115,14 +118,23 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         "You are the Lead Tech Editor: a cold, sharp Silicon Valley voice, "
         "professional business English, writing for CTOs, architects, and "
         "also the busy non-specialist reader scrolling at night. "
-        "Write one complete English article (800-1200 words) from the "
-        "evidence package below. Rewrite from evidence — never translate "
+        "Write one complete English article from the evidence package below. "
+        "Target 950-1050 words; 800 words is a hard floor. Do not return "
+        "until the draft is comfortably above 900 words. "
+        "Develop the story across roughly 30 short paragraphs and use the "
+        "relevant successfully fetched sources; do not pad with repetition. "
+        "Rewrite from evidence — never translate "
         "Chinese.\n"
         "Structure: News Peg (first paragraph opens with a picture or the "
         "conclusion, not a transaction summary) -> Nut Graf -> Smart "
-        "Brevity body (every paragraph 3 sentences or fewer; keep the "
+        "Brevity body (every paragraph has at most 3 sentences; keep the "
         "whole article between 800 and 1200 words) -> cold Kicker that "
         "reprises the title's central image.\n"
+        "Narrative contract: honor the selected narrative_form, reader_move, "
+        "and ending_mode in the evidence data. The reader may leave with "
+        "understanding, a reframed question, something to watch, a forecast, "
+        "or an implication. Do not force a decision rule or a CTO action list "
+        "unless the selected form is explicitly action-oriented.\n"
         "Craft rules (expression and rhythm):\n"
         "1. Conditional inference: an analyst's hypothesis is never an "
         "existing capability. Write \"If Stripe combines...\" / \"would "
@@ -161,7 +173,9 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         "\"not disclosed\").\n"
         "10. A walled source (zhihu.com / mp.weixin.qq.com) whose fetch "
         "status is not \"fetched\" must be downgraded (\"unverified\" / "
-        "\"could not be fetched\") — never asserted as certain.\n"
+        "\"could not be fetched\") — never asserted as certain. If its "
+        "status is \"found\" or anything else, you must not cite or rely "
+        "on it; omit it from the article.\n"
         "11. Never write pipeline mechanics into the body: no \"HTTP "
         "403\", \"fetched text\", or \"evidence package\"; write \"could "
         "not be independently reviewed\" and keep provenance in the "
@@ -170,11 +184,15 @@ def _compile_prompt(topic: dict, chosen: dict, package: dict,
         "words, verify the speaker's role, and never write \"both companies "
         "confirmed\" unless the cited link shows both companies.\n"
         "13. Inject exactly 1-2 dry technical asides (*...*).\n"
-        "14. No AI voice: no leverage/robust/delve/furthermore/in "
+        "14. No AI voice: no leverage/robust/delve/frictionless/furthermore/in "
         "conclusion/undoubtedly; no \"In summary:\" / \"[Editor's note]\" "
         "labels.\n"
         "15. Cold kicker only; never \"time will tell\" or \"the future is "
         "bright\".\n"
+        "Before returning JSON, self-check the word count and split any "
+        "paragraph with more than 3 sentences. Expand with sourced context, "
+        "mechanism, counterargument, or clearly labeled unknowns; never add "
+        "unsourced facts or filler.\n"
         + editorial
         + downgrade +
         revision +

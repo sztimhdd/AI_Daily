@@ -355,7 +355,12 @@ class SessionCommandTests(CliBase):
              mock.patch.object(cli.pipeline, "run_candidates", return_value=cands), \
              mock.patch.object(cli.pipeline, "run_initial_research", side_effect=fake_initial), \
              mock.patch.object(cli.pipeline, "run_narrative", side_effect=fake_narrative), \
-             mock.patch.object(cli.pipeline, "run_sufficiency", side_effect=fake_sufficiency):
+             mock.patch.object(cli.pipeline, "run_sufficiency", side_effect=fake_sufficiency), \
+             mock.patch.object(
+                 cli.pipeline, "run_targeted_loop",
+                 return_value={"status": "completed", "verdict": "sufficient",
+                               "rounds": 0, "reason": ""},
+             ):
             code, out, err = self.run_cli(
                 "session", "--root", self.root, "--date", "2026-08-13",
                 "--mode", "live", "--choice", "1", "--narrative-choice", "1",
@@ -411,7 +416,12 @@ class SessionCommandTests(CliBase):
              mock.patch.object(cli.pipeline, "run_candidates", return_value=cands), \
              mock.patch.object(cli.pipeline, "run_initial_research", side_effect=fake_initial), \
              mock.patch.object(cli.pipeline, "run_narrative", side_effect=fake_narrative), \
-             mock.patch.object(cli.pipeline, "run_sufficiency", side_effect=fake_sufficiency):
+             mock.patch.object(cli.pipeline, "run_sufficiency", side_effect=fake_sufficiency), \
+             mock.patch.object(
+                 cli.pipeline, "run_targeted_loop",
+                 return_value={"status": "completed", "verdict": "sufficient",
+                               "rounds": 0, "reason": ""},
+             ):
             code, out, err = self.run_cli(
                 "session", "--root", self.root, "--date", "2026-08-13",
                 "--mode", "live", "--choice", "1", "--narrative-choice", "1",
@@ -502,7 +512,11 @@ class SessionCommandTests(CliBase):
                                              "claim_coverage": [],
                                              "evidence_gaps": [],
                                              "research_tasks": [],
-                                             "reason": ""}):
+                                             "reason": ""}), \
+             mock.patch.object(cli.pipeline, "run_targeted_loop",
+                               return_value={"status": "completed",
+                                             "verdict": "sufficient",
+                                             "rounds": 0, "reason": ""}):
             code, out, err = self.run_cli(
                 "session", "--root", self.root, "--date", "2026-08-13",
                 "--mode", "live", "--choice", "1", "--narrative-choice", "1",
@@ -647,7 +661,7 @@ class SessionCommandTests(CliBase):
         st = state.read_state(run_paths)
         self.assertEqual(st.get("narrative_choice"), "simulated")
 
-    def test_audit_command_sufficient_skips_loop(self):
+    def test_audit_command_sufficient_runs_zero_round_loop_for_evidence_package(self):
         from ai_daily import paths, state
 
         run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
@@ -659,13 +673,17 @@ class SessionCommandTests(CliBase):
                           "claim_coverage": [], "evidence_gaps": [],
                           "research_tasks": [], "reason": ""},
         ), mock.patch.object(
-            cli.pipeline, "run_targeted_loop"
+            cli.pipeline, "run_targeted_loop",
+            return_value={"status": "completed", "verdict": "sufficient",
+                          "rounds": 0, "reason": ""},
         ) as loop_mock:
             code, out, err = self.run_cli(
                 "audit", "--root", self.root, "--date", "2026-08-13",
             )
         self.assertEqual(code, 0, err)
-        loop_mock.assert_not_called()
+        loop_mock.assert_called_once()
+        self.assertEqual(loop_mock.call_args.kwargs["initial_audit"]["verdict"],
+                         "sufficient")
         self.assertIn("07", out)
 
     def _seed_stale_run(self, date, stale=False):

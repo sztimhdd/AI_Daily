@@ -10,12 +10,12 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 
 从「热点 × 叙事模板」改为：
 
-**热点 × 可验证冲突 × 证据资产 × 读者决策。**
+**热点 × 可验证冲突 × 证据资产 × 读者阅读后的变化。**
 
 叙事候选的任务不是选文风，而是回答：这篇稿子有什么是读者用普通 AI
 摘要得不到、又可以亲手核验的。
 
-## 八原型（N1–N8）与触发条件
+## 证据原型（N1–N8）与触发条件
 
 | key | 原型 | 触发条件（证据资产） |
 |---|---|---|
@@ -26,10 +26,11 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 | N5 | workflow_playbook 工作流配方 | 有可复制的多步工作流/组合用法信号 |
 | N6 | power_map 生态权力图 | 有人事/组织/资本/控制权变动且可验证 |
 | N7 | compliance_risk 政策合规风险 | 有法规原文/官方 guidance/生效日期 |
-| N8 | decision_brief 决策快讯 | 至少一条一手事实（兜底原型） |
+| N8 | decision_brief 决策快讯 | 已确认且会改变近期动作的事件，不再作为无条件兜底 |
 
-证据决定叙事：没有对应证据资产的原型不允许被选择；全部不满足时
-按 KILL 条件拒绝生成，如实报错，不编造。
+另有基础报道形态 `reported_story`，只要有一手抓取事实即可使用；战略展望
+形态 `strategic_outlook` 由模型在证据足够时选择。证据决定可说什么，
+但不决定每篇文章必须发出行动命令。
 
 ## KILL 条件（硬拒绝）
 
@@ -43,9 +44,9 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 
 ## 硬性结构规则
 
-1. 开头三段必须依次承担：**Observable（可观察事实）→ Conflict（与常识/发布会/benchmark/主流说法冲突）→ Decision（改变哪个工程/产品/商业决策）**。禁止前三句全部用于背景介绍。
-2. 每条关键论据走五段证据链：**Claim → Observable → Source → Limitation → Decision**。
-3. 结尾用 **Decision Rule + 改变判断的触发条件**，禁止金句升华与万能提问。
+1. 开头从 **Hook/Scene → Observable → Central Tension** 进入；只有行动型叙事才推进到 Decision。禁止前三句全部用于背景介绍。
+2. 每条关键论据至少走 **Claim → Observable → Source → Limitation**；确有行动建议时再加 Decision。
+3. 结尾由 `ending_mode` 选择：open tension、implication、forecast、decision rule 或 scene kicker；非行动型文章不强行填写决策规则。
 4. 真信度四件套（每篇强制）：≥1 失败案例 + ≥1 limitation + ≥1 可核验 artifact + 1 句只有真正调查过才写得出的句子。
 5. Evidence Object（EO）：可独立核验的证据 = 数据点+来源 / 源码/commit / 测试日志 / 账单 / 截图 / 官方文档 / 法条 / 具名内部信 / 带上下文社区原话。
 6. EO 密度：中文深度稿每千字 4–6 EO；LinkedIn 单帖 2–4 EO；至少 1 个作者亲自产生的 artifact。
@@ -58,9 +59,9 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 
 校准原则（调整语气，不改结构；三份调研的纪律仍然全量保留）：
 
-1. **结构纪律不变**：Observable→Conflict→Decision 开头、五段证据链、
-   denominator、证据等级阶梯、decision_rule + 触发条件、真信度四件套
-   全部保留为硬规则——它们决定候选质量。
+1. **证据纪律不变，叙事终点可变**：保留 Observable、Central Tension、
+   证据等级阶梯、denominator 和真信度四件套；Decision 与 decision_rule
+   只属于需要行动的候选。
 2. **语气人味层**：上述结构必须用大白话写，实锤像饭桌吐槽的
    punchline，而不是报告条目；证据是 punchline，不是骨架。
 3. **作者人设**（编译自 knowledge/author-style.md + 2026 practitioner
@@ -72,9 +73,10 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
    我们认为 / 从 XX 维度来看 / 需要指出的是 / 赋能 / 闭环 / 颗粒度等。
 5. **允许并鼓励**：讽刺、自嘲、冒犯、吃瓜；敢说「我不同意 / 我判断 /
    我的体感」。
-6. **候选新字段（必填）**：narrative_focus（一句大白话这个角度讲什么）、
-   author_stance（作者立场一句）、personal_scene（具体场景/瞬间）、
-   kicker（冷结尾一句）。schema 校验强制这四个字段非空。
+6. **候选字段**：narrative_form（怎么讲）、reader_move（读者发生什么变化）、
+   ending_mode（怎么收束）、narrative_focus、author_stance、personal_scene、
+   kicker。前三个区分叙事意图，后三个保证人味；decision_rule 只对行动型
+   form 强制非空。
 
 ## 2026 最佳实践执行矩阵（调研报告3 重点集成）
 

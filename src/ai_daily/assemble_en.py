@@ -22,7 +22,9 @@ from urllib.parse import urlsplit
 
 from . import assemble, claim_check, draft_en, linkedin, paths, state, topics, visuals
 
-_LINK_RE = re.compile(r"\]\((https?://[^)\s]+)\)")
+# Inline citations begin with ``[``; image targets begin with ``![`` and are
+# media assets, not evidence sources.
+_LINK_RE = re.compile(r"(?<!\!)\[[^\]]+\]\((https?://[^)\s]+)\)")
 
 
 class AssembleEnError(RuntimeError):

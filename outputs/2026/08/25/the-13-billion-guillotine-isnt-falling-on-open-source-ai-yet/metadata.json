@@ -1,0 +1,171 @@
+{
+  "run_id": "AI-Daily/2026-08-25",
+  "date": "2026-08-25",
+  "slug": "the-13-billion-guillotine-isnt-falling-on-open-source-ai-yet",
+  "title": "The $13 Billion Guillotine Isn’t Falling on Open-Source AI Yet",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 948,
+    "paragraph_count": 36,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "7 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "6 passive constructions (e.g. 'been approached')",
+        "line": 0
+      }
+    ],
+    "downgraded": false,
+    "attempts": 2
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-08-25",
+    "verdict": "ok",
+    "items": [
+      {
+        "claim": "Hugging Face has reportedly been approached about a sale valuing it at around $13 billion; no buyer has been named and no completed deal announced.",
+        "evidence_url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+        "verdict": "ok",
+        "note": "TechCrunch supports reported acquisition offers at around $13B. Other package sources describe early-stage discussions, no named buyer, and no completed transaction."
+      },
+      {
+        "claim": "The available record offers no representative community survey; the scale of concern remains unknown.",
+        "evidence_url": "",
+        "verdict": "ok",
+        "note": "This is a correctly framed absence statement: the evidence package contains no representative community survey or measured community sentiment."
+      },
+      {
+        "claim": "Sam Altman separately warned that AI could become controlled by a small number of powerful companies, models, or individuals, according to a second-hand report.",
+        "evidence_url": "http://www.geekpark.net/news/369224",
+        "verdict": "ok",
+        "note": "The cited GeekPark excerpt attributes this warning to OpenAI CEO Sam Altman and states the concern in materially matching terms. The article correctly labels it second-hand."
+      },
+      {
+        "claim": "TechCrunch says the founders feel responsibility to the community.",
+        "evidence_url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+        "verdict": "ok",
+        "note": "The TechCrunch excerpt says the founders feel responsibility to the community."
+      }
+    ],
+    "reason": "The event-specific factual claims are supported, and uncertainty is consistently framed as reporting, absence, condition, or inference rather than asserted as settled fact.",
+    "status": "completed"
+  },
+  "evidence_verdict": "sufficient",
+  "downgraded": false,
+  "evidence_caveats": [
+    "约130亿美元为媒体报道的潜在估值，缺官方声明、交易文件或监管披露；应始终保留“据报道”“潜在”限定。",
+    "TechCrunch与极客公园均属媒体/转述，尚无独立一手来源交叉验证。",
+    "纽约时报链接抓取失败，不能作为证据。",
+    "没有买方、条款、产品政策或社区原始反馈，不能推断模型、数据集、托管服务或开源治理将如何变化。",
+    "时间线仅覆盖2026年8月23日至24日的早期接触报道，交易状态可能迅速变化。"
+  ],
+  "source_count": 11,
+  "generated_at": "2026-08-25T14:29:12+00:00",
+  "seo_title": "Hugging Face’s $13B Question: Who Controls the Terms?",
+  "seo_summary": "A rumored $13B Hugging Face sale raises a governance question: valuation is theater until access, hosting, and policy terms are known.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "An engineer works late at a desk while an orange robot and a 13 billion dollar headline cast a guillotine-shaped shadow behind the workspace.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A chain bridge toward a cloud-hosting structure has several missing links represented by documents, a stamp, users, and an open exit path.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A small development team follows a path from a model to weights, a license, and an experiment while physical governance controls support the path underneath.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hugging Face reportedly in talks to be acquired for $13B | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "130 亿美元，Hugging Face 要卖了 | 极客公园",
+      "url": "http://www.geekpark.net/news/369289",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://www.nytimes.com/2026/08/24/technology/hugging-face-open-source-ai-attack.html",
+      "url": "https://www.nytimes.com/2026/08/24/technology/hugging-face-open-source-ai-attack.html",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "Alabama launches investigation into OpenAI's hack of Hugging Face | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/24/alabama-launches-investigation-into-openais-hack-of-hugging-face/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI subpoenaed by Alabama AG over Hugging Face hack",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/984239/alabama-attorney-general-subpoena-openai-hugging-face-hack",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "传 Hugging Face 寻求出售，估值 130 亿美元；Altman：担心 AI 被少数强势主体掌控；成都 AG.AL 获电竞世俱杯冠军 | 极客公园",
+      "url": "http://www.geekpark.net/news/369224",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "突发!Hugging Face 要被卖了:最新报价约870亿元 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075235037574964959?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "海外AI观察日报|2026-08-25|NVIDIA Vera Rubin发布,Hugging Face洽谈130亿美元出售 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075497780894757756?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "AI行业动态20260824:英伟达通知客户AI服务器涨价超15%,受Vera Rubin和Grace Blackwell系统影响 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075142575170836452?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "PostgreSQL 日报|复制槽与分区索引缺陷修复推进(8 月 25 日) - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075601850078909778?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "估值874亿!传Hugging Face要卖身 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075184049493112724?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    }
+  ],
+  "final_article": "articles/2026-08-25-the-13-billion-guillotine-isnt-falling-on-open-source-ai-yet-en.md",
+  "package": "outputs/2026/08/25/the-13-billion-guillotine-isnt-falling-on-open-source-ai-yet"
+}

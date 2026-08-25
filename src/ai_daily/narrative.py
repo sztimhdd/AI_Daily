@@ -48,10 +48,51 @@ _ARCHETYPE_TITLES = {
     "power_map": "生态权力图",
     "compliance_risk": "政策合规风险",
     "decision_brief": "决策快讯",
+    "reported_story": "新闻报道",
 }
+
+_FORM_TITLES = {
+    "reported_story": "新闻报道",
+    "contrarian_audit": "反共识拆台",
+    "mechanism_explainer": "机制深拆",
+    "cost_story": "成本账本",
+    "workflow_story": "工作流故事",
+    "power_map": "权力与利益图",
+    "compliance_explainer": "合规解释",
+    "strategic_outlook": "战略展望",
+    "decision_brief": "决策快讯",
+}
+
+_FORM_BY_ARCHETYPE = {
+    "first_hand_test": "reported_story",
+    "contrarian_audit": "contrarian_audit",
+    "mechanism_teardown": "mechanism_explainer",
+    "cost_ledger": "cost_story",
+    "workflow_playbook": "workflow_story",
+    "power_map": "power_map",
+    "compliance_risk": "compliance_explainer",
+    "decision_brief": "decision_brief",
+}
+
+_DEFAULT_READER_MOVE = {
+    "reported_story": "understand",
+    "contrarian_audit": "reframe",
+    "mechanism_explainer": "understand",
+    "cost_story": "prepare",
+    "workflow_story": "prepare",
+    "power_map": "reframe",
+    "compliance_explainer": "act",
+    "strategic_outlook": "imagine",
+    "decision_brief": "act",
+}
+
+_ACTION_FORMS = {"compliance_explainer", "decision_brief"}
+_READER_MOVES = {"understand", "reframe", "watch", "prepare", "act", "imagine"}
+_ENDING_MODES = {"open_tension", "implication", "forecast", "decision_rule", "scene_kicker"}
 
 # 2026 最佳实践执行矩阵（编译自调研报告3 "可直接交给写稿系统的最终规则"）。
 _ARCHETYPE_ANATOMY = {
+    "reported_story": "标题：把新闻里的关键动词说清楚；骨架：现场/硬事实→谁说了什么→报道之间的差异→真正未知→这件事为何值得继续看；takeaway：让读者理解发生了什么，不强行发行动命令。",
     "first_hand_test": "标题：[真实任务]测了[X vs Y]，真正拉开差距的不是[常见指标]；骨架：任务为什么真实→环境/协议→结果总表→最意外失败→控制变量→谁适合谁→局限；EO：中文每千字4-6、至少1个作者自产artifact；takeaway：条件A选X，条件B选Y。",
     "contrarian_audit": "标题：大家都在说[共识]，但[数据/实验]暴露了相反的问题；骨架：精确复述共识→最强反证→方法可信度→为何产生错觉→steelman对方→边界条件；EO：每千字3-5，含1份原始数据+1份反方材料+明确limitation；takeaway：不是共识错了，是它忽略了[被折叠的变量]。",
     "mechanism_teardown": "标题：别再只看[表层指标]，真实差异藏在[机制]；骨架：表面symptom→系统地图→关键控制路径→源码/trace证据→与替代架构比较→trade-off→工程决策；EO：每千字5-8，源码/官方docs>trace/log>实验>解释>社区说法；takeaway：瓶颈在X就优化Y，仅当[条件]成立才选Z。",
@@ -79,11 +120,18 @@ _EVIDENCE_LADDER = (
 
 _COST_KEYWORDS = (
     "价格", "定价", "成本", "账单", "token", "cost", "price",
-    "billion", "亿", "美元", "$", "guarantee", "担保", "租约",
+    "per request", "per token", "tco", "margin", "cash burn",
+    "revenue", "arr", "guarantee", "担保", "租约",
+)
+_VALUATION_ONLY_KEYWORDS = (
+    "估值", "valuation", "收购报价", "acquisition offer", "融资轮",
 )
 _POLICY_KEYWORDS = ("法规", "条例", "监管", "合规", "article", "act", "guidance")
 _POLICY_DOMAINS = (".gov", "europa.eu", "eur-lex", ".court", "gov.cn")
-_ORG_KEYWORDS = ("离职", "裁员", "ceo", "组织", "人事", "重组", "收购")
+_ORG_KEYWORDS = (
+    "离职", "裁员", "ceo", "组织", "人事", "重组", "控制权",
+    "董事会", "汇报线", "任命", "内部信", "filing", "8-k",
+)
 _WORKFLOW_KEYWORDS = ("工作流", "workflow", "管线", "流程", "组合", "routing")
 _TEST_KEYWORDS = ("实测", "复现", "benchmark", "跑分", "测试", "repo", "github")
 _ORG_ARTIFACT_KEYWORDS = (
@@ -108,6 +156,42 @@ def _module_summary(osint: dict, key: str) -> str:
     return ""
 
 
+def _keyword_present(text: str, keyword: str) -> bool:
+    """Match English metric terms as words; keep Chinese terms substring-based."""
+    text = (text or "").lower()
+    keyword = (keyword or "").lower()
+    if not keyword:
+        return False
+    if re.fullmatch(r"[a-z0-9]+(?:[ -][a-z0-9]+)*", keyword):
+        return re.search(
+            rf"(?<![a-z0-9]){re.escape(keyword)}(?![a-z0-9])", text
+        ) is not None
+    return keyword in text
+
+
+def _contains_any_keyword(text: str, keywords: tuple[str, ...]) -> bool:
+    return any(_keyword_present(text, keyword) for keyword in keywords)
+
+
+def _has_cost_evidence(text: str, finance_summary: str) -> bool:
+    """Return true for operating/financial evidence, not valuation alone."""
+    summary = (finance_summary or "").lower()
+    if summary not in ("", "无") and _contains_any_keyword(summary, _COST_KEYWORDS):
+        return True
+    if not _contains_any_keyword(text, _COST_KEYWORDS):
+        return False
+    valuation_only = _contains_any_keyword(text, _VALUATION_ONLY_KEYWORDS)
+    operating_signal = _contains_any_keyword(
+        text,
+        (
+            "每次", "每个任务", "每 token", "per request", "per token",
+            "账单", "成本", "定价", "价格", "margin", "cash burn",
+            "revenue", "arr", "guarantee", "担保", "租约",
+        ),
+    )
+    return operating_signal or not valuation_only
+
+
 def evidence_inventory(osint: dict) -> dict:
     """Map the 03 OSINT archive onto evidence-asset flags."""
     sources = [s for s in osint.get("sources") or [] if isinstance(s, dict)]
@@ -119,9 +203,8 @@ def evidence_inventory(osint: dict) -> dict:
     gaps = " ".join(str(g) for g in osint.get("evidence_gaps") or [])
     return {
         "primary_signal": bool(fetched),
-        "cost_data": bool(
-            _module_summary(osint, "finance_capital") not in ("", "无")
-            or any(k in text for k in _COST_KEYWORDS)
+        "cost_data": _has_cost_evidence(
+            text, _module_summary(osint, "finance_capital")
         ),
         "mechanism_signal": bool(
             _module_summary(osint, "tech_engineering") not in ("", "无")
@@ -152,8 +235,7 @@ def evidence_inventory(osint: dict) -> dict:
         ),
         "reproducible_test": any(k in text for k in _TEST_KEYWORDS)
             or "benchmark" in gaps,
-        "workflow_signal": any(k in text for k in _WORKFLOW_KEYWORDS)
-            or _module_summary(osint, "community_voices") not in ("", "无"),
+        "workflow_signal": any(k in text for k in _WORKFLOW_KEYWORDS),
     }
 
 
@@ -178,7 +260,22 @@ def tension_detection(topic: dict, osint: dict) -> set:
     return tensions
 
 
-def route_archetypes(osint: dict, tensions: set) -> list:
+def _decision_brief_eligible(osint: dict, tensions: set, topic: dict | None) -> bool:
+    """Decision briefs require a concrete near-term change, not a headline."""
+    if not evidence_inventory(osint)["primary_signal"]:
+        return False
+    if not topic:
+        return False
+    text = " ".join(
+        str(topic.get(k, "")) for k in ("title", "hook", "thesis", "direction")
+    ).lower()
+    return any(k in text for k in (
+        "生效", "涨价", "下线", "停止", "迁移", "强制", "必须",
+        "breaking change", "deprecation", "deadline", "policy change",
+    )) or "deadline_myth" in tensions
+
+
+def route_archetypes(osint: dict, tensions: set, topic: dict | None = None) -> list:
     """Archetype whitelist: evidence decides which narratives are allowed."""
     inv = evidence_inventory(osint)
     if not inv["primary_signal"]:
@@ -192,12 +289,13 @@ def route_archetypes(osint: dict, tensions: set) -> list:
         "price_vs_tco", "deadline_myth", "person_vs_control",
     ):
         signals[tension] = tension in tensions or inv.get(tension, False)
-    allowed = [
+    allowed = ["reported_story"]
+    allowed.extend(
         key for key, requires in _ARCHETYPE_REQUIRES.items()
-        if all(signals.get(flag) for flag in requires)
-    ]
-    if not allowed:
-        allowed = ["decision_brief"]
+        if key != "decision_brief" and all(signals.get(flag) for flag in requires)
+    )
+    if _decision_brief_eligible(osint, tensions, topic):
+        allowed.append("decision_brief")
     return allowed
 
 
@@ -344,9 +442,12 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
         "I tested / we changed / here is the trade-off。你在为今天这个选题想"
         "两个完全不同的写法，用第一人称思考。\n\n"
         "【叙事契约】(knowledge/narrative-contract.md v2026)\n"
-        "范式：热点 × 可验证冲突 × 证据资产 × 读者决策。\n"
+        "范式：热点 × 可验证冲突 × 证据资产 × 读者阅读后的变化。\n"
         f"本轮可用原型白名单：{archetype_names}。禁止使用白名单之外的原型；"
         "证据不足的论据宁可放弃也不编造。\n"
+        "叙事形式与读者变化是两个不同字段：narrative_form 决定怎么讲，"
+        "reader_move 决定读者读完是理解、改观、观察、准备、行动还是想象。"
+        "不要把每篇文章都写成 CTO 行动清单。\n"
     )
     if directive:
         prompt += (
@@ -368,21 +469,29 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
         )
     prompt += (
         "【结构纪律（必须执行）】\n"
-        "1. 开头三段 = Observable（可观察事实）→ Conflict（与主流说法/发布会的"
-        "冲突）→ Decision（改变读者的哪个决策）。\n"
+        "1. 开头从 hook/scene 进入 Observable（可观察事实），再提出 central "
+        "tension（真正值得解释的张力）；只有行动型叙事才把它推进到 Decision。\n"
         f"2. hook 优先采用 2026 高潜力模式（HookPatternConfidence）："
         f"{'；'.join(_HOOK_PATTERNS)}。\n"
-        "3. 每条 key_arguments 走 Claim → Observable → Source → Limitation → "
-        "Decision。\n"
+        "3. 每条 key_arguments 走 Claim → Observable → Source → Limitation；"
+        "只有 reader_move=act/prepare 且确有行动建议时才增加 Decision。\n"
         "4. 证据等级阶梯：\n" + _EVIDENCE_LADDER + "\n"
         "   引用研究必须给 [机构],[日期],[样本/方法],发现[结果];但[limitation]。\n"
         "5. 任何成本百分比必须回答 denominator（每token/每请求/每成功任务/"
         "含人工review）；人事事实标 Confirmed/Reported/Inferred/Unknown。\n"
-        "6. 结尾用 decision_rule + 改变判断的触发条件，禁止金句升华与万能提问。\n"
+        "6. ending_mode 从 open_tension、implication、forecast、decision_rule、"
+        "scene_kicker 中选择；decision_rule 只对行动型叙事必填。禁止万能提问，"
+        "也不要为了填字段硬造 24/72 小时行动窗口。\n"
         "7. 真信度四件套：至少 1 个失败/局限点、1 个可核验 artifact、"
         "1 句只有真正调查过才写得出的话；只引用证据里出现的 URL 与事实。\n"
         f"8. 原型解剖速查（只按白名单执行）：\n{anatomy}\n"
-        "9. 两个候选必须在论证上互补或对立，不得同义重复。\n\n"
+        "9. 可用 narrative_form：reported_story（新闻报道）、contrarian_audit"
+        "（反共识）、mechanism_explainer（机制深拆）、cost_story（成本故事）、"
+        "workflow_story（工作流故事）、power_map（权力与利益）、"
+        "compliance_explainer（合规解释）、strategic_outlook（战略展望）、"
+        "decision_brief（决策快讯）。decision_brief 只有明确的近期动作变化才可用。\n"
+        "10. 两个候选必须在 central question、thesis、reader_move 或 ending_mode"
+        "上真正互补/对立，不得只是同一条建议换标题。\n\n"
         "【语气人味（决定这些结构怎么写，不改变结构本身）】\n"
         "1. 语言必须大白话：像跟做技术的朋友在饭桌上说这件事，"
         "每条实锤都像吐槽时的 punchline，而不是报告条目。\n"
@@ -397,12 +506,15 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
         "N件事』『工程负责人只需要看N件事』『一份决策简报/快讯』"
         "『X just changed，只有三件事值得看』。可以直接下判断，也可以反着说。\n\n"
         "输出必须是单个 JSON 对象（禁止前言、Markdown 代码块或尾注）：\n"
-        '{"candidates":[{"archetype":"<白名单 key>","title":"...","hook":"...",'
+        '{"candidates":[{"archetype":"<白名单 key>","narrative_form":"<form>",'
+        '"reader_move":"<understand|reframe|watch|prepare|act|imagine>",'
+        '"ending_mode":"<open_tension|implication|forecast|decision_rule|scene_kicker>",'
+        '"title":"...","hook":"...",'
         '"narrative_focus":"一句大白话这个角度讲什么","thesis":"...",'
         '"key_arguments":[{"claim":"...","observable":"...",'
-        '"source":"...","limitation":"...","decision":"..."}],'
+        '"source":"...","limitation":"...","decision":"<行动型才填写>"}],'
         '"author_stance":"作者本人的鲜明立场一句","personal_scene":"一个具体场景'
-        '/瞬间","kicker":"冷结尾一句","decision_rule":"...",'
+        '/瞬间","kicker":"冷结尾一句","decision_rule":"<行动型才填写>",'
         '"platform_notes":{"linkedin":"...","wechat":"..."},'
         '"evidence_audit":"..."}]}\n'
         "platform_notes 要像你本人说话：LinkedIn 是带 receipts 的个人 take"
@@ -419,15 +531,97 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
     return prompt
 
 
+def _default_form(cand: dict) -> str:
+    return _FORM_BY_ARCHETYPE.get(
+        cand.get("archetype", ""), cand.get("archetype", "reported_story")
+    )
+
+
+def _default_ending(form: str, reader_move: str, decision_rule: str) -> str:
+    if decision_rule or form in _ACTION_FORMS:
+        return "decision_rule"
+    if form == "strategic_outlook":
+        return "forecast"
+    if form in {"reported_story", "contrarian_audit", "power_map"}:
+        return "open_tension"
+    return "scene_kicker"
+
+
+def _normalize_candidate(cand: dict) -> dict:
+    """Fill additive v2 fields so old runners and artifacts remain readable."""
+    normalized = dict(cand)
+    form = normalized.get("narrative_form") or _default_form(normalized)
+    normalized["narrative_form"] = form
+    normalized["reader_move"] = normalized.get("reader_move") or _DEFAULT_READER_MOVE.get(
+        form, "understand"
+    )
+    normalized["ending_mode"] = normalized.get("ending_mode") or _default_ending(
+        form, normalized["reader_move"], normalized.get("decision_rule", "")
+    )
+    return normalized
+
+
+def _candidate_tokens(value: str) -> set:
+    text = (value or "").lower()
+    words = set(re.findall(r"[a-z0-9]+", text))
+    han = "".join(re.findall(r"[\u4e00-\u9fff]", text))
+    words.update(han[i:i + 2] for i in range(max(0, len(han) - 1)))
+    return {token for token in words if len(token) > 1}
+
+
+def _text_similarity(left: str, right: str) -> float:
+    a, b = _candidate_tokens(left), _candidate_tokens(right)
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def validate_candidate_pair(candidates: list) -> list:
+    """Reject two candidates that differ cosmetically but answer identically."""
+    if not isinstance(candidates, list) or len(candidates) != 2:
+        return ["candidate-pair must contain exactly two candidates"]
+    if not all(isinstance(candidate, dict) for candidate in candidates):
+        return []
+    first, second = (_normalize_candidate(c) for c in candidates)
+    thesis_similarity = _text_similarity(first.get("thesis"), second.get("thesis"))
+    action_similarity = _text_similarity(
+        " ".join((first.get("decision_rule", ""), first.get("narrative_focus", ""))),
+        " ".join((second.get("decision_rule", ""), second.get("narrative_focus", ""))),
+    )
+    same_move = first.get("reader_move") == second.get("reader_move")
+    if thesis_similarity >= 0.80 or (
+        thesis_similarity >= 0.42
+        and (same_move or action_similarity >= 0.35)
+    ):
+        return [
+            "same-advice candidate pair: the two theses and reader moves are too similar"
+        ]
+    return []
+
+
 def _validate_candidate(cand: dict, allowed: list) -> list:
     if not isinstance(cand, dict):
         return ["candidate is not an object"]
+    form = cand.get("narrative_form") or _default_form(cand)
     errors = []
     if cand.get("archetype") not in allowed:
         errors.append(f"archetype {cand.get('archetype')!r} not in whitelist")
-    for field in ("title", "hook", "thesis", "decision_rule"):
+    if form not in _FORM_TITLES:
+        errors.append(f"narrative_form {form!r} is unknown")
+    reader_move = cand.get("reader_move") or _DEFAULT_READER_MOVE.get(form)
+    ending_mode = cand.get("ending_mode") or _default_ending(
+        form, reader_move or "understand", cand.get("decision_rule", "")
+    )
+    if reader_move not in _READER_MOVES:
+        errors.append(f"reader_move {reader_move!r} is unknown")
+    if ending_mode not in _ENDING_MODES:
+        errors.append(f"ending_mode {ending_mode!r} is unknown")
+    required_fields = ("title", "hook", "thesis")
+    for field in required_fields:
         if not (cand.get(field) or "").strip():
             errors.append(f"{field} 为空")
+    if form in _ACTION_FORMS and not (cand.get("decision_rule") or "").strip():
+        errors.append("decision_rule 为空（行动型叙事必填）")
     for field in ("author_stance", "personal_scene", "kicker"):
         if not (cand.get(field) or "").strip():
             errors.append(f"{field} 为空")
@@ -441,7 +635,7 @@ def _validate_candidate(cand: dict, allowed: list) -> list:
             if not isinstance(arg, dict):
                 errors.append("key_arguments 含非对象条目")
                 break
-            for field in ("claim", "observable", "source", "limitation", "decision"):
+            for field in ("claim", "observable", "source", "limitation"):
                 if not (arg.get(field) or "").strip():
                     errors.append(f"key_arguments.{field} 为空")
     notes = cand.get("platform_notes") or {}
@@ -487,7 +681,7 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
         state.update_fields(run_paths, note=f"narrative killed: {kill}")
         raise NarrativeError(f"narrative killed: {kill}")
     tensions = tension_detection(topic, osint)
-    allowed = route_archetypes(osint, tensions)
+    allowed = route_archetypes(osint, tensions, topic=topic)
 
     runner = codex_runner or research._default_codex_runner
     prompt = _compile_prompt(
@@ -516,6 +710,17 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
         return {
             "status": "unavailable",
             "reason": "codex returned a non-conforming candidate list",
+            "candidates": [],
+        }
+    candidates = [
+        _normalize_candidate(cand) if isinstance(cand, dict) else cand
+        for cand in candidates
+    ]
+    pair_errors = validate_candidate_pair(candidates)
+    if pair_errors:
+        return {
+            "status": "unavailable",
+            "reason": "candidate pair fails distinctness: " + "; ".join(pair_errors),
             "candidates": [],
         }
     for cand in candidates:
@@ -565,12 +770,16 @@ def _render_candidates_md(data: dict) -> str:
         lines += [
             f"- 作者立场：{cand.get('author_stance', '')}",
             f"- 个人场景：{cand.get('personal_scene', '')}",
-            f"- decision_rule：{cand.get('decision_rule')}",
+            f"- 叙事形式：{_FORM_TITLES.get(cand.get('narrative_form'), cand.get('narrative_form', ''))}",
+            f"- 读者变化：{cand.get('reader_move', '')}",
+            f"- 结尾方式：{cand.get('ending_mode', '')}",
             f"- 冷结尾：{cand.get('kicker', '')}",
             f"- LinkedIn：{cand.get('platform_notes', {}).get('linkedin')}",
             f"- 微信公众号：{cand.get('platform_notes', {}).get('wechat')}",
             f"- evidence_audit：{cand.get('evidence_audit')}",
         ]
+        if cand.get("decision_rule"):
+            lines.insert(-3, f"- 决策规则：{cand.get('decision_rule')}")
         scores = cand.get("scores") or {}
         if scores:
             lines.append(
@@ -596,6 +805,9 @@ def require_narrative(run_paths) -> dict:
     return {
         "title": st.get("narrative_title", ""),
         "archetype": st.get("narrative_archetype", ""),
+        "narrative_form": st.get("narrative_form", ""),
+        "reader_move": st.get("narrative_reader_move", ""),
+        "ending_mode": st.get("narrative_ending_mode", ""),
     }
 
 
@@ -618,6 +830,9 @@ def record_choice(run_paths, candidates: list, choice: int,
         narrative_choice="human",
         narrative_title=cand.get("title", ""),
         narrative_archetype=cand.get("archetype", ""),
+        narrative_form=cand.get("narrative_form", ""),
+        narrative_reader_move=cand.get("reader_move", ""),
+        narrative_ending_mode=cand.get("ending_mode", ""),
         narrative_extra_research=extra_research,
     )
     return cand
@@ -645,6 +860,9 @@ def apply_directive(run_paths, directive: str) -> dict:
         narrative_choice="",
         narrative_title="",
         narrative_archetype="",
+        narrative_form="",
+        narrative_reader_move="",
+        narrative_ending_mode="",
         narrative_extra_research="",
     )
     return {"ok": True, "directive": text}
@@ -669,6 +887,9 @@ def record_simulated_choice(run_paths, candidates: list, choice: int,
         narrative_choice="simulated",
         narrative_title=cand.get("title", ""),
         narrative_archetype=cand.get("archetype", ""),
+        narrative_form=cand.get("narrative_form", ""),
+        narrative_reader_move=cand.get("reader_move", ""),
+        narrative_ending_mode=cand.get("ending_mode", ""),
         narrative_extra_research=extra_research,
     )
     return cand

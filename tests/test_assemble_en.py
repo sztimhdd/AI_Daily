@@ -81,6 +81,18 @@ class AssembleEnTests(AssembleEnBase):
         self.assertEqual(meta["language"], "en")
         self.assertIn("topic_choice", meta)
 
+    def test_sources_exclude_image_markdown_targets(self):
+        article = EN_ARTICLE + (
+            "\n![Editorial image](https://raw.githubusercontent.com/example/repo/main/01.webp)\n"
+        )
+        self.write_article_en(article)
+        self.write_evidence()
+        assemble_en.run(self.rp)
+        sources = (
+            self.rp.package_dir(self._en_slug()) / "sources.md"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn("raw.githubusercontent.com", sources)
+
     def test_final_article_written_to_en_path(self):
         self.write_article_en()
         self.write_evidence()
