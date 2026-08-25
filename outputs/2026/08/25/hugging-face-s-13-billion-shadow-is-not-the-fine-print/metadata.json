@@ -1,0 +1,220 @@
+{
+  "run_id": "AI-Daily/2026-08-25",
+  "date": "2026-08-25",
+  "slug": "hugging-face-s-13-billion-shadow-is-not-the-fine-print",
+  "title": "Hugging Face’s $13 Billion Shadow Is Not the Fine Print",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 870,
+    "paragraph_count": 39,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "4 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "5 passive constructions (e.g. 'be owned')",
+        "line": 0
+      }
+    ],
+    "downgraded": false,
+    "attempts": 3
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-08-25",
+    "verdict": "unsupported",
+    "items": [
+      {
+        "claim": "Its platform is where developers and researchers share, find, test, and deploy AI models.",
+        "evidence_url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+        "verdict": "unsupported",
+        "note": "The supplied TechCrunch excerpt supports the reported acquisition interest and founders' community concern, not this platform-function description."
+      },
+      {
+        "claim": "Recent Reddit discussion includes fears that a corporate buyer could weaken open-model access or alter the platform’s usefulness.",
+        "evidence_url": "https://www.reddit.com/r/huggingface/comments/1vx5r30/hugging_face_exploring_sale_at_13_billion/",
+        "verdict": "unsupported",
+        "note": "No Reddit content is included in the evidence package, so the specific discussion and fears cannot be checked."
+      },
+      {
+        "claim": "Developers worry about whether today’s download speed, model availability, and search convenience would survive new ownership.",
+        "evidence_url": "https://www.reddit.com/r/LocalLLaMA/comments/1vwv6j1/hugging_face_for_sales/",
+        "verdict": "unsupported",
+        "note": "No Reddit-thread content is included in the evidence package."
+      },
+      {
+        "claim": "Stripe recently acquired OpenRouter for $7 billion.",
+        "evidence_url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+        "verdict": "unsupported",
+        "note": "No supplied source supports this transaction or amount."
+      },
+      {
+        "claim": "GeekPark’s report says no buyer was named and discussions were early.",
+        "evidence_url": "http://www.geekpark.net/news/369289",
+        "verdict": "mismatch",
+        "note": "The supplied GeekPark excerpt supports that Hugging Face hired an investment bank to gauge buyer interest, but does not support the no-named-buyer or early-discussions wording. Those details appear only in a separate Zhihu source in the package."
+      },
+      {
+        "claim": "Hugging Face is reportedly fielding acquisition interest at roughly $13 billion, and founders’ responsibility to the community raises doubt that a sale will happen.",
+        "evidence_url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+        "verdict": "ok",
+        "note": "The TechCrunch excerpt supports both the approximately $13 billion reported valuation and the founders’ community-responsibility concern."
+      },
+      {
+        "claim": "GeekPark relayed OpenAI CEO Sam Altman’s concern that AI could be controlled by a small number of powerful companies, models, or people.",
+        "evidence_url": "http://www.geekpark.net/news/369224",
+        "verdict": "ok",
+        "note": "The supplied excerpt identifies Altman as OpenAI CEO and relays that concern; the article correctly labels it second-hand and not evidence about the rumored deal."
+      },
+      {
+        "claim": "No buyer, agreement, governance covenant, future product policy, or public enforcement mechanism is established in the reporting.",
+        "evidence_url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+        "verdict": "ok",
+        "note": "This is a properly hedged absence statement consistent with the supplied evidence package."
+      }
+    ],
+    "reason": "The article’s central $13 billion rumor, founders’ hesitation, and the second-hand Altman attribution are supported and appropriately hedged. However, it asserts unsupported Reddit reactions, an unsupported Stripe–OpenRouter $7 billion acquisition, and a platform-function claim not evidenced by the cited material.",
+    "status": "completed"
+  },
+  "evidence_verdict": "sufficient",
+  "downgraded": false,
+  "evidence_caveats": [
+    "约130亿美元为媒体报道的潜在估值，缺官方声明、交易文件或监管披露；应始终保留“据报道”“潜在”限定。",
+    "TechCrunch与极客公园均属媒体/转述，尚无独立一手来源交叉验证。",
+    "纽约时报链接抓取失败，不能作为证据。",
+    "没有买方、条款、产品政策或社区原始反馈，不能推断模型、数据集、托管服务或开源治理将如何变化。",
+    "时间线仅覆盖2026年8月23日至24日的早期接触报道，交易状态可能迅速变化。"
+  ],
+  "source_count": 16,
+  "generated_at": "2026-08-25T14:11:26+00:00",
+  "seo_title": "Hugging Face’s $13B Question: Who Controls the Terms?",
+  "seo_summary": "A rumored $13B Hugging Face sale raises a governance question: valuation is theater until access, hosting, and policy terms are known.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A small team works beside a glowing terminal and coffee while model, dataset, demo, and prototype artifacts gather into a connected marketplace around Hugging Face.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A developer looks at a familiar model page partly covered by translucent layers representing pricing, hosting rules, discoverability, compliance gates, contracts, and permission screens.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A glowing terminal window is darkened by a large shadow marked 13 billion while an unread fine-print document lies in the foreground.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hugging Face reportedly in talks to be acquired for $13B | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/24/hugging-face-reportedly-in-talks-to-be-acquired-for-13b/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "130 亿美元，Hugging Face 要卖了 | 极客公园",
+      "url": "http://www.geekpark.net/news/369289",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://www.nytimes.com/2026/08/24/technology/hugging-face-open-source-ai-attack.html",
+      "url": "https://www.nytimes.com/2026/08/24/technology/hugging-face-open-source-ai-attack.html",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "Alabama launches investigation into OpenAI's hack of Hugging Face | TechCrunch",
+      "url": "https://techcrunch.com/2026/08/24/alabama-launches-investigation-into-openais-hack-of-hugging-face/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI subpoenaed by Alabama AG over Hugging Face hack",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/984239/alabama-attorney-general-subpoena-openai-hugging-face-hack",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "传 Hugging Face 寻求出售，估值 130 亿美元；Altman：担心 AI 被少数强势主体掌控；成都 AG.AL 获电竞世俱杯冠军 | 极客公园",
+      "url": "http://www.geekpark.net/news/369224",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "突发!Hugging Face 要被卖了:最新报价约870亿元 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075235037574964959?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "海外AI观察日报|2026-08-25|NVIDIA Vera Rubin发布,Hugging Face洽谈130亿美元出售 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075497780894757756?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "AI行业动态20260824:英伟达通知客户AI服务器涨价超15%,受Vera Rubin和Grace Blackwell系统影响 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075142575170836452?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "PostgreSQL 日报|复制槽与分区索引缺陷修复推进(8 月 25 日) - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075601850078909778?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "估值874亿!传Hugging Face要卖身 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075184049493112724?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print/images/01.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print/images/01.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print/images/02.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print/images/02.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print/images/03.webp",
+      "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print/images/03.webp",
+      "origin": "article"
+    },
+    {
+      "title": "https://www.reddit.com/r/LocalLLaMA/comments/1vwv6j1/hugging_face_for_sales/",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1vwv6j1/hugging_face_for_sales/",
+      "origin": "article"
+    },
+    {
+      "title": "https://www.reddit.com/r/huggingface/comments/1vx5r30/hugging_face_exploring_sale_at_13_billion/",
+      "url": "https://www.reddit.com/r/huggingface/comments/1vx5r30/hugging_face_exploring_sale_at_13_billion/",
+      "origin": "article"
+    }
+  ],
+  "final_article": "articles/2026-08-25-hugging-face-s-13-billion-shadow-is-not-the-fine-print-en.md",
+  "package": "outputs/2026/08/25/hugging-face-s-13-billion-shadow-is-not-the-fine-print"
+}
