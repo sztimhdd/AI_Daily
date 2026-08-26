@@ -90,6 +90,21 @@ _ACTION_FORMS = {"compliance_explainer", "decision_brief"}
 _READER_MOVES = {"understand", "reframe", "watch", "prepare", "act", "imagine"}
 _ENDING_MODES = {"open_tension", "implication", "forecast", "decision_rule", "scene_kicker"}
 
+# Platform weight profiles by narrative form: (ev, dec, conf, fr).
+# Each row sums to 1.0 so totals stay comparable across forms.
+_PLATFORM_WEIGHTS_BY_FORM = {
+    "contrarian_audit": ((0.25, 0.20, 0.40, 0.15), (0.20, 0.15, 0.45, 0.20)),
+    "reported_story": ((0.40, 0.20, 0.15, 0.25), (0.30, 0.15, 0.25, 0.30)),
+    "mechanism_explainer": ((0.35, 0.25, 0.20, 0.20), (0.25, 0.20, 0.30, 0.25)),
+    "cost_story": ((0.35, 0.30, 0.20, 0.15), (0.25, 0.30, 0.25, 0.20)),
+    "workflow_story": ((0.30, 0.35, 0.15, 0.20), (0.20, 0.35, 0.25, 0.20)),
+    "power_map": ((0.30, 0.25, 0.30, 0.15), (0.25, 0.20, 0.35, 0.20)),
+    "compliance_explainer": ((0.30, 0.40, 0.15, 0.15), (0.20, 0.40, 0.20, 0.20)),
+    "strategic_outlook": ((0.30, 0.25, 0.30, 0.15), (0.25, 0.20, 0.35, 0.20)),
+    "decision_brief": ((0.30, 0.40, 0.15, 0.15), (0.25, 0.35, 0.20, 0.20)),
+}
+_DEFAULT_WEIGHTS = ((0.35, 0.30, 0.20, 0.15), (0.25, 0.25, 0.30, 0.20))
+
 # 2026 最佳实践执行矩阵（编译自调研报告3 "可直接交给写稿系统的最终规则"）。
 _ARCHETYPE_ANATOMY = {
     "reported_story": "标题：把新闻里的关键动词说清楚；骨架：现场/硬事实→谁说了什么→报道之间的差异→真正未知→这件事为何值得继续看；takeaway：让读者理解发生了什么，不强行发行动命令。",
@@ -104,7 +119,7 @@ _ARCHETYPE_ANATOMY = {
 }
 
 _HOOK_PATTERNS = (
-    "同任务对照：Same task. Same prompt. X vs Y，分数不是最有意思的部分；",
+    "同任务对照：同一任务、同一 prompt，X vs Y，分数不是最有意思的部分；",
     "感知vs实际：大家以为提升X，实测却是Y；",
     "跑分vs实战：榜单第N，真实项目却…；",
     "标价vs真账单：$X/token 看起来便宜，但一个成功任务实际$Y；",
@@ -385,19 +400,22 @@ def score_candidate(cand: dict, osint: dict) -> dict:
             )
         except (ValueError, TypeError):
             pass
+    form = cand.get("narrative_form") or _default_form(cand)
+    li_w, wx_w = _PLATFORM_WEIGHTS_BY_FORM.get(form, _DEFAULT_WEIGHTS)
     linkedin_total = round(
-        0.35 * evidence + 0.30 * decision
-        + 0.20 * conflict + 0.15 * freshness, 2,
+        li_w[0] * evidence + li_w[1] * decision
+        + li_w[2] * conflict + li_w[3] * freshness, 2,
     )
     wechat_total = round(
-        0.30 * conflict + 0.25 * evidence
-        + 0.25 * decision + 0.20 * freshness, 2,
+        wx_w[0] * evidence + wx_w[1] * decision
+        + wx_w[2] * conflict + wx_w[3] * freshness, 2,
     )
     return {
         "evidence": evidence,
         "conflict": conflict,
         "decision": decision,
         "freshness": freshness,
+        "narrative_form": form,
         "linkedin_total": linkedin_total,
         "wechat_total": wechat_total,
     }

@@ -368,6 +368,10 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         self.assertIn("decision_rule 只对行动型叙事必填", prompt)
         self.assertNotIn("开头三段 = Observable（可观察事实）→ Conflict（与主流说法/发布会的冲突）→ Decision", prompt)
 
+    def test_prompt_has_no_english_hook_residue(self):
+        prompt = self._prompt(allowed=["reported_story"])
+        self.assertNotIn("Same task. Same prompt.", prompt)
+
 
 class NarrativeV2RegressionTests(unittest.TestCase):
     def test_valuation_rumor_does_not_unlock_cost_route(self):
@@ -495,24 +499,13 @@ class CandidateScoreTests(unittest.TestCase):
         )
         self.assertIn("linkedin_total", scores)
         self.assertIn("wechat_total", scores)
-        self.assertAlmostEqual(
-            scores["linkedin_total"],
-            round(
-                0.35 * scores["evidence"] + 0.30 * scores["decision"]
-                + 0.20 * scores["conflict"] + 0.15 * scores["freshness"],
-                2,
-            ),
-            places=2,
-        )
-        self.assertAlmostEqual(
-            scores["wechat_total"],
-            round(
-                0.30 * scores["conflict"] + 0.25 * scores["evidence"]
-                + 0.25 * scores["decision"] + 0.20 * scores["freshness"],
-                2,
-            ),
-            places=2,
-        )
+        # Totals are a weighted sum of the four base scores; the exact
+        # weights now vary by narrative form (see _PLATFORM_WEIGHTS_BY_FORM),
+        # so we check structural properties instead of a hardcoded formula.
+        for key in ("linkedin_total", "wechat_total"):
+            self.assertGreaterEqual(scores[key], 0.0)
+            self.assertLessEqual(scores[key], 1.0)
+        self.assertIsInstance(scores.get("narrative_form"), str)
 
     def test_conflict_markers_boost_conflict_score(self):
         blunt = sample_narrative_candidate()
@@ -550,6 +543,26 @@ class CandidateScoreTests(unittest.TestCase):
             narrative.score_candidate(cand, sample_osint()),
             narrative.score_candidate(cand, sample_osint()),
         )
+
+    def test_scores_differ_by_narrative_form(self):
+        """Two candidates identical except for form must not tie on totals."""
+        base = sample_narrative_candidate()
+        base["evidence_audit"] = "e"
+        base["key_arguments"] = [
+            {"claim": "c", "observable": "o", "source": "s", "limitation": "l"}
+        ]
+        base["thesis"] = "与主流说法冲突：这里有落差"
+        base["decision_rule"] = ""
+        contrarian = dict(base)
+        contrarian["narrative_form"] = "contrarian_audit"
+        contrarian["archetype"] = "contrarian_audit"
+        reported = dict(base)
+        reported["narrative_form"] = "reported_story"
+        reported["archetype"] = "first_hand_test"
+        c = narrative.score_candidate(contrarian, sample_osint())
+        r = narrative.score_candidate(reported, sample_osint())
+        self.assertNotEqual(c["linkedin_total"], r["linkedin_total"])
+        self.assertNotEqual(c["wechat_total"], r["wechat_total"])
 
     def test_run_retries_once_after_truncated_output(self):
         import tempfile as _tf

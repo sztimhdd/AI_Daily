@@ -21,6 +21,13 @@ def aihot_items():
 
 
 class CandidateGenerationTests(unittest.TestCase):
+
+    def test_general_hook_is_not_vague_consultant_template(self):
+        self.assertNotEqual(
+            topics._HOOKS["general"],
+            "反共识点：热度最高的解读，往往不是对决策最有用的那个。",
+        )
+
     def test_candidate_thesis_strips_html_from_summaries(self):
         html_item = {
             "id": "h1",
