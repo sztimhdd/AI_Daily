@@ -1,13 +1,13 @@
-# Sources and evidence: Mac Studio Is Here. Its Base Price Still Isn't.
+# Sources and evidence: Apple's New Macs Are a Local-AI Deployment Ladder
 
-9 deduplicated source(s) from the evidence package.
+9 source(s) used for the theme rewrite (August 25 official launch plus community/independent analysis).
 
-- [🚨 AI News | TestingCatalog (@testingcatalog) on X](https://x.com/testingcatalog/status/2092266563353121226)（initial · fetched）
-- [Apple introduces M6 and M5 Ultra for a big leap in performance and AI compute](https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute)（initial · fetched）
-- [Apple's new desktop computers are designed specifically for local AI development](https://arstechnica.com/apple/2026/08/with-new-mac-studio-and-mac-mini-apple-leans-hard-into-local-ai-inference)（initial · fetched）
-- [Chubby♨️ (@kimmonismus) on X](https://x.com/kimmonismus/status/2092239477057949717)（initial · fetched）
-- [苹果连发新款 Mac mini 和 Mac Studio,2 纳米 M6 首发 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2075883847351388005?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
-- [苹果发布 M6 与 M5 Ultra 与新款 Mac Mini;字节发布 AI 办公产品「豆包工作」;SpaceX 拟千亿美元建设第二座「星际基地」|极客早知道 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2075863294561337681?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
-- [怎么看苹果发布全新 Mac mini/Mac Studio ,M6 芯片下 AI 性能暴涨4倍? - 知乎 (fetch failed)](https://www.zhihu.com/question/2075714717176303763/answer/2075886347668164789?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
-- [库克谢幕作:苹果连发两台Mac价格暴涨,搭M6、M5 Pro双芯王炸 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2075899918993180545?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
-- [怎么看苹果发布全新 Mac mini/Mac Studio ,M6 芯片下 AI 性能暴涨4倍? - 知乎 (fetch failed)](https://www.zhihu.com/question/2075714717176303763/answer/2075993794156164455?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
+- [Apple introduces new Mac Studio with M5 Max and M5 Ultra](https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/)（official · fetched）
+- [Apple unveils a more powerful Mac mini featuring the all-new M6 and M5 Pro](https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro/)（official · fetched）
+- [The $899 M6 Mac mini Isn't the AI Mac Apple Benchmarked — Kingy AI](https://kingy.ai/blog/m6-mac-mini-local-ai-edge-llm/)（independent · fetched）
+- [The Potential of M6 and M5 Ultra for Local AI on macOS — MacStories](https://www.macstories.net/notes/the-potential-of-m6-and-m5-ultra-for-local-ai-on-macos/)（independent · fetched）
+- [Local LLM Hardware Showdown — The Agent Times](https://theagenttimes.com/articles/local-llm-hardware-showdown-reveals-no-clear-winner-for-agen-ef110f7c)（community · fetched）
+- [Apple Silicon apunta alto: un M5 Max mueve un modelo de 122B en local](https://noticias.ai/apple-silicon-apunta-alto-un-m5-max-mueve-un-modelo-de-122b-en-local/)（community · fetched）
+- [New Mac Studio Can Be Clustered Together for Faster AI Performance — MacRumors](https://www.macrumors.com/2026/08/26/new-mac-studio-can-be-clustered-together/)（independent · fetched）
+- [4 台苹果 Mac Studio 池化 1.5TB 内存，DeepSeek V3.1 AI 推理速度提高 122.6% — IT之家](https://m.ithome.com/html/907113.htm)（independent · fetched · Chinese source）
+- [苹果发布全新Mac Studio：M5 Max/Ultra双芯加持 — ZOL](https://pc.zol.com.cn/1238/12382882.html)（independent · found · Chinese source）

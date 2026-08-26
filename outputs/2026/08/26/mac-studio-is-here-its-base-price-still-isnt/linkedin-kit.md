@@ -1,23 +1,23 @@
 # 🚀 LinkedIn Distribution Kit
 
 ### 1. SEO Title
-Mac Studio Is Here. Its Base Price Still Isn't.
+Apple's New Macs Are a Local-AI Deployment Ladder
 
 ### 2. SEO Description
-Apple confirms the new Mac Studio with M5 Ultra—but not the circulated M5 Max configuration or base price buyers need.
+Apple's refreshed Mac mini and Mac Studio lineup is a local-AI deployment ladder from 16GB to 512GB of unified memory — with community data on what each tier can actually run.
 
 ### 3. LinkedIn Post
 
-Mac Studio is real; its circulated base price still isn't.
+Apple just priced the local-AI ladder, from $899 to $5,499.
 
-• Apple's announcement confirms a new Mac Studio using M5 Ultra.
-• It does not confirm an M5 Max configuration or a base-price figure.
-• That missing configuration changes procurement comparisons, capacity planning, and local-AI unit-economics models.
-• A Mac mini configuration page shows how chip and price sit on one page; the Mac Studio version still hasn't appeared.
-• Regional pricing and entry-level specs have no official confirmation yet, so buyers should wait for Apple's own product page.
+• The M6 Mac mini starts at $899 with 16GB — realistic for 7B–8B models, agents, embeddings.
+• 24GB/32GB M6 variants (from $1,299) open the 14B range at 170GB/s.
+• The M5 Pro Mac mini tops out at 64GB and 307GB/s — the crossover tier for 32B-class work.
+• M5 Max hits 128GB at $2,499; the community has already run a 122B model on it and rates it the single-user inference leader.
+• M5 Ultra reaches 512GB and 1.2TB/s at $5,499 — and four units can cluster for ~3x inference.
 
-The deeper implication: configuration is where an AI-workstation narrative becomes a purchasable business decision.
+The pattern: memory is the deployment limit. Every configuration Apple released is a statement about which workloads can move off the cloud.
 
 Read the full deep dive below 👇
 
-#AI #Apple #EnterpriseIT #Procurement #LocalAI
+#AI #Apple #LocalAI #MacStudio #MacMini #EdgeAI

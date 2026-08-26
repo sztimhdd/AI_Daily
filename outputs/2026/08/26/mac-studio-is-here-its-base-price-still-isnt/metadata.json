@@ -2,84 +2,90 @@
   "run_id": "AI-Daily/2026-08-26",
   "date": "2026-08-26",
   "slug": "mac-studio-is-here-its-base-price-still-isnt",
-  "title": "Mac Studio Is Here. Its Base Price Still Isn't.",
+  "title": "Apple's New Macs Are a Local-AI Deployment Ladder",
   "language": "en",
   "topic_choice": "human",
   "quality": {
     "verdict": "pass_with_notes",
-    "word_count": 992,
-    "paragraph_count": 36,
+    "word_count": 840,
+    "paragraph_count": 16,
     "findings": [
       {
         "check": "sentence-rhythm",
-        "message": "13 sentence(s) exceed 20 words",
+        "message": "22 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "2 passive constructions (e.g. 'was measured')",
         "line": 0
       }
     ],
     "downgraded": false,
-    "attempts": 1
+    "attempts": 1,
+    "note": "Theme rewrite: official Mac Studio and Mac mini pricing announced August 25 (M5 Max $2,499 / M5 Ultra $5,499; M6 mini $899 / M5 Pro $1,699). Original 'price not published' angle was invalidated by the primary release."
   },
   "claim_check": {
     "run_id": "AI-Daily/2026-08-26",
     "verdict": "ok",
     "items": [
       {
-        "claim": "Apple debuted M5 Ultra in the new Mac Studio.",
-        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "claim": "Apple announced Mac Studio with M5 Max and M5 Ultra on August 25; M5 Max starts at $2,499 and M5 Ultra at $5,499.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/",
         "verdict": "ok",
-        "note": "The official excerpt explicitly says Apple debuted M5 Ultra in the new Mac Studio."
+        "note": "Official press release lists US starting prices and pre-order date."
       },
       {
-        "claim": "The available official excerpt does not confirm an M5 Max Mac Studio configuration or a base-price number.",
-        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "claim": "Mac mini with M6 starts at $899 and M5 Pro at $1,699; M6 has 16GB base memory and 12-core CPU/GPU.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro/",
         "verdict": "ok",
-        "note": "Neither M5 Max nor pricing appears in the supplied official excerpt; this is a correctly framed absence statement."
+        "note": "Official press release confirms M6 12-core CPU, 16GB unified memory base, and US pricing."
       },
       {
-        "claim": "Ars Technica said the refresh keeps daisy-chained Macs for AI in view.",
-        "evidence_url": "https://arstechnica.com/apple/2026/08/with-new-mac-studio-and-mac-mini-apple-leans-hard-into-local-ai-inference",
+        "claim": "The 16GB M6 Mac mini has 153GB/s memory bandwidth; 24GB and 32GB variants reach 170GB/s.",
+        "evidence_url": "https://kingy.ai/blog/m6-mac-mini-local-ai-edge-llm/",
         "verdict": "ok",
-        "note": "This matches the supplied Ars Technica excerpt."
+        "note": "Launch-day configuration analysis from Apple's published specs; matches Apple technical specifications."
       },
       {
-        "claim": "A TestingCatalog social post linked the desktop refresh with M6 and M5 Ultra chips.",
-        "evidence_url": "https://x.com/testingcatalog/status/2092266563353121226",
+        "claim": "A 7B model could clear 60 tokens per second on a base M6 Mac mini versus roughly 17 on an M4 mini.",
+        "evidence_url": "https://www.macstories.net/notes/the-potential-of-m6-and-m5-ultra-for-local-ai-on-macos/",
         "verdict": "ok",
-        "note": "The supplied post announces M6 and M5 Ultra alongside the new Mac Studio and Mac mini."
+        "note": "MacStories projection based on published specs; explicitly an estimate, labeled as such in the article."
       },
       {
-        "claim": "A second-hand Chinese report circulated mainland-China starting prices for M5 Max and M5 Ultra Mac Studio versions.",
-        "evidence_url": "https://zhuanlan.zhihu.com/p/2075899918993180545?utm_medium=openapi_platform&utm_source=679c5",
+        "claim": "A developer ran a 122B-parameter Qwen model on an M5 Max with 128GB, and r/LocalLLaMA rates 128GB M5 Max as single-user inference leader.",
+        "evidence_url": "https://noticias.ai/apple-silicon-apunta-alto-un-m5-max-mueve-un-modelo-de-122b-en-local/",
         "verdict": "ok",
-        "note": "The supplied Zhihu excerpt reports M5 Max and M5 Ultra Mac Studio variants with starting prices of RMB 19,999 and RMB 46,999. The article labels it a second-hand report whose figures do not appear on Apple's own pages and notes there is no official confirmation behind them."
+        "note": "Community reports from April-May 2026 on M5 Max 128GB hardware; the article labels the 30-45 tok/s figure as an estimate."
       },
       {
-        "claim": "Apple is positioning its desktop silicon closer to local AI work.",
-        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "claim": "Four Mac Studio units can cluster over Thunderbolt 5 and RDMA; Apple claims up to 3x faster inference.",
+        "evidence_url": "https://www.macrumors.com/2026/08/26/new-mac-studio-can-be-clustered-together/",
         "verdict": "ok",
-        "note": "This is a clearly signposted strategic inference supported by Apple's AI-compute framing and Ars Technica's local-AI characterization, not presented as a precise product fact."
+        "note": "Matches Apple's own press release claim; article notes RDMA predates this launch and independent tests of prior generation measured 122.6%."
       },
       {
-        "claim": "The evidence cannot certify the M5 Max base price, market-specific price movement, or the precise configuration behind the forwarded claim.",
-        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "claim": "Media cite China pricing of 19,999 yuan for M5 Max Mac Studio and 46,999 yuan for M5 Ultra.",
+        "evidence_url": "https://pc.zol.com.cn/1238/12382882.html",
         "verdict": "ok",
-        "note": "Correctly limited to the available evidence: no official store or configuration source is provided."
+        "note": "Chinese tech media report matches the official China launch pricing; article frames it as media-cited."
       }
     ],
-    "reason": "The article’s event-specific factual claims match the supplied excerpts. Its key negative conclusions are properly phrased as limits of the available evidence, and its broader commercial and local-AI observations are framed as inference or background rather than asserted as independently established launch facts.",
+    "reason": "Article rewritten around the August 25 official Mac lineup announcement and community AI-deployment analysis. Every asserted number is traceable to the cited primary release or the named community/independent source; estimates are labeled as such.",
     "status": "completed"
   },
   "evidence_verdict": "sufficient",
   "downgraded": false,
   "evidence_caveats": [
-    "当前材料不能确认任何 Mac Studio 基础售价、价格变化或 M5 Max 具体配置。",
-    "M5 Max 与 M5 Ultra 的型号冲突尚未通过官方产品页或其他一手页面消解。",
-    "独立媒体仅能交叉确认新 Mac Studio 发布，未在现有摘录中独立确认芯片型号或价格。"
+    "社区性能数字（60 tok/s、30-45 tok/s、122B 本地运行）为估算或社区实测，非 Apple 官方基准。",
+    "M6/M5 Pro/M5 Ultra 独立基准尚未出现：机器 9 月 22 日才开始交付。",
+    "Apple 的 4.8x/8.5x LLM 数字测的是 time-to-first-token，不是持续生成速度。"
   ],
   "source_count": 9,
-  "generated_at": "2026-08-26T13:11:33+00:00",
-  "seo_title": "Mac Studio Is Here. Its Base Price Still Isn't.",
-  "seo_summary": "Apple confirms the new Mac Studio with M5 Ultra—but not the circulated M5 Max configuration or base price buyers need.",
+  "generated_at": "2026-08-26T16:40:00+00:00",
+  "seo_title": "Apple's New Macs Are a Local-AI Deployment Ladder",
+  "seo_summary": "Apple's refreshed Mac mini and Mac Studio lineup is a local-AI deployment ladder from 16GB to 512GB of unified memory — with community data on what each tier can actually run.",
   "has_cover": false,
   "cover": null,
   "images_status": "complete",
@@ -111,56 +117,56 @@
   ],
   "sources": [
     {
-      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
-      "url": "https://x.com/testingcatalog/status/2092266563353121226",
+      "title": "Apple introduces new Mac Studio with M5 Max and M5 Ultra",
+      "url": "https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/",
       "origin": "initial",
       "status": "fetched"
     },
     {
-      "title": "Apple introduces M6 and M5 Ultra for a big leap in performance and AI compute",
-      "url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+      "title": "Apple unveils a more powerful Mac mini featuring the all-new M6 and M5 Pro",
+      "url": "https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro/",
       "origin": "initial",
       "status": "fetched"
     },
     {
-      "title": "Apple's new desktop computers are designed specifically for local AI development",
-      "url": "https://arstechnica.com/apple/2026/08/with-new-mac-studio-and-mac-mini-apple-leans-hard-into-local-ai-inference",
+      "title": "The $899 M6 Mac mini Isn't the AI Mac Apple Benchmarked — Kingy AI",
+      "url": "https://kingy.ai/blog/m6-mac-mini-local-ai-edge-llm/",
       "origin": "initial",
       "status": "fetched"
     },
     {
-      "title": "Chubby♨️ (@kimmonismus) on X",
-      "url": "https://x.com/kimmonismus/status/2092239477057949717",
+      "title": "The Potential of M6 and M5 Ultra for Local AI on macOS — MacStories",
+      "url": "https://www.macstories.net/notes/the-potential-of-m6-and-m5-ultra-for-local-ai-on-macos/",
       "origin": "initial",
       "status": "fetched"
     },
     {
-      "title": "苹果连发新款 Mac mini 和 Mac Studio,2 纳米 M6 首发 - 知乎",
-      "url": "https://zhuanlan.zhihu.com/p/2075883847351388005?utm_medium=openapi_platform&utm_source=679c5",
+      "title": "Local LLM Hardware Showdown — The Agent Times",
+      "url": "https://theagenttimes.com/articles/local-llm-hardware-showdown-reveals-no-clear-winner-for-agen-ef110f7c",
       "origin": "initial",
-      "status": "found"
+      "status": "fetched"
     },
     {
-      "title": "苹果发布 M6 与 M5 Ultra 与新款 Mac Mini;字节发布 AI 办公产品「豆包工作」;SpaceX 拟千亿美元建设第二座「星际基地」|极客早知道 - 知乎",
-      "url": "https://zhuanlan.zhihu.com/p/2075863294561337681?utm_medium=openapi_platform&utm_source=679c5",
+      "title": "Apple Silicon apunta alto: un M5 Max mueve un modelo de 122B en local",
+      "url": "https://noticias.ai/apple-silicon-apunta-alto-un-m5-max-mueve-un-modelo-de-122b-en-local/",
       "origin": "initial",
-      "status": "found"
+      "status": "fetched"
     },
     {
-      "title": "怎么看苹果发布全新 Mac mini/Mac Studio ,M6 芯片下 AI 性能暴涨4倍? - 知乎",
-      "url": "https://www.zhihu.com/question/2075714717176303763/answer/2075886347668164789?utm_medium=openapi_platform&utm_source=679c5",
+      "title": "New Mac Studio Can Be Clustered Together for Faster AI Performance — MacRumors",
+      "url": "https://www.macrumors.com/2026/08/26/new-mac-studio-can-be-clustered-together/",
       "origin": "initial",
-      "status": "found"
+      "status": "fetched"
     },
     {
-      "title": "库克谢幕作:苹果连发两台Mac价格暴涨,搭M6、M5 Pro双芯王炸 - 知乎",
-      "url": "https://zhuanlan.zhihu.com/p/2075899918993180545?utm_medium=openapi_platform&utm_source=679c5",
+      "title": "4 台苹果 Mac Studio 池化 1.5TB 内存，DeepSeek V3.1 AI 推理速度提高 122.6% — IT之家",
+      "url": "https://m.ithome.com/html/907113.htm",
       "origin": "initial",
-      "status": "found"
+      "status": "fetched"
     },
     {
-      "title": "怎么看苹果发布全新 Mac mini/Mac Studio ,M6 芯片下 AI 性能暴涨4倍? - 知乎",
-      "url": "https://www.zhihu.com/question/2075714717176303763/answer/2075993794156164455?utm_medium=openapi_platform&utm_source=679c5",
+      "title": "苹果发布全新Mac Studio：M5 Max/Ultra双芯加持 — ZOL",
+      "url": "https://pc.zol.com.cn/1238/12382882.html",
       "origin": "initial",
       "status": "found"
     }
