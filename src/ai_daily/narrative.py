@@ -509,7 +509,13 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
         "compliance_explainer（合规解释）、strategic_outlook（战略展望）、"
         "decision_brief（决策快讯）。decision_brief 只有明确的近期动作变化才可用。\n"
         "10. 两个候选必须在 central question、thesis、reader_move 或 ending_mode"
-        "上真正互补/对立，不得只是同一条建议换标题。\n\n"
+        "上真正互补/对立，不得只是同一条建议换标题。\n"
+        "11. hook 不得自我消解或用笑话削弱张力（如\"才好笑\"\"不过是\"）；"
+        "让冲突本身说话，不要替读者先把严肃的事说成段子。\n"
+        "12. key_arguments 的 source 字段必须标明证据类型前缀："
+        "Data Point:（具体数字/价格/指标）、Quote:（直接引语）、"
+        "Fact:（事件/公告/政策）、Reported:（二手转述未证实）；"
+        "后接来源 URL 或来源名。\n\n"
         "【语气人味（决定这些结构怎么写，不改变结构本身）】\n"
         "1. 语言必须大白话：像跟做技术的朋友在饭桌上说这件事，"
         "每条实锤都像吐槽时的 punchline，而不是报告条目。\n"
@@ -594,6 +600,31 @@ def _text_similarity(left: str, right: str) -> float:
     return len(a & b) / len(a | b)
 
 
+def _argument_evidence_overlap(first_args: list, second_args: list) -> float:
+    """Jaccard overlap of key_arguments' source + observable fields.
+
+    Two candidates that cite the same sources and observe the same facts
+    are the same insight regardless of thesis wording — the evidence
+    skeleton is the real identity, not the prose around it.
+    """
+    def _evidence_set(args):
+        out = set()
+        for arg in args or []:
+            if not isinstance(arg, dict):
+                continue
+            src = (arg.get("source") or "").strip().lower()
+            obs = (arg.get("observable") or "").strip().lower()
+            if src:
+                out.add(f"src:{src}")
+            if obs:
+                out.add(f"obs:{obs}")
+        return out
+    a, b = _evidence_set(first_args), _evidence_set(second_args)
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
 def validate_candidate_pair(candidates: list) -> list:
     """Reject two candidates that differ cosmetically but answer identically."""
     if not isinstance(candidates, list) or len(candidates) != 2:
@@ -607,12 +638,21 @@ def validate_candidate_pair(candidates: list) -> list:
         " ".join((second.get("decision_rule", ""), second.get("narrative_focus", ""))),
     )
     same_move = first.get("reader_move") == second.get("reader_move")
+    evidence_overlap = _argument_evidence_overlap(
+        first.get("key_arguments"), second.get("key_arguments")
+    )
     if thesis_similarity >= 0.80 or (
         thesis_similarity >= 0.42
         and (same_move or action_similarity >= 0.35)
     ):
         return [
             "same-advice candidate pair: the two theses and reader moves are too similar"
+        ]
+    if evidence_overlap >= 0.60:
+        return [
+            "same-evidence candidate pair: both candidates cite the same "
+            "sources and observables — they are one insight in two postures, "
+            "not two strategic lenses"
         ]
     return []
 

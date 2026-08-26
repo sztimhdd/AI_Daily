@@ -77,7 +77,7 @@ def _valid_candidates(first_title="新候选：AGI 前夜的闸门"):
         "thesis": "论点",
         "key_arguments": [{
             "claim": "准入扩大", "observable": "官方公告",
-            "source": "一手页", "limitation": "未双源",
+            "source": "Fact: 官方公告页", "limitation": "未双源",
             "decision": "可复核",
         }],
         "decision_rule": "条件成立才切",
@@ -95,6 +95,11 @@ def _valid_candidates(first_title="新候选：AGI 前夜的闸门"):
             "title": "新候选：可及性代价",
             "thesis": "准入机制会改变谁能使用前沿能力",
             "decision_rule": "先拆开准入机制，再决定是否调整部署",
+            "key_arguments": [{
+                "claim": "机制分层", "observable": "许可证条款差异",
+                "source": "Fact: 许可证对比页", "limitation": "未实测",
+                "decision": "可复核",
+            }],
         },
     ]
 

@@ -372,6 +372,15 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         prompt = self._prompt(allowed=["reported_story"])
         self.assertNotIn("Same task. Same prompt.", prompt)
 
+    def test_prompt_forbids_self_undermining_hooks(self):
+        prompt = self._prompt(allowed=["reported_story"])
+        self.assertIn("不得自我消解", prompt)
+
+    def test_prompt_requires_evidence_type_label_in_source(self):
+        prompt = self._prompt(allowed=["reported_story"])
+        self.assertIn("Data Point", prompt)
+        self.assertIn("Quote", prompt)
+
 
 class NarrativeV2RegressionTests(unittest.TestCase):
     def test_valuation_rumor_does_not_unlock_cost_route(self):
@@ -476,6 +485,33 @@ class NarrativeV2RegressionTests(unittest.TestCase):
         errors = narrative.validate_candidate_pair([first, second])
         self.assertTrue(errors)
         self.assertIn("same-advice", errors[0])
+
+    def test_same_evidence_skeleton_is_rejected_even_with_different_thesis(self):
+        """Two candidates citing the same sources and observables are the
+        same insight in different wording, even if thesis text differs."""
+        first = {
+            "thesis": "价格未证实，读者该分清事实与传闻。",
+            "reader_move": "understand",
+            "key_arguments": [
+                {"claim": "c1", "observable": "官方只确认 Ultra",
+                 "source": "apple.com", "limitation": "无价格数字"},
+                {"claim": "c2", "observable": "19999 出自转载",
+                 "source": "zhihu.com", "limitation": "非一手"},
+            ],
+        }
+        second = {
+            "thesis": "内容工业把三件事揉成了一件。",
+            "reader_move": "reframe",
+            "key_arguments": [
+                {"claim": "c1", "observable": "官方只确认 Ultra",
+                 "source": "apple.com", "limitation": "无价格数字"},
+                {"claim": "c2", "observable": "19999 出自转载",
+                 "source": "zhihu.com", "limitation": "非一手"},
+            ],
+        }
+        errors = narrative.validate_candidate_pair([first, second])
+        self.assertTrue(errors)
+        self.assertIn("same-evidence", errors[0])
 
     def test_non_action_form_does_not_invent_decision_rule_ending(self):
         self.assertEqual(
@@ -589,7 +625,7 @@ class CandidateScoreTests(unittest.TestCase):
                     "archetype": "reported_story", "title": "标题2",
                     "hook": "h2", "thesis": "t2",
                     "key_arguments": [{
-                        "claim": "c", "observable": "o", "source": "s",
+                        "claim": "c2", "observable": "o2", "source": "s2",
                         "limitation": "l", "decision": "d",
                     }],
                     "decision_rule": "r2",
