@@ -7,17 +7,17 @@
   "topic_choice": "human",
   "quality": {
     "verdict": "pass_with_notes",
-    "word_count": 840,
-    "paragraph_count": 16,
+    "word_count": 958,
+    "paragraph_count": 17,
     "findings": [
       {
         "check": "sentence-rhythm",
-        "message": "22 sentence(s) exceed 20 words",
+        "message": "25 sentence(s) exceed 20 words",
         "line": 0
       },
       {
         "check": "passive-voice",
-        "message": "2 passive constructions (e.g. 'was measured')",
+        "message": "2 passive constructions (e.g. was measured)",
         "line": 0
       }
     ],
@@ -70,9 +70,15 @@
         "evidence_url": "https://pc.zol.com.cn/1238/12382882.html",
         "verdict": "ok",
         "note": "Chinese tech media report matches the official China launch pricing; article frames it as media-cited."
+      },
+      {
+        "claim": "A benchmark page reviewed for this story lists Qwen 2.5 72B at 23 tok/s on an M5 Ultra with 96GB, Q4_K_M under MLX.",
+        "evidence_url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/26/mac-studio-is-here-its-base-price-still-isnt/images/04.png",
+        "verdict": "ok",
+        "note": "User-provided screenshot of a benchmark page; no independent source URL found; article explicitly labels the figure as a listing, not a lab test, since M5 Ultra ships September 22."
       }
     ],
-    "reason": "Article rewritten around the August 25 official Mac lineup announcement and community AI-deployment analysis. Every asserted number is traceable to the cited primary release or the named community/independent source; estimates are labeled as such.",
+    "reason": "Article rewritten around the August 25 official Mac lineup announcement and community AI-deployment analysis. Every asserted number is traceable to the cited primary release or the named community/independent source; estimates are labeled as such; the Qwen 23 tok/s figure is a user-provided benchmark-page screenshot, labeled as a preview.",
     "status": "completed"
   },
   "evidence_verdict": "sufficient",
@@ -112,6 +118,14 @@
       "alt": "A Mac configuration table comparing four models across Price, Chip, and spec rows, with M6 and M5 Pro chip options shown.",
       "width": 2006,
       "height": 2362,
+      "format": "png"
+    },
+    {
+      "id": "04",
+      "filename": "04.png",
+      "alt": "A dark benchmark page titled Run Qwen 2.5 72B on M5 Ultra, showing 23 tok/s, 96 GB RAM, Q4_K_M quantization via MLX, with Speed and First Token metric cards.",
+      "width": 2356,
+      "height": 1854,
       "format": "png"
     }
   ],

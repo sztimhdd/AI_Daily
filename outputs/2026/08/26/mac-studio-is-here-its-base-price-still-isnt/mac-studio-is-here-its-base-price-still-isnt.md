@@ -22,6 +22,11 @@ Then comes the tier the community has already stress-tested. **M5 Max** reaches 
 
 The top rung is **M5 Ultra**: up to **512GB** of unified memory and **1.2TB/s** of bandwidth for **$5,499**, with the 512GB variant shipping in late October. [1](https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/) **Apple** frames it as the first desktop that runs frontier-class open-weight models on device. [1](https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/) That memory pool dwarfs the VRAM of any consumer GPU, and the bandwidth beats the fastest cards on sale. [7](https://www.macrumors.com/2026/08/26/new-mac-studio-can-be-clustered-together/)
 
+The first **Qwen** data point for that rung is already on the board: a benchmark page reviewed for this story lists **Qwen 2.5 72B** at **23 tok/s** on an M5 Ultra with 96GB, Q4_K_M quantized under MLX. It is a listing, not a lab test, and the machine does not ship until September 22 — treat the number as a preview, not a verdict.
+
+![A dark benchmark page titled Run Qwen 2.5 72B on M5 Ultra, showing 23 tok/s, 96 GB RAM, Q4_K_M quantization via MLX, with Speed and First Token metric cards.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/26/mac-studio-is-here-its-base-price-still-isnt/images/04.png)
+*A 23 tok/s listing for Qwen 2.5 72B is a preview to verify once units ship, not a certified result.*
+
 The deployment ceiling rises further when machines are pooled: four **Mac Studio** units can share memory over Thunderbolt 5 and RDMA, which **Apple** says delivers up to 3x faster inference than a single system. [7](https://www.macrumors.com/2026/08/26/new-mac-studio-can-be-clustered-together/)
 
 The cluster story is not new — RDMA arrived in macOS Tahoe 26.2 and works on any Thunderbolt 5 Mac — and the community notes practical limits of two-to-five nodes with ring topology. [7](https://www.macrumors.com/2026/08/26/new-mac-studio-can-be-clustered-together/) Independent testing of the previous generation measured a 122.6 percent speedup running DeepSeek V3.1 across four M3 Ultra Studios, so the mechanism is real even if **Apple**'s 3x figure needs its own test. [8](https://m.ithome.com/html/907113.htm)
