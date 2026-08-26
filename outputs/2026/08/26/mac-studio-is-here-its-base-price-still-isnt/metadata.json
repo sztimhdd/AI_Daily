@@ -1,0 +1,178 @@
+{
+  "run_id": "AI-Daily/2026-08-26",
+  "date": "2026-08-26",
+  "slug": "mac-studio-is-here-its-base-price-still-isnt",
+  "title": "Mac Studio Is Here. Its Base Price Still Isn't.",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 813,
+    "paragraph_count": 32,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "8 sentence(s) exceed 20 words",
+        "line": 0
+      }
+    ],
+    "downgraded": false,
+    "attempts": 1
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-08-26",
+    "verdict": "ok",
+    "items": [
+      {
+        "claim": "Apple debuted M5 Ultra in the new Mac Studio.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "verdict": "ok",
+        "note": "The official excerpt explicitly says Apple debuted M5 Ultra in the new Mac Studio."
+      },
+      {
+        "claim": "The available official excerpt does not confirm an M5 Max Mac Studio configuration or a base-price number.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "verdict": "ok",
+        "note": "Neither M5 Max nor pricing appears in the supplied official excerpt; this is a correctly framed absence statement."
+      },
+      {
+        "claim": "Ars Technica said the refresh keeps daisy-chained Macs for AI in view.",
+        "evidence_url": "https://arstechnica.com/apple/2026/08/with-new-mac-studio-and-mac-mini-apple-leans-hard-into-local-ai-inference",
+        "verdict": "ok",
+        "note": "This matches the supplied Ars Technica excerpt."
+      },
+      {
+        "claim": "A TestingCatalog social post linked the desktop refresh with M6 and M5 Ultra chips.",
+        "evidence_url": "https://x.com/testingcatalog/status/2092266563353121226",
+        "verdict": "ok",
+        "note": "The supplied post announces M6 and M5 Ultra alongside the new Mac Studio and Mac mini."
+      },
+      {
+        "claim": "A second-hand Chinese report circulated mainland-China starting prices for M5 Max and M5 Ultra Mac Studio versions.",
+        "evidence_url": "https://zhuanlan.zhihu.com/p/2075899918993180545?utm_medium=openapi_platform&utm_source=679c5",
+        "verdict": "ok",
+        "note": "The supplied Zhihu excerpt reports M5 Max and M5 Ultra Mac Studio variants with starting prices of RMB 19,999 and RMB 46,999. The article correctly labels it second-hand and not independently reviewed."
+      },
+      {
+        "claim": "Apple is positioning its desktop silicon closer to local AI work.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "verdict": "ok",
+        "note": "This is a clearly signposted strategic inference supported by Apple's AI-compute framing and Ars Technica's local-AI characterization, not presented as a precise product fact."
+      },
+      {
+        "claim": "The evidence cannot certify the M5 Max base price, market-specific price movement, or the precise configuration behind the forwarded claim.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+        "verdict": "ok",
+        "note": "Correctly limited to the available evidence: no official store or configuration source is provided."
+      }
+    ],
+    "reason": "The article’s event-specific factual claims match the supplied excerpts. Its key negative conclusions are properly phrased as limits of the available evidence, and its broader commercial and local-AI observations are framed as inference or background rather than asserted as independently established launch facts.",
+    "status": "completed"
+  },
+  "evidence_verdict": "sufficient",
+  "downgraded": false,
+  "evidence_caveats": [
+    "当前材料不能确认任何 Mac Studio 基础售价、价格变化或 M5 Max 具体配置。",
+    "M5 Max 与 M5 Ultra 的型号冲突尚未通过官方产品页或其他一手页面消解。",
+    "独立媒体仅能交叉确认新 Mac Studio 发布，未在现有摘录中独立确认芯片型号或价格。"
+  ],
+  "source_count": 9,
+  "generated_at": "2026-08-26T13:11:33+00:00",
+  "seo_title": "Mac Studio Is Here. Its Base Price Still Isn't.",
+  "seo_summary": "Apple confirms the new Mac Studio with M5 Ultra—but not the circulated M5 Max configuration or base price buyers need.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A sealed black box and a compact desktop computer sit on a bright retail table, while an empty price-tag holder remains separate from them.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A person works late at a monitor with six browser tabs open above abstract panels, while a compact desktop computer sits beneath the screen.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A compact desktop computer sits between a launch announcement card and an invoice folder, with an unfinished blank configuration card between them.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "04",
+      "filename": "04.webp",
+      "alt": "A compact black desktop computer rests on a bright table while a blurred hand carries an empty price tag toward it from the background.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2092266563353121226",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple introduces M6 and M5 Ultra for a big leap in performance and AI compute",
+      "url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple's new desktop computers are designed specifically for local AI development",
+      "url": "https://arstechnica.com/apple/2026/08/with-new-mac-studio-and-mac-mini-apple-leans-hard-into-local-ai-inference",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2092239477057949717",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "苹果连发新款 Mac mini 和 Mac Studio,2 纳米 M6 首发 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075883847351388005?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "苹果发布 M6 与 M5 Ultra 与新款 Mac Mini;字节发布 AI 办公产品「豆包工作」;SpaceX 拟千亿美元建设第二座「星际基地」|极客早知道 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075863294561337681?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "怎么看苹果发布全新 Mac mini/Mac Studio ,M6 芯片下 AI 性能暴涨4倍? - 知乎",
+      "url": "https://www.zhihu.com/question/2075714717176303763/answer/2075886347668164789?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "库克谢幕作:苹果连发两台Mac价格暴涨,搭M6、M5 Pro双芯王炸 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2075899918993180545?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "怎么看苹果发布全新 Mac mini/Mac Studio ,M6 芯片下 AI 性能暴涨4倍? - 知乎",
+      "url": "https://www.zhihu.com/question/2075714717176303763/answer/2075993794156164455?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    }
+  ],
+  "final_article": "articles/2026-08-26-mac-studio-is-here-its-base-price-still-isnt-en.md",
+  "package": "outputs/2026/08/26/mac-studio-is-here-its-base-price-still-isnt"
+}
