@@ -7,12 +7,12 @@
   "topic_choice": "human",
   "quality": {
     "verdict": "pass_with_notes",
-    "word_count": 813,
-    "paragraph_count": 32,
+    "word_count": 992,
+    "paragraph_count": 36,
     "findings": [
       {
         "check": "sentence-rhythm",
-        "message": "8 sentence(s) exceed 20 words",
+        "message": "13 sentence(s) exceed 20 words",
         "line": 0
       }
     ],
@@ -51,7 +51,7 @@
         "claim": "A second-hand Chinese report circulated mainland-China starting prices for M5 Max and M5 Ultra Mac Studio versions.",
         "evidence_url": "https://zhuanlan.zhihu.com/p/2075899918993180545?utm_medium=openapi_platform&utm_source=679c5",
         "verdict": "ok",
-        "note": "The supplied Zhihu excerpt reports M5 Max and M5 Ultra Mac Studio variants with starting prices of RMB 19,999 and RMB 46,999. The article correctly labels it second-hand and not independently reviewed."
+        "note": "The supplied Zhihu excerpt reports M5 Max and M5 Ultra Mac Studio variants with starting prices of RMB 19,999 and RMB 46,999. The article labels it a second-hand report whose figures do not appear on Apple's own pages and notes there is no official confirmation behind them."
       },
       {
         "claim": "Apple is positioning its desktop silicon closer to local AI work.",
@@ -87,34 +87,26 @@
     {
       "id": "01",
       "filename": "01.webp",
-      "alt": "A sealed black box and a compact desktop computer sit on a bright retail table, while an empty price-tag holder remains separate from them.",
-      "width": 1024,
-      "height": 1024,
+      "alt": "An Apple Studio Display and a compact silver Mac mini on a light gray surface, with a Magic Mouse, two keyboards, and cables running between the screen and the desktop.",
+      "width": 1920,
+      "height": 1039,
       "format": "webp"
     },
     {
       "id": "02",
       "filename": "02.webp",
-      "alt": "A person works late at a monitor with six browser tabs open above abstract panels, while a compact desktop computer sits beneath the screen.",
-      "width": 1024,
-      "height": 1024,
+      "alt": "A silver Mac mini with a black Apple logo sits at the center of a desk, surrounded by a keyboard, a sketch notebook, and an iPhone on a light beige background.",
+      "width": 1240,
+      "height": 1200,
       "format": "webp"
     },
     {
       "id": "03",
-      "filename": "03.webp",
-      "alt": "A compact desktop computer sits between a launch announcement card and an invoice folder, with an unfinished blank configuration card between them.",
-      "width": 1024,
-      "height": 1024,
-      "format": "webp"
-    },
-    {
-      "id": "04",
-      "filename": "04.webp",
-      "alt": "A compact black desktop computer rests on a bright table while a blurred hand carries an empty price tag toward it from the background.",
-      "width": 1024,
-      "height": 1024,
-      "format": "webp"
+      "filename": "03.png",
+      "alt": "A Mac configuration table comparing four models across Price, Chip, and spec rows, with M6 and M5 Pro chip options shown.",
+      "width": 2006,
+      "height": 2362,
+      "format": "png"
     }
   ],
   "sources": [
