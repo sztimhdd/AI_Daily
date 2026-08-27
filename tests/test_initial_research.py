@@ -241,6 +241,54 @@ class InitialResearchHappyPathTests(InitialResearchBase):
         urls = research._initial_url_list(topic, matrix)
         self.assertEqual(urls, ["https://x.com/a", "https://example.com/b"])
 
+    def test_topic_source_urls_are_merged_when_matrix_has_reports(self):
+        """Regression: when AIHOT matches a *different* story than the chosen
+        topic, the chosen topic's own sources must still be fetched.  The
+        matrix reports used to shadow topic.sources entirely, leaving the
+        editor's chosen event without any evidence."""
+        topic = {
+            "sources": [
+                {"url": "https://techcrunch.com/2026/08/26/nvidia-acquires-hf/"},
+                {"url": "https://example.com/b"},
+            ],
+            "research_queries": [],
+        }
+        matrix = {
+            "status": "ok",
+            "reports": [
+                {"original_url": "https://openai.com/index/hf-incident"},
+                {"original_url": "https://x.com/frxiaobei/status/1"},
+            ],
+        }
+        urls = research._initial_url_list(topic, matrix)
+        # matrix reports first (existing behavior), topic sources merged in,
+        # deduplicated, order stable.
+        self.assertEqual(
+            urls,
+            [
+                "https://openai.com/index/hf-incident",
+                "https://x.com/frxiaobei/status/1",
+                "https://techcrunch.com/2026/08/26/nvidia-acquires-hf/",
+                "https://example.com/b",
+            ],
+        )
+
+    def test_topic_sources_deduped_against_matrix_reports(self):
+        topic = {
+            "sources": [
+                {"url": "https://openai.com/index/hf-incident"},
+            ],
+            "research_queries": [],
+        }
+        matrix = {
+            "status": "ok",
+            "reports": [
+                {"original_url": "https://openai.com/index/hf-incident"},
+            ],
+        }
+        urls = research._initial_url_list(topic, matrix)
+        self.assertEqual(urls, ["https://openai.com/index/hf-incident"])
+
     def test_analysis_message_with_preamble_still_parses_json(self):
         analysis = {"modules": [], "evidence_gaps": ["gap"]}
         text = (

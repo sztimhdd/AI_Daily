@@ -44,6 +44,25 @@ docs/research/narrative-survey-merge-notes.md）与 legacy 资产
 
 ## 硬性结构规则
 
+## 退缩禁令（2026-08-27 校准，防止把证据纪律写成拒绝写作）
+
+证据纪律约束的是能写什么，不是写不写。以下姿态属于退缩，禁止：
+
+- 把审计结论当叙事主体：sufficient/needs_research/证据边界是管线内部判断，
+  不得作为标题、hook 或 thesis 的主题（如：今天能写的只有：证据没到场）。
+- 整篇围绕不能确认什么展开：证据边界只允许出现在 key_arguments 的
+  limitation 或 Reported/Unknown 论据里，不得用未知清单冒充正文。
+- 选题漂移：证据池可能同时包含与选题相关但不同的故事（如收购选题旁有
+  安全事件报告），候选必须锚定主编选中的事件，其他材料只作背景/对照。
+
+正面要求：
+
+- 多源报道即事实：同一事件有多个独立来源报道时，标题与 hook 可直接落在
+  事件上（据多方报道/多家媒体称），官方未确认写进 Reported/Unknown 层。
+- 已有硬料就写实：证据池有数字、机制、引语、时间线时必须写进正文，
+  只有真正缺失的核心环节才标 Unknown。
+
+
 1. 开头从 **Hook/Scene → Observable → Central Tension** 进入；只有行动型叙事才推进到 Decision。禁止前三句全部用于背景介绍。
 2. 每条关键论据至少走 **Claim → Observable → Source → Limitation**；确有行动建议时再加 Decision。
 3. 结尾由 `ending_mode` 选择：open tension、implication、forecast、decision rule 或 scene kicker；非行动型文章不强行填写决策规则。

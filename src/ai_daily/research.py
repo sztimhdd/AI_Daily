@@ -589,7 +589,12 @@ def _evidence_entry(result) -> dict:
 def _initial_url_list(topic: dict, matrix: dict, discover_runner=None) -> list:
     """Initial search-evidence URL list for one run.
 
-    Story reports' ``original_url`` values are the mandatory seed;
+    Story reports' ``original_url`` values are the seed, and the chosen
+    topic's own sources are always merged in (deduplicated).  The matrix
+    can match a related but different story than the editor's chosen
+    event — e.g. an incident report when the topic is an acquisition —
+    so topic sources must never be shadowed, or the narrative layer
+    would have no evidence for the event it was asked to write about.
     ``discover_runner`` (the zhida discovery lane) optionally adds
     query-driven URLs and is only exercised when injected, so tests
     never touch the browser.
@@ -604,12 +609,9 @@ def _initial_url_list(topic: dict, matrix: dict, discover_runner=None) -> list:
 
     for report in matrix.get("reports") or []:
         add(report.get("original_url") or "")
-    if not urls:
-        # Board rotation can leave the matrix without reports; the editor's
-        # chosen sources still carry fetchable original URLs.
-        for source in topic.get("sources") or []:
-            if isinstance(source, dict):
-                add(source.get("url") or "")
+    for source in topic.get("sources") or []:
+        if isinstance(source, dict):
+            add(source.get("url") or "")
     if discover_runner is not None:
         for query in topic.get("research_queries") or []:
             for link in fetch.discover(query, runner=discover_runner) or []:

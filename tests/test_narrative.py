@@ -381,6 +381,18 @@ class PromptBestPracticeMatrixTests(unittest.TestCase):
         self.assertIn("Data Point", prompt)
         self.assertIn("Quote", prompt)
 
+    def test_prompt_anchors_to_chosen_topic_not_matrix_shadow(self):
+        prompt = self._prompt(allowed=["reported_story"])
+        self.assertIn("选题锚定", prompt)
+        self.assertIn("多源报道", prompt)
+        self.assertIn("退缩", prompt)
+
+    def test_prompt_forbids_audit_verdict_as_narrative_subject(self):
+        prompt = self._prompt(allowed=["reported_story"])
+        self.assertIn("不得把审计结论", prompt)
+        self.assertIn("Reported", prompt)
+        self.assertIn("Unknown", prompt)
+
 
 class NarrativeV2RegressionTests(unittest.TestCase):
     def test_valuation_rumor_does_not_unlock_cost_route(self):
