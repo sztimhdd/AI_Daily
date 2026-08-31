@@ -79,4 +79,4 @@
 
 - [x] Run full unittest discovery with the repository-local topic-survey fixture available.
 - [x] Run `git diff --check` and `scripts/uat_cli.sh`.
-- [ ] Review the staged diff, commit only the listed code, tests, and documentation, then push after fast-forward verification.
+- [x] Review the staged diff, commit only the listed code, tests, and documentation, then push after fast-forward verification.
