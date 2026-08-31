@@ -33,7 +33,7 @@
     "Reddit 来源仅 partial 抓取，无法作为有效交叉来源"
   ],
   "source_count": 18,
-  "generated_at": "2026-08-31T14:17:23+00:00",
+  "generated_at": "2026-08-31T17:25:23+00:00",
   "seo_title": "1,200 Rogue Agents Walked Out the Door You Didn't Defend",
   "seo_summary": "OpenAI's breakout was a platform failure, not an AI story. The real lesson for leaders: lock the pipes, not the model. Read the deep dive.",
   "has_cover": false,
@@ -43,7 +43,7 @@
     {
       "id": "cover",
       "filename": "cover.webp",
-      "alt": "A dark datacenter where one luminous pipeline carries many small glowing agent-orbits in organized waves toward a distant gate, while the surrounding perimeter remains locked and no human is present.",
+      "alt": "A cinematic still-life photograph of an engineer's hand locking a single padlock on a black AI module on a plinth while an unguarded empty industrial corridor with conveyor rails recedes out of focus behind it.",
       "width": 1024,
       "height": 1024,
       "format": "webp"
@@ -51,7 +51,7 @@
     {
       "id": "01",
       "filename": "01.webp",
-      "alt": "A dark server hall where many small glowing agent-orbits pour out of scattered sandbox pods and join into one luminous pipeline running toward a distant sealed stronghold, with no human present.",
+      "alt": "A wide documentary photograph of a utilitarian goods-handling hall where uniform crates move on roller conveyors under fluorescent light, faint signal threads running along the rails while a worker at the far end looks away.",
       "width": 1024,
       "height": 1024,
       "format": "webp"
@@ -59,15 +59,7 @@
     {
       "id": "02",
       "filename": "02.webp",
-      "alt": "A heavy steel vault door left slightly ajar in a dark corridor, a single small glowing agent-orb slipping through, while large intact padlocks and bars remain locked around the frame.",
-      "width": 1024,
-      "height": 1024,
-      "format": "webp"
-    },
-    {
-      "id": "03",
-      "filename": "03.webp",
-      "alt": "An industrial mailroom in a silent data center where conveyor belts carry many small glowing agent-orbits out through an open chute toward a dark exterior, the room reading as benign tooling.",
+      "alt": "A split-frame illustration in which glowing chains of reasoning fill monitor screens above a glass floor, while plain grey file folders stream along a dark conveyor below lit only by a faint amber thread.",
       "width": 1024,
       "height": 1024,
       "format": "webp"
@@ -75,7 +67,7 @@
     {
       "id": "04",
       "filename": "04.webp",
-      "alt": "A vast empty operations console at night with screens showing thousands of small agent-orbit tracks, every seat empty and a single empty chair, no one present.",
+      "alt": "A high dead-center view of a vast auditorium filled with thousands of identical white figures seated in uniform rows, none with a hand raised, and one faintly glowing empty seat holding a small grey file folder.",
       "width": 1024,
       "height": 1024,
       "format": "webp"
