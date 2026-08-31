@@ -161,6 +161,24 @@ class VisualPlanTests(unittest.TestCase):
         self.assertIn("At most ONE diagram per plan", prompt)
         self.assertIn("cover, is a Gemini image", prompt)
 
+    def test_parse_plan_rejects_three_homogeneous_body_visuals(self):
+        plan = sample_plan()
+        plan["images"].append(
+            {
+                "id": "03", "anchor": "A third point.",
+                "purpose": "another argument", "style": "cold fintech illustration",
+                "prompt": "A third cold fintech scene.", "alt": "A third scene.",
+            }
+        )
+        result = visuals.parse_plan(plan)
+        self.assertFalse(result["ok"])
+        self.assertIn("visual diversity", result["error"])
+
+    def test_build_plan_prompt_requires_a_distinct_linkedin_cover(self):
+        prompt = visuals.build_plan_prompt("# Title\n\nBody text.", {"sources": []})
+        self.assertIn("LinkedIn cover", prompt)
+        self.assertIn("different visual modes", prompt)
+
 
 class VisualsBase(unittest.TestCase):
     def setUp(self):
@@ -445,6 +463,40 @@ class DiagramLaneTests(VisualsBase):
         kinds = {e["id"]: e.get("kind", "image") for e in manifest["images"]}
         self.assertEqual(kinds["02"], "diagram")
 
+    def test_run_generate_falls_back_to_gemini_when_diagram_lane_fails(self):
+        self.write_article()
+        plan = {
+            "images": [
+                {"id": "01", "anchor": "a.", "prompt": "p", "alt": "a."},
+                {
+                    "id": "02", "kind": "diagram", "anchor": "b.", "alt": "arch",
+                    "fallback_image_prompt": "A factual editorial architecture scene.",
+                    "diagram": {"mode": "architecture", "title": "Stack", "nodes": []},
+                },
+            ]
+        }
+        (self.rp.work_dir / visuals.VISUAL_PLAN_JSON).write_text(
+            json.dumps(plan), encoding="utf-8"
+        )
+
+        def fake_runner(prompt, model, token, project):
+            return make_png()
+
+        def failing_diagram(spec):
+            raise RuntimeError("generator down")
+
+        from unittest import mock
+
+        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
+             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
+            result = visuals.run_generate(
+                self.rp, gemini_runner=fake_runner, diagram_generator=failing_diagram,
+            )
+        self.assertEqual(result["generated"], 2)
+        fallback = result["manifest"]["images"][1]
+        self.assertEqual(fallback["kind"], "image")
+        self.assertEqual(fallback["fallback_from"], "diagram")
+
 
 class RunIllustrateTests(VisualsBase):
     def test_run_plan_missing_article_raises(self):
@@ -498,6 +550,32 @@ class RunIllustrateTests(VisualsBase):
         self.assertIn("images/01.webp", article)
         self.assertNotIn("images/03.webp", article)
         self.assertEqual(result["status"], "illustrated")
+
+    def test_illustrate_replaces_stale_package_image_block_on_force(self):
+        old_url = (
+            "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/"
+            "2026/08/20/everyone-says-stripe-bet-on-the-singularity/images/01.webp"
+        )
+        self.write_article(
+            "# Headline\n\nThe receipt tells a colder story.\n\n"
+            f"![Old image]({old_url})\n*Old editorial caption.*\n"
+        )
+        plan = {"status": "generated", "images": [
+            {"id": "01", "anchor": "The receipt tells a colder story.",
+             "alt": "Fresh image.", "caption": "Fresh editorial line."},
+        ]}
+        manifest = {"images": [
+            {"id": "01", "status": "generated", "format": "webp"},
+        ]}
+        from unittest import mock
+
+        with mock.patch.object(visuals, "run_plan", return_value=plan), \
+             mock.patch.object(visuals, "run_generate", return_value={"status": "generated", "manifest": manifest}):
+            visuals.run_illustrate(self.rp, force=True)
+        article = (self.rp.work_dir / draft_en.EN_ARTICLE_MD).read_text(encoding="utf-8")
+        self.assertNotIn("Old editorial caption.", article)
+        self.assertIn("Fresh editorial line.", article)
+        self.assertEqual(article.count("images/01.webp"), 1)
 
 
 if __name__ == "__main__":

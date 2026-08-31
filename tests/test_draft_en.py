@@ -332,7 +332,9 @@ class DraftEnPromptTests(DraftEnBase):
             "Rhythm variety",
             "Crescendo",
             "blockquotes",
-            "sentences 20 words or fewer",
+            "18-24 varied paragraphs",
+            "dominant image",
+            "no more than two standalone punch-line paragraphs",
             "bolded lead-ins open at most half",
         ):
             self.assertIn(phrase, prompt)

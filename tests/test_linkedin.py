@@ -64,6 +64,15 @@ class ParseKitTests(unittest.TestCase):
         self.assertIn("### 2. SEO Description", md)
         self.assertIn("### 3. LinkedIn Post", md)
 
+    def test_render_kit_md_includes_generated_cover_when_available(self):
+        kit = {**sample_kit(), "cover": {
+            "url": "https://raw.githubusercontent.com/example/cover.webp",
+            "alt": "A locked box beside an open channel.",
+        }}
+        md = linkedin.render_kit_md(kit)
+        self.assertIn("### 4. LinkedIn Cover", md)
+        self.assertIn("cover.webp", md)
+
     def test_build_kit_prompt_embeds_article(self):
         prompt = linkedin.build_kit_prompt("# T\n\nBody.", "T")
         self.assertIn("Body.", prompt)
@@ -105,6 +114,28 @@ class RunKitTests(unittest.TestCase):
         self.assertEqual(result["status"], "generated")
         self.assertTrue((self.rp.work_dir / linkedin.LINKEDIN_KIT_JSON).is_file())
         self.assertTrue((self.rp.work_dir / linkedin.LINKEDIN_KIT_MD).is_file())
+
+    def test_run_kit_adds_successful_visual_cover(self):
+        (self.rp.work_dir / draft_en.EN_ARTICLE_MD).write_text(
+            "# The Title\n\nBody.", encoding="utf-8"
+        )
+        state.update_fields(self.rp, en_slug="the-title")
+        (self.rp.work_dir / "images-manifest.json").write_text(
+            json.dumps({"images": [{
+                "id": "cover", "status": "generated", "format": "webp",
+                "alt": "A chosen editorial cover.", "caption": "The argument in one frame.",
+            }]}), encoding="utf-8"
+        )
+        image_dir = self.rp.work_dir / "images"
+        image_dir.mkdir()
+        (image_dir / "cover.webp").write_bytes(b"RIFF....WEBP")
+
+        result = linkedin.run(self.rp, codex_runner=lambda prompt: sample_kit())
+        self.assertEqual(result["status"], "generated")
+        self.assertIn("cover", result)
+        self.assertIn("the-title/images/cover.webp", result["cover"]["url"])
+        rendered = (self.rp.work_dir / linkedin.LINKEDIN_KIT_MD).read_text(encoding="utf-8")
+        self.assertIn("### 4. LinkedIn Cover", rendered)
 
 
 if __name__ == "__main__":

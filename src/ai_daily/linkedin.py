@@ -15,13 +15,41 @@ from __future__ import annotations
 
 import json
 
-from . import draft_en, research, state
+from . import draft_en, research, state, visuals
 
 LINKEDIN_KIT_JSON = "linkedin-kit.json"
 LINKEDIN_KIT_MD = "linkedin-kit.md"
 
 SEO_TITLE_MAX = 60
 SEO_DESCRIPTION_MAX = 160
+
+
+def _visual_cover(run_paths) -> dict | None:
+    """Return the successful visual cover as a public package asset."""
+    manifest_path = run_paths.work_dir / visuals.IMAGES_MANIFEST_JSON
+    if not manifest_path.is_file():
+        return None
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    state_data = state.read_state(run_paths)
+    en_slug = str(state_data.get("en_slug") or "").strip()
+    if not en_slug:
+        return None
+    for entry in manifest.get("images") or []:
+        if entry.get("id") != "cover" or entry.get("status") != "generated":
+            continue
+        ext = str(entry.get("format") or "webp")
+        cover_file = run_paths.work_dir / visuals.IMAGES_DIR / f"cover.{ext}"
+        if not cover_file.is_file():
+            return None
+        return {
+            "url": visuals._raw_url(run_paths, en_slug, f"cover.{ext}"),
+            "alt": str(entry.get("alt") or "").strip(),
+            "caption": str(entry.get("caption") or "").strip(),
+        }
+    return None
 
 
 def build_kit_prompt(article: str, title: str) -> str:
@@ -70,33 +98,61 @@ def parse_kit(payload) -> dict:
         }
     if not post:
         return {"ok": False, "error": "kit missing post"}
-    return {
+    parsed = {
         "ok": True,
         "seo_title": seo_title,
         "seo_description": seo_desc,
         "post": post,
     }
+    cover = payload.get("cover")
+    if isinstance(cover, dict) and str(cover.get("url") or "").strip():
+        parsed["cover"] = {
+            "url": str(cover["url"]).strip(),
+            "alt": str(cover.get("alt") or "").strip(),
+            "caption": str(cover.get("caption") or "").strip(),
+        }
+    return parsed
 
 
 def render_kit_md(kit: dict) -> str:
     """Human-readable LinkedIn kit block (paste-ready Markdown)."""
-    return (
+    rendered = (
         "# 🚀 LinkedIn Distribution Kit\n\n"
         f"### 1. SEO Title\n{kit['seo_title']}\n\n"
         f"### 2. SEO Description\n{kit['seo_description']}\n\n"
         f"### 3. LinkedIn Post\n\n{kit['post']}\n"
     )
+    cover = kit.get("cover") or {}
+    if cover.get("url"):
+        rendered += (
+            "\n### 4. LinkedIn Cover\n\n"
+            "Upload this generated image with the post (the LinkedIn composer "
+            "does not render Markdown image embeds).\n\n"
+            f"![{cover.get('alt') or 'LinkedIn cover'}]({cover['url']})\n\n"
+            f"[Open cover image]({cover['url']})\n"
+        )
+        if cover.get("caption"):
+            rendered += f"\n*{cover['caption']}*\n"
+    return rendered
 
 
 def run(run_paths, codex_runner=None, force: bool = False) -> dict:
     """Generate and validate the LinkedIn kit; never raises."""
     json_path = run_paths.work_dir / LINKEDIN_KIT_JSON
     md_path = run_paths.work_dir / LINKEDIN_KIT_MD
+    cover = _visual_cover(run_paths)
     if json_path.exists() and md_path.exists() and not force:
         try:
             stored = json.loads(json_path.read_text(encoding="utf-8"))
             parsed = parse_kit(stored)
             if parsed["ok"]:
+                if cover and parsed.get("cover") != cover:
+                    parsed["cover"] = cover
+                    json_path.write_text(
+                        json.dumps({key: value for key, value in parsed.items() if key != "ok"}, ensure_ascii=False, indent=2) + "\n",
+                        encoding="utf-8",
+                    )
+                    md_path.write_text(render_kit_md(parsed), encoding="utf-8")
                 return {"status": "resumed", **parsed}
         except json.JSONDecodeError:
             pass
@@ -123,6 +179,8 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
         "seo_description": parsed["seo_description"],
         "post": parsed["post"],
     }
+    if cover:
+        kit["cover"] = cover
     json_path.write_text(
         json.dumps(kit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )

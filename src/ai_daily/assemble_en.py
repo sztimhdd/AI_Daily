@@ -116,6 +116,7 @@ def _adopt_images(run_paths, package_dir: pathlib.Path) -> dict:
     manifest_path = run_paths.work_dir / visuals.IMAGES_MANIFEST_JSON
     source_dir = run_paths.work_dir / visuals.IMAGES_DIR
     images = []
+    visual_cover = None
     if manifest_path.is_file():
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -133,19 +134,31 @@ def _adopt_images(run_paths, package_dir: pathlib.Path) -> dict:
             dest_dir.mkdir(parents=True, exist_ok=True)
             dest = dest_dir / f"{iid}.{ext}"
             dest.write_bytes(src.read_bytes())
-            images.append(
-                {
-                    "id": iid,
-                    "filename": f"{iid}.{ext}",
-                    "alt": entry.get("alt") or "",
-                    "width": entry.get("width", 0),
-                    "height": entry.get("height", 0),
+            record = {
+                "id": iid,
+                "filename": f"{iid}.{ext}",
+                "alt": entry.get("alt") or "",
+                "caption": entry.get("caption") or "",
+                "width": entry.get("width", 0),
+                "height": entry.get("height", 0),
+                "format": ext,
+            }
+            images.append(record)
+            if iid == "cover":
+                visual_cover = {
+                    "file": f"images/{iid}.{ext}",
                     "format": ext,
+                    "width": record["width"],
+                    "height": record["height"],
+                    "alt": record["alt"],
+                    "caption": record["caption"],
                 }
-            )
     if images:
-        return {"images_status": "complete", "images": images}
-    return {"images_status": "degraded", "images": []}
+        return {
+            "images_status": "complete", "images": images,
+            "cover": visual_cover,
+        }
+    return {"images_status": "degraded", "images": [], "cover": None}
 
 
 def _adopt_linkedin_kit(run_paths, package_dir: pathlib.Path) -> dict:
@@ -253,8 +266,8 @@ def run(run_paths, force: bool = False) -> dict:
         _render_sources_md(en_title, sources), encoding="utf-8"
     )
 
-    cover_info = assemble._adopt_cover(run_paths, package_dir)
     images_info = _adopt_images(run_paths, package_dir)
+    cover_info = images_info["cover"] or assemble._adopt_cover(run_paths, package_dir)
     kit_info = _adopt_linkedin_kit(run_paths, package_dir)
     quality_record = _read_quality(run_paths)
     audit = _read_audit(run_paths)

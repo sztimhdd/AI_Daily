@@ -138,6 +138,24 @@ class AssembleEnTests(AssembleEnBase):
         self.assertEqual(meta["images_status"], "complete")
         self.assertEqual(meta["images"][0]["filename"], "01.webp")
 
+    def test_visual_cover_is_adopted_and_marked_as_package_cover(self):
+        self.write_article_en()
+        self.write_evidence()
+        images_dir = self.rp.work_dir / visuals.IMAGES_DIR
+        images_dir.mkdir(parents=True, exist_ok=True)
+        (images_dir / "cover.webp").write_bytes(b"RIFF....WEBP")
+        (self.rp.work_dir / visuals.IMAGES_MANIFEST_JSON).write_text(
+            json.dumps({"images": [{
+                "id": "cover", "status": "generated", "format": "webp",
+                "width": 1600, "height": 900, "alt": "Cover.",
+                "caption": "The argument in one frame.",
+            }]}), encoding="utf-8"
+        )
+        result = assemble_en.run(self.rp)
+        self.assertTrue(result["has_cover"])
+        meta = json.loads((self.rp.package_dir(self._en_slug()) / "metadata.json").read_text(encoding="utf-8"))
+        self.assertEqual(meta["cover"]["file"], "images/cover.webp")
+
     def test_no_images_yields_degraded_not_blocking(self):
         self.write_article_en()
         self.write_evidence()
