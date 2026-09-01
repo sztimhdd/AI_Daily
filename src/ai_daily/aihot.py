@@ -466,6 +466,34 @@ def story_matrix_for_topic(
     ``{"status": "unavailable", "reason": ...}`` — no story id is ever
     guessed, and no unrelated hot topic's story is attached.
     """
+    # A story URL explicitly supplied by an editor is a durable pin, unlike
+    # the rolling hot-topic board.  Resolve it first so a valid story can be
+    # researched after it has naturally fallen out of Top 10.
+    explicit_ids = [
+        extract_story_public_id(url)
+        for url in (source_urls or [])
+    ]
+    explicit_id = next((item for item in explicit_ids if item), "")
+    if explicit_id:
+        story = fetch_story(explicit_id, fetch=fetch, timeout=timeout)
+        if story.get("status") != "ok":
+            return _unavailable(
+                story.get("reason") or "story unavailable",
+                story_id=explicit_id,
+            )
+        return {
+            "status": "ok",
+            "topic_title": topic_title,
+            "story_id": explicit_id,
+            "story_title": story.get("story_title", ""),
+            "story_digest": story.get("story_digest", ""),
+            "story_latest": story.get("story_latest", ""),
+            "source_count": story.get("source_count", 0),
+            "report_count": story.get("report_count", 0),
+            "story_status": story.get("story_status", ""),
+            "reports": story.get("reports", []),
+        }
+
     try:
         hot_topics = fetch_hot_topics(fetch=fetch, timeout=timeout)
     except AihotError as exc:

@@ -380,6 +380,25 @@ class InitialResearchHappyPathTests(InitialResearchBase):
         self.assertIn(STORY_ID, seen[0])
         self.assertIn("https://openrouter.ai/blog/web-search-benchmark", seen[0])
 
+    def test_codex_analysis_receives_zhihu_evidence_before_analysis(self):
+        seen = []
+
+        def zhihu_runner(args):
+            return {"Code": 0, "Data": {"Items": [{
+                "Title": "工程师的 Cursor 迁移记录",
+                "AuthorName": "某工程师",
+                "ContentText": "模型入口变化会影响团队工作流。",
+                "Url": "https://www.zhihu.com/question/42/answer/7",
+                "ContentType": "Answer",
+            }]}}
+
+        self.run_initial(
+            codex_runner=make_codex_runner(seen=seen),
+            zhihu_runner=zhihu_runner,
+        )
+        self.assertEqual(len(seen), 1)
+        self.assertIn("https://www.zhihu.com/question/42/answer/7", seen[0])
+
     def test_discover_runner_adds_query_driven_urls(self):
         def discover(topic, wait_ms):
             return [{"title": "问题", "url": "https://www.zhihu.com/question/42"}]

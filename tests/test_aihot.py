@@ -392,6 +392,28 @@ class StoryReportTests(unittest.TestCase):
 
 
 class StoryMatrixTests(unittest.TestCase):
+    def test_explicit_story_url_bypasses_expired_hot_topic_board(self):
+        """A user-pinned AIHOT story remains usable after it leaves Top 10."""
+        matrix = aihot.story_matrix_for_topic(
+            "完全不同的自定义标题",
+            fetch=routed_fetch(hot={
+                "schemaVersion": 1,
+                "count": 1,
+                "items": [{
+                    "rank": 1,
+                    "title": "另一条仍在热榜的新闻",
+                    "links": {
+                        "story": f"https://aihot.virxact.com/story/{STORY_ID}"
+                    },
+                }],
+            }),
+            source_urls=[
+                f"https://aihot.virxact.com/story/{DEEPSEEK_STORY_ID}"
+            ],
+        )
+        self.assertEqual(matrix["status"], "ok")
+        self.assertEqual(matrix["story_id"], DEEPSEEK_STORY_ID)
+
     def test_match_by_ascii_tokens_builds_ok_matrix(self):
         matrix = aihot.story_matrix_for_topic(
             "DeepSeek Harness 发布", fetch=routed_fetch()

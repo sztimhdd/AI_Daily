@@ -1162,6 +1162,40 @@ def run_initial(
             cdp_runner=cdp_runner,
         )
         evidence.append(_evidence_entry(result))
+
+    # Community material must join the evidence package before the analysis
+    # prompt is built.  Appending it afterwards made custom topics look like
+    # an empty brief to the model even when Zhihu had returned useful leads.
+    zhihu = _zhihu_community_block(run_paths, topic, runner=zhihu_runner)
+    if zhihu.get("status") == "ok":
+        for it in (zhihu.get("items") or [])[:5]:
+            url = str(it.get("url") or "").strip()
+            if not url.startswith("http"):
+                continue
+            entry = {
+                "url": url,
+                "title": it.get("title", ""),
+                "author": it.get("author", ""),
+                "vote_up": it.get("vote_up", 0),
+                "comment_count": it.get("comment_count", 0),
+                "content_type": it.get("content_type", ""),
+                "status": "found",
+                "source_lane": "zhihu-cli",
+                "community": True,
+                "sha256": "",
+                "excerpt": it.get("content", "")[:300],
+                "excerpt_truncated": len(it.get("content", "")) > 300,
+            }
+            fetched = fetch.fetch(url, run_paths, cdp_runner=cdp_runner)
+            if fetched.status in ("fetched", "partial") and fetched.markdown.strip():
+                entry.update(
+                    status=fetched.status,
+                    source_lane=fetched.source_lane,
+                    sha256=fetched.sha256,
+                    error=fetched.error,
+                    excerpt=_evidence_excerpt(fetched.markdown, fetched.title),
+                )
+            evidence.append(entry)
     if progress:
         progress("evidence", evidence)
 
@@ -1196,26 +1230,7 @@ def run_initial(
     if analysis_status == "completed":
         _merge_analysis(modules, gaps, analysis)
 
-    zhihu = _zhihu_community_block(run_paths, topic, runner=zhihu_runner)
     if zhihu.get("status") == "ok":
-        for it in (zhihu.get("items") or [])[:5]:
-            url = str(it.get("url") or "").strip()
-            if not url.startswith("http"):
-                continue
-            evidence.append({
-                "url": url,
-                "title": it.get("title", ""),
-                "author": it.get("author", ""),
-                "vote_up": it.get("vote_up", 0),
-                "comment_count": it.get("comment_count", 0),
-                "content_type": it.get("content_type", ""),
-                "status": "found",
-                "source_lane": "zhihu-cli",
-                "community": True,
-                "sha256": "",
-                "excerpt": it.get("content", "")[:300],
-                "excerpt_truncated": len(it.get("content", "")) > 300,
-            })
         for mod in modules:
             if mod.get("key") == "community_voices":
                 note = "；知乎社区声量（zhihu-cli 二手社区证据）：" + " / ".join(
