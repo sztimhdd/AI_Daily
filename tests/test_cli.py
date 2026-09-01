@@ -246,6 +246,29 @@ class SessionCommandTests(CliBase):
         ).read_text(encoding="utf-8")
         self.assertIn("- stage: research", state_text)
 
+    def test_narrative_no_prompt_returns_after_generating_candidates(self):
+        from ai_daily import paths, state
+
+        run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        run_paths.ensure_work_dir()
+        state.init_state(run_paths)
+        candidates = [{
+            "archetype": "reported_story", "title": "叙事一", "hook": "h",
+            "thesis": "t", "key_arguments": [],
+            "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断", "personal_scene": "现场",
+            "kicker": "结尾。", "evidence_audit": "e",
+        }]
+        with mock.patch.object(
+            cli.pipeline, "run_narrative",
+            return_value={"status": "generated", "candidates": candidates},
+        ):
+            code, _out, err = self.run_cli(
+                "narrative", "--root", self.root, "--date", "2026-08-13",
+                "--no-prompt",
+            )
+        self.assertEqual(code, 0, err)
+
     def test_session_rerun_skips_topic_prompt(self):
         first = self.run_cli(*self._session_args(), "--choice", "1")
         second = self.run_cli(*self._session_args())

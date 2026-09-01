@@ -99,6 +99,7 @@ def run(run_paths, *, codex_runner=None, gemini_runner=None, repo_dir=None,
             summary["publication"] = {"status": "failed", "reason": str(exc)}
     summary["status"] = "delivered"
     result = _persist(run_paths, summary)
+    state.transition(run_paths, "completed", note="english delivery accepted")
     result["package_dir"] = assembly["package_dir"]
     result["final_article"] = assembly["final_article"]
     return result

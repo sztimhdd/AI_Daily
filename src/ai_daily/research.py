@@ -11,6 +11,7 @@ from __future__ import annotations
 import datetime
 import html
 import json
+import os
 import pathlib
 import re
 import shutil
@@ -868,6 +869,8 @@ def _parse_codex_exec_stdout(stdout: str) -> dict:
 _CODEX_FALLBACK_PATHS = (
     "/Applications/ChatGPT.app/Contents/Resources/codex",
 )
+CODEX_PIPELINE_MODEL = "deepseek/deepseek-v4-flash"
+CODEX_MODEL_ENV = "AI_DAILY_CODEX_MODEL"
 
 
 def _codex_binary() -> str:
@@ -882,15 +885,25 @@ def _codex_binary() -> str:
 
 
 def _default_codex_runner(prompt: str) -> dict:
-    """Run the local ``codex exec --json`` CLI; never raises.
+    """Run the local ``codex exec --json`` CLI with a stable model; never raises.
 
     Any unavailability (missing binary, non-zero exit, non-JSON output)
     returns ``{"status": "unavailable", "reason": ...}`` so the run
     records the truth instead of pretending the analysis happened.
+
+    The interactive Codex default is intentionally not inherited here:
+    background runs must not silently follow a stale or unavailable local
+    model. Operators can select another known model with
+    ``AI_DAILY_CODEX_MODEL``.
     """
+    model = (os.environ.get(CODEX_MODEL_ENV) or CODEX_PIPELINE_MODEL).strip()
+    command = [_codex_binary(), "exec", "--json"]
+    if model:
+        command.extend(["--model", model])
+    command.append(prompt)
     try:
         proc = subprocess.run(
-            [_codex_binary(), "exec", "--json", prompt],
+            command,
             capture_output=True,
             text=True,
             timeout=900,

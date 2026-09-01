@@ -175,6 +175,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true")
     p.add_argument("--choice", type=int, default=None)
     p.add_argument("--extra-research", default="")
+    p.add_argument(
+        "--no-prompt", action="store_true",
+        help="generate candidates and return without entering an interactive choice",
+    )
     p.add_argument("--simulate", action="store_true",
                    help="unattended delegated choice (recorded as simulated)")
 
@@ -332,6 +336,8 @@ def cmd_narrative(args) -> int:
             )
             print(f"叙事已定：{chosen['title']}（{chosen['archetype']}）")
         else:
+            if args.no_prompt:
+                return 0
             code = _require_interactive()
             if code is not None:
                 return code

@@ -60,7 +60,7 @@ if [ ! -f "$STATE" ] || ! grep -q '^- topic_choice: ' "$STATE"; then
 fi
 
 run research
-run narrative
+run narrative --no-prompt
 run telegram
 if grep -q '^- status: failed' "$STATE"; then
   log "run blocked after narrative; failure receipt sent"

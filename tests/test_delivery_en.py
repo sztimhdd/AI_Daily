@@ -54,6 +54,8 @@ class DeliveryEnTests(unittest.TestCase):
         summary = json.loads((self.rp.work_dir / "delivery-en.json").read_text(encoding="utf-8"))
         self.assertEqual(summary["status"], "delivered")
         self.assertEqual(summary["claim_check"]["status"], "warning")
+        self.assertEqual(state.read_state(self.rp)["stage"], "completed")
+        self.assertEqual(state.read_state(self.rp)["status"], "completed")
 
     def test_delivery_stops_before_assembly_when_draft_is_unavailable(self):
         from ai_daily import delivery_en

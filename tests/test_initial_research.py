@@ -723,6 +723,20 @@ class CodexExecOutputParseTests(unittest.TestCase):
             research._parse_codex_exec_stdout(json.dumps(result)), result
         )
 
+    def test_default_codex_runner_pins_pipeline_model(self):
+        with mock.patch(
+            "ai_daily.research.subprocess.run",
+            return_value=mock.Mock(
+                returncode=0, stdout='{"status":"completed"}', stderr=""
+            ),
+        ) as run:
+            result = research._default_codex_runner("prompt")
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(
+            run.call_args.args[0][1:5],
+            ["exec", "--json", "--model", "deepseek/deepseek-v4-flash"],
+        )
+
     def test_non_json_final_message_returns_unavailable_with_reason(self):
         stdout = "\n".join(
             [
