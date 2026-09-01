@@ -88,6 +88,17 @@ class VisualPlanTests(unittest.TestCase):
         plan["images"][0]["model"] = "gemini-999"
         self.assertFalse(visuals.parse_plan(plan)["ok"])
 
+    def test_parse_plan_rejects_square_linkedin_cover(self):
+        plan = sample_plan()
+        plan["images"].insert(0, {
+            "id": "cover", "kind": "image", "anchor": "",
+            "prompt": "A clear editorial cover.", "alt": "Cover.",
+            "size": "1024x1024", "model": "gemini-2.5-flash-image",
+        })
+        result = visuals.parse_plan(plan)
+        self.assertFalse(result["ok"])
+        self.assertIn("1920x1080", result["error"])
+
     def test_parse_plan_normalizes_raster_kind(self):
         plan = sample_plan()
         plan["images"][0]["kind"] = "raster"
@@ -523,6 +534,32 @@ class RunIllustrateTests(VisualsBase):
             result = visuals.run_generate(self.rp, gemini_runner=fake_runner)
         self.assertEqual(result["status"], "generated")
         self.assertEqual(result["generated"], 2)
+
+    def test_run_generate_normalizes_cover_to_linkedin_article_size(self):
+        self.write_article()
+        plan = {
+            "images": [
+                {"id": "cover", "kind": "image", "anchor": "",
+                 "prompt": "A clear editorial cover.", "alt": "Cover.",
+                 "size": "1920x1080", "model": "gemini-2.5-flash-image"},
+                {"id": "01", "kind": "image", "anchor": "a.",
+                 "prompt": "A body image.", "alt": "Body.",
+                 "size": "1024x1024", "model": "gemini-2.5-flash-image"},
+            ]
+        }
+        (self.rp.work_dir / visuals.VISUAL_PLAN_JSON).write_text(
+            json.dumps(plan), encoding="utf-8"
+        )
+        from unittest import mock
+
+        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
+             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
+            result = visuals.run_generate(
+                self.rp,
+                gemini_runner=lambda *_args: make_png(),
+            )
+        cover = next(item for item in result["manifest"]["images"] if item["id"] == "cover")
+        self.assertEqual((cover["width"], cover["height"]), (1920, 1080))
 
     def test_illustrate_embeds_only_generated_images(self):
         self.write_article()

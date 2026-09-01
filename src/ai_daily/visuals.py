@@ -36,6 +36,8 @@ IMAGES_DIR = "images"
 
 DEFAULT_MODEL = "gemini-2.5-flash-image"
 MAX_DIAGRAMS_PER_PLAN = 1
+LINKEDIN_ARTICLE_COVER_SIZE = "1920x1080"
+LINKEDIN_ARTICLE_COVER_DIMENSIONS = (1920, 1080)
 ALLOWED_MODELS = (
     "gemini-2.5-flash-image",
     "gemini-3.1-flash-image",
@@ -127,12 +129,14 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "the image is inserted — copy it verbatim from the article.\n"
         "6. ``allowed_figures`` lists the only numerals the image may "
         "render (empty when none).\n"
-        "7. ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
+        "7. Body-image ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
         "8. Include exactly one LinkedIn cover: mark id \"cover\", leave "
         "its anchor empty, and do not embed it in the body. It is always a "
         "Gemini image, never a diagram. Choose the cover's visual mode and "
         "style yourself from the article's strongest tension; it may differ "
-        "from body images when that makes a stronger social thumbnail.\n"
+        "from body images when that makes a stronger social thumbnail. Its "
+        "size is exactly \"1920x1080\" (16:9 landscape, LinkedIn article "
+        "cover); compose important subjects inside the central safe area.\n"
         "9. Every entry's ``kind`` is exactly \"image\" or \"diagram\": "
         "regular illustrations use \"image\" (never \"raster\"); only "
         "deterministic visuals use \"diagram\".\n"
@@ -157,7 +161,7 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         '"purpose":"LinkedIn cover","visual_mode":"...","style":"...",'
         '"prompt":"...","alt":"<literal visual description>",'
         '"caption":"<editorial line / analogy for the reader>",'
-        '"allowed_figures":[],"size":"1024x1024","model":"'
+        '"allowed_figures":[],"size":"1920x1080","model":"'
         + DEFAULT_MODEL +
         '"},{"id":"01","anchor":"<verbatim sentence>",'
         '"kind":"image","purpose":"...","visual_mode":"...","style":"...","prompt":"...",'
@@ -231,6 +235,8 @@ def parse_plan(payload) -> dict:
             kind = "image"
         if kind not in ("image", "diagram"):
             return {"ok": False, "error": f"entry {iid!r} has unknown kind {kind!r}"}
+        if iid == "cover" and kind != "image":
+            return {"ok": False, "error": "LinkedIn cover must be a Gemini image"}
         if kind == "diagram":
             diagram_count += 1
             if diagram_count > MAX_DIAGRAMS_PER_PLAN:
@@ -282,6 +288,15 @@ def parse_plan(payload) -> dict:
         model = str(entry.get("model") or DEFAULT_MODEL).strip()
         if model not in ALLOWED_MODELS:
             return {"ok": False, "error": f"image {iid!r} model not allowed"}
+        size = str(entry.get("size") or "1024x1024").strip()
+        if iid == "cover" and size != LINKEDIN_ARTICLE_COVER_SIZE:
+            return {
+                "ok": False,
+                "error": (
+                    "LinkedIn article cover must use "
+                    f"{LINKEDIN_ARTICLE_COVER_SIZE}, not {size!r}"
+                ),
+            }
         seen_ids.add(iid)
         normalized.append(
             {
@@ -297,7 +312,7 @@ def parse_plan(payload) -> dict:
                     entry.get("caption") or entry.get("alt") or ""
                 ).strip(),
                 "allowed_figures": entry.get("allowed_figures") or [],
-                "size": str(entry.get("size") or "1024x1024").strip(),
+                "size": size,
                 "model": model,
             }
         )
@@ -415,16 +430,26 @@ def _image_dimensions(data: bytes) -> tuple[int, int]:
         return (0, 0)
 
 
-def to_webp(png_bytes: bytes) -> tuple[bytes, str]:
+def to_webp(png_bytes: bytes, target_size: tuple[int, int] = None) -> tuple[bytes, str]:
     """Convert PNG to WebP; fall back to PNG bytes when Pillow is absent."""
     try:
-        from PIL import Image
+        from PIL import Image, ImageOps
 
         with Image.open(io.BytesIO(png_bytes)) as img:
+            if target_size:
+                resampling = getattr(Image, "Resampling", Image).LANCZOS
+                img = ImageOps.fit(
+                    img.convert("RGB"), target_size,
+                    method=resampling, centering=(0.5, 0.5),
+                )
             buf = io.BytesIO()
             img.convert("RGB").save(buf, format="WEBP")
             return buf.getvalue(), "webp"
     except Exception:
+        if target_size:
+            raise VisualsError(
+                "cannot normalize LinkedIn cover without Pillow image support"
+            )
         return png_bytes, "png"
 
 
@@ -656,7 +681,14 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
         fallback_from = ""
         target_png = images_dir / f"{iid}.png"
         target_webp = images_dir / f"{iid}.webp"
-        if (target_webp.exists() or target_png.exists()) and not force:
+        existing = target_webp if target_webp.exists() else target_png
+        reuse_existing = existing.exists() and not force
+        if iid == "cover" and reuse_existing:
+            reuse_existing = (
+                _image_dimensions(existing.read_bytes())
+                == LINKEDIN_ARTICLE_COVER_DIMENSIONS
+            )
+        if reuse_existing:
             # already generated; still record manifest below
             pass
         else:
@@ -672,7 +704,13 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
                         entry["prompt"], entry["model"],
                         gemini_runner=gemini_runner, token=token, project=project,
                     )
-                    webp, fmt = to_webp(png)
+                    webp, fmt = to_webp(
+                        png,
+                        target_size=(
+                            LINKEDIN_ARTICLE_COVER_DIMENSIONS
+                            if iid == "cover" else None
+                        ),
+                    )
             except Exception as exc:
                 if kind != "diagram":
                     entries.append(
@@ -707,6 +745,17 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
         w, h = _image_dimensions(
             (target_webp if target_webp.exists() else target_png).read_bytes()
         )
+        if iid == "cover" and (w, h) != LINKEDIN_ARTICLE_COVER_DIMENSIONS:
+            entries.append(
+                {
+                    "id": iid, "kind": kind, "status": "failed",
+                    "reason": (
+                        "LinkedIn cover dimensions must be "
+                        f"{LINKEDIN_ARTICLE_COVER_SIZE}; got {w}x{h}"
+                    ),
+                }
+            )
+            continue
         record = {
             "id": iid,
             "kind": kind,
@@ -717,7 +766,7 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
             "alt": entry["alt"],
             "caption": entry.get("caption") or entry.get("alt") or "",
         }
-        if fallback_from:
+        if fallback_from or (entry.get("kind") == "diagram" and kind == "image"):
             record["fallback_from"] = fallback_from
         entries.append(record)
     manifest = {"images": entries}
@@ -825,7 +874,7 @@ def run_illustrate(run_paths, codex_runner=None, gemini_runner=None,
     en_slug = st.get("en_slug", "")
     article_path = run_paths.work_dir / draft_en.EN_ARTICLE_MD
     article = article_path.read_text(encoding="utf-8")
-    image_prefix = _raw_url(run_paths, en_slug, "")
+    image_prefix = RAW_GITHUB_BASE + "/outputs/"
     article = strip_embedded_images(article, image_prefix)
 
     def url_for(iid):
