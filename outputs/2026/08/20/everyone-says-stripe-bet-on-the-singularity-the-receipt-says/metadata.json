@@ -34,8 +34,13 @@
   "generated_at": "2026-08-20T19:29:33+00:00",
   "seo_title": "",
   "seo_summary": "",
-  "has_cover": false,
-  "cover": null,
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1672,
+    "height": 941
+  },
   "sources": [
     {
       "title": "Stripe agrees to buy OpenRouter as AI model routing expands",

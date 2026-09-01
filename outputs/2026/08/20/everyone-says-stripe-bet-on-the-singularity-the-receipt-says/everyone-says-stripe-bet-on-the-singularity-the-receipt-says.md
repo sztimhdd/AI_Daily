@@ -4,6 +4,8 @@ Under every AI application, a number flickers: what each prompt actually costs. 
 
 Stripe said Wednesday it will buy **OpenRouter**, the marketplace that routes prompts across more than 400 models [OpenRouter joins Stripe](https://openrouter.ai/blog/announcements/openrouter-is-joining-stripe). Its stated reason, per TechCrunch, reaches for "the singularity" [TechCrunch](https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity). The receipt tells a colder story — one about who sees every app's margin.
 
+![Abstract prompt cards send cost pulses into a token meter on a dark financial interface.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/everyone-says-stripe-bet-on-the-singularity-the-receipt-says/images/01.webp)
+
 A word on OpenRouter, for the reader who hasn't met it. It's an aggregator: one API in front of hundreds of models, from the big labs to the small ones. Developers pay once and route everywhere.
 
 The headline price is second-hand. Bloomberg's original report couldn't be independently reviewed, so "more than **$7 billion**" reaches readers only through other outlets [The Decoder](https://the-decoder.com/stripe-is-reportedly-acquiring-ai-startup-openrouter-for-more-than-7-billion), [IT之家](https://www.ithome.com/0/991/918.htm). Stripe hasn't confirmed a number.
@@ -15,6 +17,8 @@ Read the release and the deal sounds like a wager on machine transcendence. Read
 The founders wrote their mission plainly at launch: intelligence should be multi-model [OpenRouter on X](https://x.com/OpenRouter/status/2090127246430216403). It's an honest slogan. It just isn't what the price was paying for.
 
 A founder opens two tabs at midnight: Stripe's settled payments on one, **OpenRouter**'s token spend on the other. Margin lives in the gap between the two. That gap used to be invisible; this deal turns it into a product.
+
+![Two finance tabs show payment revenue and model-routing costs separated by a narrow illuminated margin gap.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/everyone-says-stripe-bet-on-the-singularity-the-receipt-says/images/02.webp)
 
 *Unit economics: revenue per customer minus the cost to serve them — for an AI app, that cost is tokens burned.*
 
@@ -38,6 +42,8 @@ Stripe is folding model routing into its existing work on AI usage and token-bil
 
 Whatever the final price, the premium tells the story. A roughly $7 billion close would mark a **5.4x** run-up from OpenRouter's **$1.3 billion** May valuation [Rohan Paul](https://x.com/rohanpaul_ai/status/2089090435499331734), [The Decoder](https://the-decoder.com/stripe-is-reportedly-acquiring-ai-startup-openrouter-for-more-than-7-billion). A buyer doesn't pay that multiple for a neutral switch.
 
+![Editorial valuation graphic showing $1.3B May valuation rising to a reported $7B+ close, labeled 5.4x.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/everyone-says-stripe-bet-on-the-singularity-the-receipt-says/images/03.webp)
+
 By its own count, OpenRouter is the largest AI marketplace and gateway, moving **10T+ tokens daily** across 400+ models [OpenRouter on X](https://x.com/OpenRouter/status/2090127246430216403). Its eight-million-user count is second-hand, relayed from Bloomberg by The Decoder [The Decoder](https://the-decoder.com/stripe-is-reportedly-acquiring-ai-startup-openrouter-for-more-than-7-billion). Trust the magnitude, not the digit.
 
 A routed request is a demand signal. At that volume, the switch learns which models developers reach for, at what price, in what quantity. That's market structure, plain and simple.
@@ -55,5 +61,7 @@ For the singularity reading to win, Stripe would have to be buying general intel
 The deal also lands almost exactly three years after OpenRouter's founding [Deedy](https://x.com/deedydas/status/2090129029777224033). At that pace, Stripe is buying the toll road before the traffic fully arrives.
 
 Stripe didn't buy a gateway — it bought pricing power.
+
+![A warm abstract launch sheet sits beside a cool, sharply focused receipt on a dark desk.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/08/20/everyone-says-stripe-bet-on-the-singularity-the-receipt-says/images/04.webp)
 
 Sentiment is what the launch reads aloud. The receipt is what the board reads.
