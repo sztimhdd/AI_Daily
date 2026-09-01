@@ -23,6 +23,13 @@ LOG="$LOGDIR/daily-$DATE.log"
 
 log() { echo "[$(date '+%F %T')] $*" | tee -a "$LOG"; }
 
+run() {
+  if ! PYTHONPATH="$ROOT/src" python3 -m ai_daily.cli "$@" \
+      --root . --date "$DATE" >>"$LOG" 2>&1; then
+    log "stage '$1' exited non-zero"
+  fi
+}
+
 # Workday + daytime window only (Mon=1 .. Fri=5).
 if [ "$(date +%u)" -ge 6 ]; then
   exit 0
@@ -45,13 +52,6 @@ if [ -f "$STATE" ] && grep -q '^- status: failed' "$STATE"; then
   exit 0
 fi
 
-run() {
-  if ! PYTHONPATH="$ROOT/src" python3 -m ai_daily.cli "$@" \
-      --root . --date "$DATE" >>"$LOG" 2>&1; then
-    log "stage '$1' exited non-zero"
-  fi
-}
-
 run collect
 run telegram
 if [ ! -f "$STATE" ] || ! grep -q '^- topic_choice: ' "$STATE"; then
@@ -73,7 +73,8 @@ fi
 
 run audit
 if grep -q '^- status: failed' "$STATE"; then
-  log "audit blocked; needs human"
+  run telegram
+  log "audit blocked; failure receipt sent"
   exit 0
 fi
 
