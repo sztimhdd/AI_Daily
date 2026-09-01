@@ -1,0 +1,347 @@
+{
+  "run_id": "AI-Daily/2026-09-01",
+  "date": "2026-09-01",
+  "slug": "openai-cuts-off-cursor-5-is-a-dashboard-light-not-an-escape-map",
+  "title": "OpenAI Cuts Off Cursor: 5% Is a Dashboard Light, Not an Escape Map",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 1025,
+    "paragraph_count": 40,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "7 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "3 passive constructions (e.g. 'was framed')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 1
+  },
+  "claim_check": {},
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "WIRED 7 月 2 日原文未抓取，thesis 引述仅单一二手来源（新智元），无独立交叉验证",
+    "Anthropic 官方回应（信任伙伴/增加算力支持/成为主要供应商）无原始出处链接，仅 AIHOT 摘要 + 知乎社区转述",
+    "5% 为 Cursor 单方自报口径，无第三方审计或 OpenAI 侧数据对照",
+    "X@Yuchenj_UW 帖抓取失败（404）未被采用；“8 月 7 日 OpenAI 与 Astra 动态”知乎原文截断无法核实",
+    "收购完成日期口径差异：AIHOT 摘要推断约 6 月底 vs 知乎多篇称 8 月 14 日完成，正文提及时需统一并注明来源",
+    "开发者迁移实操与 Reddit/HN 英文社区原声不足，仅中文知乎社区分析"
+  ],
+  "source_count": 44,
+  "generated_at": "2026-09-01T18:29:12+00:00",
+  "seo_title": "OpenAI Cuts Off Cursor Nov 12: 5% Isn't an Escape Map",
+  "seo_summary": "OpenAI ends Cursor's direct model access Nov 12. Cursor says OpenAI is just 5% of traffic — but 5% can hide under your most-used workflow. Deep dive inside.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "Night view from inside a car: an amber fuel gauge needle sits at the low end of the dial while headlights fade into a wall of fog and the road disappears ahead.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A desk covered in tiny grey legal fine print, with a single line swelling upward out of it into a towering black headline that fills the room.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "Two rooms divided by a wall: on the left an investor exhales in relief beside a phone showing 5%, on the right a developer counts sticky notes on a workflow board under a desk lamp.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "04",
+      "filename": "04.webp",
+      "alt": "A paper calendar open to November with the 12th circled twice in red, next to a torn slip of paper printed with 5%.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "OpenAI cuts off Cursor after SpaceX acquisition, citing Musk's history of breaking contracts",
+      "url": "https://the-decoder.com/openai-cuts-off-cursor-after-spacex-acquisition-citing-musks-history-of-breaking-contracts",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2093599381786149009",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2093598203916468500",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "凡人小北 (@frxiaobei) on X",
+      "url": "https://x.com/frxiaobei/status/2093566448035848424",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Our decision on Cursor following its acquisition by SpaceX",
+      "url": "https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2093538312401322387",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://x.com/Yuchenj_UW/status/2093523628071719086",
+      "url": "https://x.com/Yuchenj_UW/status/2093523628071719086",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "OpenAI：因 Cursor 被 SpaceX 收购，将停止向 Cursor 提供 AI 模型 - IT之家",
+      "url": "https://www.ithome.com/0/995/874.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Tibo (@thsottiaux) on X",
+      "url": "https://x.com/thsottiaux/status/2093515916076343774",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI (@OpenAI) on X",
+      "url": "https://x.com/OpenAI/status/2093515564786540695",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI 终止 Cursor 对其模型的直接访问权限 · AIHOT",
+      "url": "https://aihot.virxact.com/story/87bc9722-9d01-4fb3-a9da-a104ecea99ed",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "AI行业动态20260901:OpenAI大举采购数万台Mac设备用于强化学习训练 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078039808375633912?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2076984800188093248/answer/2077010892038976790?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "突发!OpenAI彻底断供Cursor - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077002933808412201?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI官宣断供Cursor,点名马斯克是主要原因 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077018507041161671?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2076984800188093248/answer/2077672544828645645?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "SpaceXAI 发布 Grok 4.5,和  Cursor 一起联合开发的 AI 模型有什么特别的? - 知乎",
+      "url": "https://www.zhihu.com/question/2058472497230648834/answer/2058863323072951033?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "SpaceXAI 发布 Grok 4.5,和  Cursor 一起联合开发的 AI 模型有什么特别的? - 知乎",
+      "url": "https://www.zhihu.com/question/2058472497230648834/answer/2058598695323558064?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "Agentic LLM 全景图 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2034978554266568544?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "SpaceX刚上市4天,600亿买下Cursor,马斯克分钱未花,把2000万开发者绑上了自己的战车 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2051040739786748577?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2076984800188093248/answer/2077100679743673141?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI 切断 Cursor:奥特曼与马斯克恩怨烧到 AI 编程入口? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077387701196801986?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2076984800188093248/answer/2077506075176318482?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "马斯克Grok 4.6重回一梯队!更低价格反超Fable 5,这Cursor是真没白收购 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2071324370962757071?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "有了 Cursor,xAI 的日子也是好起来了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2068343195935708608?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "AI 前沿速递:Cursor 遭天价收购搅动代码生态,宇树机器人突破人类极限,世界机器人大会正在进行中! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2074079260533379360?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI宣布11月12日终止向Cursor提供模型,这对所有基于第三方模型创业的公司意味着什么? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077688775262594758?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2076984800188093248/answer/2077151693628782312?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI断供Cursor,程序员慌了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078082351540737960?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "600亿美元,Cursor归马斯克了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2050355906441908786?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "SpaceX 600亿美元收购Cursor!AI编程独角兽抱上马斯克最大GPU集群 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2072253977144583529?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "从马斯克并购 Cursor 说起:国内编程智能体的牌桌、裂缝与全链自主之路 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2055380544410727228?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "炸穿科技圈!马斯克600亿截胡Cursor,AI编程格局一夜改写 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2030313601727214040?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "SpaceX上市幕后大戏:疯狂并购资产,抢跑OpenAI,华尔街全程被牵着鼻子走 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2049252432455132622?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI宣布“断供“Cursor:11月12日后,GPT还能不能用?BYOK是否受影响? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077793479225242052?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "2026 年 AI 开发真正变了:从 DeepSeek API Key 到 Dify、Cursor、Agent 工作流,为什么大家都在重新整理 Base URL - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2047663382959018230?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "4款插件2个API,我把Cursor“迭代”成了满血超频版程序员 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/18063576534?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "AI 日报 2026-08-30 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077304093358428207?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "600亿美元!马斯克把「写代码」这门手艺收编了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2072718000692655505?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "昨晚,SpaceX 把 Cursor 收编了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2071939277420868307?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "如何评价 SpaceX 完成对 Cursor 的 600 亿美元收购?这对 OpenAI、Anthropic 和软件工程意味着什么? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2072235760384845254?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI宣布断供Cursor - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077058823781619149?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI 终止与 Cursor 合作;雷军:2600名小米车主行程超 10 万公里;华纳与索尼起诉 Anthropic,索赔数十亿美元 | 极客早知道 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077319807448499450?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2076984800188093248/answer/2077366102183748366?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    }
+  ],
+  "final_article": "articles/2026-09-01-openai-cuts-off-cursor-5-is-a-dashboard-light-not-an-escape-map-en.md",
+  "package": "outputs/2026/09/01/openai-cuts-off-cursor-5-is-a-dashboard-light-not-an-escape-map"
+}

@@ -1,0 +1,48 @@
+# Sources and evidence: OpenAI Cuts Off Cursor: 5% Is a Dashboard Light, Not an Escape Map
+
+44 deduplicated source(s) from the evidence package.
+
+- [OpenAI cuts off Cursor after SpaceX acquisition, citing Musk's history of breaking contracts](https://the-decoder.com/openai-cuts-off-cursor-after-spacex-acquisition-citing-musks-history-of-breaking-contracts)（initial · fetched）
+- [Chubby♨️ (@kimmonismus) on X](https://x.com/kimmonismus/status/2093599381786149009)（initial · fetched）
+- [🚨 AI News | TestingCatalog (@testingcatalog) on X](https://x.com/testingcatalog/status/2093598203916468500)（initial · fetched）
+- [凡人小北 (@frxiaobei) on X](https://x.com/frxiaobei/status/2093566448035848424)（initial · fetched · Chinese source）
+- [Our decision on Cursor following its acquisition by SpaceX](https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex)（initial · fetched）
+- [Rohan Paul (@rohanpaul_ai) on X](https://x.com/rohanpaul_ai/status/2093538312401322387)（initial · fetched）
+- [x.com (fetch failed)](https://x.com/Yuchenj_UW/status/2093523628071719086)（initial · failed）
+- [OpenAI：因 Cursor 被 SpaceX 收购，将停止向 Cursor 提供 AI 模型 - IT之家](https://www.ithome.com/0/995/874.htm)（initial · fetched · Chinese source）
+- [Tibo (@thsottiaux) on X](https://x.com/thsottiaux/status/2093515916076343774)（initial · fetched）
+- [OpenAI (@OpenAI) on X](https://x.com/OpenAI/status/2093515564786540695)（initial · fetched）
+- [OpenAI 终止 Cursor 对其模型的直接访问权限 · AIHOT](https://aihot.virxact.com/story/87bc9722-9d01-4fb3-a9da-a104ecea99ed)（initial · fetched · Chinese source）
+- [AI行业动态20260901:OpenAI大举采购数万台Mac设备用于强化学习训练 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2078039808375633912?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
+- [怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎 (fetch failed)](https://www.zhihu.com/question/2076984800188093248/answer/2077010892038976790?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
+- [突发!OpenAI彻底断供Cursor - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077002933808412201?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
+- [OpenAI官宣断供Cursor,点名马斯克是主要原因 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077018507041161671?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
+- [怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎 (fetch failed)](https://www.zhihu.com/question/2076984800188093248/answer/2077672544828645645?utm_medium=openapi_platform&utm_source=679c5)（initial · found · Chinese source）
+- [SpaceXAI 发布 Grok 4.5,和  Cursor 一起联合开发的 AI 模型有什么特别的? - 知乎 (fetch failed)](https://www.zhihu.com/question/2058472497230648834/answer/2058863323072951033?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [SpaceXAI 发布 Grok 4.5,和  Cursor 一起联合开发的 AI 模型有什么特别的? - 知乎 (fetch failed)](https://www.zhihu.com/question/2058472497230648834/answer/2058598695323558064?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [Agentic LLM 全景图 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2034978554266568544?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [SpaceX刚上市4天,600亿买下Cursor,马斯克分钱未花,把2000万开发者绑上了自己的战车 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2051040739786748577?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎 (fetch failed)](https://www.zhihu.com/question/2076984800188093248/answer/2077100679743673141?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [OpenAI 切断 Cursor:奥特曼与马斯克恩怨烧到 AI 编程入口? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077387701196801986?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎 (fetch failed)](https://www.zhihu.com/question/2076984800188093248/answer/2077506075176318482?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [马斯克Grok 4.6重回一梯队!更低价格反超Fable 5,这Cursor是真没白收购 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2071324370962757071?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [有了 Cursor,xAI 的日子也是好起来了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2068343195935708608?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [AI 前沿速递:Cursor 遭天价收购搅动代码生态,宇树机器人突破人类极限,世界机器人大会正在进行中! - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2074079260533379360?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [OpenAI宣布11月12日终止向Cursor提供模型,这对所有基于第三方模型创业的公司意味着什么? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077688775262594758?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎 (fetch failed)](https://www.zhihu.com/question/2076984800188093248/answer/2077151693628782312?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [OpenAI断供Cursor,程序员慌了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2078082351540737960?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [600亿美元,Cursor归马斯克了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2050355906441908786?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [SpaceX 600亿美元收购Cursor!AI编程独角兽抱上马斯克最大GPU集群 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2072253977144583529?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [从马斯克并购 Cursor 说起:国内编程智能体的牌桌、裂缝与全链自主之路 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2055380544410727228?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [炸穿科技圈!马斯克600亿截胡Cursor,AI编程格局一夜改写 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2030313601727214040?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [SpaceX上市幕后大戏:疯狂并购资产,抢跑OpenAI,华尔街全程被牵着鼻子走 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2049252432455132622?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [OpenAI宣布“断供“Cursor:11月12日后,GPT还能不能用?BYOK是否受影响? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077793479225242052?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [2026 年 AI 开发真正变了:从 DeepSeek API Key 到 Dify、Cursor、Agent 工作流,为什么大家都在重新整理 Base URL - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2047663382959018230?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [4款插件2个API,我把Cursor“迭代”成了满血超频版程序员 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/18063576534?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [AI 日报 2026-08-30 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077304093358428207?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [600亿美元!马斯克把「写代码」这门手艺收编了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2072718000692655505?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [昨晚,SpaceX 把 Cursor 收编了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2071939277420868307?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [如何评价 SpaceX 完成对 Cursor 的 600 亿美元收购?这对 OpenAI、Anthropic 和软件工程意味着什么? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2072235760384845254?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [OpenAI宣布断供Cursor - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077058823781619149?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [OpenAI 终止与 Cursor 合作;雷军:2600名小米车主行程超 10 万公里;华纳与索尼起诉 Anthropic,索赔数十亿美元 | 极客早知道 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077319807448499450?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
+- [怎么看OpenAI因Cursor被SpaceX收购,将停止向Cursor提供 AI 模型? - 知乎 (fetch failed)](https://www.zhihu.com/question/2076984800188093248/answer/2077366102183748366?utm_medium=openapi_platform&utm_source=679c5)（targeted · found · Chinese source）
