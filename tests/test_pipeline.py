@@ -220,6 +220,16 @@ class StageGateTests(PipelineBase):
         self.assertEqual(st["topic_choice"], "human")
         self.assertEqual(st["slug"], topic["slug"])
 
+    def test_custom_topic_via_pipeline(self):
+        pipeline.run_collect(self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[])
+        title = "OpenAI 终止与 Cursor 合作，11 月 12 日生效"
+        topic = pipeline.run_custom_topic(self.rp, title)
+        st = state.read_state(self.rp)
+        self.assertEqual(st["topic_choice"], "human")
+        self.assertEqual(st["topic_title"], title)
+        self.assertEqual(topic["research_queries"], [title])
+        self.assertEqual(pipeline.run_research(self.rp)["status"], "generated")
+
 
 class SimulatedChoiceStageTests(PipelineBase):
     def test_simulated_choice_passes_gate(self):

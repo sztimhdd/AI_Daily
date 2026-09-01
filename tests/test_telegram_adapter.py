@@ -183,6 +183,31 @@ class TelegramAdapterTests(unittest.TestCase):
         )
         self.assertIn("侧重成本", selected.get("direction", ""))
 
+    def test_apply_custom_topic_records_human_choice(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        requested = "OpenAI 终止与 Cursor 合作，11 月 12 日生效"
+        result = telegram_adapter.apply_reply(self.rp, f"新选题：{requested}")
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["decision"], "topic")
+        self.assertEqual(result["chosen"], requested)
+        st = state.read_state(self.rp)
+        self.assertEqual(st["topic_choice"], "human")
+        selected = json.loads(
+            (self.rp.work_dir / "selected-topic.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(selected["title"], requested)
+        self.assertEqual(selected["research_queries"], [requested])
+
+    def test_topic_offer_explains_custom_topic_command(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        decision, text = telegram_adapter._offer_text(self.rp)
+        self.assertEqual(decision, "topic")
+        self.assertIn("新选题：<你要研究的事件>", text)
+
     def test_apply_narrative_reply_records_choice(self):
         pipeline.run_collect(
             self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
@@ -495,6 +520,43 @@ class TelegramAdapterTests(unittest.TestCase):
             any("已记录选题" in text for text in sent),
             "a status receipt must follow a topic choice",
         )
+
+    def test_run_once_sends_receipt_after_custom_topic(self):
+        pipeline.run_collect(
+            self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[]
+        )
+        sent = []
+
+        def fake_http(url, payload):
+            data = json.loads(payload)
+            if url.endswith("/sendMessage"):
+                sent.append(data.get("text", ""))
+                return json.dumps(
+                    {"ok": True, "result": {"message_id": 1}}
+                ).encode()
+            return json.dumps(
+                {"ok": True, "result": [
+                    {"update_id": 500, "message": {
+                        "chat": {"id": "42"},
+                        "text": "新选题: OpenAI 终止与 Cursor 合作，11 月 12 日生效",
+                    }}
+                ]}
+            ).encode()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = str(pathlib.Path(tmp) / "telegram.env")
+            telegram_adapter.save_config(
+                {"token": "TOK", "chat": "42", "offset": 90}, env_path=env_path
+            )
+            config = telegram_adapter.load_config(env={}, env_path=env_path)
+            result = telegram_adapter.run_once(
+                self.rp, offset=config["offset"],
+                token=config["token"], chat_id=config["chat"],
+                http=fake_http, env_path=env_path,
+            )
+        self.assertTrue(result["applied"]["ok"])
+        self.assertEqual(result["applied"]["chosen"], "OpenAI 终止与 Cursor 合作，11 月 12 日生效")
+        self.assertTrue(any("已记录选题" in text for text in sent))
 
     def test_run_once_sends_failure_receipt_for_bad_reply(self):
         pipeline.run_collect(

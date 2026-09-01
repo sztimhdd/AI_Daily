@@ -15,6 +15,9 @@ and records the same choice through the same resume path. No channel owns workfl
   state and ends the turn; the process never blocks waiting for a live reply.
 - An adapter records the chosen value through the existing choice-recording function and
   then triggers the same resume entry point the CLI uses.
+- At the topic gate, an adapter may also accept an explicit editor-specified topic. It
+  is recorded as a normal human choice with no inherited factual claims; the existing
+  research stage remains responsible for establishing the event and its evidence.
 - Any channel may present and accept the decision, but each references the same
   `run_id`/`decision_id`; local chat and channel state are caches, never the truth.
 

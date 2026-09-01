@@ -25,6 +25,7 @@ from . import narrative, pipeline, topics, tui
 
 API_BASE = "https://api.telegram.org"
 ENV_FILE = ".local/telegram.env"
+_CUSTOM_TOPIC_RE = re.compile(r"^新选题\s*[:：]\s*(.+)$", re.DOTALL)
 
 
 class TelegramError(RuntimeError):
@@ -162,7 +163,10 @@ def _offer_text(run_paths) -> tuple:
     if decision == "topic":
         candidates = pipeline.run_candidates(run_paths)
         text = tui.render_candidates(candidates, color=False)
-        return decision, text + "\n\n回复编号 1/2/3 选择选题（可附写作方向，如：2 侧重成本）。"
+        return decision, text + (
+            "\n\n回复编号 1/2/3 选择选题（可附写作方向，如：2 侧重成本）。"
+            "若三条都不合适，发送：新选题：<你要研究的事件>。"
+        )
     if decision == "narrative":
         candidates = _load_narrative_candidates(run_paths)
         if not candidates:
@@ -227,7 +231,7 @@ def _receipt_text(applied: dict) -> str:
         return (
             "无法处理这条回复："
             f"{applied.get('reason', '未知原因')}。"
-            "请回复编号 1/2，或直接发编辑意见。"
+            "请回复有效编号；选题阶段也可发送“新选题：<事件>”。"
         )
     if applied.get("directive"):
         return "已收到你的编辑意见。正在按它重写叙事候选，新候选稍后推送。"
@@ -255,11 +259,21 @@ def _offer_fingerprint(run_paths) -> str:
 
 def apply_reply(run_paths, reply: str) -> dict:
     """Apply a reply: ``1``..``3`` picks a candidate; free text at the
-    narrative stage records an editor directive that rebuilds candidates."""
+    narrative stage records an editor directive that rebuilds candidates.
+    At the topic stage, ``新选题：<event>`` records a custom human topic."""
     text = (reply or "").strip()
+    decision = pending_decision(run_paths)
+    custom_topic = _CUSTOM_TOPIC_RE.match(text)
+    if custom_topic:
+        if decision != "topic":
+            return {"ok": False, "reason": "指定选题只能在选题阶段使用"}
+        try:
+            chosen = pipeline.run_custom_topic(run_paths, custom_topic.group(1))
+        except (topics.TopicError, pipeline.PipelineError) as exc:
+            return {"ok": False, "reason": str(exc)}
+        return {"ok": True, "decision": "topic", "chosen": chosen["title"]}
     match = re.match(r"^(\d+)(?:\s+(.*))?$", text)
     if not match:
-        decision = pending_decision(run_paths)
         if decision == "narrative":
             if not text:
                 return {"ok": False, "reason": "空回复；请发编号或编辑意见"}

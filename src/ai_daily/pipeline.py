@@ -168,6 +168,12 @@ def run_human_choice(run_paths, choice: int, direction: str = "") -> dict:
     return topics.record_human_choice(run_paths, run_candidates(run_paths), choice, direction)
 
 
+def run_custom_topic(run_paths, title: str) -> dict:
+    """Record an editor-specified topic, then let normal research handle it."""
+    state.transition(run_paths, "topic_choice")
+    return topics.record_custom_topic(run_paths, title)
+
+
 def run_simulated_choice(run_paths, choice: int, direction: str = "") -> dict:
     """Simulated (unattended) choice from the ranked candidates.
 

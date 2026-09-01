@@ -664,6 +664,38 @@ def record_human_choice(run_paths, candidates: list, choice: int, direction: str
     )
 
 
+def record_custom_topic(run_paths, title: str) -> dict:
+    """Record an editor-specified topic through the normal human gate.
+
+    A specified topic deliberately starts without inherited source claims:
+    the research stage must establish the event, terms, and useful angle.
+    """
+    normalized = " ".join(str(title or "").split())
+    if not normalized:
+        raise TopicError("指定选题为空；请在“新选题：”后写明事件")
+    topic = {
+        "title": normalized,
+        "slug": _slugify_title(normalized, run_paths.date),
+        "thesis": normalized,
+        "hook": "",
+        "evidence_gaps": ["人工指定选题；需由 research 阶段核实事件、时间与关键口径。"],
+        "research_queries": [normalized],
+        "strategic_relevance": "",
+        "category": "custom",
+        "sources": [],
+        "direction": "",
+    }
+    _write_selected(run_paths, topic)
+    state.update_fields(
+        run_paths,
+        note="topic choice: human (custom topic)",
+        topic_choice="human",
+        slug=topic["slug"],
+        topic_title=topic["title"],
+    )
+    return topic
+
+
 def record_simulated_choice(run_paths, candidates: list, choice: int, direction: str = "") -> dict:
     """Record an unattended simulated choice; candidate kept verbatim.
 
