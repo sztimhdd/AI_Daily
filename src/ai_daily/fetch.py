@@ -185,7 +185,7 @@ def _make_default_runner(skill_root: str):
     """Build the subprocess runner that calls the walled-fetch-cdp skill."""
     root = pathlib.Path(skill_root)
     python = root / ".venv" / "bin" / "python"
-    script = root / "scripts" / "fetch_cdp.py"
+    script = root / "scripts" / "fetch_walled.py"
 
     def runner(url: str, out_dir: str, wait_ms: int) -> tuple[str, str]:
         proc = subprocess.run(

@@ -612,7 +612,10 @@ def _initial_url_list(topic: dict, matrix: dict, discover_runner=None) -> list:
     for source in topic.get("sources") or []:
         if isinstance(source, dict):
             add(source.get("url") or "")
-    if discover_runner is not None:
+    # Explicit editor topics arrive without a feed URL. They still need the
+    # existing query-discovery lane; generated topics already carry source
+    # seeds and only use this lane when the runtime explicitly injects it.
+    if discover_runner is not None or topic.get("category") == "custom":
         for query in topic.get("research_queries") or []:
             for link in fetch.discover(query, runner=discover_runner) or []:
                 if isinstance(link, dict):

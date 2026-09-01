@@ -37,8 +37,10 @@ if [ -f "$DELIVERY" ] && grep -q '"status": "delivered"' "$DELIVERY"; then
   exit 0
 fi
 
-# A failed run (e.g. an unsupported audit) needs a human; stop retrying.
+# A failed run needs a human. Poll Telegram once so its one-shot blocked
+# receipt is delivered, then stop retrying expensive stages.
 if [ -f "$STATE" ] && grep -q '^- status: failed' "$STATE"; then
+  run telegram
   log "run blocked (state failed); needs human"
   exit 0
 fi
@@ -60,6 +62,10 @@ fi
 run research
 run narrative
 run telegram
+if grep -q '^- status: failed' "$STATE"; then
+  log "run blocked after narrative; failure receipt sent"
+  exit 0
+fi
 if ! grep -q '^- narrative_choice: ' "$STATE"; then
   log "awaiting narrative choice"
   exit 0

@@ -231,7 +231,14 @@ def run_initial_research(
 
 def run_narrative(run_paths, codex_runner=None, force: bool = False) -> dict:
     """04 narrative candidates: evidence router + Codex generation."""
-    return narrative.run(run_paths, codex_runner=codex_runner, force=force)
+    try:
+        result = narrative.run(run_paths, codex_runner=codex_runner, force=force)
+    except narrative.NarrativeError as exc:
+        state.fail(run_paths, "narrative", str(exc))
+        raise
+    if result.get("status") == "unavailable":
+        state.fail(run_paths, "narrative", str(result.get("reason") or "unavailable"))
+    return result
 
 
 def run_knowledge_background(run_paths, kg_client=None,

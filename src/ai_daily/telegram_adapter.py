@@ -146,10 +146,12 @@ def latest_reply(updates: list, chat_id: str) -> str:
 
 
 def pending_decision(run_paths) -> str:
-    """Which human decision the run is waiting on: topic | narrative | none."""
+    """Which user-facing state is pending: topic | narrative | blocked | none."""
     from . import state
 
     st = state.read_state(run_paths)
+    if st.get("status") == "failed":
+        return "blocked"
     if not st.get("topic_choice"):
         return "topic"
     if not st.get("narrative_choice"):
@@ -160,6 +162,15 @@ def pending_decision(run_paths) -> str:
 def _offer_text(run_paths) -> tuple:
     """(decision, message) for the pending decision, or (None, \"\")."""
     decision = pending_decision(run_paths)
+    if decision == "blocked":
+        from . import state
+
+        reason = state.read_state(run_paths).get("last_error") or "未知错误"
+        return decision, (
+            "本次流程已停止，未生成新的叙事候选。\n"
+            f"原因：{reason}\n"
+            "请先核实或补充来源；也可发送“新选题：<事件>”开始一个新选题。"
+        )
     if decision == "topic":
         candidates = pipeline.run_candidates(run_paths)
         text = tui.render_candidates(candidates, color=False)

@@ -390,6 +390,21 @@ class InitialResearchHappyPathTests(InitialResearchBase):
         urls = {s["url"] for s in data["sources"]}
         self.assertIn("https://www.zhihu.com/question/42", urls)
 
+    def test_custom_topic_uses_default_discovery_path(self):
+        topic = {
+            "category": "custom",
+            "research_queries": ["OpenAI Cursor contract change"],
+        }
+        calls = []
+
+        def discover(query, wait_ms):
+            calls.append(query)
+            return [{"title": "社区讨论", "url": "https://www.zhihu.com/question/99"}]
+
+        urls = research._initial_url_list(topic, {"reports": []}, discover)
+        self.assertEqual(calls, ["OpenAI Cursor contract change"])
+        self.assertEqual(urls, ["https://www.zhihu.com/question/99"])
+
     def test_pipeline_run_initial_research_forwards_fakes(self):
         result = pipeline.run_initial_research(
             self.paths,

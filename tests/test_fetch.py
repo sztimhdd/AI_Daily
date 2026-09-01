@@ -87,6 +87,22 @@ class HttpFetchTests(unittest.TestCase):
 
 
 class CdpFetchTests(unittest.TestCase):
+    def test_default_runner_uses_dual_backend_fetcher(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            saved = pathlib.Path(tmp) / "article.txt"
+            saved.write_text("正文", encoding="utf-8")
+            completed = subprocess.CompletedProcess(
+                args=[], returncode=0,
+                stdout=json.dumps({"saved_text": str(saved)}), stderr="",
+            )
+            with mock.patch.object(fetch.subprocess, "run", return_value=completed) as run:
+                runner = fetch._make_default_runner("/skill")
+                stdout, body = runner("https://www.zhihu.com/question/1", tmp, 4000)
+        self.assertEqual(body, "正文")
+        command = " ".join(run.call_args.args[0])
+        self.assertIn("fetch_walled.py", command)
+        self.assertNotIn("fetch_cdp.py", command)
+
     def test_parses_runner_json_and_uses_saved_text(self):
         body = "这是正文第一段。\n这是正文第二段。"
         stdout = json.dumps(

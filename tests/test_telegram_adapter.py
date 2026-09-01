@@ -132,6 +132,13 @@ class TelegramAdapterTests(unittest.TestCase):
         narrative.record_choice(self.rp, cands, 1)
         self.assertEqual(telegram_adapter.pending_decision(self.rp), "none")
 
+    def test_failed_run_is_offered_once_as_a_status_receipt(self):
+        state.fail(self.rp, "narrative", "narrative killed: 零证据")
+        self.assertEqual(telegram_adapter.pending_decision(self.rp), "blocked")
+        decision, text = telegram_adapter._offer_text(self.rp)
+        self.assertEqual(decision, "blocked")
+        self.assertIn("narrative killed: 零证据", text)
+
     def test_send_message_never_puts_token_in_payload(self):
         captured = {}
         telegram_adapter.send_message(
