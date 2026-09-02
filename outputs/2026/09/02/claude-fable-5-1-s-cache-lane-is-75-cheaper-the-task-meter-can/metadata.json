@@ -24,7 +24,116 @@
     "downgraded": false,
     "attempts": 2
   },
-  "claim_check": {},
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-02",
+    "verdict": "unsupported",
+    "items": [
+      {
+        "claim": "Fable 5.1 went live in Claude Code and the Claude Platform on September 1, alongside Mythos 5.1.",
+        "evidence_url": "https://x.com/ClaudeDevs/status/2094851229734277228",
+        "verdict": "ok",
+        "note": "ClaudeDevs confirms availability in Claude Code and the Claude Platform; Anthropic confirms the joint launch, and the evidence package dates the release to September 1."
+      },
+      {
+        "claim": "Anthropic positions the models for coding, knowledge work, research, and long-running agentic work.",
+        "evidence_url": "https://www.anthropic.com/claude-fable-and-mythos-5-1",
+        "verdict": "ok",
+        "note": "The official excerpt supports coding, knowledge work, and research; Anthropic-linked posts support long-running agentic work."
+      },
+      {
+        "claim": "Fable 5.1 retains Fable 5 pricing while API cache reads are 75% cheaper.",
+        "evidence_url": "https://x.com/ClaudeDevs/status/2094851229734277228",
+        "verdict": "ok",
+        "note": "The source states both terms directly."
+      },
+      {
+        "claim": "TestingCatalog reported the same pricing terms and extra usage credits.",
+        "evidence_url": "https://x.com/testingcatalog/status/2094852015415242825",
+        "verdict": "ok",
+        "note": "The excerpt says the model is priced the same as Fable 5, has 75% cheaper API cache reads, and requires extra usage credits."
+      },
+      {
+        "claim": "Anthropic estimates typical workloads can become roughly 25% cheaper.",
+        "evidence_url": "https://www.theverge.com/ai-artificial-intelligence/987830/anthropic-claude-fable-mythos-5-1",
+        "verdict": "unsupported",
+        "note": "No supplied evidence states the 25% typical-workload estimate. The package supports only savings of up to 45%."
+      },
+      {
+        "claim": "Savings can reach 45% for long agentic runs involving many tool calls.",
+        "evidence_url": "https://the-decoder.com/anthropics-claude-fable-5-1-promises-better-coding-and-research-at-up-to-45-percent-less",
+        "verdict": "ok",
+        "note": "The Decoder excerpt explicitly ties savings of up to 45% to long autonomous runs with many tool calls; The Verge title corroborates the upper figure."
+      },
+      {
+        "claim": "Artificial Analysis reported that Fable 5.1 topped its Intelligence Index but cost 20% more per task than Fable 5.",
+        "evidence_url": "https://x.com/ArtificialAnlys/status/2094881171066978525",
+        "verdict": "ok",
+        "note": "Both the ranking and 20% per-task cost increase appear directly in the excerpt."
+      },
+      {
+        "claim": "Artificial Analysis supported Anthropic's pre-release evaluation, so its result is not fully independent.",
+        "evidence_url": "https://x.com/ArtificialAnlys/status/2094881171066978525",
+        "verdict": "ok",
+        "note": "The relationship is stated directly; describing the resulting independence limitation is a clearly identified inference."
+      },
+      {
+        "claim": "The evidence does not disclose task-level token totals, cache-hit ratios, or effort settings needed to reconcile the cost results.",
+        "evidence_url": "https://x.com/ArtificialAnlys/status/2094881171066978525",
+        "verdict": "ok",
+        "note": "None of those details appears in the evidence package, so the article's absence statement is accurate."
+      },
+      {
+        "claim": "Cheaper cache reads and a higher total task cost can coexist if the model performs or processes more work.",
+        "evidence_url": "https://x.com/ArtificialAnlys/status/2094881171066978525",
+        "verdict": "ok",
+        "note": "This is explicitly framed as a possible reconciliation, not asserted as a measured cause."
+      },
+      {
+        "claim": "“It gets a lot further into a long task before it needs your input,” ClaudeDevs said.",
+        "evidence_url": "https://x.com/ClaudeDevs/status/2094851229734277228",
+        "verdict": "ok",
+        "note": "The quoted clause matches the source verbatim. The original sentence continues with additional claims, but the omitted material does not change this complete clause's meaning."
+      },
+      {
+        "claim": "One circulating complaint described a 30-minute session consuming 20% of a weekly allowance.",
+        "evidence_url": "https://x.com/frxiaobei/status/2094955649025360043",
+        "verdict": "unsupported",
+        "note": "The apparent source failed to fetch and contains no excerpt, so neither the 30-minute duration nor the 20% figure can be verified. The separate statement that the account could not be independently reviewed is accurate."
+      },
+      {
+        "claim": "Boris Cherny is an Anthropic staffer.",
+        "evidence_url": "https://x.com/bcherny/status/2094864060609376748",
+        "verdict": "unsupported",
+        "note": "The package provides his name, account, and comments but no evidence of his employment or role at Anthropic. Consequently, the phrase 'inside Anthropic' is also unsupported here."
+      },
+      {
+        "claim": "Boris Cherny praised Fable 5.1 for difficult long-running agentic work and said he had been using it broadly.",
+        "evidence_url": "https://x.com/bcherny/status/2094864060609376748",
+        "verdict": "ok",
+        "note": "His post calls it the best model for the hardest long-running agentic work and says he had been using it for everything."
+      },
+      {
+        "claim": "Fable 5.1 achieved 52.6% on Terminal-Bench-Science.",
+        "evidence_url": "https://www.marktechpost.com/2026/09/01/anthropic-releases-claude-fable-5-1-and-claude-mythos-5-1-52-6-on-terminal-bench-science-and-75-cheaper-cache-reads",
+        "verdict": "ok",
+        "note": "The result appears directly in the source title and excerpt."
+      },
+      {
+        "claim": "Agentic coding improved by more than 30%.",
+        "evidence_url": "https://the-decoder.com/anthropics-claude-fable-5-1-promises-better-coding-and-research-at-up-to-45-percent-less",
+        "verdict": "ok",
+        "note": "The Decoder excerpt reports an improvement of over 30%."
+      },
+      {
+        "claim": "Precise assumptions behind the 25%, 45%, and 20% figures remain undisclosed in the evidence package.",
+        "evidence_url": "https://x.com/ArtificialAnlys/status/2094881171066978525",
+        "verdict": "ok",
+        "note": "The package provides headline percentages but no underlying workload assumptions or reconciliation data. This absence statement does not independently validate the unsupported 25% figure."
+      }
+    ],
+    "reason": "Most event claims, numerical results, quotations, source-level labels, and conditional inferences are supported or properly qualified. The article is nevertheless unsupported overall because the evidence package does not contain the claimed 25% typical-workload estimate, does not substantiate Boris Cherny's Anthropic role, and cannot verify the failed-source complaint's 30-minute and 20% details. No claim that 'both companies confirmed' appears in the article.",
+    "status": "completed"
+  },
   "evidence_verdict": "sufficient",
   "downgraded": false,
   "evidence_caveats": [
@@ -37,13 +146,57 @@
     "Boris Cherny 职务与雇佣关系未披露，只能按个人口吻引用（当前处理合规，持续注意）"
   ],
   "source_count": 25,
-  "generated_at": "2026-09-02T19:07:45+00:00",
-  "seo_title": "",
-  "seo_summary": "",
-  "has_cover": false,
-  "cover": null,
-  "images_status": "degraded",
-  "images": [],
+  "generated_at": "2026-09-02T19:17:36+00:00",
+  "seo_title": "Claude Fable 5.1: Cheaper Cache, Costlier Tasks",
+  "seo_summary": "Cache reads cost 75% less, yet one benchmark found 20% higher task costs. Measure cost per successful outcome before switching.",
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A developer faces a coding terminal and two contrasting meters, with a cheaper cache lane extending into a longer illuminated road.",
+    "caption": "The cache lane is cheaper; the task meter still counts every mile."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A developer faces a coding terminal and two contrasting meters, with a cheaper cache lane extending into a longer illuminated road.",
+      "caption": "The cache lane is cheaper; the task meter still counts every mile.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A developer works after midnight as repeated architectural notes, files, tests, and terminal output accumulate across several screens.",
+      "caption": "A cheaper repeated page does not shorten the journey.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A small inexpensive ingredient leads through many preparation steps to a large elaborate meal.",
+      "caption": "Lower input cost can disappear inside a larger appetite.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A team reviews a ledger that connects token categories and failed or rescued runs to merged fixes, accepted analyses, and completed migrations.",
+      "caption": "The denominator is not activity—it is work that actually closes.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
   "sources": [
     {
       "title": "Introducing Claude Fable 5.1 and Claude Mythos 5.1 \\ Anthropic",
