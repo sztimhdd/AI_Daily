@@ -12,6 +12,10 @@ A cache read lets an application reuse previously processed context instead of p
 
 Picture a developer watching a terminal scroll after midnight. The agent reads the same architectural notes on every loop, opens another file, runs another test, and keeps moving. Each repeated page may now cost less, but the cursor can still travel farther.
 
+![A developer works after midnight as repeated architectural notes, files, tests, and terminal output accumulate across several screens.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/02/claude-fable-5-1-s-cache-lane-is-75-cheaper-the-task-meter-can/images/01.webp)
+*A cheaper repeated page does not shorten the journey.*
+
+
 Anthropic estimates that typical workloads can become roughly **25%** cheaper, with savings reaching **45%** for long agentic runs. Coverage from **The Verge** and **The Decoder** repeats the upper figure and ties it to autonomous work involving many tool calls.[4](https://www.theverge.com/ai-artificial-intelligence/987830/anthropic-claude-fable-mythos-5-1)[5](https://the-decoder.com/anthropics-claude-fable-5-1-promises-better-coding-and-research-at-up-to-45-percent-less)
 
 Then the second meter moved. **Artificial Analysis** reported that Fable 5.1 topped its Intelligence Index but cost **20% more per task** than Fable 5, despite the cache discount.[6](https://x.com/ArtificialAnlys/status/2094881171066978525)
@@ -19,6 +23,10 @@ Then the second meter moved. **Artificial Analysis** reported that Fable 5.1 top
 That result is important, but it isn’t fully independent: Artificial Analysis says it supported Anthropic’s pre-release evaluation. Its post also doesn’t disclose the task-level token totals, cache-hit ratios, or effort settings needed to reconcile the result with Anthropic’s estimates.[6](https://x.com/ArtificialAnlys/status/2094881171066978525)
 
 The two claims can therefore be true at once. Anthropic can charge less for each cached token while Fable 5.1 generates, rereads, reasons over, or routes through enough additional tokens to raise total task cost. A cheaper ingredient doesn’t guarantee a cheaper meal.
+
+![A small inexpensive ingredient leads through many preparation steps to a large elaborate meal.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/02/claude-fable-5-1-s-cache-lane-is-75-cheaper-the-task-meter-can/images/02.webp)
+*Lower input cost can disappear inside a larger appetite.*
+
 
 > “It gets a lot further into a long task before it needs your input,” **ClaudeDevs** said.[2](https://x.com/ClaudeDevs/status/2094851229734277228)
 
@@ -34,6 +42,10 @@ The benchmark gains may still justify higher task cost. One report lists a **52.
 
 That is why cost per million tokens is the wrong final column. The useful denominator is successful tasks: merged fixes, accepted analyses, completed migrations, or another outcome your team can count. *The denominator is doing most of the work.*
 
+![A team reviews a ledger that connects token categories and failed or rescued runs to merged fixes, accepted analyses, and completed migrations.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/02/claude-fable-5-1-s-cache-lane-is-75-cheaper-the-task-meter-can/images/03.webp)
+*The denominator is not activity—it is work that actually closes.*
+
+
 Run Fable 5 and Fable 5.1 against one representative week, using the same tasks, tools, repository state, and stopping conditions. Record total input, output, cache-write, and cache-read tokens, then divide total spend by successful completions. Keep failed and human-rescued runs visible.
 
 Also inspect the shape of the work. Long sessions with stable instructions and repeated repository context should expose more tokens to the cheaper cache-read rate. Short prompts, rapidly changing context, or low cache reuse may barely touch the discount.
@@ -43,7 +55,6 @@ The decision rule is narrow. Move long, agentic, high-reuse workloads to Fable 5
 Several cells remain blank: cache-write economics, task-level token expansion, subscription-credit multipliers, and the precise assumptions behind the **25%**, **45%**, and **20%** figures. Those unknowns don’t erase the launch’s value; they define what must be measured before the headline becomes a budget.
 
 The cache lane is **75%** cheaper. The task meter still counts every mile the agent chooses to drive.
-
 
 ## Sources
 
