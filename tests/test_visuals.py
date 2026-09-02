@@ -190,6 +190,20 @@ class VisualPlanTests(unittest.TestCase):
         self.assertIn("LinkedIn cover", prompt)
         self.assertIn("different visual modes", prompt)
 
+    def test_build_plan_prompt_selects_cover_style_from_article(self):
+        prompt = visuals.build_plan_prompt("# Title\n\nBody text.", {"sources": []})
+        self.assertIn("select the most suitable visual language", prompt)
+        self.assertIn("visual style library", prompt)
+        self.assertIn("article-driven", prompt)
+        self.assertIn("Do not default to cyberpunk", prompt)
+
+    def test_build_plan_prompt_keeps_linkedin_cover_hard_constraints(self):
+        prompt = visuals.build_plan_prompt("# Title\n\nBody text.", {"sources": []})
+        self.assertIn("1920x1080", prompt)
+        self.assertIn("16:9", prompt)
+        self.assertIn("central safe area", prompt)
+        self.assertIn("render no words", prompt)
+
 
 class VisualsBase(unittest.TestCase):
     def setUp(self):
