@@ -708,6 +708,10 @@ class SessionCommandTests(CliBase):
         self.assertEqual(loop_mock.call_args.kwargs["initial_audit"]["verdict"],
                          "sufficient")
         self.assertIn("07", out)
+        self.assertEqual(state.read_state(run_paths)["stage"],
+                         "targeted_research")
+        self.assertEqual(state.read_state(run_paths)["status"],
+                         "in_progress")
 
     def _seed_stale_run(self, date, stale=False):
         import datetime as _dt

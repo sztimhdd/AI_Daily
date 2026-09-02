@@ -693,6 +693,9 @@ def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
             return 1
         verdict = loop.get("verdict")
         reason = loop.get("reason", "")
+        if verdict == "sufficient":
+            state.transition(run_paths, "targeted_research",
+                             note="evidence audit sufficient")
         if verdict != "sufficient":
             state.fail(run_paths, "audit",
                        f"narrative {verdict}: {reason or '无原因'}")
