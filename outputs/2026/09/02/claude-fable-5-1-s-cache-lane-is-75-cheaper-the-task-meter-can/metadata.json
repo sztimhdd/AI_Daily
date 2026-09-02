@@ -1,0 +1,201 @@
+{
+  "run_id": "AI-Daily/2026-09-02",
+  "date": "2026-09-02",
+  "slug": "claude-fable-5-1-s-cache-lane-is-75-cheaper-the-task-meter-can",
+  "title": "Claude Fable 5.1’s Cache Lane Is 75% Cheaper. The Task Meter Can Still Run 20% Hot",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 894,
+    "paragraph_count": 23,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "16 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "2 passive constructions (e.g. 'be promoted')",
+        "line": 0
+      }
+    ],
+    "downgraded": false,
+    "attempts": 2
+  },
+  "claim_check": {},
+  "evidence_verdict": "sufficient",
+  "downgraded": false,
+  "evidence_caveats": [
+    "AA +20%/task 为单一来源且自曝参与官方预发布评测；每任务 token、effort、缓存命中假设均未公开，无独立复测",
+    "叙事所指的隐藏变量——每任务 token 基数——双方均未公布，无法直接核验；决策规则已以「等官方口径」兜底",
+    "官方完整价格表未抓全（platform.claude.com release notes 正文未获取）；缓存读取绝对价 0.25/M 仅机器之心等二手渠道；缓存写入价是否同步降 Unknown",
+    "订阅「额外 usage credits」倍率与触发条件未披露（TestingCatalog 提及），无法并入测算",
+    "自测框架依赖 Claude Code 用量导出能力，仅社区用户帖间接佐证，无官方文档",
+    "frxiaobei 帖 404、部分知乎页面二次打开 403/仅 found：社区侧证未抓全，但不承载核心价格论点",
+    "Boris Cherny 职务与雇佣关系未披露，只能按个人口吻引用（当前处理合规，持续注意）"
+  ],
+  "source_count": 25,
+  "generated_at": "2026-09-02T19:07:45+00:00",
+  "seo_title": "",
+  "seo_summary": "",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "degraded",
+  "images": [],
+  "sources": [
+    {
+      "title": "Introducing Claude Fable 5.1 and Claude Mythos 5.1 \\ Anthropic",
+      "url": "https://www.anthropic.com/claude-fable-and-mythos-5-1",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://x.com/frxiaobei/status/2094955649025360043",
+      "url": "https://x.com/frxiaobei/status/2094955649025360043",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "Thariq is on vacation (@trq212) on X",
+      "url": "https://x.com/trq212/status/2094945951865520458",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Anthropic launches Claude Fable 5.1 and says it’s up to 45 percent cheaper for agentic work",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/987830/anthropic-claude-fable-mythos-5-1",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Anthropic 发布 Claude Fable 5.1 和 Mythos 5.1：性能超越前代，缓存降价 75% - IT之家",
+      "url": "https://www.ithome.com/0/997/193.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Anthropic's Claude Fable 5.1 promises better coding and research at up to 45 percent less",
+      "url": "https://the-decoder.com/anthropics-claude-fable-5-1-promises-better-coding-and-research-at-up-to-45-percent-less",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Anthropic Releases Claude Fable 5.1 and Claude Mythos 5.1: 52.6% on Terminal-Bench-Science and 75% Cheaper Cache Reads",
+      "url": "https://www.marktechpost.com/2026/09/01/anthropic-releases-claude-fable-5-1-and-claude-mythos-5-1-52-6-on-terminal-bench-science-and-75-cheaper-cache-reads",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Anthropic's new Fable release is cheaper, less restrictive | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/01/anthropics-new-fable-release-is-cheaper-less-restrictive",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Boris Cherny (@bcherny) on X",
+      "url": "https://x.com/bcherny/status/2094864060609376748",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "ClaudeDevs (@ClaudeDevs) on X",
+      "url": "https://x.com/ClaudeDevs/status/2094851229734277228",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Claude (@claudeai) on X",
+      "url": "https://x.com/claudeai/status/2094848572143407483",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Claude Platform release notes",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview#september-1-2026",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2094849827192377443",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2094852015415242825",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Artificial Analysis (@ArtificialAnlys) on X",
+      "url": "https://x.com/ArtificialAnlys/status/2094881171066978525",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2094873718237565197",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "刚刚,Claude 5.1 发布!全球最强模型来了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078425959498265429?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "刚刚,Claude Fable 5.1 突袭发布!额度重置、跑分屠榜、依旧敏感肌 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078374913291841869?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Claude Fable 5.1深夜空降!8项霸榜,缓存降价75%,奥尔特曼急了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078441269643194576?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Claude订阅刷新了,原来是Fable 5.1 来了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078321372179314170?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "如何看待Anthropic全面开放Claude Fable 5.1和Mythos 5.1?有哪些亮点? - 知乎",
+      "url": "https://www.zhihu.com/question/2078320389617350247/answer/2078411546968043985?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "AI行业动态20260902:Anthropic发布Claude Fable 5.1与Mythos 5.1 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078425437789860706?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "一套权重,两个产品:Claude Fable5.1和 Mythos 5.1 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078586009588127271?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "如何评价 Anthropic 发布的 Claude Fable 5.1? - 知乎",
+      "url": "https://www.zhihu.com/question/2078371741722850186/answer/2078432654228304055?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "Claude Fable 5.1 发布:代理工作成本最高降45%! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078442313886471321?utm_medium=openapi_platform&utm_source=679c5",
+      "origin": "targeted",
+      "status": "found"
+    }
+  ],
+  "final_article": "articles/2026-09-02-claude-fable-5-1-s-cache-lane-is-75-cheaper-the-task-meter-can-en.md",
+  "package": "outputs/2026/09/02/claude-fable-5-1-s-cache-lane-is-75-cheaper-the-task-meter-can"
+}
