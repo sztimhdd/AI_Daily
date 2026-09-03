@@ -85,13 +85,30 @@
     "“零日”“浏览器逃逸”“100% 基准”等性能和安全数字没有一手评测材料或独立复核。"
   ],
   "source_count": 31,
-  "generated_at": "2026-09-03T19:21:06+00:00",
+  "generated_at": "2026-09-03T19:25:03+00:00",
   "seo_title": "Astra’s Real Risk Is Who Holds the Key",
   "seo_summary": "OpenAI says Astra meets a Critical cybersecurity threshold. The business question is how access, tools, and revocation will be controlled.",
-  "has_cover": false,
-  "cover": null,
-  "images_status": "degraded",
-  "images": [],
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A locked glass cabinet in a bright laboratory with a metal key placed outside it.",
+    "caption": "The harder power may sit not inside the cabinet, but with whoever turns the key."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A locked glass cabinet in a bright laboratory with a metal key placed outside it.",
+      "caption": "The harder power may sit not inside the cabinet, but with whoever turns the key.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    }
+  ],
   "sources": [
     {
       "title": "OpenAI calls Astra its most dangerous model yet - watching what it does is only getting harder",
