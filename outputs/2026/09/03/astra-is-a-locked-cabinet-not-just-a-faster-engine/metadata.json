@@ -1,0 +1,285 @@
+{
+  "run_id": "AI-Daily/2026-09-03",
+  "date": "2026-09-03",
+  "slug": "astra-is-a-locked-cabinet-not-just-a-faster-engine",
+  "title": "Astra Is a Locked Cabinet, Not Just a Faster Engine",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 806,
+    "paragraph_count": 22,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "19 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "6 passive constructions (e.g. 'are not established')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 1
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-03",
+    "verdict": "ok",
+    "items": [
+      {
+        "claim": "OpenAI says Astra is its first model to meet the Critical cybersecurity capability threshold under its Preparedness Framework, with stronger safeguards for release.",
+        "evidence_url": "https://openai.com/index/path-to-astra",
+        "verdict": "ok",
+        "note": "The official OpenAI excerpt states both the first-model Critical threshold and stronger release safeguards."
+      },
+      {
+        "claim": "The public record cited does not detail evaluation tasks, release date, product form, or a complete access policy.",
+        "evidence_url": "https://openai.com/index/path-to-astra",
+        "verdict": "ok",
+        "note": "These details are absent from the supplied official excerpt; this is a correctly hedged absence statement."
+      },
+      {
+        "claim": "A report relaying Bloomberg says OpenAI planned initially to limit Astra's advanced cybersecurity features to a small group of testers.",
+        "evidence_url": "https://www.ithome.com/0/997/207.htm",
+        "verdict": "ok",
+        "note": "The supplied IT Home excerpt attributes this plan to Bloomberg and says the advanced features would initially be limited to a small number of testers."
+      },
+      {
+        "claim": "The X post alleges Astra found two V8 zero-days, used an exploit chain, compromised a hardened browser, escaped its sandbox, and executed host commands.",
+        "evidence_url": "https://x.com/kimmonismus/status/2094888115278422410",
+        "verdict": "ok",
+        "note": "All listed allegations appear in the post excerpt. The article correctly labels them unverified and does not present them as established fact."
+      },
+      {
+        "claim": "No testing logs, CVE records, or independent assessment accompany the X-post allegation in this evidence package.",
+        "evidence_url": "https://x.com/kimmonismus/status/2094888115278422410",
+        "verdict": "ok",
+        "note": "The supplied record contains only the post excerpt and no such corroborating materials; the article's absence statement is appropriately scoped."
+      },
+      {
+        "claim": "The Decoder reports that OpenAI planned to monitor chain-of-thought to keep Astra in check.",
+        "evidence_url": "https://the-decoder.com/openai-calls-astra-its-most-dangerous-model-yet-watching-what-it-does-is-only-getting-harder",
+        "verdict": "ok",
+        "note": "The Decoder excerpt explicitly makes this report."
+      },
+      {
+        "claim": "The evidence does not establish an industry-wide shift or comparable first-party controlled-access mechanisms from multiple vendors.",
+        "evidence_url": "https://openai.com/index/path-to-astra",
+        "verdict": "ok",
+        "note": "This is correctly framed as a limitation of the supplied record, not as a positive factual claim about multiple companies."
+      }
+    ],
+    "reason": "The article's event-specific factual assertions match the cited evidence. It consistently marks second-hand and social-media claims as such, and its conclusions about controlled release are clearly presented as analysis or conditional inference rather than confirmed fact.",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "核心 thesis 缺少直接的官方访问策略、机制说明或多个厂商的可比案例，当前不能由单一 Astra 公告外推为行业变迁。",
+    "关键因果“风险控制路径变了”缺少机制证据：能力如何分级、何种身份可访问、放权条件、监控与审计如何运作均未获一手确认。",
+    "IT之家虽已抓取，但其访问限制信息仍是对彭博的二手转述，缺少彭博原文或 OpenAI 官方交叉验证。",
+    "Astra 的发布日期、正式产品形态、可用范围与现时状态未获官方资料确认；社区材料对已发布、GPT-6、Daybreak 等说法彼此冲突。",
+    "X 与知乎内容是转述或观点，不是可推广的真实使用反馈；且多条知乎页面仅为 found，未证明全文抓取成功。",
+    "“零日”“浏览器逃逸”“100% 基准”等性能和安全数字没有一手评测材料或独立复核。"
+  ],
+  "source_count": 31,
+  "generated_at": "2026-09-03T19:21:06+00:00",
+  "seo_title": "Astra’s Real Risk Is Who Holds the Key",
+  "seo_summary": "OpenAI says Astra meets a Critical cybersecurity threshold. The business question is how access, tools, and revocation will be controlled.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "degraded",
+  "images": [],
+  "sources": [
+    {
+      "title": "OpenAI calls Astra its most dangerous model yet - watching what it does is only getting harder",
+      "url": "https://the-decoder.com/openai-calls-astra-its-most-dangerous-model-yet-watching-what-it-does-is-only-getting-harder",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI 吸取“AI 越狱”事件教训，首个达“关键”门槛模型 Astra 因能力过强将限制网络安全功能 - IT之家",
+      "url": "https://www.ithome.com/0/997/207.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2094888115278422410",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Path to Astra: critical capabilities and frontier safeguards",
+      "url": "https://openai.com/index/path-to-astra",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI 正式发布 GPT-6 Astra,Brockman 一句「Welcome to the AGI era」定调时代 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2079028062990160431?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "突发:OpenAI Astra模型被曝安全风险 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078787596776367843?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "Fable 5.1 与 GPT-6 Astra 同日对垒:模型出口越来越多,企业第一道坎不是选型,是凭证与路由 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078796336003019001?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI首次将模型列入“关键网络能力”级别:Astra为什么只能有限开放? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078509312159305924?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "“最强模型”来袭?OpenAI预告:Astra很快发布,网络安全能力达“关键”级 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078545465365246401?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "found"
+    },
+    {
+      "title": "AI行业动态20260903:OpenAI称Astra模型网络安全能力达\"关键\"级别,可自主发现并利用未知漏洞 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078769618487861312?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI 本周预览了 AI 模型 Astra,该模型有哪些功能亮点? - 知乎",
+      "url": "https://www.zhihu.com/question/2067079255293420719/answer/2078569425360502879?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI即将发布Astra模型:模型在无人干预下即可识别并利用零日漏洞 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078971268901123226?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "Astra 成为首个 Critical 网络安全模型,在测试中比5.6 Sol 更少越权,如何看待? - 知乎",
+      "url": "https://www.zhihu.com/question/2078429912566690779/answer/2078512557594261499?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "大模型技术日报|2026-09-02 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078419646622049043?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "代号 Astra,AI之王 GPT-6 来了! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2068378641369765845?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT-6即将发布:10万亿参数,150万Token上下文,OpenAI用两年时间换了一颗新引擎 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2070549209569400539?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "AI 之王 GPT-6,代号 Astra(星辰)即将发布! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2073077253479609122?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "曝 10 万亿参数的 GPT-6 即将发布,10 万亿参数是什么水平?对此你有哪些期待? - 知乎",
+      "url": "https://www.zhihu.com/question/2070445459840000945/answer/2070653025404850892?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "Anthropic Fable/Mythos 被紧急暂停:前沿模型商业化开始碰到真正的政策墙 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2050261778966245863?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "大模型技术日报|2026-09-03 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078758604790878920?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "如何看待Anthropic全面开放Claude Fable 5.1和Mythos 5.1?有哪些亮点? - 知乎",
+      "url": "https://www.zhihu.com/question/2078320389617350247/answer/2078451190514435497?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "2026年8月3日美国白宫敲定前沿AI模型网络能力评估框架 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2068031162023405083?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "重磅发现!主流 AI 爆出“盗梦”漏洞:加密思维链被全量破解,AI 背地里作弊被抓现行! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2070840390094156867?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI 称其即将推出的 Astra 模型展现重大网络安全能力,正加强安全控制并将推迟发布【AI 早报 2026-08-08】 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2069349853017143037?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI × Claude:最新一周模型/产品更新深读 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2003661903034091113?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "如何看待Anthropic全面开放Claude Fable 5.1和Mythos 5.1?有哪些亮点? - 知乎",
+      "url": "https://www.zhihu.com/question/2078320389617350247/answer/2078441682597691545?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "Anthropic 发布 Claude Opus 4.6;OpenAI 发布 GPT-5.3-Codex【AI 早报 2026-02-06】 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2003033176977715845?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "今天AI圈杀疯了!全球AI大事件TOP10(深度版) - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078996536252540797?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "每日AI资讯早报 — 2026年09月03日(星期四) - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2078786836705567433?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "AI大模型动态简报 2026-08-10 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2070086906281570313?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "别再吹 AI 员工了:一个故障,它们集体下班 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2079041052363829834?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    }
+  ],
+  "final_article": "articles/2026-09-03-astra-is-a-locked-cabinet-not-just-a-faster-engine-en.md",
+  "package": "outputs/2026/09/03/astra-is-a-locked-cabinet-not-just-a-faster-engine"
+}
