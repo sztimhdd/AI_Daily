@@ -34,7 +34,7 @@ VISUAL_PLAN_JSON = "visual-plan.json"
 IMAGES_MANIFEST_JSON = "images-manifest.json"
 IMAGES_DIR = "images"
 
-DEFAULT_MODEL = "gemini-2.5-flash-image"
+DEFAULT_MODEL = "gemini-3.1-flash-image"
 MAX_DIAGRAMS_PER_PLAN = 1
 LINKEDIN_ARTICLE_COVER_SIZE = "1920x1080"
 LINKEDIN_ARTICLE_COVER_DIMENSIONS = (1920, 1080)

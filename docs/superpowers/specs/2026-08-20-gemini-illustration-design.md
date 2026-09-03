@@ -29,7 +29,7 @@
 
 - 新增模块 `src/ai_daily/visuals.py`，暴露纯函数 + 一个 `run(run_paths, ...)` 编排；依赖全部可注入（`codex_runner`、`gemini_runner`、`to_webp`），测试不触网。
 - `visual-plan.json` 由写作模型生成（复用 `research._default_codex_runner` 的注入模式）。plan 是 schema 校验对象：`images: [{id, anchor, purpose, visual_mode, style, prompt, alt, caption, allowed_figures, size, model}]`，总数至少 2、至多 5 张；新计划要求 1 张 `cover`。`visual_mode` 会被检查：三张正文图不得同风格/同模式复用。封面风格由模型按文章张力选择，不强制复用正文风格。
-- Gemini 生图：默认 `gemini-2.5-flash-image`，提示词走 Vertex AI `generateContent` 接口，返回 base64 PNG；项目与短期 token 由 `gcloud` 读取，**绝不打印**。
+- Gemini 生图：默认 `gemini-3.1-flash-image`，提示词走 Vertex AI `generateContent` 接口，返回 base64 PNG；项目与短期 token 由 `gcloud` 读取，**绝不打印**。
 - WebP 转码：Pillow（已装 user-site 12.3）；无 Pillow 时降级保留 PNG 并在 manifest 记录原因，不阻塞。
 - 嵌入：确定性把 plan 中每张正文图的 `![](url)` 插到 `anchor` 所在段落后；封面记录进 metadata 的 `cover` 字段，不插正文。强制重跑先清理当前包旧图块，防止旧 caption 和新图混排。
 - `assemble_en` 采纳 `images/` 目录；visual manifest 的 `cover` 是包的主封面，并同步到 LinkedIn Kit。

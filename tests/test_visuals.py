@@ -88,6 +88,13 @@ class VisualPlanTests(unittest.TestCase):
         plan["images"][0]["model"] = "gemini-999"
         self.assertFalse(visuals.parse_plan(plan)["ok"])
 
+    def test_parse_plan_defaults_to_gemini_31_flash_image(self):
+        plan = sample_plan()
+        del plan["images"][0]["model"]
+        result = visuals.parse_plan(plan)
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["images"][0]["model"], "gemini-3.1-flash-image")
+
     def test_parse_plan_rejects_square_linkedin_cover(self):
         plan = sample_plan()
         plan["images"].insert(0, {
