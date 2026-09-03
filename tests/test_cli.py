@@ -657,6 +657,67 @@ class SessionCommandTests(CliBase):
         self.assertIn("补证 1 轮", out)
         self.assertIn("07", out)
 
+    def test_live_session_final_needs_research_continues_as_writable(self):
+        from ai_daily import paths, state
+
+        run_paths = paths.RunPaths.for_date(self.root, "2026-08-13")
+        run_paths.ensure_work_dir()
+        state.init_state(run_paths)
+        (run_paths.work_dir / "aihot-items.json").write_text(
+            json.dumps([{
+                "title": "某热点", "summary": "成本", "source_name": "某源",
+                "score": 80, "links": {"aihot": "https://aihot.virxact.com/items/x"},
+            }], ensure_ascii=False), encoding="utf-8"
+        )
+        cands = [{
+            "title": "候选一", "thesis": "论点", "hook": "钩子",
+            "research_queries": ["查询"],
+            "sources": [{"url": "https://example.com/x"}],
+        }]
+        narrative_cands = [{
+            "archetype": "contrarian_audit", "title": "叙事一", "hook": "h",
+            "thesis": "t", "key_arguments": [], "decision_rule": "",
+            "platform_notes": {"linkedin": "l", "wechat": "w"},
+            "author_stance": "我的判断",
+            "personal_scene": "凌晨三点被报警吵醒",
+            "kicker": "先别急着上车。",
+            "evidence_audit": "e",
+        }]
+
+        with mock.patch.object(cli.pipeline, "run_collect",
+                               return_value={"status": "collected"}), \
+             mock.patch.object(cli.pipeline, "run_candidates", return_value=cands), \
+             mock.patch.object(cli.pipeline, "run_initial_research",
+                               return_value={"status": "generated", "research_md": "md"}), \
+             mock.patch.object(cli.pipeline, "run_narrative",
+                               return_value={"status": "generated",
+                                             "candidates": narrative_cands}), \
+             mock.patch.object(cli.pipeline, "run_sufficiency",
+                               return_value={"status": "completed",
+                                             "verdict": "needs_research",
+                                             "claim_coverage": [],
+                                             "evidence_gaps": [],
+                                             "research_tasks": [{
+                                                 "gap_type": "单一来源",
+                                                 "query": "q",
+                                                 "direction": "d"}],
+                                             "reason": "weak side claim"}), \
+             mock.patch.object(cli.pipeline, "run_targeted_loop",
+                               return_value={"status": "completed",
+                                             "verdict": "needs_research",
+                                             "rounds": 2,
+                                             "reason": "weak side claim"}):
+            code, out, err = self.run_cli(
+                "session", "--root", self.root, "--date", "2026-08-13",
+                "--mode", "live", "--choice", "1", "--narrative-choice", "1",
+            )
+        self.assertEqual(code, 0, err)
+        st = state.read_state(run_paths)
+        self.assertEqual(st["status"], "in_progress")
+        self.assertEqual(st["stage"], "targeted_research")
+        self.assertEqual(st["last_error"], "")
+        self.assertIn("保守降级", out)
+
     def test_narrative_simulate_flag_records_unattended(self):
         from ai_daily import paths, state
 

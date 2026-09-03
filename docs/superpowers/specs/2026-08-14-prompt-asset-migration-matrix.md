@@ -148,7 +148,7 @@ Browser Use 拦截仍是事实，但不再影响管线（抓取走用户自有�
 
 双语编辑质量层 spec 的 Python 可检查子集与英文优先闭环已落地：
 
-- **bilingual_draft**：`src/ai_daily/draft_en.py` 从 evidence package 写英文完整稿（Codex 可注入 `codex_runner`，从证据重写、永不翻译）；输入门禁 = 05 审计 `sufficient`（`sufficiency.require_sufficient`）。UDW·First Draft Writer1 的人设/框架与 REF·Final Editor1 的 EN 声线编译为 `knowledge/en-author-style.md`。
+- **bilingual_draft**：`src/ai_daily/draft_en.py` 从 evidence package 写英文完整稿（Codex 可注入 `codex_runner`，从证据重写、永不翻译）；输入门禁 = 05/06 审计 `sufficient` 或 `needs_research` 保守降级（`sufficiency.require_writable`）。默认文本模型走本机 Codex CLI 的 `gpt-5.6-terra`，可用 `AI_DAILY_CODEX_MODEL` 覆盖。UDW·First Draft Writer1 的人设/框架与 REF·Final Editor1 的 EN 声线编译为 `knowledge/en-author-style.md`。
 - **quality_layer**：`src/ai_daily/quality.py` 实现确定性四道检查的可执行子集——证据边界（无链接/无依据确定性/墙内来源按 fetch 状态逐源降级 = `evidence_recovery`）、去 AI 味（`deslop.check_text_en` 8 类英文检查）、字数 800–1200、每段 ≤3 句、AI 痕迹标签/Markdown 纯度、占位符保护、加粗间距。结果四选一 `pass/pass_with_notes/revise/evidence_recovery`，只检查与打回、不静默改写。输入门禁按 `require_writable` 语义：`sufficient` 与 `needs_research` 均可写，`needs_research` 强制稿子对缺口显式标注（二手/单源/口径冲突），`unsupported` 才硬阻塞——证据门槛跟论断强度走，不跟事件热度走。
 - **assembly**：`src/ai_daily/assemble_en.py` 产出英文自己的标题 slug 包 `outputs/YYYY/MM/DD/<en-slug>/<en-slug>.md` + `sources.md` + `metadata.json`，最终文章映射 `articles/<date>-<en-slug>-en.md`；中文包同步把 `article.md` 改为 `<zh-slug>.md`（两版各用自己语言标题命名，不用通用名 `article`）。封面沿用「图片不阻断正文」。CLI 增 `draft-en` / `assemble-en`。
 - **聚类误并修复（BISC）**：`topics.same_event` 的停用词表补齐英文虚词（that/in/is/... 等），消除「brain + that」双 token 误并；真实 BISC 三个无关标题回归全部为 False，合法跨源聚类（DeepSeek / Grok 4.6）保持 True。

@@ -669,7 +669,11 @@ def _audit_hint(verdict: str, reason: str = "") -> str:
         return "05/06 已跑完：证据充分，下一步 07 英文全文与编辑质量门"
     if verdict == "unsupported":
         return f"阻塞：核心叙事无法被证据支持——{reason or '无原因'}"
-    return f"两轮补证后仍不足，收口判定 needs_research——{reason or '无原因'}"
+    return (
+        "05/06 已跑完：最终仍是 needs_research，但核心叙事未被证伪；"
+        "下一步 07 走保守降级写作，弱论断必须标注或删除——"
+        f"{reason or '无原因'}"
+    )
 
 
 def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
@@ -693,10 +697,11 @@ def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
             return 1
         verdict = loop.get("verdict")
         reason = loop.get("reason", "")
-        if verdict == "sufficient":
+        if verdict in ("sufficient", "needs_research"):
             state.transition(run_paths, "targeted_research",
-                             note="evidence audit sufficient")
-        if verdict != "sufficient":
+                             note=f"evidence audit {verdict}")
+            state.clear_error(run_paths)
+        else:
             state.fail(run_paths, "audit",
                        f"narrative {verdict}: {reason or '无原因'}")
     else:
@@ -706,7 +711,7 @@ def _run_audit_flow(run_paths, force: bool, use_color: bool) -> int:
             state.fail(run_paths, "audit",
                        f"narrative unsupported: {reason or '无原因'}")
     print(_audit_hint(verdict, reason))
-    return 0 if verdict == "sufficient" else 1
+    return 0 if verdict in ("sufficient", "needs_research") else 1
 
 
 def _audit_progress(kind, payload):

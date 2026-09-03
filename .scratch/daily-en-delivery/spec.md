@@ -25,6 +25,7 @@ Add one resumable English delivery loop that uses the existing English writing, 
 
 - Add a single English-delivery orchestrator beside the existing pipeline orchestration. It invokes the existing stage seams in this order: English draft, claim check, illustration, LinkedIn kit, English assembly, then English publishing.
 - Add a `run-en` CLI entry point for that orchestrator. Existing individual commands remain available for editorial intervention and recovery.
+- Text-model stages use the local Codex CLI runner by default (`gpt-5.6-terra` via `AI_DAILY_CODEX_MODEL` override): research synthesis, narrative generation, evidence audit, English drafting, claim review, visual planning, and LinkedIn kit. Image rendering remains on the configured image provider.
 - The orchestrator persists a delivery summary in the dated run work area and records it in durable state. The summary includes a status and reason for draft, claim check, images, kit, assembly, and publication.
 - Claim-check verdicts are recorded in the summary and package metadata. A `mismatch`, `unsupported`, or unavailable review is an editorial warning; it does not block assembly. The existing English draft's hard input checks remain unchanged.
 - Illustration and kit remain best-effort. Their failure results in explicit `degraded` delivery information and a still-assembled article package.

@@ -166,6 +166,12 @@ def _offer_text(run_paths) -> tuple:
         from . import state
 
         reason = state.read_state(run_paths).get("last_error") or "未知错误"
+        if "audit: narrative needs_research" in reason:
+            return decision, (
+                "证据审计收口为 needs_research，但核心叙事未被证伪。\n"
+                f"原因：{reason}\n"
+                "可以继续走保守降级写作；弱论断必须标注、收窄或删除。"
+            )
         return decision, (
             "本次流程已停止，未生成新的叙事候选。\n"
             f"原因：{reason}\n"

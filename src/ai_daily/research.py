@@ -869,7 +869,7 @@ def _parse_codex_exec_stdout(stdout: str) -> dict:
 _CODEX_FALLBACK_PATHS = (
     "/Applications/ChatGPT.app/Contents/Resources/codex",
 )
-CODEX_PIPELINE_MODEL = "deepseek/deepseek-v4-flash"
+CODEX_PIPELINE_MODEL = "gpt-5.6-terra"
 CODEX_MODEL_ENV = "AI_DAILY_CODEX_MODEL"
 
 
@@ -893,18 +893,19 @@ def _default_codex_runner(prompt: str) -> dict:
 
     The interactive Codex default is intentionally not inherited here:
     background runs must not silently follow a stale or unavailable local
-    model. Operators can select another known model with
-    ``AI_DAILY_CODEX_MODEL``.
+    model. The default stays on the ChatGPT/Codex CLI lane; operators can
+    select another known model with ``AI_DAILY_CODEX_MODEL``.
     """
     model = (os.environ.get(CODEX_MODEL_ENV) or CODEX_PIPELINE_MODEL).strip()
     command = [_codex_binary(), "exec", "--json"]
     if model:
         command.extend(["--model", model])
-    command.append(prompt)
+    command.append("-")
     try:
         proc = subprocess.run(
             command,
             capture_output=True,
+            input=prompt,
             text=True,
             timeout=900,
         )

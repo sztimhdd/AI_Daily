@@ -139,6 +139,14 @@ class TelegramAdapterTests(unittest.TestCase):
         self.assertEqual(decision, "blocked")
         self.assertIn("narrative killed: 零证据", text)
 
+    def test_audit_needs_research_blocked_receipt_points_to_downgrade(self):
+        state.fail(self.rp, "audit", "narrative needs_research: 弱论断缺第二来源")
+        self.assertEqual(telegram_adapter.pending_decision(self.rp), "blocked")
+        decision, text = telegram_adapter._offer_text(self.rp)
+        self.assertEqual(decision, "blocked")
+        self.assertIn("保守降级", text)
+        self.assertNotIn("未生成新的叙事候选", text)
+
     def test_send_message_never_puts_token_in_payload(self):
         captured = {}
         telegram_adapter.send_message(
