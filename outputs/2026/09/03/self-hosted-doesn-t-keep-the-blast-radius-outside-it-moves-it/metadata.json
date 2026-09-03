@@ -1,0 +1,127 @@
+{
+  "run_id": "AI-Daily/2026-09-03",
+  "date": "2026-09-03",
+  "slug": "self-hosted-doesn-t-keep-the-blast-radius-outside-it-moves-it",
+  "title": "Self-Hosted Doesn’t Keep the Blast Radius Outside. It Moves It Into Your Network.",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 833,
+    "paragraph_count": 23,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "21 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "3 passive constructions (e.g. 'is unverified')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 2
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-03",
+    "verdict": "ok",
+    "items": [
+      {
+        "claim": "Cursor says its cloud agents can execute on pools of Self-Hosted Machines that customers manage.",
+        "evidence_url": "https://cursor.com/blog/self-hosted-machines",
+        "verdict": "ok",
+        "note": "Matches the supplied Cursor excerpt exactly in substance."
+      },
+      {
+        "claim": "The supplied material does not disclose permissions, isolation, platforms, quotas, pricing, or security architecture.",
+        "evidence_url": "https://cursor.com/blog/self-hosted-machines",
+        "verdict": "ok",
+        "note": "Properly scoped to the material available here; the supplied excerpt contains none of those details."
+      },
+      {
+        "claim": "Claims about isolation, sandboxing, billing, command controls, tenant separation, activity inspection, and data-boundary protections are not documented product facts in this evidence package.",
+        "evidence_url": "https://cursor.com/blog/self-hosted-machines",
+        "verdict": "ok",
+        "note": "The article consistently frames these as missing evidence, conditional reasoning, or inference rather than confirmed event facts."
+      }
+    ],
+    "reason": "The sole externally attributable product claim matches the supplied source. The remaining event-specific assertions are appropriately bounded to the available single-source evidence or explicitly framed as inference, hypothesis, or absence of disclosure.",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "『共识』前提无社区或媒体一手原文，唯一来源是厂商博客",
+    "博客仅标题级摘录入池，正文全文缺失（接入方式/支持平台/配额/安全模型未知）",
+    "执行与隔离机制无官方架构或安全文档验证",
+    "定价、成本、计费口径完全缺失，账单转嫁论断无 denominator",
+    "仅 1 个独立来源，缺第二来源交叉验证",
+    "无社区原声/开发者实测/竞品对比，既无法证实共识也无法检验反例",
+    "原文发布时间未披露，无法确认时间线是否仍有效（发布后是否已有安全文档、定价或更正）",
+    "AIHOT story matrix unavailable，选题热度无依据（次要，可后补）"
+  ],
+  "source_count": 1,
+  "generated_at": "2026-09-03T19:02:54+00:00",
+  "seo_title": "Self-Hosted AI Agents Move Risk Into Your Network",
+  "seo_summary": "Self-hosted cloud agents may keep execution closer to home—but they also move accountability, controls, and incident response inside.",
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A dark internal server room with a centrally framed rack whose ventilation grille glows red among cooler status lights.",
+    "caption": "The blast radius did not vanish; it changed address."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A dark internal server room with a centrally framed rack whose ventilation grille glows red among cooler status lights.",
+      "caption": "The blast radius did not vanish; it changed address.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A server rack inside a cold vault-like room, with a warm glow following cables through a partially open heavy door.",
+      "caption": "A locked room can hold the machines without defining the boundary around the work they perform.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "An ink-drawn machine room at night, with red light from a server reaching an incident notebook and pager-like device on a nearby desk.",
+      "caption": "Once execution enters the estate, the incident stops being distant and starts being yours to explain.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "Two blank ledgers on an operations desk, one in shadow and one beside an amber alarm light, keycard, folder, and blurred server rack.",
+      "caption": "The invoice may be unknown, but the operational ledger already has an owner.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Run cloud agents on machines you manage · Cursor",
+      "url": "https://cursor.com/blog/self-hosted-machines",
+      "origin": "initial",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-09-03-self-hosted-doesn-t-keep-the-blast-radius-outside-it-moves-it-en.md",
+  "package": "outputs/2026/09/03/self-hosted-doesn-t-keep-the-blast-radius-outside-it-moves-it"
+}
