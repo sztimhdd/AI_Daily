@@ -6,10 +6,16 @@ offline: live paths are exercised with injected fetchers/transports,
 never real network calls, paid APIs, or publication endpoints.
 
 ```bash
-python3 -m unittest discover tests            # full suite
-python3 -m unittest tests.test_pipeline_e2e   # E2E subset
+python3 scripts/test.py                      # default: 48 tests, network/process guard
+python3 scripts/test.py tests.test_fetch     # targeted offline module
+# python3 scripts/test.py --full             # manual only, same guard
 scripts/uat_cli.sh                            # deterministic fixture UAT
 ```
+
+Never run bare discovery: some legacy tests fail to inject their live fetchers.
+The guarded runner fails those paths before launching browsers or reaching APIs.
+Browser smoke tests are opt-in via `scripts/test_browser.py` in an installed
+Playwright environment: headless, isolated, no CDP/profile and no live sites.
 
 ## Fixtures
 

@@ -158,13 +158,17 @@ python3 -m ai_daily.cli fetch --root <root> --date $DATE <url>
 ## Test
 
 ```bash
-python3 -m unittest discover tests          # full suite (371 tests)
-python3 -m unittest tests.test_pipeline_e2e # black-box E2E subset
+python3 scripts/test.py                    # default: 48 focused offline regressions
+python3 scripts/test.py tests.test_fetch   # targeted module, same isolation
+# python3 scripts/test.py --full           # explicit only; never automatic
 scripts/uat_cli.sh                          # deterministic fixture UAT (17 checks)
 ```
 
-Tests never touch the network or real credentials; live paths are
-exercised with injected fetchers/transports.
+The guarded runner blocks sockets and external commands before they execute.
+Do not use bare unittest discovery: legacy tests can leak real CDP calls.
+Existing tests are retained, not all run on every edit. Optional browser smoke:
+`python3 scripts/test_browser.py` with an existing Playwright environment;
+it uses independent headless Chromium, no CDP, no personal profile, no websites.
 
 ## Lint
 
