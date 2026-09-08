@@ -1,0 +1,55 @@
+# Sources and evidence: Astra’s Unsettling Trick: It Starts Connecting Seeing to Doing
+
+51 deduplicated source(s) from the evidence package.
+
+- [Emad (@EMostaque) on X](https://x.com/EMostaque/status/2097378223138959719)（initial · fetched）
+- [OpenAI (@OpenAI) on X](https://x.com/OpenAI/status/2097375276384567642)（initial · fetched）
+- [Weixin Official Accounts Platform (fetch failed)](https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647686056&idx=1&sn=c1710404c08cf3201da27f4d53f94940)（initial · verify）
+- [mp.weixin.qq.com (fetch failed)](https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685960&idx=1&sn=df5885920be226f9514f47a7f2d30621)（initial · failed）
+- [OpenAI 多次修改 GPT-6 Astra 基准测试数据，部分成绩一度大幅变化 - IT之家](https://www.ithome.com/0/998/927.htm)（initial · fetched · Chinese source）
+- [🚨 AI News | TestingCatalog (@testingcatalog) on X](https://x.com/testingcatalog/status/2096350628054176240)（initial · fetched）
+- [OpenAI shares prompting tips for GPT-6 Astra including a blocklist of slop words](https://the-decoder.com/openai-shares-prompting-tips-for-gpt-6-astra-including-a-blocklist-of-slop-words)（initial · fetched）
+- [mp.weixin.qq.com (fetch failed)](https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685905&idx=1&sn=2a6327daa3fb1d5573a824afd63af7f6)（initial · failed）
+- [奥尔特曼致歉“GPT-6 Astra AI 上线混乱”，现已面向所有 Plus / Pro 等用户推出 - IT之家](https://www.ithome.com/0/998/661.htm)（initial · fetched · Chinese source）
+- [Sam Altman (@sama) on X](https://x.com/sama/status/2096008528834244741)（initial · fetched）
+- [OpenAI (@OpenAI) on X](https://x.com/OpenAI/status/2095968413646737608)（initial · fetched）
+- [OpenAI's GPT-6 Astra hallucinates less but remains vulnerable to hidden prompt injections](https://the-decoder.com/openais-gpt-6-astra-hallucinates-less-but-remains-vulnerable-to-hidden-prompt-injections)（initial · fetched）
+- [Benchmarks disagree on GPT-6 Astra, but its human-beating efficiency on ARC-AGI-3 pulls Chollet’s AGI forecast forward](https://the-decoder.com/benchmarks-disagree-on-gpt-6-astra-but-its-human-beating-efficiency-on-arc-agi-3-pulls-chollets-agi-forecast-forward)（initial · fetched）
+- [Satya Nadella (@satyanadella) on X](https://x.com/satyanadella/status/2095713765446840591)（initial · fetched）
+- [AYi (@AYi_AInotes) on X](https://x.com/AYi_AInotes/status/2095698966684049433)（initial · fetched）
+- [AYi (@AYi_AInotes) on X](https://x.com/AYi_AInotes/status/2095700816980222311)（initial · fetched）
+- [OpenAI's GPT-6 Astra on ARC-AGI-3 | ARC Prize](https://arcprize.org/blog/astra)（initial · fetched）
+- [Hot take on GPT-6 Astra](https://garymarcus.substack.com/p/hot-take-on-gpt-6-astra)（initial · fetched）
+- [OpenAI GPT-6 Astra 发布：首次达到“关键”级网络安全能力门槛，布罗克曼认为 AGI 时代已经到来 - IT之家](https://www.ithome.com/0/998/208.htm)（initial · fetched · Chinese source）
+- [Greg Brockman (@gdb) on X](https://x.com/gdb/status/2095629409017614390)（initial · fetched）
+- [(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎](https://www.zhihu.com/question/2080482298223399865/answer/2080627950144186018?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎](https://www.zhihu.com/question/2080482298223399865/answer/2080638323777975818?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何看待GPT-6 （Astra）？ - 知乎](https://www.zhihu.com/question/2070082903229347029/answer/2080312872383657064?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎](https://www.zhihu.com/question/2080482298223399865/answer/2080618789226420211?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何评价 OpenAI 最新发布的 GPT-6 Astra，并宣称人类进入 AGI 时代？ - 知乎](https://www.zhihu.com/question/2079054472190469850/answer/2080621079639414400?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [如何评价近期的GPT Astra社区测试表现? - 知乎](https://www.zhihu.com/question/2077741399924008197/answer/2078134528107864484?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [GPT-6 从本周开始重构世界上所有东西 - 知乎](https://zhuanlan.zhihu.com/p/2080193058369430739?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（initial · fetched · Chinese source）
+- [GPT-6 Astra杀疯了:只要你学得够慢,就可以不用学了? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080013448440816928?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [如何评价 OpenAI 最新发布的 GPT-6 Astra,并宣称人类进入 AGI 时代? - 知乎 (fetch failed)](https://www.zhihu.com/question/2079054472190469850/answer/2079862033319829589?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [刚刚,GPT-6 Astra全量开放! - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2079572333405197697?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [「GPT-6」灰测demo刷屏!周四发布在即 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2077738504226980107?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎](https://www.zhihu.com/question/2080482298223399865)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) Codex 里的 GPT 6 Astra、GPT 5.6 Sol、Terra、Luna 怎么选？ - 知乎](https://www.zhihu.com/question/2079625515565060391)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) Astra is on the way：Astra 到底会有多强？GPT 6 真的要来了吗？ - 知乎](https://www.zhihu.com/question/2078989131762476419)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何评价 OpenAI 最新发布的 GPT-6 Astra，并宣称人类进入 AGI 时代？ - 知乎](https://www.zhihu.com/question/2079054472190469850)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何看待GPT-6 （Astra）？ - 知乎](https://www.zhihu.com/question/2070082903229347029)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) GPT-6 被誉为『全球最强操作电脑 AI』，将如何改变人类工作和生活？ - 知乎](https://www.zhihu.com/question/2080243217094665380)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何评价北京时间9月4日凌晨2时OpenAI正式发布 GPT-6 Astra？ - 知乎](https://www.zhihu.com/question/2079049979042198722)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何评价Openai开放的GPT-6-Astra？ - 知乎](https://www.zhihu.com/question/2079055468840990698)（targeted · fetched · Chinese source）
+- [如何评价GPT-6Astra,是目前智能程度最高的模型吗? - 知乎 (fetch failed)](https://www.zhihu.com/question/2079099260516184281/answer/2079164770553546326?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [OpenAI 推进 Astra 测试,预估为 GPT-6 模型,其新功能将带来哪些颠覆性突破? - 知乎 (fetch failed)](https://www.zhihu.com/question/2077399236119942444/answer/2080405419067978591?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [GPT-6 Astra 实测三天:它确实强得离谱,但普通人最该先算清的是另一笔账 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080065510876751725?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [GPT-6 Astra 来了,你更应该关注什么 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2079983670887179472?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [GPT-6 Astra来了:OpenAI说,欢迎来到AGI时代 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080366852635628196?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何评价GPT-6Astra，是目前智能程度最高的模型吗？ - 知乎](https://www.zhihu.com/question/2079099260516184281)（targeted · fetched · Chinese source）
+- [(99+ 封私信 / 60 条消息) GPT-6 深夜「炸场」，两大核心测试接近满分并能自主操作电脑，这项技术突破意味着什么？ - 知乎](https://www.zhihu.com/question/2079252983481636071)（targeted · fetched · Chinese source）
+- [用 GPT-6 和 Blender,把一份产品 3D 模型做成宣传视频 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080491623591560142?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [感谢用GPT-6搓3D的!燃烧自己的token换来一次全体重置 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080655698317276471?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [实测GPT-6 Astra,人还能站在机器之上吗? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080427645167211225?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [GPT-6 Astra发布,AI终于会用电脑了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2079245491062289776?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
+- [(99+ 封私信 / 60 条消息) 如何评价GPT6在Blender建模的水平两极分化？ - 知乎](https://www.zhihu.com/question/2079875098979448454)（targeted · fetched · Chinese source）

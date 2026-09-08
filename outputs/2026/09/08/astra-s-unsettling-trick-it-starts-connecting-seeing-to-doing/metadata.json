@@ -1,0 +1,395 @@
+{
+  "run_id": "AI-Daily/2026-09-08",
+  "date": "2026-09-08",
+  "slug": "astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing",
+  "title": "Astra’s Unsettling Trick: It Starts Connecting Seeing to Doing",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 905,
+    "paragraph_count": 24,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "23 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "2 passive constructions (e.g. 'be assumed')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 1
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-08",
+    "verdict": "mismatch",
+    "items": [
+      {
+        "claim": "The Blender post “adds that the scene was not shown as a final render.”",
+        "evidence_url": "https://www.zhihu.com/question/2080482298223399865/answer/2080638323777975818",
+        "verdict": "mismatch",
+        "note": "The excerpt says viewing the work inside Blender may look worse and that renders are generally needed, but it does not establish that this specific scene lacked a final render."
+      },
+      {
+        "claim": "Zhihu reports Astra used computer use for a self-portrait, line-art coloring, and had Victor Nunez, identified as a Codex team member, open and perform on an online virtual piano.",
+        "evidence_url": "https://www.zhihu.com/question/2080482298223399865/answer/2080627950144186018?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+        "verdict": "ok",
+        "note": "All three reported examples and the stated Codex-team identification appear in the supplied excerpt."
+      },
+      {
+        "claim": "A separate community post reports sorting/reconstructing torn paper fragments and inferring space from a dog-bark audio file.",
+        "evidence_url": "https://www.zhihu.com/question/2080482298223399865/answer/2080618789226420211?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+        "verdict": "ok",
+        "note": "The supplied excerpt supports both as community-reported examples; the article correctly labels them single-source and not independently reviewable."
+      },
+      {
+        "claim": "Another Blender account reported repair failures and difficulty with complex human-like surfaces.",
+        "evidence_url": "https://www.zhihu.com/question/2079875098979448454",
+        "verdict": "ok",
+        "note": "The excerpt says the user felt Astra knew the problem but could not repair it, and contrasts simple geometry with difficult complex human surfaces."
+      },
+      {
+        "claim": "OpenAI said Astra was available to Pro, Enterprise, and Business Premium users in ChatGPT Work and Codex, plus the API, with Plus and Business later.",
+        "evidence_url": "https://x.com/OpenAI/status/2095968413646737608",
+        "verdict": "ok",
+        "note": "Matches the supplied OpenAI post."
+      }
+    ],
+    "reason": "One event-specific statement overstates the Blender evidence. The remaining audited event claims are supported or appropriately hedged as reported, second-hand, or unverified.",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "核心 thesis 仍主要建立在二手案例汇总上，缺能直接核验“看见—界面操作—作品产出”完整链路的原始演示证据。",
+    "关键因果“视觉、声音、网页被接入同一链路”缺机制证据：模型能力、computer-use 工具、浏览器/音频权限及人工介入分别如何作用尚未确认。",
+    "自画像、线稿和虚拟钢琴案例缺原帖、录像、提示词、执行日志、模型版本、工具权限、耗时、成本和成品验收，无法判断真实性与可复现性。",
+    "现有正面案例多为社区内容或媒体转述，缺独立来源对同一原始案例的交叉验证。",
+    "已存在 Blender 失败与复杂曲面建模受限的反例，但未与正面案例在相同任务条件下比较。",
+    "价格、规格、基准和财务数字存在缺官方来源或口径冲突；虽非本叙事必要材料，文章不应引用。",
+    "微信页面未成功抓取，不能作为事实来源。",
+    "产品上线时间线有官方 X 帖支持，但应在发布前复核当前可用入口；不宜把历史 rollout 状态写成当前可用性。"
+  ],
+  "source_count": 51,
+  "generated_at": "2026-09-08T19:31:47+00:00",
+  "seo_title": "Astra Is Connecting Seeing to Doing",
+  "seo_summary": "Astra may be shifting AI from describing screens to acting on them—but thin evidence and hostile interfaces remain the test.",
+  "has_cover": false,
+  "cover": null,
+  "images_status": "degraded",
+  "images": [],
+  "sources": [
+    {
+      "title": "Emad (@EMostaque) on X",
+      "url": "https://x.com/EMostaque/status/2097378223138959719",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI (@OpenAI) on X",
+      "url": "https://x.com/OpenAI/status/2097375276384567642",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Weixin Official Accounts Platform",
+      "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647686056&idx=1&sn=c1710404c08cf3201da27f4d53f94940",
+      "origin": "initial",
+      "status": "verify"
+    },
+    {
+      "title": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685960&idx=1&sn=df5885920be226f9514f47a7f2d30621",
+      "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685960&idx=1&sn=df5885920be226f9514f47a7f2d30621",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "OpenAI 多次修改 GPT-6 Astra 基准测试数据，部分成绩一度大幅变化 - IT之家",
+      "url": "https://www.ithome.com/0/998/927.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2096350628054176240",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI shares prompting tips for GPT-6 Astra including a blocklist of slop words",
+      "url": "https://the-decoder.com/openai-shares-prompting-tips-for-gpt-6-astra-including-a-blocklist-of-slop-words",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685905&idx=1&sn=2a6327daa3fb1d5573a824afd63af7f6",
+      "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685905&idx=1&sn=2a6327daa3fb1d5573a824afd63af7f6",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "奥尔特曼致歉“GPT-6 Astra AI 上线混乱”，现已面向所有 Plus / Pro 等用户推出 - IT之家",
+      "url": "https://www.ithome.com/0/998/661.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Sam Altman (@sama) on X",
+      "url": "https://x.com/sama/status/2096008528834244741",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI (@OpenAI) on X",
+      "url": "https://x.com/OpenAI/status/2095968413646737608",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI's GPT-6 Astra hallucinates less but remains vulnerable to hidden prompt injections",
+      "url": "https://the-decoder.com/openais-gpt-6-astra-hallucinates-less-but-remains-vulnerable-to-hidden-prompt-injections",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Benchmarks disagree on GPT-6 Astra, but its human-beating efficiency on ARC-AGI-3 pulls Chollet’s AGI forecast forward",
+      "url": "https://the-decoder.com/benchmarks-disagree-on-gpt-6-astra-but-its-human-beating-efficiency-on-arc-agi-3-pulls-chollets-agi-forecast-forward",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Satya Nadella (@satyanadella) on X",
+      "url": "https://x.com/satyanadella/status/2095713765446840591",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "AYi (@AYi_AInotes) on X",
+      "url": "https://x.com/AYi_AInotes/status/2095698966684049433",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "AYi (@AYi_AInotes) on X",
+      "url": "https://x.com/AYi_AInotes/status/2095700816980222311",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI's GPT-6 Astra on ARC-AGI-3 | ARC Prize",
+      "url": "https://arcprize.org/blog/astra",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Hot take on GPT-6 Astra",
+      "url": "https://garymarcus.substack.com/p/hot-take-on-gpt-6-astra",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI GPT-6 Astra 发布：首次达到“关键”级网络安全能力门槛，布罗克曼认为 AGI 时代已经到来 - IT之家",
+      "url": "https://www.ithome.com/0/998/208.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Greg Brockman (@gdb) on X",
+      "url": "https://x.com/gdb/status/2095629409017614390",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎",
+      "url": "https://www.zhihu.com/question/2080482298223399865/answer/2080627950144186018?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎",
+      "url": "https://www.zhihu.com/question/2080482298223399865/answer/2080638323777975818?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何看待GPT-6 （Astra）？ - 知乎",
+      "url": "https://www.zhihu.com/question/2070082903229347029/answer/2080312872383657064?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎",
+      "url": "https://www.zhihu.com/question/2080482298223399865/answer/2080618789226420211?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何评价 OpenAI 最新发布的 GPT-6 Astra，并宣称人类进入 AGI 时代？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079054472190469850/answer/2080621079639414400?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "如何评价近期的GPT Astra社区测试表现? - 知乎",
+      "url": "https://www.zhihu.com/question/2077741399924008197/answer/2078134528107864484?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "GPT-6 从本周开始重构世界上所有东西 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080193058369430739?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "GPT-6 Astra杀疯了:只要你学得够慢,就可以不用学了? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080013448440816928?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "如何评价 OpenAI 最新发布的 GPT-6 Astra,并宣称人类进入 AGI 时代? - 知乎",
+      "url": "https://www.zhihu.com/question/2079054472190469850/answer/2079862033319829589?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "刚刚,GPT-6 Astra全量开放! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2079572333405197697?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "「GPT-6」灰测demo刷屏!周四发布在即 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2077738504226980107?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 都说 GPT-6-Astra 强，有没有实际点的应用案例？ - 知乎",
+      "url": "https://www.zhihu.com/question/2080482298223399865",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) Codex 里的 GPT 6 Astra、GPT 5.6 Sol、Terra、Luna 怎么选？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079625515565060391",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) Astra is on the way：Astra 到底会有多强？GPT 6 真的要来了吗？ - 知乎",
+      "url": "https://www.zhihu.com/question/2078989131762476419",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何评价 OpenAI 最新发布的 GPT-6 Astra，并宣称人类进入 AGI 时代？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079054472190469850",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何看待GPT-6 （Astra）？ - 知乎",
+      "url": "https://www.zhihu.com/question/2070082903229347029",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) GPT-6 被誉为『全球最强操作电脑 AI』，将如何改变人类工作和生活？ - 知乎",
+      "url": "https://www.zhihu.com/question/2080243217094665380",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何评价北京时间9月4日凌晨2时OpenAI正式发布 GPT-6 Astra？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079049979042198722",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何评价Openai开放的GPT-6-Astra？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079055468840990698",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "如何评价GPT-6Astra,是目前智能程度最高的模型吗? - 知乎",
+      "url": "https://www.zhihu.com/question/2079099260516184281/answer/2079164770553546326?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI 推进 Astra 测试,预估为 GPT-6 模型,其新功能将带来哪些颠覆性突破? - 知乎",
+      "url": "https://www.zhihu.com/question/2077399236119942444/answer/2080405419067978591?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT-6 Astra 实测三天:它确实强得离谱,但普通人最该先算清的是另一笔账 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080065510876751725?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT-6 Astra 来了,你更应该关注什么 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2079983670887179472?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT-6 Astra来了:OpenAI说,欢迎来到AGI时代 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080366852635628196?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何评价GPT-6Astra，是目前智能程度最高的模型吗？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079099260516184281",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) GPT-6 深夜「炸场」，两大核心测试接近满分并能自主操作电脑，这项技术突破意味着什么？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079252983481636071",
+      "origin": "targeted",
+      "status": "fetched"
+    },
+    {
+      "title": "用 GPT-6 和 Blender,把一份产品 3D 模型做成宣传视频 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080491623591560142?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "感谢用GPT-6搓3D的!燃烧自己的token换来一次全体重置 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080655698317276471?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "实测GPT-6 Astra,人还能站在机器之上吗? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080427645167211225?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT-6 Astra发布,AI终于会用电脑了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2079245491062289776?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "(99+ 封私信 / 60 条消息) 如何评价GPT6在Blender建模的水平两极分化？ - 知乎",
+      "url": "https://www.zhihu.com/question/2079875098979448454",
+      "origin": "targeted",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-09-08-astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing-en.md",
+  "package": "outputs/2026/09/08/astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing"
+}
