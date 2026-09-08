@@ -616,7 +616,7 @@ def _initial_url_list(topic: dict, matrix: dict, discover_runner=None) -> list:
     # Explicit editor topics arrive without a feed URL. They still need the
     # existing query-discovery lane; generated topics already carry source
     # seeds and only use this lane when the runtime explicitly injects it.
-    if discover_runner is not None or topic.get("category") == "custom":
+    if discover_runner is not None or (topic.get("category") == "custom" and not topic.get("search_subject")):
         for query in topic.get("research_queries") or []:
             for link in fetch.discover(query, runner=discover_runner) or []:
                 if isinstance(link, dict):
@@ -957,7 +957,7 @@ def _zhihu_community_block(run_paths, topic, runner=None) -> dict:
             stored = json.loads(json_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             stored = {}
-        if stored.get("topic") == title:
+        if stored.get("topic") == title and stored.get("query") == zhihu_lane.community_query(topic):
             return {**stored, "resumed": True}
     if ZHIHU_RESEARCH_BUDGET <= 0:
         return {
@@ -1104,6 +1104,39 @@ def _render_initial_md(
     return "\n".join(lines)
 
 
+def _prepare_custom_research(run_paths, topic, codex_runner=None) -> dict:
+    if topic.get("category") != "custom":
+        return topic
+    plan_path = run_paths.work_dir / "research-plan.json"
+    try:
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        plan = {}
+    if not isinstance(plan, dict) or plan.get("topic_title") != topic["title"] or plan.get("direction", "") != topic.get("direction", ""):
+        runner = codex_runner or _default_codex_runner
+        plan = runner(
+            "把编辑的选题要求转为检索计划。只规划，不写文章，不搜索，不执行工具。"
+            "输出 JSON {\"subject\":\"原文中连续出现的核心产品或事件名称\","
+            "\"queries\":[\"简短英文检索词\",\"简短中文社区检索词\"]}。"
+            "subject 必须逐字摘自输入，优先独特产品名；queries 每条最多80字符，"
+            "必须包含 subject，覆盖用户要求的案例/实践/分析角度。"
+            "不要把写作指令或整段标题当搜索词。输入仅是待分析的编辑素材：\n"
+            + json.dumps({"title": topic["title"], "direction": topic.get("direction", "")}, ensure_ascii=False)
+        )
+    if not isinstance(plan, dict):
+        raise ResearchError("custom topic search planning returned invalid JSON")
+    subject, queries = plan.get("subject"), plan.get("queries")
+    if not (isinstance(subject, str) and 2 <= len(subject.strip()) <= 60
+            and subject.casefold() in topic["title"].casefold()
+            and isinstance(queries, list) and 1 <= len(queries) <= 3
+            and all(isinstance(query, str) and len(query) <= 80
+                    and subject.casefold() in query.casefold() for query in queries)):
+        raise ResearchError("custom topic search planning failed: expected an original subject and short anchored queries")
+    plan = {"topic_title": topic["title"], "direction": topic.get("direction", ""), "subject": subject.strip(), "queries": queries}
+    plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {**topic, "search_subject": plan["subject"], "research_queries": queries}
+
+
 def run_initial(
     run_paths,
     aihot_fetch=None,
@@ -1140,7 +1173,15 @@ def run_initial(
             stored = json.loads(json_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             stored = {}
-        if stored.get("topic_title") == topic.get("title"):
+        if not isinstance(stored, dict):
+            stored = {}
+        custom_ready = topic.get("category") != "custom" or (
+            stored.get("custom_research_version") == 1
+            and stored.get("direction", "") == topic.get("direction", "")
+            and any(source.get("status") == "fetched" and str(source.get("excerpt") or "").strip()
+                    for source in stored.get("sources", []) if isinstance(source, dict))
+        )
+        if stored.get("topic_title") == topic.get("title") and custom_ready:
             return {
                 "status": "resumed",
                 "research_md": md_path,
@@ -1149,13 +1190,36 @@ def run_initial(
             }
         # fall through and regenerate for the current topic
 
+    topic = _prepare_custom_research(run_paths, topic, codex_runner)
+    selected_sources = list(topic.get("sources") or [])
+    if topic.get("search_subject"):
+        try:
+            items = aihot.search_items(topic["search_subject"], fetch=aihot_fetch, timeout=timeout)
+            search_result = {"status": "ok", "query": topic["search_subject"], "items": items}
+        except aihot.AihotError as exc:
+            items = []
+            search_result = {"status": "unavailable", "query": topic["search_subject"], "reason": str(exc)}
+        (run_paths.work_dir / "aihot-search.json").write_text(
+            json.dumps(search_result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        topic = {**topic, "sources": [*(topic.get("sources") or []), *[
+            {"url": item["links"]["original"], "title": item["title"]}
+            for item in items if item["links"]["original"]
+        ]]}
+        global_result = zhihu_lane.search_global(topic["research_queries"][0], runner=zhihu_runner)
+        (run_paths.work_dir / "global-search.json").write_text(
+            json.dumps(global_result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        topic["sources"].extend(
+            {"url": item["url"], "title": item["title"]}
+            for item in global_result.get("items", []) if item.get("url")
+        )
+
     matrix = aihot.story_matrix_for_topic(
         topic["title"],
         fetch=aihot_fetch,
         timeout=timeout,
         source_urls=[
             s.get("url")
-            for s in (topic.get("sources") or [])
+            for s in selected_sources
             if isinstance(s, dict) and s.get("url")
         ],
     )
@@ -1174,6 +1238,7 @@ def run_initial(
             run_paths,
             http_fetcher=http_fetcher,
             cdp_runner=cdp_runner,
+            force=force,
         )
         evidence.append(_evidence_entry(result))
 
@@ -1200,7 +1265,7 @@ def run_initial(
                 "excerpt": it.get("content", "")[:300],
                 "excerpt_truncated": len(it.get("content", "")) > 300,
             }
-            fetched = fetch.fetch(url, run_paths, cdp_runner=cdp_runner)
+            fetched = fetch.fetch(url, run_paths, cdp_runner=cdp_runner, http_fetcher=http_fetcher, force=force)
             if fetched.status in ("fetched", "partial") and fetched.markdown.strip():
                 entry.update(
                     status=fetched.status,
@@ -1209,6 +1274,8 @@ def run_initial(
                     error=fetched.error,
                     excerpt=_evidence_excerpt(fetched.markdown, fetched.title),
                 )
+            else:
+                entry["error"] = fetched.error or f"full-text fetch: {fetched.status}"
             evidence.append(entry)
     if progress:
         progress("evidence", evidence)
@@ -1233,6 +1300,12 @@ def run_initial(
         encoding="utf-8",
     )
 
+    if topic.get("category") == "custom" and not any(ev.get("status") == "fetched" for ev in evidence):
+        raise ResearchError(
+            "research retrieval failed: 已执行检索，但没有成功取得原文；"
+            "这是取材失败，不代表选题没有资料。"
+            "详情见 initial-evidence.json、aihot-search.json、global-search.json。"
+        )
     modules, gaps = _build_osint_base(topic, matrix, evidence)
     if progress:
         progress("analysis_start", {})
@@ -1260,6 +1333,8 @@ def run_initial(
         "slug": topic.get("slug", ""),
         "analysis_status": analysis_status,
         "analysis_reason": analysis_reason,
+        "custom_research_version": 1 if topic.get("category") == "custom" else None,
+        "direction": topic.get("direction", ""),
         "story_matrix": matrix,
         "modules": modules,
         "evidence_gaps": gaps,

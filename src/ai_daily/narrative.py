@@ -457,7 +457,7 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
     prompt = (
         "你是那篇专栏的作者本人：15 年科技大厂与 AI 架构老兵，冷峻、犀利、"
         "大白话、带专业傲慢，也爱看热闹；同时是 2026 年的 practitioner——"
-        "I tested / we changed / here is the trade-off。你在为今天这个选题想"
+        "从有出处的场景与作品中提炼观察，不编造亲历。你在为今天这个选题想"
         "两个完全不同的写法，用第一人称思考。\n\n"
         "【叙事契约】(knowledge/narrative-contract.md v2026)\n"
         "范式：热点 × 可验证冲突 × 证据资产 × 读者阅读后的变化。\n"
@@ -467,6 +467,18 @@ def _compile_prompt(topic: dict, osint: dict, allowed: list, tensions: set,
         "reader_move 决定读者读完是理解、改观、观察、准备、行动还是想象。"
         "不要把每篇文章都写成 CTO 行动清单。\n"
     )
+    if topic.get("category") == "custom":
+        prompt += (
+            "\n【主编指定选题的写作任务】\n"
+            f"主编原始要求：{topic.get('title', '')}\n"
+            "先识别主编要求的文章体裁与读者收获，在这个任务内部设计两个不同写法。"
+            "例如要求社区案例综述时，两条候选都必须以多个具体案例和能力展示为主体，"
+            "可以按使用场景或能力组织；失败案例用于补充边界，不能把整篇改成可靠性批判、"
+            "榜单审计或采购建议。其他类型同样遵循主编指定的重心。"
+            "不得编造作者亲测经历或履历场景；他人案例明确归属于原作者。"
+            "personal_scene 可以写来源里有据可查的他人场景，并注明归属，"
+            "不要求第一人称操作经历。两个写法可以复用案例证据，区别应在中心问题与解释上。\n"
+        )
     if directive:
         prompt += (
             "\n【主编退回意见（最高优先级，必须正面回应）】\n"
@@ -635,7 +647,7 @@ def _argument_evidence_overlap(first_args: list, second_args: list) -> float:
     return len(a & b) / len(a | b)
 
 
-def validate_candidate_pair(candidates: list) -> list:
+def validate_candidate_pair(candidates: list, allow_shared_evidence: bool = False) -> list:
     """Reject two candidates that differ cosmetically but answer identically."""
     if not isinstance(candidates, list) or len(candidates) != 2:
         return ["candidate-pair must contain exactly two candidates"]
@@ -658,7 +670,7 @@ def validate_candidate_pair(candidates: list) -> list:
         return [
             "same-advice candidate pair: the two theses and reader moves are too similar"
         ]
-    if evidence_overlap >= 0.60:
+    if evidence_overlap >= 0.60 and not allow_shared_evidence:
         return [
             "same-evidence candidate pair: both candidates cite the same "
             "sources and observables — they are one insight in two postures, "
@@ -784,7 +796,7 @@ def run(run_paths, codex_runner=None, force: bool = False) -> dict:
         _normalize_candidate(cand) if isinstance(cand, dict) else cand
         for cand in candidates
     ]
-    pair_errors = validate_candidate_pair(candidates)
+    pair_errors = validate_candidate_pair(candidates, allow_shared_evidence=topic.get("category") == "custom")
     if pair_errors:
         return {
             "status": "unavailable",

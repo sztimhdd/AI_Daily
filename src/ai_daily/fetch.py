@@ -267,8 +267,9 @@ def cdp_fetch(
         title=str(data.get("title", "") or ""),
         markdown=markdown,
         sha256=hashlib.sha256(markdown.encode("utf-8")).hexdigest(),
-        status=str(data.get("status", "") or "failed"),
+        status="partial" if data.get("status") == "fetched" and not markdown else str(data.get("status", "") or "failed"),
         source_lane="cdp",
+        error=str(data.get("error") or data.get("hint") or ""),
         fetched_at=fetched_at,
     )
 

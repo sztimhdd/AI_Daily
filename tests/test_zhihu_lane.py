@@ -32,6 +32,18 @@ def ok_search_payload():
 
 
 class SearchZhihuTests(unittest.TestCase):
+    def test_malformed_global_results_are_unavailable_not_exceptions(self):
+        result = zhihu_lane.search_global("Astra", runner=lambda args: {
+            "Code": 0, "Data": {"Items": [{"Title": "Astra", "Url": "https://example.com", "VoteUpCount": "oops"}]}})
+        self.assertEqual(result["status"], "unavailable")
+
+    def test_global_search_returns_external_source_links(self):
+        def runner(args):
+            self.assertEqual(args[:2], ["search", "global"])
+            return {"Code": 0, "Data": {"Items": [{"Title": "Astra tutorial", "Url": "https://example.com/tutorial", "ContentText": "Demo steps"}]}}
+        result = zhihu_lane.search_global("Astra tutorial", runner=runner)
+        self.assertEqual(result["items"][0]["url"], "https://example.com/tutorial")
+
     def test_ok_payload_normalizes_items(self):
         result = zhihu_lane.search_zhihu(
             "DeepSeek 推理成本", count=5, runner=lambda args: ok_search_payload()

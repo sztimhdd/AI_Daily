@@ -498,6 +498,13 @@ class NarrativeV2RegressionTests(unittest.TestCase):
         self.assertTrue(errors)
         self.assertIn("same-advice", errors[0])
 
+    def test_custom_survey_can_reorganize_shared_cases_with_distinct_theses(self):
+        evidence = [{"source": "https://example.com/demo", "observable": "Astra paints and plays piano"}]
+        first = {"thesis": "A new palette for independent artists", "reader_move": "imagine", "key_arguments": evidence}
+        second = {"thesis": "Interface feedback connects perception to action", "reader_move": "understand", "key_arguments": evidence}
+        self.assertEqual(narrative.validate_candidate_pair([first, second], allow_shared_evidence=True), [])
+        self.assertTrue(narrative.validate_candidate_pair([first, first], allow_shared_evidence=True))
+
     def test_same_evidence_skeleton_is_rejected_even_with_different_thesis(self):
         """Two candidates citing the same sources and observables are the
         same insight in different wording, even if thesis text differs."""

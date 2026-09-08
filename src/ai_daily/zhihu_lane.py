@@ -103,7 +103,15 @@ def _ok(payload: dict) -> bool:
 
 def search_zhihu(query: str, count: int = 10, runner=None) -> dict:
     """Search Zhihu community content; returns normalized items + links."""
-    payload = _run(["search", "zhihu", "--query", query, "--count", str(count)],
+    return _search("zhihu", query, count, runner)
+
+
+def search_global(query: str, count: int = 5, runner=None) -> dict:
+    return _search("global", query, count, runner)
+
+
+def _search(lane: str, query: str, count: int, runner=None) -> dict:
+    payload = _run(["search", lane, "--query", query, "--count", str(count)],
                    runner=runner)
     if not _ok(payload):
         error = payload.get("error") or {}
@@ -111,7 +119,11 @@ def search_zhihu(query: str, count: int = 10, runner=None) -> dict:
                 "reason": str(error.get("message") or payload.get("reason")
                              or payload.get("Message") or "zhihu search unavailable")}
     data = payload.get("Data") or {}
-    return {"status": "ok", "items": _normalize_items(data.get("Items"))}
+    try:
+        items = _normalize_items(data.get("Items"))
+    except (AttributeError, TypeError, ValueError):
+        return {"status": "unavailable", "reason": "malformed zhihu search results"}
+    return {"status": "ok", "items": items}
 
 
 def hot_topics(limit: int = 30, runner=None) -> dict:
@@ -126,15 +138,23 @@ def hot_topics(limit: int = 30, runner=None) -> dict:
     return {"status": "ok", "items": _normalize_items(data.get("Items"))}
 
 
-def community_voice(topic: dict, runner=None, count: int = 5) -> dict:
-    """Bounded community search for a topic; community-voice evidence only."""
+def community_query(topic: dict) -> str:
     title = (topic or {}).get("title", "")
     queries = (topic or {}).get("research_queries") or []
+    if topic.get("search_subject") and queries:
+        return queries[-1]
     extra = next(
         (str(q) for q in queries if str(q).strip() and str(q) != title),
         "",
     )
     query = f"{title} {extra}".strip() if extra else title
+    return query
+
+
+def community_voice(topic: dict, runner=None, count: int = 5) -> dict:
+    """Bounded community search for a topic; community-voice evidence only."""
+    title = (topic or {}).get("title", "")
+    query = community_query(topic)
     result = search_zhihu(query, count=count, runner=runner)
     if result.get("status") != "ok":
         return result

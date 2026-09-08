@@ -30,6 +30,16 @@ SAMPLE_HTML = """<!doctype html>
 
 
 class RouteLaneTests(unittest.TestCase):
+    def test_empty_cdp_body_is_not_fetched_evidence(self):
+        result = fetch.cdp_fetch("https://www.zhihu.com/question/1",
+            runner=lambda *args: ('{"status":"fetched","title":"Astra"}', ""))
+        self.assertNotEqual(result.status, "fetched")
+
+    def test_cdp_unreachable_preserves_operator_recovery_hint(self):
+        result = fetch.cdp_fetch("https://www.zhihu.com/question/1",
+            runner=lambda *args: (json.dumps({"status": "unreachable", "hint": "Hermes tunnel unavailable"}), ""))
+        self.assertIn("Hermes tunnel", result.error)
+
     def test_walled_hosts_and_subdomains_route_to_cdp(self):
         for url in (
             "https://www.zhihu.com/question/1",

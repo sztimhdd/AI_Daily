@@ -33,6 +33,63 @@ class _FakeKgClient:
         return "hit"
 
 
+class CustomResearchRecoveryTests(unittest.TestCase):
+    def test_direction_change_replans_same_topic(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = paths.RunPaths(pathlib.Path(directory), "2026-09-08")
+            run.ensure_work_dir()
+            topic = {"category": "custom", "title": "Astra survey", "direction": "coding"}
+            research._prepare_custom_research(run, topic, lambda prompt: {"subject": "Astra", "queries": ["Astra coding"]})
+            changed = research._prepare_custom_research(run, {**topic, "direction": "art"},
+                lambda prompt: {"subject": "Astra", "queries": ["Astra art"]})
+            self.assertEqual(changed["research_queries"], ["Astra art"])
+
+    def test_malformed_aihot_original_link_is_not_a_source(self):
+        result = aihot.search_items("Astra", fetch=lambda *args: json.dumps({"items": [
+            {"title": "Astra", "links": {"original": {"bad": "url"}}}]}).encode())
+        self.assertEqual(result[0]["links"]["original"], "")
+    def test_custom_brief_becomes_short_queries_without_replacing_editor_intent(self):
+        topic = {"category": "custom", "title": "Survey GPT-6 Astra community use cases", "sources": []}
+        plan = {"subject": "GPT-6 Astra", "queries": ["GPT-6 Astra community examples", "GPT-6 Astra 实测 案例"]}
+        with tempfile.TemporaryDirectory() as directory:
+            run = paths.RunPaths(pathlib.Path(directory), "2026-09-08")
+            run.ensure_work_dir()
+            prepared = research._prepare_custom_research(run, topic, lambda prompt: plan)
+            self.assertEqual(prepared["title"], topic["title"])
+            self.assertEqual(prepared["search_subject"], "GPT-6 Astra")
+            self.assertEqual(prepared["research_queries"], plan["queries"])
+            self.assertNotIn("search_subject", topic)
+
+    def test_planner_cannot_replace_the_subject_with_an_unmentioned_model(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = paths.RunPaths(pathlib.Path(directory), "2026-09-08")
+            run.ensure_work_dir()
+            with self.assertRaises(research.ResearchError):
+                research._prepare_custom_research(run, {"category": "custom", "title": "Astra community"},
+                    lambda prompt: {"subject": "Gemini", "queries": ["Gemini cases"]})
+
+    def test_aihot_keyword_search_recovers_nonselected_items(self):
+        calls = []
+        def transport(url, timeout):
+            calls.append(url)
+            items = [] if "mode=selected" in url else [{"title": "Astra Blender tutorial", "links": {"original": "https://example.com/astra"}}]
+            return json.dumps({"items": items}).encode()
+        items = aihot.search_items("Astra", fetch=transport)
+        self.assertEqual(items[0]["links"]["original"], "https://example.com/astra")
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(all("q=Astra" in url and "window=7d" in url for url in calls))
+
+    def test_new_community_query_does_not_reuse_old_title_only_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = paths.RunPaths(pathlib.Path(directory), "2026-09-08")
+            run.ensure_work_dir()
+            (run.work_dir / research.ZHIHU_COMMUNITY_JSON).write_text(json.dumps({"topic": "Astra survey", "query": "old long query", "status": "ok", "items": []}))
+            topic = {"title": "Astra survey", "search_subject": "Astra", "research_queries": ["Astra 社区 实测"]}
+            data = research._zhihu_community_block(run, topic, runner=lambda args: {"Code": 0, "Data": {"Items": []}})
+            self.assertEqual(data["query"], "Astra 社区 实测")
+            self.assertFalse(data.get("resumed", False))
+
+
 _FAKE_KG = _FakeKgClient()
 _NO_ZHIHU = lambda args: {"Code": 401, "Message": "no auth"}
 
@@ -423,6 +480,53 @@ class InitialResearchHappyPathTests(InitialResearchBase):
         urls = research._initial_url_list(topic, {"reports": []}, discover)
         self.assertEqual(calls, ["OpenAI Cursor contract change"])
         self.assertEqual(urls, ["https://www.zhihu.com/question/99"])
+
+    def test_custom_topic_off_hot_board_reaches_analysis_with_discovered_originals(self):
+        topics.record_custom_topic(self.paths, "Survey Astra community use cases")
+        (self.paths.work_dir / "initial-osint.json").write_text(json.dumps({"topic_title": "Survey Astra community use cases", "sources": []}))
+        (self.paths.work_dir / "initial-osint.md").write_text("old empty archive")
+        def transport(url, timeout):
+            if "/hot-topics" in url:
+                return json.dumps({"items": []}).encode()
+            return json.dumps({"items": [{"title": "Astra case", "links": {"original": "https://example.com/astra"}}]}).encode()
+        def model(prompt):
+            if "检索计划" in prompt:
+                return {"subject": "Astra", "queries": ["Astra use cases", "Astra 实测"]}
+            self.assertIn("https://example.com/astra", prompt)
+            return {"status": "completed", "modules": []}
+        with mock.patch.object(research.fetch, "discover", side_effect=AssertionError("unexpected local browser search")):
+            self.run_initial(aihot_fetch=transport, codex_runner=model)
+        evidence = self.read_json("initial-osint.json")
+        self.assertEqual(evidence["sources"][0]["status"], "fetched")
+        self.assertEqual(evidence["sources"][0]["url"], "https://example.com/astra")
+
+    def test_keyword_discovery_links_do_not_pin_unrelated_hot_story(self):
+        topics.record_custom_topic(self.paths, "Survey Astra community cases")
+        def transport(url, timeout):
+            if "/hot-topics" in url:
+                return json.dumps({"items": [{"rank": 1, "title": "Mathematics breakthrough", "links": {
+                    "original": "https://example.com/math", "story": f"https://aihot.virxact.com/story/{STORY_ID}"}}]}).encode()
+            if "/stories/" in url:
+                return json.dumps(story_payload()).encode()
+            return json.dumps({"items": [{"title": "Math with Astra", "links": {"original": "https://example.com/math"}}]}).encode()
+        def model(prompt):
+            if "检索计划" in prompt:
+                return {"subject": "Astra", "queries": ["Astra cases"]}
+            return {"status": "completed", "modules": []}
+        self.run_initial(aihot_fetch=transport, codex_runner=model)
+        self.assertEqual(self.read_json("story-matrix.json")["status"], "unavailable")
+
+    def test_empty_custom_research_stops_before_narrative_with_discovery_receipt(self):
+        topics.record_custom_topic(self.paths, "Astra community cases")
+        (self.paths.work_dir / "initial-osint.json").write_text("[]")
+        (self.paths.work_dir / "initial-osint.md").write_text("broken archive")
+        def model(prompt):
+            if "检索计划" in prompt:
+                return {"subject": "Astra", "queries": ["Astra cases"]}
+            self.fail("empty research should not invoke synthesis")
+        with self.assertRaisesRegex(research.ResearchError, "research retrieval failed"):
+            self.run_initial(aihot_fetch=lambda *args: json.dumps({"items": []}).encode(), codex_runner=model)
+        self.assertEqual(self.read_json("initial-evidence.json")["sources"], [])
 
     def test_pipeline_run_initial_research_forwards_fakes(self):
         result = pipeline.run_initial_research(

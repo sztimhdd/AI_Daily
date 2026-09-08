@@ -83,8 +83,8 @@ def _normalize(raw_items) -> list:
                 "summary": (raw.get("summary") or "").strip() if isinstance(raw.get("summary"), str) else "",
                 "source_name": source_name.strip(),
                 "links": {
-                    "aihot": links.get("aihot") or "",
-                    "original": links.get("original") or "",
+                    "aihot": links.get("aihot") if isinstance(links.get("aihot"), str) else "",
+                    "original": links.get("original") if isinstance(links.get("original"), str) else "",
                 },
                 "published_at": raw.get("publishedAt") or "",
                 "discovered_at": raw.get("discoveredAt") or "",
@@ -140,6 +140,22 @@ class CollectResult:
     mode: str
     items: list
     error: str = ""
+
+
+def search_items(query: str, fetch=None, timeout: float = 30.0) -> list:
+    transport = fetch or _default_fetch
+    for mode in ("selected", "all"):
+        params = urllib.parse.urlencode({"mode": mode, "q": query, "window": "7d", "limit": 20})
+        try:
+            payload = _parse_payload(transport(f"{API_BASE}/items?{params}", timeout), "AIHOT search")
+        except AihotError:
+            raise
+        except Exception as exc:
+            raise AihotError(f"AIHOT search failed: {type(exc).__name__}") from exc
+        items = _normalize(payload["items"])
+        if items:
+            return items
+    return []
 
 
 def collect_items(mode: str, fixture_path=None, fetch=None, **live_kwargs) -> CollectResult:
