@@ -1,6 +1,6 @@
 # Sources and evidence: Astra’s Unsettling Trick: It Starts Connecting Seeing to Doing
 
-51 deduplicated source(s) from the evidence package.
+54 deduplicated source(s) from the evidence package.
 
 - [Emad (@EMostaque) on X](https://x.com/EMostaque/status/2097378223138959719)（initial · fetched）
 - [OpenAI (@OpenAI) on X](https://x.com/OpenAI/status/2097375276384567642)（initial · fetched）
@@ -53,3 +53,6 @@
 - [实测GPT-6 Astra,人还能站在机器之上吗? - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2080427645167211225?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
 - [GPT-6 Astra发布,AI终于会用电脑了 - 知乎 (fetch failed)](https://zhuanlan.zhihu.com/p/2079245491062289776?utm_medium=openapi_platform&utm_source=cf621feb3f2d)（targeted · found · Chinese source）
 - [(99+ 封私信 / 60 条消息) 如何评价GPT6在Blender建模的水平两极分化？ - 知乎](https://www.zhihu.com/question/2079875098979448454)（targeted · fetched · Chinese source）
+- [x.com (fetch failed)](https://x.com/keitowebai/status/2096124169406775325)（article）
+- [x.com (fetch failed)](https://x.com/taiyaki_sun/status/2096149368193839455)（article）
+- [x.com (fetch failed)](https://x.com/victornunez/status/2095975651094261777)（article）

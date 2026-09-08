@@ -74,8 +74,8 @@
     "微信页面未成功抓取，不能作为事实来源。",
     "产品上线时间线有官方 X 帖支持，但应在发布前复核当前可用入口；不宜把历史 rollout 状态写成当前可用性。"
   ],
-  "source_count": 51,
-  "generated_at": "2026-09-08T22:51:44+00:00",
+  "source_count": 54,
+  "generated_at": "2026-09-08T22:58:37+00:00",
   "seo_title": "Astra Is Connecting Seeing to Doing",
   "seo_summary": "Astra may be shifting AI from describing screens to acting on them—but thin evidence and hostile interfaces remain the test.",
   "has_cover": true,
@@ -432,6 +432,21 @@
       "url": "https://www.zhihu.com/question/2079875098979448454",
       "origin": "targeted",
       "status": "fetched"
+    },
+    {
+      "title": "https://x.com/keitowebai/status/2096124169406775325",
+      "url": "https://x.com/keitowebai/status/2096124169406775325",
+      "origin": "article"
+    },
+    {
+      "title": "https://x.com/taiyaki_sun/status/2096149368193839455",
+      "url": "https://x.com/taiyaki_sun/status/2096149368193839455",
+      "origin": "article"
+    },
+    {
+      "title": "https://x.com/victornunez/status/2095975651094261777",
+      "url": "https://x.com/victornunez/status/2095975651094261777",
+      "origin": "article"
     }
   ],
   "final_article": "articles/2026-09-08-astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing-en.md",
