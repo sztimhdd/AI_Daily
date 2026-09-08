@@ -12,6 +12,10 @@ A reported **Zhihu** roundup describes **GPT-6 Astra** using computer-use capabi
 
 Picture the scene rather than the architecture diagram: a cursor hovering over a palette, a blank line drawing waiting for color, piano keys flashing under clicks. That is the visible promise before anyone calls it computer use.
 
+![A paper-collage composition showing an artist palette, a blank line drawing, piano keys, and a cursor-shaped cutout.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/08/astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing/images/01.webp)
+*The visible promise is a chain of small actions, not a single flash of intelligence.*
+
+
 The phrase matters because it implies a chain, not a talent. A model would need to interpret what appears on screen, choose a next action, issue it through an authorized tool, notice what changed, and repeat without losing the original aim.
 
 None of those links should be assumed from a compelling clip. The portrait and line-art reports do not independently establish whether visual reasoning, browser control, application permissions, human intervention, or hidden workflow scaffolding produced the reported result.
@@ -19,6 +23,10 @@ None of those links should be assumed from a compelling clip. The portrait and l
 That missing machinery is the whole story. A model that recognizes a brush icon is not automatically a model that can finish an illustration under deadline, recover from a dialog box, or know when the face it made no longer resembles its subject.
 
 *Screens are not APIs, even when a model treats them like one.* They are full of moving targets: pop-ups, stale state, layout shifts, authentication gates, and controls designed for human hands.
+
+![A computer mouse faces a maze of overlapping translucent panels while a human hand reaches into the structure.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/08/astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing/images/02.webp)
+*A screen is a moving room built for hands, not a clean command surface.*
+
 
 The virtual piano report sharpens the idea. A language model has long been able to discuss music theory; an agent that can navigate to a playable instrument and trigger notes is crossing from description into a visible environment.[1](https://www.zhihu.com/question/2080482298223399865/answer/2080627950144186018?utm_medium=openapi_platform&utm_source=cf621feb3f2d)
 
@@ -35,6 +43,10 @@ The counterexample is more useful than the applause. One **Blender** user report
 Another community account says the model struggled to repair problems in **Blender**, arguing that attractive examples often combine simpler geometric forms while complex human-like surfaces remain difficult. That is also anecdotal, but it lands closer to how production actually fails: the agent sees the problem and still cannot get its hands around it.[4](https://www.zhihu.com/question/2079875098979448454)
 
 So the emerging split is not intelligence versus stupidity. It is smooth surfaces versus hostile ones: a controlled webpage can reward a sequence of clicks, while a professional 3D scene can punish one wrong assumption across topology, lighting, materials, and rendering.
+
+![A smooth path with simple circular marks transforms into a dense three-dimensional landscape of tangled surfaces and harsh lighting.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/08/astra-s-unsettling-trick-it-starts-connecting-seeing-to-doing/images/03.webp)
+*The real divide is not smart or dumb; it is whether the surface forgives a wrong move.*
+
 
 For architects, the implication isn’t a shopping checklist. It is a reframed system boundary: the valuable unit may become the closed loop linking observation, authorized action, state recovery, and a human judgment of whether the artifact is actually done.
 

@@ -75,13 +75,57 @@
     "产品上线时间线有官方 X 帖支持，但应在发布前复核当前可用入口；不宜把历史 rollout 状态写成当前可用性。"
   ],
   "source_count": 51,
-  "generated_at": "2026-09-08T19:31:47+00:00",
+  "generated_at": "2026-09-08T22:51:44+00:00",
   "seo_title": "Astra Is Connecting Seeing to Doing",
   "seo_summary": "Astra may be shifting AI from describing screens to acting on them—but thin evidence and hostile interfaces remain the test.",
-  "has_cover": false,
-  "cover": null,
-  "images_status": "degraded",
-  "images": [],
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A dark desk with an unreadable monitor reflecting a pair of eyes and a hand resting on a mouse.",
+    "caption": "The unnerving shift is not better description, but perception reaching into action."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A dark desk with an unreadable monitor reflecting a pair of eyes and a hand resting on a mouse.",
+      "caption": "The unnerving shift is not better description, but perception reaching into action.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A paper-collage composition showing an artist palette, a blank line drawing, piano keys, and a cursor-shaped cutout.",
+      "caption": "The visible promise is a chain of small actions, not a single flash of intelligence.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A computer mouse faces a maze of overlapping translucent panels while a human hand reaches into the structure.",
+      "caption": "A screen is a moving room built for hands, not a clean command surface.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A smooth path with simple circular marks transforms into a dense three-dimensional landscape of tangled surfaces and harsh lighting.",
+      "caption": "The real divide is not smart or dumb; it is whether the surface forgives a wrong move.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
   "sources": [
     {
       "title": "Emad (@EMostaque) on X",
