@@ -79,7 +79,9 @@ def run(run_paths, *, codex_runner=None, gemini_runner=None, repo_dir=None,
         summary["linkedin_kit"]["status"] = "degraded"
 
     try:
-        assembly = assemble_en.run(run_paths, force=force)
+        # Enrichment may have changed images/kit on a resumed draft.
+        # Packaging is deterministic: refresh it without rerunning writing.
+        assembly = assemble_en.run(run_paths, force=True)
     except Exception as exc:
         return _failed(run_paths, summary, f"assembly failed: {type(exc).__name__}: {exc}")
     summary["assembly"] = _warning(assembly)
@@ -97,9 +99,14 @@ def run(run_paths, *, codex_runner=None, gemini_runner=None, repo_dir=None,
             }
         except Exception as exc:
             summary["publication"] = {"status": "failed", "reason": str(exc)}
-    summary["status"] = "delivered"
+    incomplete = any(summary[key]["status"] in ("degraded", "failed", "warning")
+                     for key in ("images", "linkedin_kit", "publication"))
+    summary["status"] = "partial" if incomplete else "delivered"
     result = _persist(run_paths, summary)
-    state.transition(run_paths, "completed", note="english delivery accepted")
+    if incomplete:
+        state.update_fields(run_paths, status="in_progress", note="English delivery incomplete; resume missing assets")
+    else:
+        state.transition(run_paths, "completed", note="english delivery accepted")
     result["package_dir"] = assembly["package_dir"]
     result["final_article"] = assembly["final_article"]
     return result

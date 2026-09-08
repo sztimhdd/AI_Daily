@@ -44,6 +44,14 @@ if [ -f "$DELIVERY" ] && grep -q '"status": "delivered"' "$DELIVERY"; then
   exit 0
 fi
 
+# Resume delivery only: do not repeat research/audit for missing assets.
+if [ -f "$DELIVERY" ] && grep -q '"status": "partial"' "$DELIVERY"; then
+  run run-en --repo-dir ".local/publish/$DATE" \
+    --remote-url "https://github.com/sztimhdd/AI_Daily.git" --branch main
+  log "resumed partial delivery"
+  exit 0
+fi
+
 # A failed run needs a human. Poll Telegram once so its one-shot blocked
 # receipt is delivered, then stop retrying expensive stages.
 if [ -f "$STATE" ] && grep -q '^- status: failed' "$STATE"; then

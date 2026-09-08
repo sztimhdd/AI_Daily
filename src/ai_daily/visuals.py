@@ -46,8 +46,8 @@ ALLOWED_MODELS = (
 )
 
 _VERTEX_ENDPOINT = (
-    "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/{project}"
-    "/locations/us-central1/publishers/google/models/{model}:generateContent"
+    "https://aiplatform.googleapis.com/v1beta1/projects/{project}"
+    "/locations/global/publishers/google/models/{model}:generateContent"
 )
 
 RAW_GITHUB_BASE = "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main"
@@ -800,7 +800,7 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
     )
     ok = [e for e in entries if e["status"] == "generated"]
     return {
-        "status": "generated" if ok else "degraded",
+        "status": "generated" if ok and len(ok) == len(entries) else "degraded",
         "generated": len(ok),
         "total": len(entries),
         "manifest": manifest,
@@ -919,7 +919,8 @@ def run_illustrate(run_paths, codex_runner=None, gemini_runner=None,
         str((run_paths.work_dir / IMAGES_MANIFEST_JSON).relative_to(run_paths.root)),
     )
     return {
-        "status": "illustrated" if generated else "degraded",
+        "status": "illustrated" if generated and len(generated) == len(plan["images"]) else "degraded",
+        "reason": "; ".join(f"{e['id']}: {e.get('reason', 'failed')}" for e in gen["manifest"]["images"] if e["status"] != "generated"),
         "images": build_manifest(generated),
         "generated": len(generated),
     }

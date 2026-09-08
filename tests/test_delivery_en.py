@@ -47,15 +47,18 @@ class DeliveryEnTests(unittest.TestCase):
              mock.patch.object(delivery_en.linkedin, "run", return_value={"status": "unavailable", "reason": "kit down"}):
             result = delivery_en.run(self.rp)
 
-        self.assertEqual(result["status"], "delivered")
+            article.write_text("# A usable English edition\n\nRecovered illustration caption. ([source](https://example.com/1)).\n", encoding="utf-8")
+            recovered = delivery_en.run(self.rp)
+            self.assertIn("Recovered illustration caption.", recovered["final_article"].read_text())
+
+        self.assertEqual(result["status"], "partial")
         self.assertEqual(result["images"]["status"], "degraded")
         self.assertEqual(result["linkedin_kit"]["status"], "degraded")
         self.assertTrue(result["package_dir"].is_dir())
         summary = json.loads((self.rp.work_dir / "delivery-en.json").read_text(encoding="utf-8"))
-        self.assertEqual(summary["status"], "delivered")
+        self.assertEqual(summary["status"], "partial")
         self.assertEqual(summary["claim_check"]["status"], "warning")
-        self.assertEqual(state.read_state(self.rp)["stage"], "completed")
-        self.assertEqual(state.read_state(self.rp)["status"], "completed")
+        self.assertEqual(state.read_state(self.rp)["status"], "in_progress")
 
     def test_delivery_stops_before_assembly_when_draft_is_unavailable(self):
         from ai_daily import delivery_en

@@ -607,7 +607,8 @@ class RunIllustrateTests(VisualsBase):
         )
         self.assertIn("images/01.webp", article)
         self.assertNotIn("images/03.webp", article)
-        self.assertEqual(result["status"], "illustrated")
+        self.assertEqual(result["status"], "degraded")
+        self.assertEqual(result["reason"], "03: down")
 
     def test_illustrate_replaces_stale_package_image_block_on_force(self):
         old_url = (
