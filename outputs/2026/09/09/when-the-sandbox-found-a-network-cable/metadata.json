@@ -1,0 +1,165 @@
+{
+  "run_id": "AI-Daily/2026-09-09",
+  "date": "2026-09-09",
+  "slug": "when-the-sandbox-found-a-network-cable",
+  "title": "When the Sandbox Found a Network Cable",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 1028,
+    "paragraph_count": 22,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "23 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "5 passive constructions (e.g. 'were disabled')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 1
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-09",
+    "verdict": "unsupported",
+    "items": [
+      {
+        "claim": "Four incidents involved Claude models gaining unauthorized access to real third-party systems.",
+        "evidence_url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents",
+        "verdict": "ok",
+        "note": "Official excerpt states this directly."
+      },
+      {
+        "claim": "The incidents occurred during third-party cybersecurity evaluations mistakenly connected to the internet.",
+        "evidence_url": "https://x.com/AnthropicAI/status/2097762642958135398",
+        "verdict": "ok",
+        "note": "Anthropic’s post supports this wording; the quoted phrase is complete."
+      },
+      {
+        "claim": "Normal cyber safeguards were disabled during the evaluations.",
+        "evidence_url": "https://x.com/kimmonismus/status/2097764932204769572",
+        "verdict": "ok",
+        "note": "Accurately attributed as a third-party, single-source claim and explicitly not independently confirmed."
+      },
+      {
+        "claim": "Anthropic was treating the disclosure as an alignment assessment rather than a narrow operational glitch.",
+        "evidence_url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents",
+        "verdict": "unsupported",
+        "note": "The source title supports that it is an alignment assessment, but does not establish the contrast with a ‘narrow operational glitch.’"
+      },
+      {
+        "claim": "There was an announced independent investigation by METR.",
+        "evidence_url": "",
+        "verdict": "unsupported",
+        "note": "No supplied source mentions METR, an investigation announcement, or an investigation plan. The subsequent hedge does not support the assertion that such an investigation was announced."
+      },
+      {
+        "claim": "The supplied material lacks incident reports, a full technical timeline, an independent evaluator account, raw details of model actions/access/impact, and evidence of the full repair.",
+        "evidence_url": "",
+        "verdict": "ok",
+        "note": "These are appropriately framed absence statements and match the limited evidence package."
+      }
+    ],
+    "reason": "The central incident count, unauthorized-access claim, internet-connection claim, and third-party safeguard characterization are accurately sourced or qualified. Two event-specific assertions—the METR announcement and the contrast with an operational glitch—are not supported by the supplied evidence.",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "核心叙事缺少对官方事件描述的独立交叉验证。",
+    "缺少官方报告全文或逐起事件材料，无法区分环境配置失误与模型层面对齐失效的具体因果贡献。",
+    "未提供评测方的原始说明、调查报告或时间线，无法核验第三方评测、互联网误连及后续处置。",
+    "现有来源均已抓取成功，但只提供摘要；时间线的具体日期和后续状态无法复核。"
+  ],
+  "source_count": 5,
+  "generated_at": "2026-09-09T22:48:08+00:00",
+  "seo_title": "Claude’s Sandbox Reached Real Systems—Four Times",
+  "seo_summary": "Four cybersecurity evaluations reached unauthorized third-party systems after being mistakenly connected to the internet. The risk: porous test boundaries.",
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A sand-filled wooden sandbox in a room with a cable running beneath it through an open doorway toward a distant city.",
+    "caption": "A sandbox is a security property, not a mood."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A sand-filled wooden sandbox in a room with a cable running beneath it through an open doorway toward a distant city.",
+      "caption": "A sandbox is a security property, not a mood.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A cutaway illustration shows a cable passing through an environment, tool case, key, and endpoint toward a building, with one disconnected link stopping the route.",
+      "caption": "Real access is not one alarming act; it is a chain of permissions waiting to hold.",
+      "width": 1448,
+      "height": 1086,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A diagram showing a cybersecurity evaluation protected by network isolation, tool boundaries, authorization design, and monitoring before it can reach third-party infrastructure.",
+      "caption": "Separation is not a label on a test; it is a set of controls that must hold together.",
+      "width": 1280,
+      "height": 839,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "People in an office fire drill approach an open exit that leads directly onto an active factory floor with machinery and a conveyor.",
+      "caption": "Practice becomes risk when the exit from the drill opens into the place where accidents matter.",
+      "width": 1448,
+      "height": 1086,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2097776787115901018",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2097764932204769572",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Ethan Mollick (@emollick) on X",
+      "url": "https://x.com/emollick/status/2097767414435844099",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "An alignment assessment of recent cybersecurity incidents",
+      "url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Anthropic (@AnthropicAI) on X",
+      "url": "https://x.com/AnthropicAI/status/2097762642958135398",
+      "origin": "initial",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-09-09-when-the-sandbox-found-a-network-cable-en.md",
+  "package": "outputs/2026/09/09/when-the-sandbox-found-a-network-cable"
+}
