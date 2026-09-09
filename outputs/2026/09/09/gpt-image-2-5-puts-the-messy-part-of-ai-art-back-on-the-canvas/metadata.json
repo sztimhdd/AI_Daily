@@ -1,0 +1,262 @@
+{
+  "run_id": "AI-Daily/2026-09-09",
+  "date": "2026-09-09",
+  "slug": "gpt-image-2-5-puts-the-messy-part-of-ai-art-back-on-the-canvas",
+  "title": "GPT Image 2.5 Puts the Messy Part of AI Art Back on the Canvas",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 916,
+    "paragraph_count": 22,
+    "findings": [
+      {
+        "check": "metric-bold",
+        "message": "1 key figure(s) present but none bolded",
+        "line": 0
+      },
+      {
+        "check": "sentence-rhythm",
+        "message": "24 sentence(s) exceed 20 words",
+        "line": 0
+      }
+    ],
+    "downgraded": false,
+    "attempts": 3
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-09",
+    "verdict": "mismatch",
+    "items": [
+      {
+        "claim": "OpenAI says generation latency can fall by as much as 50% versus Images 2.0.",
+        "evidence_url": "https://www.ithome.com/0/999/956.htm",
+        "verdict": "mismatch",
+        "note": "IT Home reports that OpenAI announced a maximum 50% reduction, but the supplied official OpenAI excerpt does not contain the latency figure. The evidence package supports attribution to IT Home, not a directly evidenced statement by OpenAI."
+      }
+    ],
+    "reason": "All other event-specific claims, quotations, roles, source-level caveats, and explicitly conditional inferences are supported or appropriately hedged by the supplied evidence. No claim says both companies confirmed anything.",
+    "status": "completed"
+  },
+  "evidence_verdict": "sufficient",
+  "downgraded": false,
+  "evidence_caveats": [
+    "没有独立、可复现的 Images 2.0 与 2.5 同任务性能和编辑稳定性对照。",
+    "局部评论式编辑的官方原页摘录不完整；现有直接官方证据足以支撑编辑方向，但不宜扩展为具体交互细节的确定承诺。",
+    "所有社区测试均应按个人经验处理，不能推广为普遍性能事实。",
+    "微信来源未实际抓取成功，不能引用或用于补强。",
+    "API 型号、价格、可用计划和限制没有对应的完整官方文档证据，文章不应纳入这些事实。"
+  ],
+  "source_count": 26,
+  "generated_at": "2026-09-09T13:05:05+00:00",
+  "seo_title": "GPT Image 2.5 Makes AI Art Revision-Ready",
+  "seo_summary": "GPT Image 2.5 shifts AI image work from one-shot generation to iterative editing with sketches, references, and local comments.",
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A loose blue line reshapes one small corner of an otherwise intact black-and-ivory editorial illustration, with muted vermilion accents.",
+    "caption": "The useful image model is not the one that makes a first draft; it is the one that lets the picture remain itself while a person changes their mind."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A loose blue line reshapes one small corner of an otherwise intact black-and-ivory editorial illustration, with muted vermilion accents.",
+      "caption": "The useful image model is not the one that makes a first draft; it is the one that lets the picture remain itself while a person changes their mind.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A red coffee cup sits on a table while the tabletop texture, window light, and nearby hand visibly change around it.",
+      "caption": "A local edit that moves everything else is not precision—it is a restart disguised as success.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A rough blue circle surrounds a small flaw in a finished picture, and the circled area is neatly repaired.",
+      "caption": "When the problem is visual, a crooked circle can be more exact than a perfect sentence.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A portrait and surrounding scene remain aligned while one small circled area appears in three layered changed positions.",
+      "caption": "The test is not whether one mark can move; it is whether everything that should stay still does.",
+      "width": 1024,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Tibo (@thsottiaux) on X",
+      "url": "https://x.com/thsottiaux/status/2097476797298520292",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI 最强 AI 生图模型：ChatGPT Images 2.5 登场，延迟降低 50%、新增 Sketch 草图 - IT之家",
+      "url": "https://www.ithome.com/0/999/956.htm",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Introducing ChatGPT Images 2.5",
+      "url": "https://simonwillison.net/2026/Sep/8/introducing-chatgpt-images-25",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "ChatGPT Sketch turns your bad drawings into detailed AI images",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/991727/openai-chatgpt-images-2-5-sketch",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Sam Altman (@sama) on X",
+      "url": "https://x.com/sama/status/2097410967978324010",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Rohan Paul (@rohanpaul_ai) on X",
+      "url": "https://x.com/rohanpaul_ai/status/2097407760149454998",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2097399767915499797",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Introducing ChatGPT Images 2.5",
+      "url": "https://openai.com/index/introducing-chatgpt-images-2-5",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Greg Brockman (@gdb) on X",
+      "url": "https://x.com/gdb/status/2097400146220740627",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI (@OpenAI) on X",
+      "url": "https://x.com/OpenAI/status/2097394956457623964",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Weixin Official Accounts Platform",
+      "url": "https://mp.weixin.qq.com/s?__biz=Mzg3MTk3NzYzNw%3D%3D&mid=2247510824&idx=1&sn=025a8b7c5fec54d8a00c8632f55f8d98",
+      "origin": "initial",
+      "status": "verify"
+    },
+    {
+      "title": "GPT image 2.5发布,如何评价这一模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2080851669617734486/answer/2080915392529278151?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "GPT Image2.5悄悄上线,靠提示语提升AI生图可控性的时代要过去了 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080942279624221891?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "GPT Images 2.5 首发实测,手绘成图、指哪改哪、也太逼真了! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2081021512199435805?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "刚刚,GPT-Image-2.5 来了!生图更快,免费也能用! - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2081051937793914536?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "GPT image 2.5发布,如何评价这一模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2080851669617734486/answer/2080957869122500451?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "ChatGPT Images 2.5 发布,一文带你看懂 10个升级点 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080958660856001366?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT image 2.5发布,如何评价这一模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2080851669617734486/answer/2081038662595301408?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "ChatGPT Images 2.5:新功能、使用方法与价格详解 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080973051261366833?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT image 2.5发布,如何评价这一模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2080851669617734486/answer/2080952366812210058?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "如何看待 OpenAI 被曝测试 GPT Image 2.5?AI 图像生成能力将迎来哪些突破? - 知乎",
+      "url": "https://www.zhihu.com/question/2074186001547617131/answer/2080953738248860018?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT image 2.5发布,如何评价这一模型? - 知乎",
+      "url": "https://www.zhihu.com/question/2080851669617734486/answer/2081093855412334680?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT Image 2.5来了,OpenAI开始抄Banana的作业 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080954157939306536?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "GPT-Image-2.5 凌晨发布,速度精度交互三升级,Flare 与 Sunburst 怎么选 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2080963969909633505?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "OpenAI 发布 ChatGPT Images 2.5:延迟砍半、编辑更听话,API 双模型怎么选? - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2081006080944034279?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    },
+    {
+      "title": "ChatGPT Images 2.5 技术解读:图像生成从能力展示转向工程体验 - 知乎",
+      "url": "https://zhuanlan.zhihu.com/p/2081021965096194667?utm_medium=openapi_platform&utm_source=cf621feb3f2d",
+      "origin": "targeted",
+      "status": "found"
+    }
+  ],
+  "final_article": "articles/2026-09-09-gpt-image-2-5-puts-the-messy-part-of-ai-art-back-on-the-canvas-en.md",
+  "package": "outputs/2026/09/09/gpt-image-2-5-puts-the-messy-part-of-ai-art-back-on-the-canvas"
+}
