@@ -16,7 +16,7 @@ def offline_guard(event, args):
 def main():
     sys.addaudithook(offline_guard)
     names = sys.argv[1:] or [
-        'tests.test_vertex_route', 'tests.test_delivery_en',
+        'tests.test_chatgpt_web', 'tests.test_delivery_en',
         'tests.test_visuals', 'tests.test_test_runner',
     ]
     suite = (unittest.defaultTestLoader.discover(str(ROOT / 'tests'))

@@ -1,8 +1,8 @@
-"""Automatic illustration (Gemini image models, Vertex AI) for English.
+"""Automatic illustration (ChatGPT web image generation) for English.
 
 Optional and nonblocking.  A writing model turns the finished article plus
-its evidence package into a controlled ``visual-plan.json``; a Gemini image
-model turns each plan entry into a raster image; the images are validated,
+its evidence package into a controlled ``visual-plan.json``; a ChatGPT web
+session turns each plan entry into a raster image; the images are validated,
 converted to WebP, then deterministically embedded into the article and the
 package metadata.  A missing plan, missing credential, or failed generation
 never blocks the article body.
@@ -14,7 +14,6 @@ model is responsible for keeping the prompt inside the audited facts.
 
 from __future__ import annotations
 
-import base64
 import io
 import json
 import os
@@ -24,30 +23,19 @@ import subprocess
 import sys
 import tempfile
 import unicodedata
-import urllib.error
-import urllib.parse
-import urllib.request
 
-from . import draft_en, paths, research, state
+from . import chatgpt_web, draft_en, paths, research, state
 
 VISUAL_PLAN_JSON = "visual-plan.json"
 IMAGES_MANIFEST_JSON = "images-manifest.json"
 IMAGES_DIR = "images"
 
-DEFAULT_MODEL = "gemini-3.1-flash-image"
+DEFAULT_MODEL = "chatgpt-web"
 MAX_DIAGRAMS_PER_PLAN = 1
 LINKEDIN_ARTICLE_COVER_SIZE = "1920x1080"
 LINKEDIN_ARTICLE_COVER_DIMENSIONS = (1920, 1080)
 ALLOWED_MODELS = (
-    "gemini-2.5-flash-image",
-    "gemini-3.1-flash-image",
-    "gemini-3-pro-image",
-    "gemini-3.1-flash-lite-image",
-)
-
-_VERTEX_ENDPOINT = (
-    "https://aiplatform.googleapis.com/v1beta1/projects/{project}"
-    "/locations/global/publishers/google/models/{model}:generateContent"
+    "chatgpt-web",
 )
 
 RAW_GITHUB_BASE = "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main"
@@ -55,35 +43,6 @@ RAW_GITHUB_BASE = "https://raw.githubusercontent.com/sztimhdd/AI_Daily/main"
 
 class VisualsError(RuntimeError):
     """Raised when illustration cannot honestly proceed."""
-
-
-def _gcloud(*args) -> str:
-    """Run a gcloud command; return stdout; raise on failure (never logs)."""
-    proc = subprocess.run(
-        ["gcloud", *args], capture_output=True, text=True, timeout=30
-    )
-    if proc.returncode != 0:
-        raise VisualsError(
-            f"gcloud {args[0]} failed: {(proc.stderr or '').strip()[:200]}"
-        )
-    return proc.stdout.strip()
-
-
-def load_vertex_project(env: dict = None) -> str:
-    """Return the GCP project id for Vertex AI, or raise when absent."""
-    environ = __import__("os").environ if env is None else env
-    project = environ.get("GOOGLE_CLOUD_PROJECT", "").strip()
-    if project:
-        return project
-    project = _gcloud("config", "get-value", "project")
-    if project:
-        return project
-    raise VisualsError("no GCP project configured for Vertex AI")
-
-
-def load_vertex_token(env: dict = None) -> str:
-    """Return a short-lived Vertex AI bearer token; never logs it."""
-    return _gcloud("auth", "print-access-token")
 
 
 def build_plan_prompt(article: str, evidence: dict) -> str:
@@ -144,9 +103,9 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "dense crosshatching, sinister surveillance eyes, and decorative "
         "circuitry. Keep the main action legible at thumbnail size.\n"
         "Rules:\n"
-        "1. Gemini raster images are the article's PRIMARY visual language: "
+        "1. Raster images are the article's PRIMARY visual language: "
         "they are attractive, eye-catching, and human. Every placement "
-        "defaults to kind \"image\" (a Gemini image). Choose a diagram only "
+        "defaults to kind \"image\" (a raster image). Choose a diagram only "
         "when the placement's only job is to explain a complex structure.\n"
         "2. The image prompt must only use facts, figures, and names that "
         "appear verbatim in the article.  Never invent a number, a brand, "
@@ -167,7 +126,7 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "7. Body-image ``size`` is \"1024x1024\"; ``model`` is the model id given.\n"
         "8. Include exactly one LinkedIn cover: mark id \"cover\", leave "
         "its anchor empty, and do not embed it in the body. It is always a "
-        "Gemini image, never a diagram. Choose the cover's visual mode and "
+        "raster image, never a diagram. Choose the cover's visual mode and "
         "style yourself from the article's strongest tension; it may differ "
         "from body images when that makes a stronger social thumbnail. Its "
         "size is exactly \"1920x1080\" (16:9 landscape, LinkedIn article "
@@ -184,8 +143,8 @@ def build_plan_prompt(article: str, evidence: dict) -> str:
         "or mechanism whose structure and precision matter more than beauty. "
         "A diagram must earn its place — write in ``purpose`` why an image "
         "cannot convey it. At most ONE diagram per plan; every other "
-        "placement, including the cover, is a Gemini image. When in doubt, "
-        "choose the Gemini image. Supply ``diagram`` as a JSON spec with "
+        "placement, including the cover, is a raster image. When in doubt, "
+        "choose the raster image. Supply ``diagram`` as a JSON spec with "
         "``mode`` "
         "(architecture|data-flow|flowchart|sequence), ``title``, "
         "``subtitle``, ``nodes`` (id, label, x, y, width, height, optional "
@@ -281,7 +240,7 @@ def parse_plan(payload) -> dict:
         if kind not in ("image", "diagram"):
             return {"ok": False, "error": f"entry {iid!r} has unknown kind {kind!r}"}
         if iid == "cover" and kind != "image":
-            return {"ok": False, "error": "LinkedIn cover must be a Gemini image"}
+            return {"ok": False, "error": "LinkedIn cover must be a raster image"}
         if kind == "diagram":
             diagram_count += 1
             if diagram_count > MAX_DIAGRAMS_PER_PLAN:
@@ -289,7 +248,7 @@ def parse_plan(payload) -> dict:
                     "ok": False,
                     "error": (
                         f"plan has {diagram_count} diagrams; at most "
-                        f"{MAX_DIAGRAMS_PER_PLAN} per plan — Gemini images "
+                        f"{MAX_DIAGRAMS_PER_PLAN} per plan — raster images "
                         "are the primary visual language"
                     ),
                 }
@@ -424,45 +383,12 @@ def run_plan(run_paths, codex_runner=None, force: bool = False) -> dict:
     return {"status": "generated", "images": parsed["images"]}
 
 
-def _default_gemini_runner(prompt: str, model: str, token: str,
-                           project: str) -> bytes:
-    """Generate one image via Vertex AI; returns PNG bytes."""
-    url = _VERTEX_ENDPOINT.format(
-        project=urllib.parse.quote(project),
-        model=urllib.parse.quote(model),
-    )
-    body = json.dumps(
-        {
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generationConfig": {"responseModalities": ["IMAGE"]},
-        }
-    ).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=body,
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token,
-        },
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
-    for cand in data.get("candidates") or []:
-        for part in (cand.get("content") or {}).get("parts") or []:
-            inline = part.get("inlineData") or {}
-            b64 = inline.get("data")
-            if b64:
-                return base64.b64decode(b64)
-    raise VisualsError("vertex returned no image data")
-
-
 def generate_image(prompt: str, model: str, gemini_runner=None,
                    token: str = None, project: str = None) -> bytes:
     """Generate one image; ``gemini_runner`` is injectable for tests."""
     if gemini_runner is not None:
         return gemini_runner(prompt, model, token, project)
-    return _default_gemini_runner(prompt, model, token, project)
+    return chatgpt_web.generate_one(prompt, output_stem="image")
 
 
 def _image_dimensions(data: bytes) -> tuple[int, int]:
@@ -704,20 +630,6 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
     plan = run_plan(run_paths)
     if plan["status"] == "unavailable":
         return {"status": "unavailable", "reason": plan.get("reason", "")}
-    token = project = None
-
-    def ensure_vertex_credentials():
-        nonlocal token, project
-        if token is not None and project is not None:
-            return
-        token = load_vertex_token()
-        project = load_vertex_project()
-
-    if any(e.get("kind", "image") == "image" for e in plan["images"]):
-        try:
-            ensure_vertex_credentials()
-        except VisualsError as exc:
-            return {"status": "unavailable", "reason": str(exc)}
     images_dir = _images_dir(run_paths)
     entries = []
     for entry in plan["images"]:
@@ -747,7 +659,7 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
                 else:
                     png = generate_image(
                         entry["prompt"], entry["model"],
-                        gemini_runner=gemini_runner, token=token, project=project,
+                        gemini_runner=gemini_runner,
                     )
                     webp, fmt = to_webp(
                         png,
@@ -766,10 +678,9 @@ def run_generate(run_paths, gemini_runner=None, diagram_generator=None,
                     )
                     continue
                 try:
-                    ensure_vertex_credentials()
                     png = generate_image(
                         _diagram_fallback_prompt(entry), DEFAULT_MODEL,
-                        gemini_runner=gemini_runner, token=token, project=project,
+                        gemini_runner=gemini_runner,
                     )
                     webp, fmt = to_webp(png)
                     kind = "image"

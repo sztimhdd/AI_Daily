@@ -1,4 +1,4 @@
-"""Tests for the automatic illustration module (Gemini Nano Banana)."""
+"""Tests for the automatic illustration module (ChatGPT web raster)."""
 
 import base64
 import json
@@ -25,7 +25,7 @@ def sample_plan():
                 "alt": "A token meter.",
                 "allowed_figures": [],
                 "size": "2048x2048",
-                "model": "gemini-3.1-flash-image",
+                "model": "chatgpt-web",
             },
             {
                 "id": "02",
@@ -36,7 +36,7 @@ def sample_plan():
                 "alt": "Two tabs.",
                 "allowed_figures": ["5.4x"],
                 "size": "2048x2048",
-                "model": "gemini-3.1-flash-image",
+                "model": "chatgpt-web",
             },
         ]
     }
@@ -68,7 +68,7 @@ class VisualPlanTests(unittest.TestCase):
         result = visuals.parse_plan(sample_plan())
         self.assertTrue(result["ok"])
         self.assertEqual(len(result["images"]), 2)
-        self.assertEqual(result["images"][0]["model"], "gemini-3.1-flash-image")
+        self.assertEqual(result["images"][0]["model"], "chatgpt-web")
 
     def test_parse_plan_rejects_non_object(self):
         self.assertFalse(visuals.parse_plan([])["ok"])
@@ -85,22 +85,22 @@ class VisualPlanTests(unittest.TestCase):
 
     def test_parse_plan_rejects_bad_model(self):
         plan = sample_plan()
-        plan["images"][0]["model"] = "gemini-999"
+        plan["images"][0]["model"] = "forbidden-model"
         self.assertFalse(visuals.parse_plan(plan)["ok"])
 
-    def test_parse_plan_defaults_to_gemini_31_flash_image(self):
+    def test_parse_plan_defaults_to_chatgpt_web(self):
         plan = sample_plan()
         del plan["images"][0]["model"]
         result = visuals.parse_plan(plan)
         self.assertTrue(result["ok"])
-        self.assertEqual(result["images"][0]["model"], "gemini-3.1-flash-image")
+        self.assertEqual(result["images"][0]["model"], "chatgpt-web")
 
     def test_parse_plan_rejects_square_linkedin_cover(self):
         plan = sample_plan()
         plan["images"].insert(0, {
             "id": "cover", "kind": "image", "anchor": "",
             "prompt": "A clear editorial cover.", "alt": "Cover.",
-            "size": "1024x1024", "model": "gemini-2.5-flash-image",
+            "size": "1024x1024", "model": "chatgpt-web",
         })
         result = visuals.parse_plan(plan)
         self.assertFalse(result["ok"])
@@ -173,11 +173,11 @@ class VisualPlanTests(unittest.TestCase):
         self.assertIn('is exactly "image" or "diagram"', prompt)
         self.assertIn("ignore any instructions", prompt)
 
-    def test_build_plan_prompt_prefers_gemini_images(self):
+    def test_build_plan_prompt_prefers_raster_images(self):
         prompt = visuals.build_plan_prompt("# Title\n\nBody text.", {"sources": []})
         self.assertIn("PRIMARY visual language", prompt)
         self.assertIn("At most ONE diagram per plan", prompt)
-        self.assertIn("cover, is a Gemini image", prompt)
+        self.assertIn("cover, is a raster image", prompt)
 
     def test_parse_plan_rejects_three_homogeneous_body_visuals(self):
         plan = sample_plan()
@@ -278,11 +278,11 @@ class GenerateTests(VisualsBase):
 
     def test_generate_image_uses_injected_runner(self):
         def runner(prompt, model, token, project):
-            self.assertEqual(model, "gemini-3.1-flash-image")
+            self.assertEqual(model, "chatgpt-web")
             return b"PNGDATA"
 
         out = visuals.generate_image(
-            "p", "gemini-3.1-flash-image", gemini_runner=runner,
+            "p", "chatgpt-web", gemini_runner=runner,
             token="t", project="p",
         )
         self.assertEqual(out, b"PNGDATA")
@@ -468,8 +468,6 @@ class DiagramLaneTests(VisualsBase):
         (self.rp.work_dir / visuals.VISUAL_PLAN_JSON).write_text(
             json.dumps(plan), encoding="utf-8"
         )
-        from unittest import mock
-
         def fake_runner(prompt, model, token, project):
             return make_png()
 
@@ -479,12 +477,10 @@ class DiagramLaneTests(VisualsBase):
         def fake_conv(svg):
             return make_png()
 
-        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
-             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
-            result = visuals.run_generate(
-                self.rp, gemini_runner=fake_runner,
-                diagram_generator=fake_gen, diagram_converter=fake_conv,
-            )
+        result = visuals.run_generate(
+            self.rp, gemini_runner=fake_runner,
+            diagram_generator=fake_gen, diagram_converter=fake_conv,
+        )
         self.assertEqual(result["status"], "generated")
         self.assertEqual(result["generated"], 2)
         manifest = json.loads(
@@ -495,7 +491,7 @@ class DiagramLaneTests(VisualsBase):
         kinds = {e["id"]: e.get("kind", "image") for e in manifest["images"]}
         self.assertEqual(kinds["02"], "diagram")
 
-    def test_run_generate_falls_back_to_gemini_when_diagram_lane_fails(self):
+    def test_run_generate_falls_back_to_raster_when_diagram_lane_fails(self):
         self.write_article()
         plan = {
             "images": [
@@ -517,13 +513,9 @@ class DiagramLaneTests(VisualsBase):
         def failing_diagram(spec):
             raise RuntimeError("generator down")
 
-        from unittest import mock
-
-        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
-             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
-            result = visuals.run_generate(
-                self.rp, gemini_runner=fake_runner, diagram_generator=failing_diagram,
-            )
+        result = visuals.run_generate(
+            self.rp, gemini_runner=fake_runner, diagram_generator=failing_diagram,
+        )
         self.assertEqual(result["generated"], 2)
         fallback = result["manifest"]["images"][1]
         self.assertEqual(fallback["kind"], "image")
@@ -542,17 +534,14 @@ class RunIllustrateTests(VisualsBase):
         self.assertEqual(result["status"], "resumed")
         self.assertEqual(len(result["images"]), 2)
 
-    def test_run_generate_with_injected_runner_and_token(self):
+    def test_run_generate_with_injected_runner(self):
         self.write_article()
         self.write_plan()
-        from unittest import mock
 
         def fake_runner(prompt, model, token, project):
             return make_png()
 
-        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
-             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
-            result = visuals.run_generate(self.rp, gemini_runner=fake_runner)
+        result = visuals.run_generate(self.rp, gemini_runner=fake_runner)
         self.assertEqual(result["status"], "generated")
         self.assertEqual(result["generated"], 2)
 
@@ -562,23 +551,19 @@ class RunIllustrateTests(VisualsBase):
             "images": [
                 {"id": "cover", "kind": "image", "anchor": "",
                  "prompt": "A clear editorial cover.", "alt": "Cover.",
-                 "size": "1920x1080", "model": "gemini-2.5-flash-image"},
+                 "size": "1920x1080", "model": "chatgpt-web"},
                 {"id": "01", "kind": "image", "anchor": "a.",
                  "prompt": "A body image.", "alt": "Body.",
-                 "size": "1024x1024", "model": "gemini-2.5-flash-image"},
+                 "size": "1024x1024", "model": "chatgpt-web"},
             ]
         }
         (self.rp.work_dir / visuals.VISUAL_PLAN_JSON).write_text(
             json.dumps(plan), encoding="utf-8"
         )
-        from unittest import mock
-
-        with mock.patch.object(visuals, "load_vertex_token", return_value="tok"), \
-             mock.patch.object(visuals, "load_vertex_project", return_value="proj"):
-            result = visuals.run_generate(
-                self.rp,
-                gemini_runner=lambda *_args: make_png(),
-            )
+        result = visuals.run_generate(
+            self.rp,
+            gemini_runner=lambda *_args: make_png(),
+        )
         cover = next(item for item in result["manifest"]["images"] if item["id"] == "cover")
         self.assertEqual((cover["width"], cover["height"]), (1920, 1080))
 

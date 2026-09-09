@@ -84,7 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
     common(p)
     p.add_argument("--force", action="store_true")
 
-    p = sub.add_parser("illustrate", help="optional Gemini image generation and embedding (nonblocking)")
+    p = sub.add_parser("illustrate", help="optional raster image generation and embedding (nonblocking)")
     common(p)
     p.add_argument("--force", action="store_true")
 
