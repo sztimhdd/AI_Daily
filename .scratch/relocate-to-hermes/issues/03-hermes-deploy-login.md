@@ -5,7 +5,7 @@ ChatGPT Pro 登录，使 Hermes 具备完整每日运行能力。
 
 **Blocked by:** 01（干净主线）、02（桥代码进主线）
 
-**Status:** claimed
+**Status:** resolved
 
 - [ ] Hermes 上 clone 到固定路径（建议 `~/AI_Daily`），`codex exec --json` 在该
       目录实测可用（受信目录）
@@ -23,5 +23,11 @@ ChatGPT Pro 登录，使 Hermes 具备完整每日运行能力。
 （`knowledge/` 已在 git 内无需迁）；`npx --yes --package=@isen/chatgpt-image
 -web-mcp@0.3.4` 可拉起并打印 stdio 就绪；WSLg + Chrome 145 + Node 24 满足前置。
 
-剩余两项（首次登录 + 真实生图探针）需用户在 Hermes 显示器前完成登录，属
-HITL，本票状态保留 claimed，待登录后收口。
+首次登录与真实生图探针均完成。用户在 WSL chrome（专用 profile）完成
+ChatGPT Pro 登录，`switch_to_automation_browser` 返回 `composerReady=true`、
+`loginLikelyRequired=false`。真实生图探针产出 1536×1024 合法 PNG，耗时
+46.7s，端到端链路（MCP → ChatGPT 网页生图 → 落盘）验证通过。
+
+关键环境事实：MCP 浏览器需 `DISPLAY=:0`（WSLg），非交互 SSH 会话默认不继承
+该变量；日常运行时须注入 `DISPLAY=:0`。MCP 落盘文件名是 `<stem>-image.png`
+（非 webp），`_scan_new_image` 按后缀正确识别，下游 `to_webp` 转码不受影响。
