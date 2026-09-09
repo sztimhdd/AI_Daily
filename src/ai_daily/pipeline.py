@@ -234,11 +234,41 @@ def run_narrative(run_paths, codex_runner=None, force: bool = False) -> dict:
     try:
         result = narrative.run(run_paths, codex_runner=codex_runner, force=force)
     except narrative.NarrativeError as exc:
+        if str(exc).startswith("narrative killed:"):
+            return _return_to_topic(run_paths, str(exc))
         state.fail(run_paths, "narrative", str(exc))
         raise
     if result.get("status") == "unavailable":
         state.fail(run_paths, "narrative", str(result.get("reason") or "unavailable"))
     return result
+
+
+def _return_to_topic(run_paths, reason: str) -> dict:
+    """Clear a weak topic and reopen topic selection instead of failing.
+
+    A ``narrative killed`` verdict means the chosen topic cannot carry a deep
+    article; it is a recoverable selection miss, not a fatal pipeline error.
+    Clearing the topic fields sends the run back to the human topic gate so
+    Telegram re-offers candidates.
+    """
+    state.clear_error(run_paths)
+    state.update_fields(
+        run_paths,
+        stage="topic_choice",
+        topic_choice="",
+        topic_title="",
+        slug="",
+        narrative_choice="",
+        narrative_title="",
+        narrative_archetype="",
+        narrative_form="",
+        narrative_reader_move="",
+        narrative_ending_mode="",
+        narrative_extra_research="",
+        narrative_directive="",
+        last_error=f"topic: 该选题证据不足，请重新选择（{reason}）",
+    )
+    return {"status": "retry_topic", "reason": reason}
 
 
 def run_knowledge_background(run_paths, kg_client=None,

@@ -317,6 +317,10 @@ def cmd_narrative(args) -> int:
     result = pipeline.run_narrative(run_paths, force=args.force)
     print(f"narrative: {result['status']}")
     candidates = result.get("candidates") or []
+    if result["status"] == "retry_topic":
+        print(f"- reason: {result.get('reason', '')}")
+        print("- 已退回选题阶段，请重新选择选题")
+        return 0
     if result["status"] == "unavailable":
         print(f"- reason: {result.get('reason', '')}")
         return 1

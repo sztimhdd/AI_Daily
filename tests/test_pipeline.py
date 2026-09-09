@@ -230,18 +230,19 @@ class StageGateTests(PipelineBase):
         self.assertEqual(topic["research_queries"], [title])
         self.assertEqual(pipeline.run_research(self.rp)["status"], "generated")
 
-    def test_narrative_kill_marks_run_failed(self):
+    def test_narrative_kill_returns_to_topic_selection(self):
         pipeline.run_collect(self.rp, mode="fixture", aihot_fixture=AIHOT_FIXTURE, rss_urls=[])
         pipeline.run_human_choice(self.rp, choice=1)
         (self.rp.work_dir / "initial-osint.json").write_text(
             json.dumps({"modules": [], "sources": [], "evidence_gaps": []}),
             encoding="utf-8",
         )
-        with self.assertRaises(narrative.NarrativeError):
-            pipeline.run_narrative(self.rp)
+        result = pipeline.run_narrative(self.rp)
+        self.assertEqual(result["status"], "retry_topic")
         st = state.read_state(self.rp)
-        self.assertEqual(st["status"], "failed")
-        self.assertIn("narrative killed: 零证据", st["last_error"])
+        self.assertNotEqual(st["status"], "failed")
+        self.assertEqual(st["topic_choice"], "")
+        self.assertIn("零证据", st["last_error"])
 
 
 class SimulatedChoiceStageTests(PipelineBase):
