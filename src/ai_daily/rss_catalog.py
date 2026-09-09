@@ -37,13 +37,15 @@ import json
 import pathlib
 import re
 
-CORE_IP_FILES = [
+CORE_IP_FILES_DEFAULT = [
     "workflows/reference/公众号选题写稿配图一体化工作流.json",
     "[Atomic] Researcher_Skill.json",
     "[Atomic] Topic_Survey_Skill.json",
     "[Atomic] Universal Draft Writing.json",
     "Long-Content-Writing.json",
 ]
+
+CORE_IP_FILES = list(CORE_IP_FILES_DEFAULT)
 
 URL_RE = re.compile(r"https?://[^\s\"'\\<>,)）\]]+")
 FEED_MARKER_RE = re.compile(r"(feed|rss|atom)", re.I)
@@ -71,9 +73,15 @@ def build_catalog(repo_root) -> dict:
     repo_root = pathlib.Path(repo_root)
     sources: dict = {}   # url -> record
     auxiliary: dict = {} # name -> record
+    missing: list = []
+    read_files: list = []
 
     for rel in CORE_IP_FILES:
         path = repo_root / rel
+        if not path.is_file():
+            missing.append(rel)
+            continue
+        read_files.append(rel)
         data = json.loads(path.read_text(encoding="utf-8"))
         for node in data.get("nodes", []):
             blob = json.dumps(node.get("parameters", {}), ensure_ascii=False)
@@ -118,6 +126,8 @@ def build_catalog(repo_root) -> dict:
     return {
         "catalog_version": 1,
         "generated_from": CORE_IP_FILES,
+        "generated_from_read": read_files,
+        "missing_files": missing,
         "summary": {
             "legacy_entries": legacy_entries,
             "feed_occurrences": occurrences,

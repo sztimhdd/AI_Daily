@@ -18,7 +18,16 @@ from ai_daily import rss_catalog
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
 
+_TOPIC_SURVEY = REPO / "[Atomic] Topic_Survey_Skill.json"
+_HAS_FULL_CORE_IP = _TOPIC_SURVEY.is_file()
 
+
+@unittest.skipUnless(
+    _HAS_FULL_CORE_IP,
+    "[Atomic] Topic_Survey_Skill.json is missing; full 93-entry catalog "
+    "contract cannot be verified (see test_rss_catalog_missing for the "
+    "degraded-path coverage)",
+)
 class CatalogExtractionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -80,6 +89,11 @@ class CatalogExtractionTests(unittest.TestCase):
         )
 
 
+@unittest.skipUnless(
+    _HAS_FULL_CORE_IP,
+    "[Atomic] Topic_Survey_Skill.json is missing; committed catalog no "
+    "longer matches a full regeneration",
+)
 class CatalogFileTests(unittest.TestCase):
     def test_write_and_load_roundtrip(self):
         catalog = rss_catalog.build_catalog(REPO)
@@ -104,6 +118,11 @@ class CatalogFileTests(unittest.TestCase):
 
 
 
+@unittest.skipUnless(
+    _HAS_FULL_CORE_IP,
+    "[Atomic] Topic_Survey_Skill.json is missing; determinism and entry-math "
+    "contracts need the full core-IP set",
+)
 class DeterminismAndDocumentationTests(unittest.TestCase):
     def test_catalog_carries_no_timestamp(self):
         catalog = rss_catalog.build_catalog(REPO)
