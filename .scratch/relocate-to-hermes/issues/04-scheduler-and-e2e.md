@@ -5,7 +5,17 @@
 
 **Blocked by:** 03（Hermes 可运行 + 登录态就绪）
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+## Progress
+
+- [x] `scripts/daily-telegram-hermes.sh` 落地并入库（PATH + DISPLAY 适配）
+- [x] systemd user timer `ai-daily.timer`（OnCalendar Mon..Fri + 30min）enable 并
+      验证下一次触发
+- [x] service 手动触发：`collect` 成功（aihot=20），Telegram 阶段幂等 offer
+- [x] 修复搬迁暴露的阻塞 bug：`build_catalog` 源文件缺失时跳过并记录
+      （`[Atomic] Topic_Survey_Skill.json` 在 Mac 上也缺失，非搬迁引入）
+- [ ] 真实 E2E：换话题全链路 + 生图 + GitHub 发布（待 Telegram 选题推进）
 
 - [ ] 把 `scripts/daily-telegram.sh` 的语义迁成 Hermes systemd timer（工作日触发），
       失败态与日志可查
