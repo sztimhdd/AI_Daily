@@ -1,0 +1,232 @@
+{
+  "run_id": "AI-Daily/2026-09-10",
+  "date": "2026-09-10",
+  "slug": "the-iphone-18-pro-s-ai-story-is-a-photograph-with-a-receipt",
+  "title": "The iPhone 18 Pro’s AI Story Is a Photograph With a Receipt",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 900,
+    "paragraph_count": 23,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "26 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "3 passive constructions (e.g. 'been edited')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 1
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-10",
+    "verdict": "ok",
+    "items": [
+      {
+        "claim": "Apple’s official iPhone 18 Pro announcement cites an advanced pro camera system, improved battery life, and performance.",
+        "evidence_url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max",
+        "verdict": "ok",
+        "note": "The supplied Apple excerpt supports all three points."
+      },
+      {
+        "claim": "Apple introduced Apple Reference Image to help users identify photos edited, including by AI.",
+        "evidence_url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+        "verdict": "ok",
+        "note": "The supplied TechCrunch excerpt states this directly."
+      },
+      {
+        "claim": "The mechanics of Reference Image are unverified and the available reporting has no independent tests, attack results, or cross-platform evidence.",
+        "evidence_url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+        "verdict": "ok",
+        "note": "This is a properly hedged absence/source-level statement consistent with the evidence package, which provides only a short second-hand feature description and no technical documentation or independent testing."
+      }
+    ],
+    "reason": "The article’s event-specific factual claims match the supplied Apple and TechCrunch excerpts. Its remaining substantive statements are clearly framed as analysis, hypothetical outcomes, background, or evidence-limitations rather than asserted event facts.",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "核心“信任层竞争”叙事只有单个产品事件和单一报道支撑，缺少直接的一手能力说明与独立交叉验证。",
+    "Reference Image 的工作机制、适用范围、验证方式、抗篡改性及跨平台兼容性均无证据。",
+    "没有反例、限制或冲突报道，无法衡量该功能是否只是边缘功能而非相机竞争重点。",
+    "TechCrunch 页面抓取成功；Apple 的 18 Pro 新闻稿抓取成功；纽约时报页面抓取失败且未构成证据。",
+    "现有材料均为 2026年9月发布日报道，事件时间线本身可用，但功能细节仍未被一手来源确认。"
+  ],
+  "source_count": 19,
+  "generated_at": "2026-09-10T14:02:05+00:00",
+  "seo_title": "iPhone 18 Pro Raises Stakes on Image Provenance",
+  "seo_summary": "Apple’s reported Reference Image feature spotlights a growing business need: knowing an image’s origin and edit history.",
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "An unbranded smartphone camera produces a photograph with a long blank receipt-like paper trail.",
+    "caption": "A photograph still matters; now its origin story matters too."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "An unbranded smartphone camera produces a photograph with a long blank receipt-like paper trail.",
+      "caption": "A photograph still matters; now its origin story matters too.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A parent holds up an iPhone beneath cool gym lights while a child walks across a stage.",
+      "caption": "The trust problem has moved from distant scandals into the pictures families pass around without thinking twice.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A blank seal rests on a photo print while a paper chain leading to another pair of hands is broken.",
+      "caption": "A badge can make a claim; only a chain that holds beyond the original device can make it useful.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A hand places a candid photograph into an open archival envelope as a blank receipt-like slip drifts beside it.",
+      "caption": "Photography survives; the old assumption that every photograph arrives with unquestioned authority does not.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "-Zho- (@ZHO_ZHO_ZHO) on X",
+      "url": "https://x.com/ZHO_ZHO_ZHO/status/2097975659226444148",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "-Zho- (@ZHO_ZHO_ZHO) on X",
+      "url": "https://x.com/ZHO_ZHO_ZHO/status/2097964310559625516",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "🚨 AI News | TestingCatalog (@testingcatalog) on X",
+      "url": "https://x.com/testingcatalog/status/2097954532420444212",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Read the Apple document explaining how new listening features still protect your privacy",
+      "url": "https://www.theverge.com/tech/992919/apple-siri-ai-audio-intelligence-privacy",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "The hinge for Apple's new foldable phone was built with AI | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/09/the-hinge-for-apples-new-foldable-phone-was-built-with-ai",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple unveils iPhone Duo",
+      "url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple debuts iPhone 18 Pro and iPhone 18 Pro Max",
+      "url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Chubby♨️ (@kimmonismus) on X",
+      "url": "https://x.com/kimmonismus/status/2097613619005456803",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple Introduces iPhone 18 Pro With 2-Nanometer A20 Pro Chip",
+      "url": "https://www.unite.ai/apple-introduces-iphone-18-pro-with-2-nanometer-a20-pro-chip/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple's iPhone 18 Pro adds variable camera aperture and a more powerful chip",
+      "url": "https://arstechnica.com/gadgets/2026/09/apples-iphone-18-pro-adds-variable-camera-aperture-and-a-more-powerful-chip/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple CEO John Ternus says the best AI device is still the iPhone | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/09/apple-ceo-john-ternus-says-the-best-ai-device-is-still-the-iphone/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "https://www.nytimes.com/2026/09/08/technology/apple-iphone-event.html",
+      "url": "https://www.nytimes.com/2026/09/08/technology/apple-iphone-event.html",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "https://www.nytimes.com/2026/09/09/technology/apple-iphone-duo-foldable-phone.html",
+      "url": "https://www.nytimes.com/2026/09/09/technology/apple-iphone-duo-foldable-phone.html",
+      "origin": "initial",
+      "status": "failed"
+    },
+    {
+      "title": "Apple has a new way to prove your iPhone photos aren’t AI slop | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/09/apple-has-a-new-way-prove-your-iphone-photos-arent-ai-slop/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple launches iPhone 18 Pro with upgraded camera | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/09/apple-launches-iphone-18-pro-with-upgraded-camera/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple unveils folding iPhone Duo as new CEO takes center stage",
+      "url": "https://www.theguardian.com/technology/2026/sep/08/apple-new-folding-iphone",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple unveils its first foldable, the iPhone Duo | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/09/apple-unveils-its-first-foldable-the-iphone-duo/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Apple's long-rumored foldable becomes reality with the $2,000 iPhone Duo",
+      "url": "https://arstechnica.com/gadgets/2026/09/apples-long-rumored-foldable-becomes-reality-with-the-2000-iphone-duo/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Everything Apple announced at its fall iPhone event, from the foldable iPhone Duo to an always-listening Apple Watch | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/09/everything-apple-announced-at-its-fall-iphone-event-from-the-foldable-iphone-duo-to-an-always-listening-apple-watch/",
+      "origin": "initial",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-09-10-the-iphone-18-pro-s-ai-story-is-a-photograph-with-a-receipt-en.md",
+  "package": "outputs/2026/09/10/the-iphone-18-pro-s-ai-story-is-a-photograph-with-a-receipt"
+}
