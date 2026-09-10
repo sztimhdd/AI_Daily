@@ -17,7 +17,8 @@ import datetime
 import json
 import sys
 
-from . import STAGES, assemble, assemble_en, claim_check, draft, draft_en, fetch
+from . import STAGES, assemble, assemble_en, claim_check, completion_receipt
+from . import draft, draft_en, fetch
 from . import narrative, outline, pipeline, publish, state, sufficiency
 from . import targeted, topics, tui, visuals, linkedin
 from . import telegram_adapter
@@ -144,6 +145,13 @@ def build_parser() -> argparse.ArgumentParser:
                    help="getUpdates offset (track the last applied update id)")
     p.add_argument("--offer-only", action="store_true",
                    help="push the pending decision without applying replies")
+
+    p = sub.add_parser(
+        "receipt",
+        help="send the durable completion receipt for a finished delivery "
+             "(retried until sent; not repeated once recorded)",
+    )
+    common(p)
 
     p = sub.add_parser("fetch", help="fetch one URL via the unified three-lane primitive")
     common(p)
@@ -576,6 +584,20 @@ def cmd_telegram(args) -> int:
     return 0
 
 
+def cmd_receipt(args) -> int:
+    """Durable completion receipt: announce a finished delivery, retrying."""
+    run_paths = _paths(args)
+    _ensure_state(run_paths)
+    result = completion_receipt.send_completion_receipt(run_paths)
+    print(f"receipt: {result['status']}")
+    if result.get("reason"):
+        print(f"- reason: {result['reason']}")
+    for key in ("article", "linkedin_kit"):
+        if result.get(key):
+            print(f"- {key}: {result[key]}")
+    return 0
+
+
 def cmd_fetch(args) -> int:
     """Low-level fetch primitive: usable at any stage, no state.md needed."""
     run_paths = _paths(args)
@@ -844,6 +866,7 @@ COMMANDS = {
     "run": cmd_run,
     "run-en": cmd_run_en,
     "telegram": cmd_telegram,
+    "receipt": cmd_receipt,
     "fetch": cmd_fetch,
     "session": cmd_session,
     "narrative": cmd_narrative,

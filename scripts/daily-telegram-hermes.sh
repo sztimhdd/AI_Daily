@@ -40,8 +40,10 @@ if [ "$hour" -lt 8 ] || [ "$hour" -ge 20 ]; then
   exit 0
 fi
 
-# Already delivered today: nothing to do.
+# Already delivered today: the article is done.  The completion receipt is
+# idempotent, so re-issuing it here is what retries a failed announce.
 if [ -f "$DELIVERY" ] && grep -q '"status": "delivered"' "$DELIVERY"; then
+  run receipt
   exit 0
 fi
 
@@ -49,6 +51,7 @@ fi
 if [ -f "$DELIVERY" ] && grep -q '"status": "partial"' "$DELIVERY"; then
   run run-en --repo-dir ".local/publish/$DATE" \
     --remote-url "https://github.com/sztimhdd/AI_Daily.git" --branch main
+  run receipt
   log "resumed partial delivery"
   exit 0
 fi
@@ -89,4 +92,5 @@ fi
 
 run run-en --repo-dir ".local/publish/$DATE" \
   --remote-url "https://github.com/sztimhdd/AI_Daily.git" --branch main
+run receipt
 log "daily run finished"

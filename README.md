@@ -155,6 +155,25 @@ Any stage can fetch one URL through the unified three-lane primitive
 python3 -m ai_daily.cli fetch --root <root> --date $DATE <url>
 ```
 
+### Daily completion receipt
+
+Finishing `run-en` is not itself a notification. Both workday schedulers
+(`scripts/daily-telegram.sh`, `scripts/daily-telegram-hermes.sh`) call
+
+```bash
+python3 -m ai_daily.cli receipt --date $DATE
+```
+
+after a delivery and on the already-delivered path, so the editor receives one
+Telegram message carrying the English article and LinkedIn-kit links. The
+receipt is keyed by the durable marker
+`.local/runs/<date>/completion-receipt.json`, which is written only after the
+send succeeds: a failed send retries on the next tick, a recorded send is not
+repeated, and re-issuing it on a delivered day cannot consume pending replies
+because the command is send-only (it never polls `getUpdates`). Public links
+appear only for a publish the publisher verified by remote re-read; a
+local-only delivery reports local paths instead.
+
 ## Test
 
 ```bash

@@ -872,6 +872,35 @@ class EnglishEditionCliTests(CliBase):
         self.assertIn("draft-en", cli.COMMANDS)
         self.assertIn("assemble-en", cli.COMMANDS)
         self.assertIn("run-en", cli.COMMANDS)
+        self.assertIn("receipt", cli.COMMANDS)
+
+    def test_receipt_prints_status_and_links(self):
+        with mock.patch.object(
+            cli.completion_receipt, "send_completion_receipt",
+            return_value={
+                "status": "sent",
+                "article": "articles/2026-08-20-demo-en.md",
+                "linkedin_kit": "outputs/2026/08/20/demo/linkedin-kit.md",
+            },
+        ) as patched:
+            code, out, err = self.run_cli(
+                "receipt", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 0, err)
+        patched.assert_called_once()
+        self.assertIn("receipt: sent", out)
+        self.assertIn("linkedin_kit: outputs/2026/08/20/demo/linkedin-kit.md", out)
+
+    def test_receipt_reports_a_transport_failure_as_a_controlled_error(self):
+        with mock.patch.object(
+            cli.completion_receipt, "send_completion_receipt",
+            side_effect=cli.telegram_adapter.TelegramError("telegram down"),
+        ):
+            code, _out, err = self.run_cli(
+                "receipt", "--root", self.root, "--date", "2026-08-20"
+            )
+        self.assertEqual(code, 1)
+        self.assertIn("telegram down", err)
 
     def test_run_en_prints_summary(self):
         with mock.patch.object(
