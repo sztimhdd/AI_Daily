@@ -1,0 +1,179 @@
+{
+  "run_id": "AI-Daily/2026-09-14",
+  "date": "2026-09-14",
+  "slug": "stop-buying-bedrock-models-by-token-price-agents-lose-on-the",
+  "title": "Stop Buying Bedrock Models by Token Price: Agents Lose on the Long Walk",
+  "language": "en",
+  "topic_choice": "human",
+  "quality": {
+    "verdict": "pass_with_notes",
+    "word_count": 986,
+    "paragraph_count": 22,
+    "findings": [
+      {
+        "check": "sentence-rhythm",
+        "message": "18 sentence(s) exceed 20 words",
+        "line": 0
+      },
+      {
+        "check": "passive-voice",
+        "message": "7 passive constructions (e.g. 'is often')",
+        "line": 0
+      }
+    ],
+    "downgraded": true,
+    "attempts": 3
+  },
+  "claim_check": {
+    "run_id": "AI-Daily/2026-09-14",
+    "verdict": "unsupported",
+    "items": [
+      {
+        "claim": "AWS’s “new framing” for choosing OpenAI models on Amazon Bedrock",
+        "evidence_url": "https://aws.amazon.com/blogs/machine-learning/beyond-the-price-per-token-choosing-the-right-openai-model-on-amazon-bedrock-for-your-workload/",
+        "verdict": "unsupported",
+        "note": "The source supports AWS’s framing and the Bedrock/OpenAI context, but the available excerpt provides no publication date or other evidence that it is new."
+      },
+      {
+        "claim": "AWS says its open-source benchmarking harness measures cost per correct answer, agent trajectory cost, and rubric-graded deliverable quality.",
+        "evidence_url": "https://aws.amazon.com/blogs/machine-learning/beyond-the-price-per-token-choosing-the-right-openai-model-on-amazon-bedrock-for-your-workload/",
+        "verdict": "ok",
+        "note": "This matches the source excerpt exactly in substance."
+      },
+      {
+        "claim": "The definition of “correct,” trajectory-cost components, rubric details, experimental design, model list, sample size, results, and reproducibility artifacts are not independently confirmed or disclosed in the available material.",
+        "evidence_url": "https://aws.amazon.com/blogs/machine-learning/beyond-the-price-per-token-choosing-the-right-openai-model-on-amazon-bedrock-for-your-workload/",
+        "verdict": "ok",
+        "note": "These are appropriately scoped absence and hedge statements about the available evidence package, which contains only the source excerpt."
+      },
+      {
+        "claim": "AWS has not established an industry standard, and the available evidence does not show independent validation of outcome-based, trajectory-aware comparisons.",
+        "evidence_url": "https://aws.amazon.com/blogs/machine-learning/beyond-the-price-per-token-choosing-the-right-openai-model-on-amazon-bedrock-for-your-workload/",
+        "verdict": "ok",
+        "note": "Properly phrased as limits of the available evidence, not as a definitive claim about all external research."
+      }
+    ],
+    "reason": "The core AWS and harness claims match the supplied source, and the article carefully labels unverified details as unavailable or single-source. The unsupported event-specific assertion is that AWS’s framing is “new.”",
+    "status": "completed"
+  },
+  "evidence_verdict": "needs_research",
+  "downgraded": true,
+  "evidence_caveats": [
+    "缺少 AWS 原文中的发布日期、harness 源码链接、实验设计、样本量、模型名单与结果表，无法审计评测是否可复现。",
+    "缺少展示“低单价但长轨迹导致更高任务成本”的具体实验或真实生产案例。",
+    "缺少独立来源对 outcome-based、trajectory-aware 模型评测的交叉验证。",
+    "交付物 rubric 的规则、评委/模型、评分一致性及其与可上线性的关系未知。",
+    "缺少反例或冲突报道，无法界定该框架在哪些低复杂度、单轮或固定输出任务中不适用。",
+    "现有直接来源虽标记为 fetched，但仅提供截断摘要；页面全文与时间线仍未核验。"
+  ],
+  "source_count": 9,
+  "generated_at": "2026-09-14T15:03:59+00:00",
+  "seo_title": "Stop Buying Bedrock Models by Token Price",
+  "seo_summary": "Cheap tokens can hide expensive agent failures. Measure correct answers, trajectory cost, and deliverable quality—not just rates.",
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A small unmarked price tag sits at the start of a winding trail of footprints across a server-room floor.",
+    "caption": "A low sticker price at the trailhead can hide the costly distance ahead."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A small unmarked price tag sits at the start of a winding trail of footprints across a server-room floor.",
+      "caption": "A low sticker price at the trailhead can hide the costly distance ahead.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A messenger carrying a single page follows a looping path past symbolic documents and tools, then turns back after reaching a conflict.",
+      "caption": "The visible answer may be short; the work paid for is the route that produced it.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A person uses a ruler and a small scale to assess two completed documents on a desk.",
+      "caption": "Correctness clears one bar; work people can use must clear another.",
+      "width": 1536,
+      "height": 1024,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "An unmarked balance scale compares a small price tag with a bundle containing a finished document, a winding path, and an assessed deliverable.",
+      "caption": "Unit economics begins only when price is joined to whether the work gets done.",
+      "width": 1536,
+      "height": 1024,
+      "format": "webp"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Beyond the price per token: Choosing the right OpenAI model on Amazon Bedrock for your workload | Amazon Web Services",
+      "url": "https://aws.amazon.com/blogs/machine-learning/beyond-the-price-per-token-choosing-the-right-openai-model-on-amazon-bedrock-for-your-workload/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Reduce inference cold starts on Amazon SageMaker HyperPod with model caching | Amazon Web Services",
+      "url": "https://aws.amazon.com/blogs/machine-learning/reduce-inference-cold-starts-on-amazon-sagemaker-hyperpod-with-model-caching/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "A Princeton Researcher Proposes Recurrent Looped Transformer (RLT) that Carries Decoder State across Every Token, Fixing 96 Blocks per Token with Unbounded Temporal Depth",
+      "url": "https://www.marktechpost.com/2026/09/13/a-princeton-researcher-proposes-recurrent-looped-transformer-rlt/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "OpenAI’s GPT-Live-1 Arrives in the API at $0.05 Per Minute",
+      "url": "https://www.unite.ai/openais-gpt-live-1-arrives-in-the-api-at-0-05-per-minute/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Build interactive MCP Apps using Amazon Bedrock AgentCore | Amazon Web Services",
+      "url": "https://aws.amazon.com/blogs/machine-learning/build-interactive-mcp-apps-using-amazon-bedrock-agentcore/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Can you futureproof your career by choosing an AI-resistant degree?",
+      "url": "https://www.theguardian.com/education/2026/sep/14/futureproof-your-career-by-choosing-an-ai-resistant-degree",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "How AvioBook builds turnaround insights from operational data with Amazon Bedrock AgentCore | Amazon Web Services",
+      "url": "https://aws.amazon.com/blogs/machine-learning/how-aviobook-uses-generative-ai-to-drive-airline-turnaround-insights/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Video and image search in Amazon Bedrock Knowledge Base using Marengo 3.0 | Amazon Web Services",
+      "url": "https://aws.amazon.com/blogs/machine-learning/video-and-image-search-in-amazon-bedrock-knowledge-base-using-marengo-3-0/",
+      "origin": "initial",
+      "status": "fetched"
+    },
+    {
+      "title": "Your Model Isn't Done Until Someone Else Can Call It | Towards Data Science",
+      "url": "https://towardsdatascience.com/your-model-isnt-done-until-someone-else-can-call-it/",
+      "origin": "initial",
+      "status": "fetched"
+    }
+  ],
+  "final_article": "articles/2026-09-14-stop-buying-bedrock-models-by-token-price-agents-lose-on-the-en.md",
+  "package": "outputs/2026/09/14/stop-buying-bedrock-models-by-token-price-agents-lose-on-the"
+}
