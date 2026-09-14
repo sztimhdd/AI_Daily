@@ -67,7 +67,7 @@
     "现有直接来源虽标记为 fetched，但仅提供截断摘要；页面全文与时间线仍未核验。"
   ],
   "source_count": 9,
-  "generated_at": "2026-09-14T15:03:59+00:00",
+  "generated_at": "2026-09-14T15:04:37+00:00",
   "seo_title": "Stop Buying Bedrock Models by Token Price",
   "seo_summary": "Cheap tokens can hide expensive agent failures. Measure correct answers, trajectory cost, and deliverable quality—not just rates.",
   "has_cover": true,
