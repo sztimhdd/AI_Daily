@@ -1,0 +1,103 @@
+{
+  "schema": "author_voice_profile.v1",
+  "language": "en-US",
+  "source": {
+    "platform": "LinkedIn Articles",
+    "sample_size": 6,
+    "sample_period": "2025-01-23 to 2026-02-25",
+    "profile_url": "https://www.linkedin.com/in/haihu/recent-activity/articles/"
+  },
+  "voice": {
+    "core": [
+      "Start from a concrete user problem; connect the technology to useful work or access.",
+      "Explain the useful capability and the constraint that changes whether it helps.",
+      "Develop broader implications from a specific case; keep that basis visible."
+    ],
+    "judgment_style": [
+      "State a preference, limitation, or consequence early; develop its reasons through examples.",
+      "Explain why an attractive alternative fails a particular requirement; make the tradeoff concrete instead of declaring one tool universally superior."
+    ],
+    "evidence_style": [
+      "Explain the argument through artifacts, named tools, steps or observations; give numbers a role in the decision.",
+      "Distinguish the author's evaluation from a source's observation. Preserve attribution when moving from a report to an implication.",
+      "Use first person only for supplied judgments or documented actions; never borrow past projects, roles or experience as new evidence."
+    ],
+    "technical_to_operational_translation": [
+      "Connect a technical property to a task, then to effort, maintenance, usability, cost, or access; show the intermediate step.",
+      "Explain a term where readers need it to understand the next choice, using a task example or a simple functional analogy.",
+      "Separate a working demonstration from a usable product or repeatable workflow; identify the integration or operating work that remains."
+    ]
+  },
+  "headline": {
+    "preferred_patterns": [
+      "Name the technology, problem, or product and pair it with a concrete outcome, constraint, or wider consequence.",
+      "Use a two-part title when the second part adds scope or stakes; make a quantity identify the case rather than decorate the headline."
+    ],
+    "avoid_patterns": [
+      "Avoid withholding the subject behind an empty curiosity hook; let the reader recognize the problem or benefit from the title."
+    ]
+  },
+  "opening": {
+    "preferred_patterns": [
+      "Establish a concrete event, result, or problem early and show the practical question it creates.",
+      "For a case study, give the result and useful lesson before expanding the chronology; for analysis, connect the event to the tension."
+    ],
+    "avoid_patterns": [
+      "Do not spend the opening on background that leaves the reader unable to identify the case, problem, or promised insight."
+    ],
+    "judgment_timing": "Show the position or practical promise in the opening passage or early summary; require no fixed paragraph count before judgment."
+  },
+  "paragraph_rhythm": {
+    "rules": [
+      "Give a prose paragraph one main move: establish a situation, explain a mechanism, assess a result, or introduce the next constraint.",
+      "Vary explanatory paragraphs with shorter pivots or judgments. Keep enough connected prose to explain causality rather than turning every line into a punchline.",
+      "Use lists for actual requirements, steps, comparisons, or consequences; keep the reasoning that connects them in prose."
+    ]
+  },
+  "transitions": {
+    "preferred": [
+      "Advance through dependency or consequence: the result creates the next requirement, limitation, or decision.",
+      "When posing a question, make it a real reader problem or unresolved choice and answer it with specific reasoning."
+    ],
+    "avoid": [
+      "Avoid moving to a new topic without showing how it follows from the previous problem or result."
+    ]
+  },
+  "section_headings": {
+    "preferred": [
+      "Make each heading identify a concrete stage, mechanism, constraint, or consequence so the argument remains navigable.",
+      "Match the heading to the section's job: an action for a build step, a limitation for a failure analysis, or stakes for an argument."
+    ],
+    "avoid": [
+      "Avoid interchangeable topic labels where the actual task or tension can be named."
+    ]
+  },
+  "caveats": {
+    "rules": [
+      "Place a limitation beside the capability or recommendation it qualifies and explain what it changes in practice.",
+      "Keep evaluations specific to the described conditions; acknowledge a failed approach or competing explanation when it changes the conclusion."
+    ]
+  },
+  "ending": {
+    "preferred_patterns": [
+      "Return from the technical detail to what the reader can do, should consider, or stands to lose; retain the story's concrete stakes.",
+      "Land on the practical implication or remaining tension established by the body."
+    ],
+    "avoid_patterns": [
+      "Avoid ending with technical inventory alone while leaving its consequence for the reader unstated."
+    ]
+  },
+  "anti_generic_ai": {
+    "rules": [
+      "Connect requirement, mechanism and consequence; carry the voice through specificity rather than copied mannerisms.",
+      "Give a recommendation its reason and operating conditions instead of substituting enthusiasm or a catalog of capabilities.",
+      "Preserve an actual choice, obstacle, or changed assessment in the story so the prose contains an argument rather than a sequence of summaries."
+    ]
+  },
+  "hard_safety": [
+    "Never fabricate first-hand experience.",
+    "Never infer biography or personal history from style.",
+    "Never copy distinctive phrases merely to imitate the author.",
+    "Evidence and story contracts override style preferences."
+  ]
+}
