@@ -10,7 +10,15 @@ Picture a developer late at night, watching an agent move from a broken integrat
 
 That accumulated memory is what engineers call context, and it is becoming the expensive part of the experience. An agent may need to reread architecture notes, inspect dozens of files, preserve constraints from earlier turns, and recover from its own bad assumptions before it produces a useful patch.
 
+![A hand pulls a long thread through folders, a cracked vessel, a puzzle piece, and a wrench toward a repaired patch.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/25/anthropic-is-selling-opus-5-5-on-the-long-session-receipt/images/01.webp)
+*Context is not just what the agent knows; it is what every later move must carry.*
+
+
 **Anthropic** has not disclosed the mechanism behind its cost-optimization language, nor has it supplied public task-level comparisons between long and short sessions. It has not, in the material available here, shown API pricing, cache pricing, or a benchmark proving that a completed coding job costs less. *The meter is visible; the wiring behind it is not.*
+
+![A visible meter stands in front of a folded paper wall while its cables disappear behind the wall.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/25/anthropic-is-selling-opus-5-5-on-the-long-session-receipt/images/02.webp)
+*A visible bill does not reveal the machinery that produced it.*
+
 
 Still, the wording matters because it narrows the target. **Claude Opus 5.5** is not being introduced merely as a stronger coding assistant; its announcement frames the product for sessions using more context. [1](https://claude.com/blog/claude-opus-5-5-built-for-coding-sessions-that-use-more-context)
 
@@ -23,6 +31,10 @@ That is the strategic opening **Anthropic** is reaching for. If it combines lowe
 But that outcome would require missing links to hold. The model would need to retain relevant information without repeatedly dragging irrelevant history into each turn; customers would need clear billing; and the agent would need to finish more tasks, not simply stay busy longer.
 
 The distinction is not semantic. A long session can be productive because it carries a coherent plan across many files, or wasteful because it keeps hauling old mistakes through every subsequent request. More context is a capacity; good session economics are an outcome.
+
+![A small worker pushes an overloaded wheelbarrow of paper scraps toward a repaired bridge.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/25/anthropic-is-selling-opus-5-5-on-the-long-session-receipt/images/03.webp)
+*A longer memory earns its cost only when it carries the job across the finish line.*
+
 
 **AWS** says **Claude Opus 5.5** is now available on AWS, moving the model beyond **Anthropic**'s own front door. [2](https://aws.amazon.com/blogs/machine-learning/claude-opus-5-5-is-now-available-on-aws/) Availability matters because enterprise buyers often consume models through existing cloud controls, procurement paths, and application stacks.
 
@@ -43,7 +55,6 @@ For CTOs, this does not yet settle which model is cheaper. It reframes the quest
 **Anthropic** has supplied the direction, and **AWS** has supplied a distribution signal. [1](https://claude.com/blog/claude-opus-5-5-built-for-coding-sessions-that-use-more-context) [2](https://aws.amazon.com/blogs/machine-learning/claude-opus-5-5-is-now-available-on-aws/) What remains unverified is the number that matters most: whether longer context turns into a lower bill for software actually shipped.
 
 The industry is learning that token price is only the admission ticket. At the end of a long coding session, the real receipt is still printing.
-
 
 ## Sources
 

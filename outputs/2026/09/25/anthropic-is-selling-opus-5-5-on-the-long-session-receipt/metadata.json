@@ -63,13 +63,57 @@
     "未见反例、限制条件或冲突报道，无法衡量“成本优化”是否只适用于特定工作流。"
   ],
   "source_count": 15,
-  "generated_at": "2026-09-25T14:54:58+00:00",
+  "generated_at": "2026-09-25T15:01:05+00:00",
   "seo_title": "Anthropic’s Opus 5.5 Bets on Long-Session Economics",
   "seo_summary": "Token price is no longer the whole story. Anthropic frames Opus 5.5 around the cost and reliability of long coding sessions.",
-  "has_cover": false,
-  "cover": null,
-  "images_status": "degraded",
-  "images": [],
+  "has_cover": true,
+  "cover": {
+    "file": "images/cover.webp",
+    "format": "webp",
+    "width": 1920,
+    "height": 1080,
+    "alt": "A long paper receipt curls from a small mechanical tool, carrying abstract symbols for software work toward a repaired connection.",
+    "caption": "Token price is the admission ticket; the session is where the receipt keeps growing."
+  },
+  "images_status": "complete",
+  "images": [
+    {
+      "id": "cover",
+      "filename": "cover.webp",
+      "alt": "A long paper receipt curls from a small mechanical tool, carrying abstract symbols for software work toward a repaired connection.",
+      "caption": "Token price is the admission ticket; the session is where the receipt keeps growing.",
+      "width": 1920,
+      "height": 1080,
+      "format": "webp"
+    },
+    {
+      "id": "01",
+      "filename": "01.webp",
+      "alt": "A hand pulls a long thread through folders, a cracked vessel, a puzzle piece, and a wrench toward a repaired patch.",
+      "caption": "Context is not just what the agent knows; it is what every later move must carry.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    },
+    {
+      "id": "02",
+      "filename": "02.webp",
+      "alt": "A visible meter stands in front of a folded paper wall while its cables disappear behind the wall.",
+      "caption": "A visible bill does not reveal the machinery that produced it.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    },
+    {
+      "id": "03",
+      "filename": "03.webp",
+      "alt": "A small worker pushes an overloaded wheelbarrow of paper scraps toward a repaired bridge.",
+      "caption": "A longer memory earns its cost only when it carries the job across the finish line.",
+      "width": 1254,
+      "height": 1254,
+      "format": "webp"
+    }
+  ],
   "sources": [
     {
       "title": "ginobefun (@hongming731) on X",

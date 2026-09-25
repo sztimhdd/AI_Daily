@@ -20,3 +20,13 @@ The strategic shift is from comparing model rate cards to measuring the cost of 
 Read the full deep dive below 👇
 
 #AI #GenerativeAI #EnterpriseAI #SoftwareDevelopment #CloudComputing
+
+### 4. LinkedIn Cover
+
+Upload this generated image with the post (the LinkedIn composer does not render Markdown image embeds).
+
+![A long paper receipt curls from a small mechanical tool, carrying abstract symbols for software work toward a repaired connection.](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/25/anthropic-is-selling-opus-5-5-on-the-long-session-receipt/images/cover.webp)
+
+[Open cover image](https://raw.githubusercontent.com/sztimhdd/AI_Daily/main/outputs/2026/09/25/anthropic-is-selling-opus-5-5-on-the-long-session-receipt/images/cover.webp)
+
+*Token price is the admission ticket; the session is where the receipt keeps growing.*
