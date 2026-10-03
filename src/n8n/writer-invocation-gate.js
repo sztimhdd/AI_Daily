@@ -47,8 +47,15 @@ if (decision.authorization_kind === 'controlled_test') {
 } else {
   if (decision.decision_source.type !== 'story_decision_execution') fail('formal HITL source must be story_decision_execution');
   const p = order.preparation_source;
-  const bundle = p?.approval_bundle;
-  const priorDecision = p?.decision;
+  // Formal authorization must be provable from preserved upstream approval provenance.
+  // A reassessment receipt or approved_story snapshot alone is not enough.
+  const provenance = p?.approval_bundle
+    ? p
+    : p?.parent_context?.approval_bundle
+      ? p.parent_context
+      : p?.research_increment_receipt?.research_work_order?.parent_context;
+  const bundle = provenance?.approval_bundle;
+  const priorDecision = provenance?.decision;
   if (!object(bundle) || bundle.schema !== 'story_approval.v1'
       || !object(priorDecision) || priorDecision.schema !== 'story_decision.v1'
       || priorDecision.status !== 'selected') fail('formal HITL provenance missing');
