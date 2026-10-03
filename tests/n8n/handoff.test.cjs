@@ -1,0 +1,61 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const {reassessed,direct,clone} = require('./fixtures/handoff.cjs');
+const source = fs.readFileSync(process.env.HANDOFF_CODE || path.join(__dirname,'../../src/n8n/prepare-writing-handoff.js'),'utf8');
+const run = x => new Function('$input', source)({first:()=>({json:x}),all:()=>[{json:x}]})[0].json;
+const reject = (factory,mutate,pattern) => {const x=factory();mutate(x);assert.throws(()=>run(x),pattern);};
+
+test('direct News prepares without thesis or invented authorization',()=>{
+ const x=direct(),o=run(x);assert.equal(o.schema,'writing_work_order.v1');assert.equal(o.service_invoked,false);
+ assert.equal(o.writing_input.approved_story.proposal.thesis,undefined);
+ assert.equal(Object.hasOwn(o,'writing_authorized'),false);
+ assert.equal(Object.hasOwn(o.writing_input,'writing_authorized'),false);
+ assert.deepEqual(o.writing_input.materials,x.editor_input.materials);
+});
+test('reassessment prepares from structured material despite empty brief',()=>{
+ const x=reassessed(),o=run(x);assert.equal(o.writing_input.brief_content,'');assert.equal(o.status,'prepared');
+ assert.equal(o.writing_input.title,x.approved_story.title);
+ assert.deepEqual(o.writing_input.approved_story.proposal,x.candidate.proposal);
+ assert.deepEqual(o.writing_input.materials,x.editor_input.materials);
+});
+test('all eight sources ten claims and five quotes survive; same local quote IDs remain distinct',()=>{
+ const o=run(reassessed()),m=o.writing_input.materials;
+ assert.deepEqual([m.sources.length,m.claims.length,m.quotations.length],[8,10,5]);
+ const q=o.writing_input.selected_quotations;
+ assert.deepEqual(new Set(q.map(q=>q.ref)),new Set(['initial:QT01','initial:QT02','supplementary:QT01']));
+ assert.notEqual(q.find(q=>q.ref==='initial:QT01').text_original,q.find(q=>q.ref==='supplementary:QT01').text_original);
+});
+test('immutable source retains false flags and completed historical research requests',()=>{
+ const x=reassessed(),before=clone(x),o=run(x);
+ assert.deepEqual(x,before);assert.deepEqual(o.preparation_source,before);
+ assert.equal(o.writing_authorized,false);assert.equal(o.research_loop_authorized,false);
+ assert.equal(o.service_invoked,false);
+ assert.equal(o.preparation_source.approved_story.research_requests[0].required_for_story,true);
+ assert.equal(o.writing_input.supplementary_research_status,'research_ready');
+});
+test('direct source snapshot is retained without mutation',()=>{const x=direct(),before=clone(x),o=run(x);assert.deepEqual(o.preparation_source,before);assert.deepEqual(x,before);});
+test('unfinished current research rejects',()=>reject(reassessed,x=>x.candidate.research_requests=[{required_for_story:true}],/research|ready/));
+test('unprocessed direct editorial research text rejects',()=>reject(direct,x=>x.additional_research_instructions='还要补查',/research|ready/));
+test('non-ready reassessment rejects',()=>reject(reassessed,x=>x.candidate.status='needs_research',/ready/));
+test('candidate content identity mismatch rejects',()=>reject(reassessed,x=>x.candidate.content_id='other',/identity/));
+test('direct story identity mismatch rejects',()=>reject(direct,x=>x.approved_candidate.story_id='story_2',/identity/));
+test('changed approved title rejects',()=>reject(reassessed,x=>x.candidate.proposal.working_title='new title',/title|promise/));
+test('changed reader promise rejects',()=>reject(reassessed,x=>x.candidate.proposal.reader_promise='new promise',/title|promise/));
+test('lost human instructions reject',()=>reject(reassessed,x=>x.editor_input.human_instructions='',/instruction/));
+test('missing selected source rejects',()=>reject(direct,x=>{x.editor_input.materials.sources.shift();x.parent_context.editor_input=clone(x.editor_input);},/source/));
+test('title-only source cannot support a selected claim',()=>reject(direct,x=>{x.editor_input.materials.sources[0].retrieval_status='title_only';x.editor_input.materials.sources[0].claim_eligible=false;x.parent_context.editor_input=clone(x.editor_input);},/source/));
+test('duplicate namespaced material identity rejects',()=>reject(direct,x=>{x.editor_input.materials.claims.push(clone(x.editor_input.materials.claims[0]));x.parent_context.editor_input=clone(x.editor_input);},/duplicate/));
+test('overwritten merged source rejects',()=>reject(reassessed,x=>x.editor_input.materials.sources[0].url='https://example.invalid/changed',/material|snapshot/));
+test('selected quotation text drift rejects',()=>reject(reassessed,x=>x.selected_quotations[0].text_original='Invented quote',/quotation/));
+test('missing selected quotation rejects',()=>reject(reassessed,x=>x.selected_quotations.pop(),/quotation/));
+test('unverified initial quotation rejects',()=>reject(direct,x=>x.parent_context.quotation_validation.valid=false,/quotation/));
+test('historical false authorization cannot be escalated',()=>reject(reassessed,x=>x.writing_authorized=true,/authorization/));
+test('Deep reassessment remains held',()=>reject(reassessed,x=>x.story_mode='deep_analysis',/Deep|identity/));
+test('Deep ready without judgment rejects',()=>reject(direct,x=>{x.story_mode='deep_analysis';x.story_id='story_2';x.approved_candidate.story_mode='deep_analysis';x.approved_candidate.story_id='story_2';x.approved_candidate.proposal.analysis_judgment='none';},/judgment/));
+test('missing proposal reference rejects',()=>reject(direct,x=>x.approved_candidate.proposal.opening.material_refs.push('initial:C999'),/material/));
+test('multiple input items cannot silently drop later stories',()=>{const x=direct();assert.throws(()=>new Function('$input',source)({first:()=>({json:x}),all:()=>[{json:x},{json:clone(x)}]}),/one/);});
+test('direct Deep with explicit judgment preserves it without reauthoring',()=>{const x=direct();x.story_mode='deep_analysis';x.story_id='story_2';x.approved_candidate.story_mode=x.story_mode;x.approved_candidate.story_id=x.story_id;x.approved_candidate.proposal.analysis_judgment='Fixture judgment, not verified analysis.';const o=run(x);assert.equal(o.writing_input.approved_story.proposal.analysis_judgment,x.approved_candidate.proposal.analysis_judgment);});
+test('quotation validation count must cover the actual namespace',()=>reject(direct,x=>{x.parent_context.quotation_validation.checked_count=1;x.parent_context.quotation_validation.quotation_count=1;},/quotation/));
+test('reassessment cannot replace original parent context',()=>reject(reassessed,x=>x.research_increment_receipt.research_work_order.parent_context.editor_input.human_instructions='changed',/snapshot|instruction/));
