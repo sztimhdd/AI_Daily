@@ -1,0 +1,11 @@
+const o=$input.first().json, x=$('TEMP Handoff Fixture').first().json;
+const check=(ok,msg)=>{if(!ok)throw new Error('Probe assertion: '+msg);};
+check(o.schema==='writing_work_order.v1'&&o.status==='prepared'&&o.service_invoked===false,'prepared state');
+check(JSON.stringify(o.preparation_source)===JSON.stringify(x),'source snapshot changed');
+check(JSON.stringify(o.writing_input.materials)===JSON.stringify(x.editor_input.materials),'materials changed');
+check(o.writing_input.brief_content==='','empty brief changed');
+const r=x.schema==='selected_story_reassessment_result.v1';
+check(r ? o.writing_authorized===false&&o.research_loop_authorized===false : !Object.hasOwn(o,'writing_authorized'),'authorization changed');
+check(o.writing_input.selected_quotations.length===(r?2:1),'selected quote count');
+if(r)check(o.writing_input.selected_quotations.some(q=>q.ref==='initial:QT01')&&o.writing_input.selected_quotations.some(q=>q.ref==='supplementary:QT01'),'namespace collision');
+return [{json:{test_case:x.test_context.test_case,assertions_passed:true,service_invoked:o.service_invoked,content_id:o.content_id,counts:Object.fromEntries(['sources','claims','quotations'].map(k=>[k,o.writing_input.materials[k].length])),selected_quote_refs:o.writing_input.selected_quotations.map(q=>q.ref),historical_authorization:r?o.writing_authorized:'absent',full_handoff_available_at:'Prepare Writing Handoff'}}];
