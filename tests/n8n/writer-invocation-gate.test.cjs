@@ -99,3 +99,18 @@ test('rejects any attempt to rewrite historical false authorization', async()=>{
   x.writing_work_order.writer_invocation_decision=decisionFor(x);
   await assert.rejects(()=>run(x), /historical authorization/i);
 });
+
+test('formal HITL accepts approval provenance preserved inside reassessment research parent_context', async()=>{
+  const x=baseMapped();
+  const content_id=x.content_id;
+  const candidate={schema:'story_candidate.v1',content_id,story_id:'story_1',story_mode:'news',status:'ready',proposal:{working_title:x.writing_work_order.writing_input.title,reader_promise:x.writing_work_order.writing_input.approved_story.proposal.reader_promise},research_requests:[]};
+  const approval_bundle={schema:'story_approval.v1',content_id,choices:[{selection_value:1,story_mode:'news',candidate,selected_quotations:[]}]};
+  const decision={schema:'story_decision.v1',content_id,status:'selected',selected_story:1,story_id:'story_1',story_mode:'news',selected_candidate:candidate,title:x.writing_work_order.writing_input.title,title_override:'',editor_note:'',additional_research_instructions:'',needs_targeted_research:true,next_action:'targeted_research',research_requests:[],optional_research_requests:[],research_task_budget:3,selected_quotations:[]};
+  x.writing_work_order.preparation_source={
+    schema:'selected_story_reassessment_result.v1',content_id,story_id:'story_1',story_mode:'news',writing_authorized:false,research_loop_authorized:false,
+    research_increment_receipt:{schema:'research_increment_receipt.v1',research_work_order:{schema:'research_work_order.v1',parent_context:{content_id,approval_bundle,decision}}}
+  };
+  x.writing_work_order.writer_invocation_decision=decisionFor(x,{authorization_kind:'formal_hitl',decision_source:{type:'story_decision_execution',reference:'native-test'}});
+  const out=await run(x);
+  assert.equal(out[0].json.writer_invocation_receipt.authorization_kind,'formal_hitl');
+});
