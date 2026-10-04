@@ -48,7 +48,7 @@ test('native editor error preserves original, never claims an edited article or 
  assert.ok(!JSON.stringify(x).includes('secret transport'));
 });
 test('empty or malformed editor output also returns original as review_required',()=>{
- for(const output of ['', '   ', '不是完整 Markdown 文章', '# A\n\n# B\n双标题']){
+ for(const output of ['# 原稿未提供，无法编辑。', '', '   ', '不是完整 Markdown 文章', '# A\n\n# B\n双标题']){
   const x=preview({output});assert.equal(x.status,'review_required');assert.equal(x.article_markdown,draft);
  }
 });
