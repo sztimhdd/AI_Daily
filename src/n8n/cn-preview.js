@@ -5,7 +5,8 @@ const draft = input.article_to_polish;
 if (typeof draft !== 'string' || !draft.trim()) throw new Error('CN preview: original draft missing');
 const candidate = typeof result.output === 'string' ? result.output : '';
 const valid = !result.error && candidate.trim().startsWith('# ')
- && (candidate.match(/^#\s+\S.*$/gm) || []).length === 1;
+ && (candidate.match(/^#\s+\S.*$/gm) || []).length === 1
+ && candidate.trim().split('\n').slice(1).join('\n').trim().length > 0;
 const article = valid ? candidate : draft;
 return [{json:{
  schema:'writing_preview.v1', status:valid ? 'draft' : 'review_required',
