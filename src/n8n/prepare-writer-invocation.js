@@ -33,7 +33,12 @@ if(!obj(bundle)||bundle.schema!=='story_approval.v1'||bundle.content_id!==w.cont
    ||d.next_action!==(reassessment?'targeted_research':'prepare_writing')) fail('selected approval provenance missing');
 if(d.title!==h.title||d.selected_candidate?.proposal?.reader_promise!==h.approved_story.proposal.reader_promise) fail('approved title/promise drift');
 
-const task_config={language:'zh-CN',content_type:'zhihu_longform'};
+// Each independent invocation receives the same selected story, never the other article.
+return [
+  {language:'zh-CN',content_type:'zhihu_longform'},
+  {language:'en-US',content_type:'linkedin_article'}
+].map(task_config=>{
+const copy=JSON.parse(JSON.stringify(w));
 const writer_invocation_decision={
   schema:'writer_invocation_decision.v1',
   status:'authorized',
@@ -52,4 +57,5 @@ const writer_invocation_decision={
   side_effects_isolated:false
 };
 
-return [{json:{...w,task_config,writer_invocation_decision},pairedItem:{item:0}}];
+return {json:{...copy,task_config,writer_invocation_decision},pairedItem:{item:0}};
+});
