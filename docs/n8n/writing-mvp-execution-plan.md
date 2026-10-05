@@ -10,17 +10,17 @@
 
 ## 当前状态
 
-[KNOWN][HIGH] 中文连续预览：597 → 598；配图计划：605；旧图文组装：621。旧图交付失败后，上传层恢复 GitHub 图床。626/627 验证过上传接口，但不代替原文章图片交付。
+[KNOWN][HIGH] 中文连续预览：597 → 598。原文章配图恢复：630；用户已在浏览器确认 GitHub Markdown 可显示图片。GitHub raw URL 继续作为当前图床，不再维护 ImgBB 并行方案。
 
-[KNOWN][HIGH] 630 已按原 605 方案重新生成原文章的封面和正文图，通过 GitHub 上传、收集和组装；两张公开 raw 地址实际 GET 均为 200，PNG 头和尺寸已读。631 只重读并尝试检查缩略图，因缺 gm/convert 停止；完整像素解码、人工目视、手机显示仍未验收。新预览使用 630 地址，正文未改，不再沿用坏链接。详见 [原图恢复检查点](2026-10-05-original-images-github-recovery.md)。
+[KNOWN][HIGH] 中文预览现已正式连接视觉入口。执行 633 从完整历史工单连续经过 Writer → 中文编辑 → V2 Visual Input；Visual Planner 遭模型服务两次 502，链路按设计降级为纯文字。执行 634 复用 633 的同一编辑稿，从视觉入口重试并完成 Planner → 2 张真实生图 → GitHub 上传 → Asset Collector → Article Assembler；Planner 自主选择 1 封面 + 1 正文图，这是该稿的编辑决定，不是固定配额。执行 635 用 editor-failed/review_required 预览验证在 V2 Visual Input 阻断，Visual Planner 未执行。详见 [中文预览接视觉链检查点](2026-10-05-cn-preview-to-visual.md)。
 
-[KNOWN][HIGH] Writer nHxILnDVz541Cu5P：草稿 8e919b8e-d6f7-408d-95ac-f797416d0bf4，81 节点，未发布；对恢复前业务图的差异为空，临时节点已清理。视觉链以 Article Assembler 为终点，中文预览到视觉入口仍未接通，社交包隔离。开发图片写入既有分支；封面裁切后置。
+[KNOWN][HIGH] Writer nHxILnDVz541Cu5P：草稿 e2fe8fc5-ba30-430b-8a33-403fb8e89b87，81 节点，未发布。相对 8e919b8e-d6f7-408d-95ac-f797416d0bf4 唯一业务 diff 是 V2 CN Preview → V2 Visual Input 一条连接；临时测试节点已全部清理。原 Writer Context Builder 在手动执行中仍残留旧 pinned/mock data，连接器没有清 pin 动作；该状态只作为手动测试污染记录，不能拿原节点的手动 replay 作为验收证据。封面 16:9 裁切后置。
 
 ## 下一步（依次执行）
 
 - [x] **中文预览：** 连续返回初稿与编辑稿，编辑异常保留原稿。
-- [ ] **图文预览：** 先查看 630 两张现有原图及新预览，完成实际显示验收，不重抽同批图。再接中文预览到视觉入口，验证连续图文返回及编辑失败分流。之后处理封面 16:9 裁切，不增加评分器或转换平台。
-- [ ] **母流程：** 先接直接 ready 中文，再接 News 补查 ready。补查仅合并并由原编辑复核一次；Deep 补查保持 hold。正式调用保留真实审批，历史 false 不改写；确认实际子工作流版本。
+- [x] **图文预览接口：** 中文编辑稿已接入视觉入口；真实视觉规划、生图、GitHub 托管、动态组装及编辑失败阻断均有原生执行证据。暂不为了“同一 execution 全绿”重复消耗一次 Writer + 生图；下一次母流程集成运行同时承担这项最终连续验收。
+- [ ] **母流程：** 先接 direct-ready 中文到同一 Writer 调用链，并用真实 parent → child → assembled article 运行一次；这次运行同时验收单 execution 的中文图文交付。随后再接 News 补查 ready。补查仅合并并由原编辑复核一次；Deep 补查保持 hold。正式调用保留真实审批，历史 false 不改写；先处理/规避手动 pinned data 污染，不复制新 Builder。
 - [ ] **其他组合：** 逐一验证 News 英文、Deep 中文、Deep 英文；News 讲清事件，不强塞 thesis；Deep 展开材料支持的判断。分别成文、共用接口，不复制四套流程。
 
 ## 验收与保存
