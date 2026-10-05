@@ -1,0 +1,33 @@
+{
+  "name": "Upload Image to GitHub",
+  "type": "n8n-nodes-base.github",
+  "typeVersion": 1.1,
+  "parameters": {
+    "resource": "file",
+    "operation": "create",
+    "authentication": "accessToken",
+    "owner": {
+      "__rl": true,
+      "mode": "list",
+      "value": "sztimhdd",
+      "cachedResultName": "sztimhdd"
+    },
+    "repository": {
+      "__rl": true,
+      "mode": "list",
+      "value": "AI_Daily",
+      "cachedResultName": "AI_Daily"
+    },
+    "filePath": "={{ 'n8n/images/' + $now.toFormat('yyyyMMdd') + '/' + String($('V2 Image Request Builder').first().json.content_id || 'article').replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,80) + '/' + $('Split Out1').item.json.request.id + '-' + $execution.id + '.png' }}",
+    "binaryData": true,
+    "binaryPropertyName": "image",
+    "commitMessage": "={{ 'Add AI Daily image ' + $('Split Out1').item.json.request.id + ' via n8n' }}",
+    "additionalParameters": {
+      "branch": {
+        "branch": "n8n-v3-handoff-20261003"
+      }
+    }
+  },
+  "credential_name": "GitHub account",
+  "onError": "continueErrorOutput"
+}
