@@ -8,7 +8,8 @@ const canonical = value => JSON.stringify(value, (_, v) => object(v)
   ? Object.fromEntries(Object.keys(v).sort().map(k => [k, v[k]])) : v);
 const equal = (a, b) => canonical(a) === canonical(b);
 if (rows.length !== 1) fail('expected one input');
-const x = rows[0].json;
+const raw = rows[0].json;
+const x = raw.body ?? raw;
 const reassessment = x.schema === 'selected_story_reassessment_result.v1';
 if (!reassessment && x.schema !== 'story_dispatch.v1') fail('unsupported input schema');
 if (!text(x.content_id) || !['news', 'deep_analysis'].includes(x.story_mode)
