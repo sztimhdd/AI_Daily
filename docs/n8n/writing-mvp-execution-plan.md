@@ -16,12 +16,14 @@
 
 [KNOWN][HIGH] Writer nHxILnDVz541Cu5P：草稿 e2fe8fc5-ba30-430b-8a33-403fb8e89b87，81 节点，未发布。相对 8e919b8e-d6f7-408d-95ac-f797416d0bf4 唯一业务 diff 是 V2 CN Preview → V2 Visual Input 一条连接；临时测试节点已全部清理。原 Writer Context Builder 在手动执行中仍残留旧 pinned/mock data，连接器没有清 pin 动作；该状态只作为手动测试污染记录，不能拿原节点的手动 replay 作为验收证据。封面 16:9 裁切后置。
 
+[KNOWN][HIGH] News 补查后 ready 的受控集成已验收：母执行 652 → 原 Writer integrated 子执行 654 → 母流程验收终点。完整历史材料 8 来源 / 10 断言 / 5 引语及历史授权均保留，2 张真实生成上传、1 张正文图插入、组装未改文；649 缺审批拒绝，651 待审原样返回且不调用 Writer。测试审批为 synthetic，未重跑研究或真实 Gmail HITL。Mother 清理后草稿 4eab367f-e19e-4d39-b8c7-e2a661998a52，46 节点；与验收前 082f4ce5-8c94-4fae-a442-e180d46e330f 业务图差异为空。activeVersionId 仍为旧版 c94debcc-2fe0-438a-a3df-a1d699740c99。详见 [News 补查集成检查点](2026-10-05-news-post-research-integration.md)。
+
 ## 下一步（依次执行）
 
 - [x] **中文预览：** 连续返回初稿与编辑稿，编辑异常保留原稿。
-- [x] **图文预览接口：** 中文编辑稿已接入视觉入口；真实视觉规划、生图、GitHub 托管、动态组装及编辑失败阻断均有原生执行证据。暂不为了“同一 execution 全绿”重复消耗一次 Writer + 生图；下一次母流程集成运行同时承担这项最终连续验收。
+- [x] **图文预览接口：** 中文编辑稿已接入视觉入口；真实视觉规划、生图、GitHub 托管、动态组装及编辑失败阻断均有原生执行证据。636 → 637 与 652 → 654 已分别随母流程直接 ready / 补查后 ready 集成完成连续调用，不再为这个接口重复消耗 Writer + 生图。
 - [x] **母流程 direct-ready 中文：** 已接入同一 Writer 调用链。636 → 637 原生验证 parent → child → 中文编辑 → 动态配图 → 3 张真实生图 → GitHub → assembled article。测试使用 synthetic approval provenance，因此不冒充真实 Gmail HITL；integrated child call 未受手动 pinned data 污染。详见 [direct-ready 检查点](2026-10-05-mother-direct-ready-writer.md)。
-- [ ] **News 补查 ready：** 让 `Receive Selected News Reassessment` 回到同一 writing handoff / invocation / child call 链；不复制 Writer 分支，不重新研究第二次。Deep supplemental 继续 hold。
+- [x] **News 补查 ready：** 已回到同一 writing handoff / invocation / child call 链，并以 652 → 654 验收历史完整材料到中文图文返回；不复制 Writer 分支，不重新研究第二次。合成审批与实际模型调用分别记录，不代表真实审批或生产发布通过。Deep supplemental 继续 hold。
 - [ ] **其他组合：** 逐一验证 News 英文、Deep 中文、Deep 英文；News 讲清事件，不强塞 thesis；Deep 展开材料支持的判断。分别成文、共用接口，不复制四套流程。
 
 ## 验收与保存
