@@ -1,4 +1,4 @@
-// Direct-ready mother -> V2 Writer call contract. No model and no side effects here.
+// Direct-ready or completed News research -> the same V2 Writer call contract.
 const rows=$input.all();
 const fail=m=>{throw new Error('Writer invocation prep: '+m);};
 const obj=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -19,13 +19,18 @@ if(!obj(h)||h.schema!=='writing_handoff.v1'||h.content_id!==w.content_id
    ||!text(h.title)||!text(h.approved_story?.proposal?.reader_promise)) fail('writing handoff identity/promise missing');
 
 const p=w.preparation_source;
-const provenance=p?.parent_context;
+const reassessment=p?.schema==='selected_story_reassessment_result.v1';
+if(reassessment && (w.story_mode!=='news'||p.status!=='ready_for_writer_handoff'
+   ||p.next_action!=='prepare_writing_handoff')) fail('News reassessment is not ready');
+const provenance=reassessment
+ ? p.research_increment_receipt?.research_work_order?.parent_context
+ : p?.parent_context;
 const bundle=provenance?.approval_bundle;
 const d=provenance?.decision;
 if(!obj(bundle)||bundle.schema!=='story_approval.v1'||bundle.content_id!==w.content_id
    ||!obj(d)||d.schema!=='story_decision.v1'||d.status!=='selected'
    ||d.content_id!==w.content_id||d.story_id!==w.story_id||d.story_mode!==w.story_mode
-   ||d.next_action!=='prepare_writing') fail('selected approval provenance missing');
+   ||d.next_action!==(reassessment?'targeted_research':'prepare_writing')) fail('selected approval provenance missing');
 if(d.title!==h.title||d.selected_candidate?.proposal?.reader_promise!==h.approved_story.proposal.reader_promise) fail('approved title/promise drift');
 
 const task_config={language:'zh-CN',content_type:'zhihu_longform'};
