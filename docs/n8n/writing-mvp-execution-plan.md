@@ -20,7 +20,8 @@
 
 - [x] **中文预览：** 连续返回初稿与编辑稿，编辑异常保留原稿。
 - [x] **图文预览接口：** 中文编辑稿已接入视觉入口；真实视觉规划、生图、GitHub 托管、动态组装及编辑失败阻断均有原生执行证据。暂不为了“同一 execution 全绿”重复消耗一次 Writer + 生图；下一次母流程集成运行同时承担这项最终连续验收。
-- [ ] **母流程：** 先接 direct-ready 中文到同一 Writer 调用链，并用真实 parent → child → assembled article 运行一次；这次运行同时验收单 execution 的中文图文交付。随后再接 News 补查 ready。补查仅合并并由原编辑复核一次；Deep 补查保持 hold。正式调用保留真实审批，历史 false 不改写；先处理/规避手动 pinned data 污染，不复制新 Builder。
+- [x] **母流程 direct-ready 中文：** 已接入同一 Writer 调用链。636 → 637 原生验证 parent → child → 中文编辑 → 动态配图 → 3 张真实生图 → GitHub → assembled article。测试使用 synthetic approval provenance，因此不冒充真实 Gmail HITL；integrated child call 未受手动 pinned data 污染。详见 [direct-ready 检查点](2026-10-05-mother-direct-ready-writer.md)。
+- [ ] **News 补查 ready：** 让 `Receive Selected News Reassessment` 回到同一 writing handoff / invocation / child call 链；不复制 Writer 分支，不重新研究第二次。Deep supplemental 继续 hold。
 - [ ] **其他组合：** 逐一验证 News 英文、Deep 中文、Deep 英文；News 讲清事件，不强塞 thesis；Deep 展开材料支持的判断。分别成文、共用接口，不复制四套流程。
 
 ## 验收与保存
