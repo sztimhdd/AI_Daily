@@ -10,7 +10,10 @@
 
 ## 当前状态
 
-[KNOWN][HIGH] 中文连续预览：597 → 598。配图计划：605。图文组装：621。原 ImgBB 图片地址随后失效，因此该预览不能作为图片交付验收。当前上传层已恢复旧工作流的 GitHub 图床模式：626 验证 GitHub 原生上传与 raw URL，627 验证真实生成 → GitHub → Normalizer → Collector → Assembler 连续成功。当前仍未完成中文主链到图文返回的一次连续运行，也不是完整母流程。\n\n[KNOWN][HIGH] Writer nHxILnDVz541Cu5P：草稿 6219c4c4-07ca-4c28-8c33-461650764ec3，81 节点，未发布。ImgBB 节点已删除，视觉资产使用 GitHub raw URL；开发阶段写入 n8n-v3-handoff-20261003 分支。视觉链以 Article Assembler 为终点，社交包保持隔离。封面仍待 16:9 裁切和图片目视检查。\n
+[KNOWN][HIGH] 中文连续预览：597 → 598。配图计划：605。图文组装：621。原 ImgBB 图片地址随后失效，因此该预览不能作为图片交付验收。当前上传层已恢复旧工作流的 GitHub 图床模式：626 验证 GitHub 原生上传与 raw URL，627 验证真实生成 → GitHub → Normalizer → Collector → Assembler 连续成功。当前仍未完成中文主链到图文返回的一次连续运行，也不是完整母流程。
+
+[KNOWN][HIGH] Writer nHxILnDVz541Cu5P：草稿 6219c4c4-07ca-4c28-8c33-461650764ec3，81 节点，未发布。ImgBB 节点已删除，视觉资产使用 GitHub raw URL；开发阶段写入 n8n-v3-handoff-20261003 分支。视觉链以 Article Assembler 为终点，社交包保持隔离。封面仍待 16:9 裁切和图片目视检查。
+
 ## 下一步（依次执行）
 
 - [x] **中文预览：** 连续返回初稿与编辑稿，编辑异常保留原稿。
