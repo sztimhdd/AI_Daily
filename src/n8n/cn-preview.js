@@ -11,7 +11,8 @@ const article = valid ? candidate : draft;
 return [{json:{
  schema:'writing_preview.v1', status:valid ? 'draft' : 'review_required',
  content_id:input.content_id, story_id:input.story_id, story_mode:input.story_mode,
- language:input.config.language,
+ language:input.config.language, config:input.config,
+ writer_invocation_receipt:input.writer_invocation_receipt,
  article_title:(article.match(/^#\s+(.+)$/m) || [,''])[1],
  article_markdown:article, draft_markdown:draft,
  editing_status:valid ? 'completed' : 'failed',

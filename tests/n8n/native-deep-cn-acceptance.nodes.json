@@ -1,0 +1,176 @@
+{
+  "description": "Disposable isolated manual test nodes only, not a workflow or production approval. Reuse requires renewed user authorization. Candidate548 plus initial557 writing fixture, not raw execution export.",
+  "nodes": [
+    {
+      "name": "TEMP Deep Entry",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-daily-deep-cn-acceptance-20261005",
+        "responseMode": "onReceived",
+        "options": {}
+      }
+    },
+    {
+      "name": "TEMP Deep Read Handoff",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/92390c227e6a5a4ca5e7dfca02eedecc30496459/tests/n8n/fixtures/handoff.cjs",
+        "authentication": "none",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "source"
+            }
+          },
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "name": "TEMP Deep Read Writing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/sztimhdd/AI_Daily/92390c227e6a5a4ca5e7dfca02eedecc30496459/tests/n8n/fixtures/writer-news-557.cjs",
+        "authentication": "none",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "source"
+            }
+          },
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "name": "TEMP Deep Fixture",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Controlled synthetic selection around unchanged historical Deep candidate548.\n// Initial materials/quotation receipt reuse the existing557 fixture; not a raw548 export or formal approval.\nconst request=$('TEMP Deep Entry').first().json.body;\nif(request?.authorization!=='deep-cn-interface-20261005'||!['ready','missing_judgment','editor_error'].includes(request.scenario))throw new Error('Explicit controlled test request required');\nconst h={exports:{}};new Function('module',$('TEMP Deep Read Handoff').first().json.source)(h);\nconst w={exports:{}};new Function('require','module',$('TEMP Deep Read Writing').first().json.source)(name=>{if(name!=='./handoff.cjs')throw new Error('Unexpected fixture dependency');return h.exports;},w);\nconst replay=w.exports.fixture(),prior=replay.research_increment_receipt.research_work_order;\nconst ctx=JSON.parse(JSON.stringify(prior.editor_input));\nctx.title='Stripe 拟收购 OpenRouter：这笔交易会改变什么？';\nctx.topic_brief='为普通 AI 兴趣读者准备关于 Stripe 拟收购 OpenRouter 的报道提案。把这次事件、模型路由产品的具体作用、双方说法和其他报道连成一个读者看得懂的故事；关注现有用户实际在意的问题，有公开使用记录或人物声音时纳入，没有时不假装已经取得。全景稿应说明相比只看一份公告多了哪些重要理解，缺少值得补齐的关键拼图就提出具体补查。若另有一个由材料支持、值得单独写的鲜明分析判断，可以提出深度稿；否则不推荐第二篇。不预设利好、利空、用户反应或交易动机。本轮只准备编辑提案，不生成成稿。';\nctx.degraded_lanes=[];\nconst candidate={\"schema\":\"story_candidate.v1\",\"content_id\":\"test:full-source-dossier-20261002-r2\",\"story_id\":\"story_2\",\"story_mode\":\"deep_analysis\",\"status\":\"ready\",\"status_reason\":\"现有材料支持一篇区别于交易全景的分析：模型路由正在把技术选型变成持续发生的支出分配，而 Stripe 拟收购 OpenRouter，意味着它试图从帮助企业收钱延伸到帮助企业决定 AI 钱该花给谁。产品机制、双方公开解释和外部报道足以支撑这一有限判断，无须预设交易完成、实际节省金额或用户反应。\",\"proposal\":{\"working_title\":\"从帮企业收钱到替企业选模型：Stripe 要进入 AI 的花钱环节\",\"news_anchor\":\"Stripe 于 2026 年 8 月 19 日宣布同意收购 OpenRouter；OpenRouter 表示交易仍须满足惯常交割条件。\",\"reader_promise\":\"让读者看懂：为什么一个支付公司会看中模型路由，以及为什么看似只是把请求送往不同模型的技术动作，也是在决定企业的钱流向哪家供应商。\",\"analysis_judgment\":\"这笔拟议收购的关键变化，不是 Stripe 多了一款 AI 产品，而是它试图把服务企业的触角从收款伸向 AI 支出分配：模型选择因此不再只是开发者的技术选型，也成为可以持续优化的经营决策。\",\"story_pitch\":\"从 OpenRouter 团队解释为什么愿意出售写起：他们把使命、中立性和市场地位列为独立经营的理由，却又认为 Stripe 能帮助他们更快推进。这个选择的解释藏在一次模型请求里——按 Stripe 的产品说明，请求可以依照任务复杂度、价格、速度和可靠性被送往不同模型；路由每做一次选择，也就影响一次 AI 支出的去向。文章顺着这个动作，把开发者眼中的接口变成经营者眼中的成本分配，再接上 Collison 对盈利和 token 效率的表述，以及 TechCrunch 对 Stripe 走到账本支出侧的解读。最后回到卖方的中立承诺：保持模型选择开放，与把选择过程变成一门更重要的生意，并不矛盾。读者读到的不是又一次收购规模竞赛，而是支付公司为什么要靠近企业决定花钱的那个瞬间。\",\"opening\":{\"description\":\"以 OpenRouter 团队关于独立经营与出售选择的书面说明进入：他们明确列出本可保持独立的理由，又解释为何选择 Stripe。随即对照 Collison 对企业盈利、请求路由和 token 使用效率的表述，把双方的共同焦点落到模型使用的经济账上，而不是抽象的 AI 愿景。\",\"material_refs\":[\"initial:QT02\",\"initial:QT01\",\"initial:C01\",\"initial:C03\"]},\"story_path\":[{\"job\":\"把出售选择落到产品真正做的动作上：依据 Stripe 的说明，OpenRouter 按任务复杂度、价格、速度和可靠性动态路由请求。解释这些指标为什么不能简单等同于挑最便宜的模型，以及一次技术选择怎样同时改变成本与任务效果；不虚构用户案例或节省比例。\",\"material_refs\":[\"initial:C02\",\"initial:QT01\"]},{\"job\":\"沿着请求对应的支出继续推进：过去帮助企业收取和管理收入的 Stripe，如今拟把模型路由纳入自身业务。借 TechCrunch 对账本另一侧的分析和 Granda 的具名判断，说明这次扩张的特殊之处是靠近花钱决策，而非仅仅增加一个付款入口。\",\"material_refs\":[\"initial:C06\",\"initial:QT03\",\"initial:QT01\"]},{\"job\":\"再解释 OpenRouter 为什么认为支付公司的能力有用：团队强调的不是某款更强的模型，而是客户网络、企业增长数据、全球基础设施以及反欺诈和滥用经验。这些自述把故事从模型性能拉回经营问题，也让双方结合的理由变得具体。\",\"material_refs\":[\"initial:C05\",\"initial:QT02\"]},{\"job\":\"回到现有用户收到的不变承诺，收束全文：接口、产品和模型中立性被承诺保留，但路由平台的商业位置可以发生变化。结尾落在这一反差上——用户未必需要改接入方式，围绕他们每一次模型选择的生意却可能变得更重要；这是公告揭示的方向，不是整合已经实现的结果。\",\"material_refs\":[\"initial:C04\",\"initial:C03\",\"initial:QT01\"]}],\"quotation_refs\":[\"initial:QT02\",\"initial:QT01\",\"initial:QT03\"]},\"assessment\":{\"support_refs\":[\"initial:C01\",\"initial:C02\",\"initial:C05\",\"initial:C06\",\"initial:QT01\",\"initial:QT02\",\"initial:QT03\"],\"counterweight_refs\":[\"initial:C03\",\"initial:C04\"],\"external_reporting\":[{\"source_ref\":\"initial:S03\",\"contribution\":\"提供从收入管理转向 AI 支出管理的解释及具名分析师声音，帮助建立商业位置变化的判断；不把记者或分析师的解读当作已证实的内部动机。\"},{\"source_ref\":\"initial:S04\",\"contribution\":\"已取得正文将交易联系到企业寻找低成本 AI 方案的需求，可作为经济视角的补充；仅使用现有两段内容，不依赖其未取得全文。\"}],\"research_effort\":\"low\",\"feasibility_note\":\"核心判断建立在已提供的路由机制、盈利目标和卖方解释上，现有材料即可写作。没有用户使用记录、实际成本测量或整合方案，因此不能声称收购已经节省支出、改变模型排序或损害中立性。中立性承诺限制对后果的推断，但不否定路由具有支出分配作用。本轮无需补查，也不使用仅有标题的来源。\"},\"research_requests\":[]};\nif(request.scenario==='missing_judgment')delete candidate.proposal.analysis_judgment;\nconst test_context={kind:'controlled_deep_cn_replay',synthetic_selection:true,formal_hitl:false,candidate_execution:'548',material_fixture_execution:'557',fixture_commit:'92390c227e6a5a4ca5e7dfca02eedecc30496459',scenario:request.scenario};\nconst bundle={schema:'story_approval.v1',content_id:ctx.content_id,choices:[{selection_value:2,candidate}],test_context};\nconst decision={schema:'story_decision.v1',content_id:ctx.content_id,status:'selected',selected_story:2,story_id:'story_2',story_mode:'deep_analysis',title:candidate.proposal.working_title,title_override:'',editor_note:'',additional_research_instructions:'',research_task_budget:3,next_action:'prepare_writing',needs_targeted_research:false,selected_candidate:candidate,test_context};\nreturn [{json:{schema:'story_approval_context.v1',content_id:ctx.content_id,editor_input:ctx,approval_bundle:bundle,decision,parent_context:{content_id:ctx.content_id,editor_input:ctx,quotation_validation:prior.parent_context.quotation_validation,test_context}},pairedItem:{item:0}}];\n"
+      }
+    },
+    {
+      "name": "TEMP Deep Prepare",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "qAfs9BDFbdBotgaB"
+        },
+        "mode": "once",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "name": "TEMP Deep Authorize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const w=$input.first().json;\nif(w.schema!=='writing_work_order.v1'||w.story_id!=='story_2'||w.story_mode!=='deep_analysis'||w.status!=='prepared')throw new Error('Deep test: expected prepared work order');\nconst h=w.writing_input;\nreturn [{json:{...w,task_config:{language:'zh-CN',content_type:'wechat_article',audience:'对 AI 感兴趣的普通读者'},writer_invocation_decision:{schema:'writer_invocation_decision.v1',status:'authorized',authorization_kind:'controlled_test',scope:'writer_draft',content_id:w.content_id,story_id:w.story_id,story_mode:w.story_mode,title:h.title,reader_promise:h.approved_story.proposal.reader_promise,target_language:'zh-CN',decision_source:{type:'user_chat_authorization',reference:'AI_Daily:2026-10-05:continue-ponytail-Deep-CN:mother_execution:'+$execution.id},side_effects_isolated:true}},pairedItem:{item:0}}];\n"
+      }
+    },
+    {
+      "name": "TEMP Deep Writer",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "nHxILnDVz541Cu5P"
+        },
+        "mode": "once",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "name": "TEMP Deep Assert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const check=(ok,m)=>{if(!ok)throw new Error('Deep CN acceptance: '+m);};\nconst canonical=v=>JSON.stringify(v,(_,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.keys(x).sort().map(k=>[k,x[k]])):x);\nconst f=$('TEMP Deep Fixture').first().json,w=$('TEMP Deep Authorize').first().json,p=$input.first().json;\nconst scenario=f.parent_context.test_context.scenario;\ncheck(p.schema==='writing_preview.v1'&&p.story_mode==='deep_analysis'&&p.story_id==='story_2'&&p.content_id===f.content_id&&p.language==='zh-CN','preview identity');\ncheck(canonical(w.writing_input.materials)===canonical(f.editor_input.materials)&&canonical(w.writing_input.approved_story.proposal)===canonical(f.decision.selected_candidate.proposal),'material or judgment drift');\ncheck(p.config?.language==='zh-CN'&&p.config.content_type==='wechat_article'&&p.writer_invocation_receipt?.authorization_kind==='controlled_test','metadata lost');\ncheck(p.publication?.state==='NOT_PUBLISHED'&&p.publication.url===null,'publication boundary');\ncheck(typeof p.draft_markdown==='string'&&p.draft_markdown.trim(),'original draft lost');\nif(scenario==='editor_error'){\n check(p.status==='review_required'&&p.editing_status==='failed'&&p.article_markdown===p.draft_markdown,'failed edit lost original');\n check(!p.image_requests&&!p.assembled_article,'failed edit started visuals');\n return [{json:{test:'deep_cn',scenario,passed:true,original_retained:true,visuals_started:false,publication:p.publication},pairedItem:{item:0}}];\n}\ncheck(scenario==='ready'&&p.status==='draft'&&p.editing_status==='completed','edit not completed');\ncheck(!/\\b(?:initial|supplementary):(?:C|S|QT)\\d+\\b|writer_brief\\.v3|\\[Editor's Note/i.test(p.article_markdown),'internal scaffolding');\nconst a=p.assembled_article;\ncheck(p.assembly_status==='completed'&&a?.schema==='assembled_article.v1','assembly missing');\ncheck(p.visual_planning_status==='completed'&&p.image_generation_status==='completed','visual chain incomplete');\ncheck(p.image_counts.requested===p.image_requests.length&&p.image_counts.succeeded===p.image_requests.length&&p.image_counts.failed===0,'image counts');\ncheck(a.cover_image?.id==='COVER_IMG'&&a.body_images.length===p.image_requests.filter(t=>t.role==='body_illustration').length,'dynamic body count');\nlet text=a.article_markdown;for(const img of a.body_images){check(text.includes(img.markdown_insertion),'image missing');text=text.replace(img.markdown_insertion,'');}\ncheck(text===p.article_markdown,'assembly changed prose');\ncheck(p.image_assets.every(x=>['READY','GEOMETRY_WARNING'].includes(x.status)&&/^https:\\/\\/raw\\.githubusercontent\\.com\\/sztimhdd\\/AI_Daily\\//.test(x.asset?.url||'')),'image destination');\nreturn [{json:{test:'deep_cn',scenario,passed:true,formal_hitl:false,material_counts:{sources:w.writing_input.materials.sources.length,claims:w.writing_input.materials.claims.length,quotations:w.writing_input.materials.quotations.length},judgment_preserved:true,draft_chars:p.draft_markdown.length,edited_chars:p.article_markdown.length,image_counts:p.image_counts,body_images_inserted:a.body_images.length,assembly_text_unchanged:true,publication:p.publication,warnings:p.warnings,article_title:a.article_title,article_markdown:a.article_markdown,cover_image:a.cover_image},pairedItem:{item:0}}];\n"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "TEMP Deep Entry",
+      "TEMP Deep Read Handoff"
+    ],
+    [
+      "TEMP Deep Read Handoff",
+      "TEMP Deep Read Writing"
+    ],
+    [
+      "TEMP Deep Read Writing",
+      "TEMP Deep Fixture"
+    ],
+    [
+      "TEMP Deep Fixture",
+      "TEMP Deep Prepare"
+    ],
+    [
+      "TEMP Deep Prepare",
+      "TEMP Deep Authorize"
+    ],
+    [
+      "TEMP Deep Authorize",
+      "TEMP Deep Writer"
+    ],
+    [
+      "TEMP Deep Writer",
+      "TEMP Deep Assert"
+    ]
+  ],
+  "failure_probes": [
+    {
+      "name": "TEMP Deep Draft",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "return [{json:{output:'# 中文编辑故障测试\\n\\n这份合成原稿必须完整保留。'},pairedItem:{item:0}}];"
+      }
+    },
+    {
+      "name": "TEMP Deep Editor Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const x=$input.first().json;\nif(x.writer_brief?.story_mode!=='deep_analysis'||!x.writer_brief.article_intent.thesis)throw new Error('Deep brief lost before editor');\nthrow new Error('Controlled CN editor error; no model call');"
+      }
+    }
+  ],
+  "failure_probe_settings": {
+    "TEMP Deep Editor Error": {
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    }
+  }
+}
