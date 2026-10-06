@@ -1,0 +1,12 @@
+{
+  "workflowId": "xR7fM1ZhxlMTUy0L",
+  "baselineVersion": "3644e58e-247d-4c8e-82c9-42cd611b4680",
+  "verifiedDraftVersion": "3dae201c-7456-478a-ab30-e8492a12e98f",
+  "status": {"link_gate":"passed_scoped_tests","strength":"failed_specific_causal_strengthening_in_762"},
+  "scope": "Source mapping only, not a runtime contract or full workflow export. Fresh-read before any replay; apply after historical D/E1/writing-feedback overrides. No automatic publication.",
+  "fields": [
+    {"nodeName":"Capture Light Edit","parameter":"/jsCode","file":"src/n8n/capture-light-edit.js"},
+    {"nodeName":"Deep Writer","parameter":"/options/systemMessage","file":"src/n8n/source-strength.deep-writer.system.txt"},
+    {"nodeName":"Light Editor","parameter":"/options/systemMessage","file":"src/n8n/source-strength.light-editor.system.txt"}
+  ]
+}

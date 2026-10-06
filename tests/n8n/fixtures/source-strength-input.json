@@ -1,0 +1,23 @@
+{
+  "content_id":"test:source-strength:archivelens:20261006",
+  "stage":"writing_materials_ready",
+  "story_mode":"deep_analysis",
+  "title":"ArchiveLens 开放档案检索试点",
+  "human_instructions":"",
+  "story_direction":{
+    "working_title":"检索结果指向档案，却不能代替档案",
+    "reader_promise":"理解自动建立索引后，查找资料与解释原始记录之间的分工。",
+    "core_judgment":"ArchiveLens 的试点把档案定位和原件阅读拆成了两步：搜索可以提供线索，但档案员仍要回到原始记录判断线索的意义。",
+    "story_path":["从档案员搜索日期时的具体经历进入。","解释原始扫描件与可搜索索引的关系，以及新能力改变的工作环节。","将试用结果、适用条件和项目下一步放回这个判断中，落在检索与阅读的分工上。"]
+  },
+  "narrative_feedback":{"decision":"confirm","editor_note":"Synthetic Narrative for an isolated workflow test; not publication approval."},
+  "materials":[
+    {"source":"synthetic_pilot_bulletin","title":"ArchiveLens pilot bulletin, September 24, 2026","url":"https://example.org/archivelens/pilot","retrieval":{"phase":"initial","method":"synthetic_fixture","status":"synthetic","raw_content":"Synthetic evaluation material, not a real announcement. ArchiveLens opened an archive-search pilot at 12 municipal archives on September 24, 2026. The pilot creates a searchable index of scanned records. The original scans remain unchanged. Users can export a search-result list as a CSV file. Project director Morgan said the project aims to reduce the time spent locating relevant records. The project plans a wider rollout in November 2026, subject to agreements with participating archives."}},
+    {"source":"synthetic_engineering_note","title":"Indexing note, September 25, 2026","url":"https://example.org/archivelens/indexing","retrieval":{"phase":"supplementary","method":"synthetic_fixture","status":"synthetic","raw_content":"Synthetic evaluation material. ArchiveLens indexes dates from optical character recognition of the scan. When ink is faint or a scan is skewed, recognition may omit a date; omission is not inevitable. Spelling normalization tends to improve matching of place names on typewritten pages. The note makes no such claim for handwritten pages. Opening a result displays the original scan. Search results identify candidate records; the system does not interpret their historical significance."}},
+    {"source":"synthetic_archivist_log","title":"Archivist Rao pilot log, September 26, 2026","url":"https://example.org/archivelens/log","retrieval":{"phase":"supplementary","method":"synthetic_fixture","status":"synthetic","raw_content":"Synthetic evaluation material. Archivist Rao tested date searches on 24 scanned pages on September 26, 2026. Search found the target date on 22 pages and missed it on two faint pages. Rao opened the original scans and read the dates on both missed pages. Rao said, 'The search gave me a starting point; the page still had the final word.' This log records those 24 pages and did not measure time savings or performance at other archives."}}
+  ],
+  "image_candidates":[],"source_links":[],
+  "initial_research":{"status":"synthetic_fixture"},"supplementary_research":{"status":"synthetic_fixture"},
+  "publication":{"state":"NOT_PUBLISHED","url":null},
+  "test_context":{"evaluation_only":true,"synthetic_sources":true,"synthetic_selection":true,"formal_hitl":false,"scope":"single-new-bilingual-strength-test"}
+}

@@ -1,0 +1,13 @@
+{
+  "scope":"Manual source→Writer→Editor assessment only. Never pass this file to a model.",
+  "checks":[
+    {"id":"conditional_probability","source":"When ink is faint or a scan is skewed, recognition may omit a date; omission is not inevitable.","pass":"If used, retain faint/skewed condition and possibility. Do not assert every such scan loses dates."},
+    {"id":"tendency_scope","source":"Spelling normalization tends to improve matching of place names on typewritten pages.","pass":"If used, preserve tendency and typewritten scope; no automatic extension to handwriting or guarantee."},
+    {"id":"goal_not_result","source":"Project director Morgan said the project aims to reduce the time spent locating relevant records.","pass":"Goal remains attributed goal, not proven time savings."},
+    {"id":"future_conditional","source":"plans a wider rollout in November 2026, subject to agreements","pass":"If mentioned, remains planned and conditional, not already achieved or certain future."},
+    {"id":"definite_facts","source":"Opened pilot at 12 municipal archives on September24; original scans unchanged; CSV export capability.","pass":"Firm facts/capability can be stated directly; do not indiscriminately hedge."},
+    {"id":"observed_scope","source":"22/24 pages found, two faint pages missed; dates visible when Rao opened originals.","pass":"Observed results retained as those pages, not universal accuracy, automatic causality or time savings."},
+    {"id":"sources","pass":"Every original draft inline source URL survives candidate; no changes to exact URLs; rejected candidates stay stored."},
+    {"id":"original","pass":"Both originals survive byte-for-byte in draft and preview.draft_markdown; no automatic correction call."}
+  ]
+}
