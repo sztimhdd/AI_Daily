@@ -1,0 +1,41 @@
+{
+  "description": "Fictional regression fixture used in native executions 755-758. Not news or retrieved evidence; example.org URLs were not fetched. Expand each case over common_context; use no article-specific correction notes. This file contains inputs and manual expectations, not an automated semantic test or a passing verdict.",
+  "common_context": {
+    "stage": "writing_materials_ready",
+    "title": "FixtureDesk 向 Team 套餐开放定时报告",
+    "human_instructions": "",
+    "materials": [
+      {"source":"synthetic_fixture","title":"Synthetic release note","url":"https://example.org/fixtures/fixturedesk/release","retrieval":{"phase":"initial","method":"synthetic_fixture","status":"synthetic","raw_content":"Fictional evaluation material, not a real company announcement. FixtureDesk release note dated September 14, 2026: On September 20, scheduled reports become available to Team accounts; previously scheduling was Enterprise-only. Reports already ran on FixtureDesk servers before this change. Existing manually started reports are unchanged. Scheduled runs can start while the browser is closed. A local connector must remain online for a run to read data stored on a user's desktop. A failed connector can interrupt a run. Subscription prices do not change."}},
+      {"source":"synthetic_fixture","title":"Synthetic product help","url":"https://example.org/fixtures/fixturedesk/help","retrieval":{"phase":"supplementary","method":"synthetic_fixture","status":"synthetic","raw_content":"Fictional evaluation material. Starting September 20, the Create once option is removed from the setup of new scheduled tasks. Previously created one-off reports remain downloadable. Cancelling a run removes its temporary workspace; it does not delete previously saved reports. A saved report is removed when its owner deletes that saved report. Server scheduling does not guarantee successful completion of a report. Desktop data is read through the local connector, which must be online."}},
+      {"source":"synthetic_fixture","title":"Synthetic independent tester account","url":"https://example.org/fixtures/fixturedesk/tester","retrieval":{"phase":"supplementary","method":"synthetic_fixture","status":"synthetic","raw_content":"Fictional evaluation material. Tester Lin's account dated September 21, 2026: I tried three scheduled reports on a Team account. Two completed with the browser closed. The third could not read my desktop data because my local connector was unavailable. Lin said: 'I stopped watching the tab; I still have to keep the connector available.' This account describes these three runs, not measurements of overall reliability."}}
+    ],
+    "image_candidates": [],
+    "source_links": [],
+    "initial_research": {"status":"synthetic_fixture"},
+    "supplementary_research": {"status":"synthetic_fixture"},
+    "publication": {"state":"NOT_PUBLISHED","url":null},
+    "test_context": {"synthetic_sources":true,"synthetic_selection":true,"formal_hitl":false,"evaluation_only":true,"scope":"prompt-regression-without-corrective-notes"}
+  },
+  "cases": {
+    "news": {
+      "content_id":"test:general-prompts:news:20261006",
+      "story_mode":"news",
+      "story_direction":{"working_title":"FixtureDesk 开放定时报告，用户会遇到哪些变化？","reader_promise":"了解开放范围、原有任务处理和实际使用条件。","core_judgment":null,"story_path":["交代套餐开放及适用日期。","结合已有操作说明和测试者经历解释实际使用。","保留对不同任务有影响的限制。"]}
+    },
+    "deep": {
+      "content_id":"test:general-prompts:deep:20261006",
+      "story_mode":"deep_analysis",
+      "story_direction":{"working_title":"不用盯着页面，仍要管好数据入口","reader_promise":"理解开放自动排程后，用户减少的工作和仍需承担的依赖。","core_judgment":"FixtureDesk 降低了使用自动排程的门槛，但取消盯着页面的需要，并不等于消除了数据接入维护：执行自动化与输入可用性仍是不同问题。","story_path":["从测试者不再盯着页面却仍遇到数据不可用的经历进入。","解释套餐开放改变的是谁能排程，结合机制展开用户职责的变化。","以成功的两次运行和失败的一次运行限定判断：不能否定自动排程价值，也不能保证结果。","结尾落在用户不必盯着页面但仍需维持数据入口这一实际变化。"]},
+      "narrative_feedback":{"decision":"confirm","editor_note":"Synthetic approved Narrative for workflow evaluation; not a real publication approval."}
+    }
+  },
+  "manual_expectations_not_sent_to_models": [
+    "News introduces the concrete change; Deep develops the supplied judgment rather than cataloguing all product details.",
+    "Do not represent existing server execution as a newly migrated capability.",
+    "Do not strengthen possible operation or interruption into guaranteed outcomes.",
+    "Keep source URLs for retained tester quotations and experiences; no gender was specified for Lin.",
+    "Where lifecycle details are relevant, cancellation and saved-report deletion remain distinct.",
+    "Preserve original drafts and context, remain NOT_PUBLISHED, do not require correction notes.",
+    "This compact synthetic fixture is not evidence of full news breadth or general writing reliability."
+  ]
+}
