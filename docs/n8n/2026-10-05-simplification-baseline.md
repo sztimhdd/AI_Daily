@@ -55,3 +55,8 @@
 [INFERRED][HIGH] B4 从选题上下文接初轮源文读取，优先复用 Researcher 的原生搜索/提取能力到 Mother，去掉 LLM 固定路由和 dossier 重摘要。保留原始源文、检索错误与图片候选出处，已知登录墙仍用只读 Browser 工具路线；不得默默绕路或把抓取失败的摘要称全文。
 
 [KNOWN][HIGH] A 的读取、版本定位与现有物理隔离已确认；B 的选题部分有708证据，但真实邮件选择往返未测试。B4/C/D/E/F 尚未在新主线上验收。不得称 E2E 完成、不得接通真实邮件来凑连续验收、不得发布旧生产版本以测试草稿。下一次每个完成环节记录独立检查点和真实 execution ID。
+
+
+## C1 更新
+
+[KNOWN][HIGH] 单次 News/Deep 判断已以执行729验收。旧 Task Master 三件套被复用为 Story Mode Model/Editor/Validator；旧 Writer65K 输入边已断开。News无 thesis 直接进入 story_direction_ready；Deep 必须带判断并进入唯一一次 narrative approval。模型/JSON失败保留研究上下文。
