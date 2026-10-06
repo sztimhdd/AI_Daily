@@ -1,14 +1,30 @@
 // Keep source context once and collect two drafts. A failed language never erases its sibling.
 const first=$('Draft Languages').first().json, {language,content_type,...c}=first;
-const drafts={},issues=[];
+const drafts={},previews={},issues=[],editIssues=[];
 for(const {json:r} of $input.all()){
  const d=r?.draft,lang=d?.language;
  if(!['zh-CN','en-US'].includes(lang)||r.content_id!==c.content_id||r.story_mode!==c.story_mode
   ||r.language!==lang||d.story_mode!==c.story_mode){issues.push('draft_identity_mismatch');continue;}
  if(drafts[lang]){issues.push('duplicate_language:'+lang);continue;}
  drafts[lang]=d;
+ const p=r.preview;
+ if(p&&p.schema==='writing_preview.v1'&&p.content_id===c.content_id&&p.story_mode===c.story_mode
+  &&p.language===lang&&p.draft_markdown===d.markdown&&p.publication?.state==='NOT_PUBLISHED'
+  &&['completed','failed'].includes(p.editing_status)
+  &&(p.editing_status==='completed'||p.article_markdown===d.markdown))previews[lang]=p;
+ else if(p)editIssues.push('edit_identity_mismatch:'+lang);
 }
 for(const lang of ['zh-CN','en-US'])if(!drafts[lang])drafts[lang]={language:lang,status:'failed',title:'',markdown:'',error:'Missing language result'};
+for(const lang of ['zh-CN','en-US'])if(!previews[lang]){
+ const d=drafts[lang];
+ previews[lang]={schema:'writing_preview.v1',content_id:c.content_id,story_mode:c.story_mode,language:lang,
+  config:{language:lang,content_type:d.content_type||null},status:'review_required',
+  article_title:d.title,article_markdown:d.markdown,draft_markdown:d.markdown,
+  editing_status:d.status==='completed'?'not_started':'skipped_no_draft',
+  warnings:[d.status==='completed'?'edit_missing_original_retained':'no_completed_draft'],
+  publication:{state:'NOT_PUBLISHED',url:null}};
+}
+const edited=Object.values(previews).filter(p=>p.editing_status==='completed').length;
 const completed=Object.values(drafts).filter(d=>d.status==='completed').length;
 return [{json:{...c,drafts,stage:completed===2&&!issues.length?'drafts_ready':completed?'drafts_partial':'drafts_failed',
- draft_issues:issues,publication:{state:'NOT_PUBLISHED',url:null}},pairedItem:$input.all().map((_,item)=>({item}))}];
+ draft_issues:issues,previews,edit_issues:editIssues,editing_stage:edited===2&&!editIssues.length&&!issues.length?'edits_ready':edited?'edits_partial':'edits_failed',publication:{state:'NOT_PUBLISHED',url:null}},pairedItem:$input.all().map((_,item)=>({item}))}];
