@@ -45,7 +45,12 @@
 
 [KNOWN][HIGH] 本轮实读 Mother708的 Parse Selection1：38条实际采集材料，5个题目，保留原始出处；测试选择第1题并保留完整测试补充方向，stage=initial_research，publication=NOT_PUBLISHED。其前驱为 TEMP B Selection Reply，最终节点为 TEMP B Selection Assert；这是明确的合成选题答复，不是真实邮件审批，也没有初轮研究。历史临时节点已从当前46节点草稿中清理。
 
-## 当前续接点与阶段边界
+## B 已完成与当前续接点
+
+[KNOWN][HIGH] B 已以执行717关闭：真实Topic Survey、合成选题、公共正文抓取、真实Browser Pilot和同一上下文合并连续完成；失败来源显式保留，publication保持NOT_PUBLISHED。当前Mother draft 9e023eb2-3642-4eff-93b9-3dc3961318b5，49节点；旧activeVersion仍未切换。
+
+[INFERRED][HIGH] C 从初轮研究上下文直接做一次Deep适用性判断：不再并行News/Deep编辑，不默认同时生成两个提案。News确定报道方向后直接进入补查；Deep输出标题、核心判断、叙事大纲并只进行一次人工Narrative确认/修改。两分支随后共享定向补查。
+
 
 [INFERRED][HIGH] B4 从选题上下文接初轮源文读取，优先复用 Researcher 的原生搜索/提取能力到 Mother，去掉 LLM 固定路由和 dossier 重摘要。保留原始源文、检索错误与图片候选出处，已知登录墙仍用只读 Browser 工具路线；不得默默绕路或把抓取失败的摘要称全文。
 
