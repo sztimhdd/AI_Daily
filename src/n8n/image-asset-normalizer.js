@@ -11,7 +11,10 @@ if (u.error || typeof url !== 'string'
   return {json:{...base,status:'FAILED',asset:null,error:'image_io_failed'}};
 }
 
-const m = String(r.generation?.requested_size || '').match(/^(\d+)x(\d+)$/);
+// The generation service may choose a different actual canvas than requested.
+// Use the returned output dimensions, never the request size, for geometry.
+const returnedSize = $('Generate an image').item.json.size;
+const m = String(returnedSize || '').match(/^(\d+)x(\d+)$/);
 const width = m ? Number(m[1]) : null;
 const height = m ? Number(m[2]) : null;
 const ratio = width && height ? width / height : null;
@@ -22,7 +25,7 @@ const geometry = ratio && target
   : 'UNKNOWN';
 
 return {json:{...base,
-  status: geometry === 'MISMATCH' ? 'GEOMETRY_WARNING' : 'READY',
+  status: geometry === 'PASS' ? 'READY' : 'GEOMETRY_WARNING',
   asset:{
     url,
     display_url:url,
